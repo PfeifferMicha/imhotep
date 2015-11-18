@@ -64,7 +64,7 @@ public class MouseUIInteraction : MonoBehaviour
                 {
                     //PointerEventData p = new PointerEventData(EventSystem.current);
                     b.OnPointerUp(p);
-                    //b.OnSubmit(p); //TODO works also but what is the difference
+                    //b.OnSubmit(p); //TODO works also but what is the difference?
                     b.OnPointerClick(p);
                 }
             }
@@ -93,8 +93,11 @@ public class MouseUIInteraction : MonoBehaviour
         foreach(Button b in deleteList)
         {
             //PointerEventData p = new PointerEventData(EventSystem.current);
-            b.OnPointerExit(p);
-            hoverList.Remove(b);
+            if (b != null)
+            {
+                b.OnPointerExit(p);
+                hoverList.Remove(b);
+            }
             //Debug.Log("Removed button, count: " + hoverList.Count);
         }
 

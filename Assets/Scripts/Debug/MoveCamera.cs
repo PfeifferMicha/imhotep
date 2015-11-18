@@ -3,7 +3,7 @@ using System.Collections;
 
 public class MoveCamera : MonoBehaviour {
 
-    public float speed = 1f;
+    public float speed = 5f;
 
 	// Use this for initialization
 	void Start () {
@@ -26,10 +26,9 @@ public class MoveCamera : MonoBehaviour {
             //if left shift is pressed, movement is 3 times faster
             float shift = Input.GetKey(KeyCode.LeftShift) ? 3f : 1f;
 
-            movement.x = movement.x * speed * shift;
-            movement.z = movement.z * speed * shift;
+            movement = movement * speed * shift;            
 
-            transform.Translate(movement);
+            transform.localPosition = transform.localPosition + movement;
         }
 
     }
