@@ -31,17 +31,16 @@ public class DicomLoader {
 
         Debug.Log(vals.ToString());
 
-
         Image img = null;
 
         var reader = new gdcm.ImageReader();
-        for (int i = 10; i < (int)nfiles; ++i)
+        for (int i = 0; i < (int)nfiles; ++i)       // Go through all file names
         {
             if ( s.IsKey(d.GetFilenames()[i]) )     // If the tags exist, this is a valid DICOM, so we can read it!
             {
                 Debug.Log(i);
                 reader.SetFileName(d.GetFilenames()[i]);
-                if (reader.Read())
+                if (reader.Read())      // Do the actual loading of the DICOM file
                 {
                     Debug.Log("Reading: " + d.GetFilenames()[i]);
                     img = reader.GetImage();
@@ -57,33 +56,9 @@ public class DicomLoader {
                     byte[] buffer = new byte[img.GetBufferLength()];
                     img.GetBuffer(buffer);
 
-
+                    // Copy the raw buffer into a Unity Texture:
                     Texture2D tex = new Texture2D( width, height, TextureFormat.R16, false );
                     tex.LoadRawTextureData(buffer);
-                    /*
-                    UInt16 min = 9999, max = 0;
-                    float minf = 9999, maxf = 0;
-                    int x = 0, y = 0;
-                    for( int pixel = 0; pixel < img.GetBufferLength() ; pixel += 2 )
-                    {
-                        UInt16 val = BitConverter.ToUInt16(buffer, pixel);
-                        if (val < min) min = val;
-                        if (val > max) max = val;
-                        float valF = (float) val / (float) ushort.MaxValue;
-                        if (valF > maxf) maxf = valF;
-                        if (valF < minf) minf = valF;
-                        tex.SetPixel(x, y, new Color(valF, valF, valF));
-                        x ++;
-                        if (x >= width)
-                        {
-                            y++;
-                            x = 0;
-                            if (y >= height)
-                                break;
-                        }
-                    }
-                    Debug.Log("min,max: " + min + " " + max);
-                    Debug.Log("min,max: " + minf + " " + maxf);*/
                     tex.Apply();
 
                     GameObject dicomViewer = GameObject.Find("DICOM_Plane");
