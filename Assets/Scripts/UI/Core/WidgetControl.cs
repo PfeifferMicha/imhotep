@@ -69,5 +69,6 @@ namespace UI
         {
             mScrollView.SetActive(false);
         }
+        
     }
 }

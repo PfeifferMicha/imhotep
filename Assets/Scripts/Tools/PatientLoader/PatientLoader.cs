@@ -88,7 +88,7 @@ public class PatientLoader {
                                 patientEntry.name = patient["Name"].ToString();
                                 patientEntry.birthDate = patient["Date of Birth"].ToString();
                                 patientEntry.operationDate = patient["Date of Operation"].ToString();
-                                patientEntry.path = patient["Path"].ToString();
+                                patientEntry.path = patientFolder;      // save the absolute path
                             } catch(System.Exception e) {
                                 Debug.LogWarning(e.ToString());
                             }
@@ -100,6 +100,20 @@ public class PatientLoader {
                     }
                 }
             }
+        }
+    }
+
+    public Patient loadPatient( int index )
+    {
+        if (index >= 0 && index < mPatientEntries.Count)
+        {
+            PatientEntry entry = mPatientEntries[index];
+            Patient p = new Patient(entry.path);
+            return p;
+        }
+        else
+        {
+            throw (new System.Exception("Could not find patient with index " + index.ToString()));
         }
     }
 
