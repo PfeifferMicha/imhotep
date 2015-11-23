@@ -1,37 +1,36 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+/*
+This script moves the object it is attached to, over the object which has the layer 8 (MousePlane)
+    */
 public class MouseSphereMovement : MonoBehaviour {
 
-    public Transform mousePlane;
-    public float mouseSensitivity = 1;
-    private Vector2 position;
-    private Vector2 max;
+    public float speed = 10f;
 
     // Use this for initialization
     void Start () {
-        transform.position = mousePlane.transform.position;
-        Vector3 size = mousePlane.GetComponent<Renderer>().bounds.size;
-
-        position.x = 0;
-        position.y = 0;
-        max.x = size.x / 2;
-        max.y = size.y / 2;
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (!Input.GetMouseButton(2))
-        {
-            
-            position.x += Input.GetAxis("Mouse X") * mouseSensitivity;
-            position.x = position.x > max.x ? max.x : position.x;
-            position.x = position.x < -max.x ? -max.x : position.x;
-            position.y += Input.GetAxis("Mouse Y") * mouseSensitivity;
-            position.y = position.y > max.y ? max.y : position.y;
-            position.y = position.y < -max.y ? -max.y : position.y;
 
-            transform.position = new Vector3(mousePlane.transform.position.x + position.x, mousePlane.transform.position.y + position.y, mousePlane.transform.position.z);
+
+
+        if ( (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0) && !Input.GetMouseButton(2))
+        {
+
+            RaycastHit hit;
+            Ray ray = new Ray(Camera.main.transform.position, transform.localPosition - Camera.main.transform.position + new Vector3(Input.GetAxis("Mouse X") * speed, Input.GetAxis("Mouse Y") * speed, 0));
+            LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMousePlane))
+            {
+                Vector3 offset = new Vector3(0.1f, 0.1f, 0.1f);
+                transform.position = hit.point;
+            }
+           
         }
     }
 }
