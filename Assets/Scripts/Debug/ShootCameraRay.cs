@@ -17,8 +17,9 @@ public class ShootCameraRay : MonoBehaviour {
         {
             RaycastHit hit;
             Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+            LayerMask onlyDefaultLayer =  1; // hit only the default layer
 
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyDefaultLayer))
             {
                 //Debug.Log("Hidden object: " + hit.collider.gameObject);
                 Vector3 offset = new Vector3(0.1f, 0.1f, 0.1f);

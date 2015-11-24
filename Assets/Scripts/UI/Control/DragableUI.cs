@@ -10,6 +10,8 @@ public class DragableUI : MonoBehaviour {
 
     public float speed = 5f;
 
+    public GameObject mouse;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -17,13 +19,25 @@ public class DragableUI : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (dragUI )
+        if (dragUI)
         {
             if (Input.GetMouseButton(0))
             {
                 if (transform.parent != null && transform.parent.transform.parent != null)
                 {
-                    transform.parent.transform.parent.transform.localPosition = transform.parent.transform.parent.transform.localPosition + new Vector3(Input.GetAxis("Mouse X") * speed, Input.GetAxis("Mouse Y") * speed, 0);
+                    Transform grandparent = transform.parent.transform.parent;
+
+                    RaycastHit hit;
+                    Ray ray = new Ray(Camera.main.transform.position, mouse.transform.localPosition - Camera.main.transform.position);
+                    LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
+
+                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMousePlane))
+                    {
+                        //Vector3 offset = (mouse.transform.localPosition - Camera.main.transform.position).normalized * 10f;
+                        grandparent.localPosition = hit.point; // + offset;
+                        grandparent.transform.localRotation = Quaternion.FromToRotation(grandparent.transform.up, hit.normal) * grandparent.transform.localRotation;
+
+                    }
                 }
             }
             else

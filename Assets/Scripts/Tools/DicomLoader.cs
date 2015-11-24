@@ -6,19 +6,31 @@ using System.Text;
 using gdcm;
 
 /*  Possible GDCM Pixel Formats and their corresponding values in Unity:
-       UINT8,           =>      x3: RGB24
-       INT8, 
-       UINT12, 
-       INT12, 
-       UINT16,          =>      R16     (?)
-       INT16,           =>      R16     (?)
-       UINT32, 
-       INT32, 
-       FLOAT16,         =>      RHalf
-       FLOAT32,         =>      RFloat
-       FLOAT64, 
-       SINGLEBIT,   
-       UNKNOWN 
+    DICOM standard defines a "SamplesPerPixel" tag (Value Type: US) which holds the
+    number of channels. The channels are either 1 or 3, other values are allowed but
+    usage is undefined.
+    This loader only supports 1 or 3 channels.
+    By Looking at the GDCM Pixel Format and the number of channels, the Unity Texture Format
+    can be determined.
+
+    TODO: Check how/if unity can differentiate between unsigned and signed values.
+        (My current guess is unity always uses unsigned).
+
+	GDCM Format:			Unity (if 1 Channel)			Unity (if 3 Channels)
+    -------------------------------------------------------------------------------
+		UINT8					Alpha8							RGB24
+		INT8					Alpha8	(?)						RGB24	(?)
+		UINT12						- 
+		INT12						-
+		UINT16					R16     (?)							-
+		INT16					R16									-
+		UINT32						-								-
+		INT32						-								-
+		FLOAT16					RHalf								-
+		FLOAT32					RFloat								-
+		FLOAT64					-								-
+		SINGLEBIT					-								-
+		UNKNOWN
 */
 
 public class DicomLoader {
@@ -121,7 +133,7 @@ public class DicomLoader {
             Texture2D tex = new Texture2D(width, height, TextureFormat.R16, false);
             tex.LoadRawTextureData(pixeBuffer);
             tex.Apply();
-
+        
             GameObject dicomViewer = GameObject.Find("DICOM_Plane");
             if (dicomViewer)
             {
@@ -142,14 +154,26 @@ public class DicomLoader {
         {
             Debug.Log("Type: " + sourceFormat.GetScalarType());
             switch (sourceFormat.GetScalarType())
-            {
-                case PixelFormat.ScalarType.FLOAT16:
+			{
+				case PixelFormat.ScalarType.UINT8:
+					destFormat = TextureFormat.Alpha8;
+					return true;
+				case PixelFormat.ScalarType.INT8:
+					destFormat = TextureFormat.Alpha8;		// ?
+					return true;
+				case PixelFormat.ScalarType.UINT16:
+					destFormat = TextureFormat.R16;
+					return true;
+				case PixelFormat.ScalarType.INT16:			// ?
+					destFormat = TextureFormat.R16;
+					return true;
+				case PixelFormat.ScalarType.FLOAT16:
                     destFormat = TextureFormat.RHalf;
                     return true;
-                case PixelFormat.ScalarType.UINT16:
-                    destFormat = TextureFormat.R16;
-                    return true;
-                default:
+				case PixelFormat.ScalarType.FLOAT32:
+					destFormat = TextureFormat.RFloat;
+					return true;
+				default:
                     return false;
             }
         }
@@ -160,7 +184,10 @@ public class DicomLoader {
                 case PixelFormat.ScalarType.UINT8:
                     destFormat = TextureFormat.RGB24;
                     return true;
-                default:
+				case PixelFormat.ScalarType.INT8:			// ?
+					destFormat = TextureFormat.RGB24;
+					return true;
+				default:
                     return false;
             }
         }

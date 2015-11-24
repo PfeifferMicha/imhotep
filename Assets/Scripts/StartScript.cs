@@ -9,7 +9,7 @@ public class StartScript : MonoBehaviour {
         //UnityEngine.VR.InputTracking.Recenter(); //TODO uncomment in release version
 
         //Hide mouse curser
-        UnityEngine.Cursor.visible = false; //TODO uncomment in release version
+        //UnityEngine.Cursor.visible = false; //TODO uncomment in release version
 
     }
 	
