@@ -5,6 +5,22 @@ using System.Linq;
 using System.Text;
 using gdcm;
 
+/*  Possible GDCM Pixel Formats and their corresponding values in Unity:
+       UINT8,           =>      x3: RGB24
+       INT8, 
+       UINT12, 
+       INT12, 
+       UINT16,          =>      R16     (?)
+       INT16,           =>      R16     (?)
+       UINT32, 
+       INT32, 
+       FLOAT16,         =>      RHalf
+       FLOAT32,         =>      RFloat
+       FLOAT64, 
+       SINGLEBIT,   
+       UNKNOWN 
+*/
+
 public class DicomLoader {
     public DicomLoader( string directory )
     {
@@ -30,96 +46,124 @@ public class DicomLoader {
         ValuesType vals = s.GetValues();
 
         Debug.Log(vals.ToString());
-
-        Image img = null;
-
-        var reader = new gdcm.ImageReader();
+        
         for (int i = 0; i < (int)nfiles; ++i)       // Go through all file names
         {
             if ( s.IsKey(d.GetFilenames()[i]) )     // If the tags exist, this is a valid DICOM, so we can read it!
             {
-                Debug.Log(i);
-                reader.SetFileName(d.GetFilenames()[i]);
-                if (reader.Read())      // Do the actual loading of the DICOM file
-                {
-                    Debug.Log("Reading: " + d.GetFilenames()[i]);
-                    img = reader.GetImage();
-                    PixelFormat sourcePF = img.GetPixelFormat();
-                    int width = (int)img.GetDimension(0);
-                    int height = (int)img.GetDimension(1);
-
-                    Debug.Log("Format: " + sourcePF.GetScalarTypeAsString());
-                    Debug.Log("Buffer Size: " + (int)img.GetBufferLength());
-                    Debug.Log("widht: " + width);
-                    Debug.Log("height: " + height);
-                    
-                    byte[] buffer = new byte[img.GetBufferLength()];
-                    img.GetBuffer(buffer);
-
-                    // Copy the raw buffer into a Unity Texture:
-                    Texture2D tex = new Texture2D( width, height, TextureFormat.R16, false );
-                    tex.LoadRawTextureData(buffer);
-                    tex.Apply();
-
-                    GameObject dicomViewer = GameObject.Find("DICOM_Plane");
-                    if( dicomViewer )
-                    {
-                        Renderer dicomRenderer = dicomViewer.GetComponent<Renderer>();
-                        dicomRenderer.material.mainTexture = tex;
-                    } else { Debug.Log("Can't find obj"); }
-
-                    break;      // Only load one texture!!
-                }
+                if (load2DImage(d.GetFilenames()[i]))
+                    break;
+                else
+                    break;
             }
         }
+        
+    }
 
-        /*if (img != null)
+    bool load2DImage( string filename )
+    {
+        Image img = null;
+
+        var reader = new gdcm.ImageReader();
+        reader.SetFileName( filename );
+        if (reader.Read())      // Do the actual loading of the DICOM file
         {
-            try
+            Debug.Log("Reading: " + filename );
+
+            var file = reader.GetFile();
+            DataSet dataSet = file.GetDataSet();
+
+            Tag tSamplesPerPixel = new Tag(0x28, 0x02);   // The samples per pixel gives the number of channels in the image.
+
+            if (!dataSet.FindDataElement(tSamplesPerPixel))
+                return false;
+            
+            DataElement elem = dataSet.GetDataElement(tSamplesPerPixel);
+            if( elem.GetVR().toString() != "US" )   //VR.VRType.US )
             {
-
-                //byte[] buffer = new byte[img.GetBufferLength()];
-                //img.GetBuffer(buffer);
-                Debug.Log("Length: " + img.GetBufferLength());
-                Debug.Log("wdith: " + (int)img.GetDimension(0) + " height: " + (int)img.GetDimension(1));
-
-                //Texture2D tex = new Texture2D((int)img.GetDimension(0), (int)img.GetDimension(1));
-                //tex.LoadRawTextureData(buffer);
+                Debug.LogError("Tag <0x28, 0x02> (Samples Per Pixel) is not of type 'US'.");
+                return false;
             }
-            catch (Exception e)
+
+            byte[] buffer = new byte[elem.GetByteValue().GetLength()];
+            elem.GetByteValue().GetBuffer(buffer, elem.GetByteValue().GetLength());
+
+            //if (BitConverter.IsLittleEndian)
+              //  Array.Reverse(buffer);
+
+            ushort samplesPerPixel = BitConverter.ToUInt16(buffer, 0);
+            Debug.Log(samplesPerPixel);
+            Debug.Log(elem.GetByteValue().GetLength());
+
+
+            img = reader.GetImage();
+            PixelFormat sourceFormat = img.GetPixelFormat();
+
+            int width = (int)img.GetDimension(0);
+            int height = (int)img.GetDimension(1);
+
+            Debug.Log("Format: " + sourceFormat.GetScalarTypeAsString());
+            Debug.Log("Buffer Size: " + (int)img.GetBufferLength());
+            Debug.Log("widht: " + width);
+            Debug.Log("height: " + height);
+            
+            TextureFormat destFormat = new TextureFormat();
+            if (!ConvertPixelFormat(sourceFormat, samplesPerPixel, ref destFormat))
             {
-                Debug.LogError(e.Message);
+                Debug.Log("Could not convert DICOM Pixel Format to Unity Pixel Format. Cannot open file.");
+                return false;
             }
-        }*/
 
-                    /*for (int i = 0; i < (int)nfiles; ++i)
-                    {
-                        if (!s.IsKey(d.GetFilenames()[i]))
-                        {
-                            System.Console.WriteLine("File is not DICOM or could not be read: " + d.GetFilenames()[i]);
-                        }
-                    }*/
+            byte[] pixeBuffer = new byte[img.GetBufferLength()];
+            img.GetBuffer(pixeBuffer);
 
-                    /*bool initializedUIDs = false;
-                    string seriesInstanceUID = "";
-                    string studyInstanceUID = "";
+            // Copy the raw buffer into a Unity Texture:
+            Texture2D tex = new Texture2D(width, height, TextureFormat.R16, false);
+            tex.LoadRawTextureData(pixeBuffer);
+            tex.Apply();
 
-                    string result = "";
-                    for (int i = 0; i < (int)nfiles; ++i)
-                    {
-                        if (s.IsKey(d.GetFilenames()[i]))       // the tags could be read
-                        {
-                            if( initializedUIDs )
-                            {
-                                initializedUIDs = true;
-                            }
-                            var tagMap = s.GetMapping(d.GetFilenames()[i]);
-                            tagMap(tagStudyInstanceUID);
-                        }
-                    }*/
-
-                    //Debug.Log("Scan:\n" + s.toString());
-
-                    //Debug.Log(result);
-                }
+            GameObject dicomViewer = GameObject.Find("DICOM_Plane");
+            if (dicomViewer)
+            {
+                Renderer dicomRenderer = dicomViewer.GetComponent<Renderer>();
+                dicomRenderer.material.mainTexture = tex;
             }
+            else { Debug.Log("Can't find obj"); }
+
+            return true;      // Only load one texture!!
+        }
+        return false;
+    }
+
+
+    bool ConvertPixelFormat(PixelFormat sourceFormat, ushort samplesPerPixel, ref TextureFormat destFormat)
+    {
+        if (samplesPerPixel == 1)
+        {
+            Debug.Log("Type: " + sourceFormat.GetScalarType());
+            switch (sourceFormat.GetScalarType())
+            {
+                case PixelFormat.ScalarType.FLOAT16:
+                    destFormat = TextureFormat.RHalf;
+                    return true;
+                case PixelFormat.ScalarType.UINT16:
+                    destFormat = TextureFormat.R16;
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        else if (samplesPerPixel == 3 )
+        {
+            switch (sourceFormat.GetScalarType())
+            {
+                case PixelFormat.ScalarType.UINT8:
+                    destFormat = TextureFormat.RGB24;
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        return false;
+    }
+}
