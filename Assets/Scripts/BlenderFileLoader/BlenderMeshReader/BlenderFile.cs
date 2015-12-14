@@ -13,6 +13,7 @@ namespace BlenderMeshReader
         public List<FileBlock> FileBockList { get; private set; }
         public List<Structure> StructureList { get; private set; }
 
+
         //private BinaryReader reader;
 
         public BlenderFile(string path)
@@ -170,7 +171,7 @@ namespace BlenderMeshReader
             return sList;
         }
 
-        public List<BlenderMesh> readMeshVertices()
+        public List<BlenderMesh> readMesh()
         {
             List<BlenderMesh> result = new List<BlenderMesh>();
 
@@ -304,7 +305,7 @@ namespace BlenderMeshReader
                                 reader.BaseStream.Position += lengthMLoop - 4; //skip other data in MEdge (v  = 4byte)
                             }
                         }
-
+                        currentMesh.createTriangleList();
 
                     }
 
@@ -335,6 +336,64 @@ namespace BlenderMeshReader
             return result;
         }
 
+        //Creates a list of lists with BlenderMeshes. The inner list contains multipe BlenderMeshes for one object with max. 2^16 vertices, because of Unitys limitation.
+        public static List<List<UnityMesh>> createSubmeshesForUnity(List<BlenderMesh> blenderMesh)
+        {
+            List<List<UnityMesh>> result = new List<List<UnityMesh>>();
+
+            //Iterate all complete meshes found in file
+            foreach (BlenderMesh completeMesh in blenderMesh)
+            {               
+                List<UnityMesh> outterListElement = new List<UnityMesh>();
+                result.Add(outterListElement);
+
+                int maxVerts = 65534;
+                int positionTriangleList = 0;
+                //Go over the complete triangle list of mesh
+                while (positionTriangleList < completeMesh.TriangleList.Length)
+                {
+                    UnityMesh newMesh = new UnityMesh(completeMesh.Name); //Create submesh
+                    outterListElement.Add(newMesh);
+                    List<Vector3> vertList = new List<Vector3>(); //Create vertices list for submesh
+                    List<Vector3> normList = new List<Vector3>(); //Create normal list for submesh
+                    List<int> triangles = new List<int>(); //Create triangle list for submesh
+
+                    int[] findVertexIndex = new int[completeMesh.VertexList.Length]; //for optimization, key: vertex index of complete mesh, value: vertex index of new mesh
+                    for(int i = 0; i < findVertexIndex.Length; i++) //memset() faster?
+                    {
+                        findVertexIndex[i] = -1;
+                    }
+
+                    //Write vertex, normal and triangle infos in variables until maxVert is reached or end of TriangleList is reached
+                    while (vertList.Count < maxVerts - 3 && positionTriangleList < completeMesh.TriangleList.Length)
+                    {
+                        for(int i = 0; i < 3; i++)
+                        {
+                            int indexCurrentVertex = completeMesh.TriangleList[positionTriangleList];
+                            int newIndex = findVertexIndex[indexCurrentVertex];
+
+                            if (newIndex == -1)
+                            {
+                                vertList.Add(completeMesh.VertexList[indexCurrentVertex]);
+                                normList.Add(completeMesh.NormalList[indexCurrentVertex]);
+                                findVertexIndex[indexCurrentVertex] = vertList.Count - 1;
+                                triangles.Add(vertList.Count - 1);
+                            }
+                            else
+                            {
+                                triangles.Add(newIndex);
+                            }
+                            positionTriangleList++;
+                        }
+                    }
+                    newMesh.VertexList = vertList.ToArray();
+                    newMesh.NormalList = normList.ToArray();
+                    newMesh.TriangleList = triangles.ToArray();
+                }
+
+            }
+            return result;
+        }
     }
 }
 

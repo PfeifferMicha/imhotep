@@ -9,8 +9,10 @@ public class Loader : MonoBehaviour {
     public GameObject meshNode;
     public Material defaultMaterial;
 
-    //List of blender meshes, filled by worker thread. Corresponding triangle array is in triangles at the smae index
+    //List of blender meshes, filled by worker thread
     private volatile List<BlenderMesh> blenderMeshes = new List<BlenderMesh>();
+    //List of lists of UnityMeshes with max. 2^16 vertices per mesh
+    private volatile List<List<UnityMesh>> unityMeshes = new List<List<UnityMesh>>();
     //List of triangles, filled by worker thread
     private volatile List<int[]> triangles = new List<int[]>();
     //True if file is loaded
@@ -46,16 +48,15 @@ public class Loader : MonoBehaviour {
         this.Path = path;
         Thread thread = new Thread(new ThreadStart(this.LoadFileWorker));
         thread.Start();
+        //LoadFileWorker();
     }
 
+    //Runs in own thread
     private void LoadFileWorker()
     {
         BlenderFile b = new BlenderFile(Path);
-        blenderMeshes = b.readMeshVertices();
-        foreach (BlenderMesh blenderMesh in blenderMeshes)
-        {
-            triangles.Add(blenderMesh.createTriangleList());
-        }
+        blenderMeshes = b.readMesh();
+        unityMeshes = BlenderFile.createSubmeshesForUnity(blenderMeshes);
         loaded = true;
         return;
     }
@@ -63,33 +64,35 @@ public class Loader : MonoBehaviour {
 
     private void LoadFileExecute()
     {
-        for (int i = 0; i < blenderMeshes.Count; i++)
-        {
-            //Spawn object
-            GameObject objToSpawn = new GameObject(blenderMeshes[i].Name);
+        foreach (List<UnityMesh> um in unityMeshes) {
+            foreach (UnityMesh blenderMesh in um)
+            {
+                //Spawn object
+                GameObject objToSpawn = new GameObject(blenderMesh.Name);
 
-            //Add Components
-            objToSpawn.AddComponent<MeshFilter>();
-            objToSpawn.AddComponent<MeshCollider>();
-            objToSpawn.AddComponent<MeshRenderer>();
+                //Add Components
+                objToSpawn.AddComponent<MeshFilter>();
+                objToSpawn.AddComponent<MeshCollider>();
+                objToSpawn.AddComponent<MeshRenderer>();
 
-            //Add material
-            objToSpawn.GetComponent<MeshRenderer>().material = defaultMaterial;
+                //Add material
+                objToSpawn.GetComponent<MeshRenderer>().material = defaultMaterial;
 
-            //Create Mesh
-            Mesh mesh = new Mesh();
-            objToSpawn.GetComponent<MeshFilter>().mesh = mesh;
+                //Create Mesh
+                Mesh mesh = new Mesh();
+                objToSpawn.GetComponent<MeshFilter>().mesh = mesh;
 
-            mesh.name = blenderMeshes[i].Name;
+                mesh.name = blenderMesh.Name;
 
-            mesh.vertices = blenderMeshes[i].VertexList;
-            mesh.normals = blenderMeshes[i].NormalList;
+                mesh.vertices = blenderMesh.VertexList;
+                mesh.normals = blenderMesh.NormalList;
 
-            mesh.triangles = triangles[i];
+                mesh.triangles = blenderMesh.TriangleList;
 
-            objToSpawn.transform.parent = meshNode.transform;
-            //objToSpawn.transform.localPosition = new Vector3(0, 0, 0);
-            //objToSpawn.transform.localScale = new Vector3(10, 10, 10);
+                objToSpawn.transform.parent = meshNode.transform;
+                objToSpawn.transform.localPosition = new Vector3(0, 0, 0);
+                //objToSpawn.transform.localScale = new Vector3(10, 10, 10);
+            }
         }
     }
 }
