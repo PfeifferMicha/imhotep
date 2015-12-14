@@ -234,7 +234,20 @@ namespace BlenderMeshReader
             {
                 if(fileBlock.SDNAIndex == indexMesh)
                 {
-                    BlenderMesh currentMesh = new BlenderMesh();
+                    //read name
+                    reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + 32;
+                    string name = "";
+                    for(int i = 0; i < 66; i++)
+                    {
+                        char c = reader.ReadChar();
+                        if(c == 0x0)
+                        {
+                            break;
+                        }
+                        name += c;
+                    }
+
+                    BlenderMesh currentMesh = new BlenderMesh(name);
                     result.Add(currentMesh);
 
                     reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + startPositionMVert;

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using BlenderMeshReader;
 using System;
+using System.Threading;
 using System.Collections.Generic;
 
 public class Loader : MonoBehaviour {
@@ -8,16 +9,32 @@ public class Loader : MonoBehaviour {
     public GameObject meshNode;
     public Material defaultMaterial;
 
+    //List of blender meshes, filled by worker thread. Corresponding triangle array is in triangles at the smae index
+    private volatile List<BlenderMesh> blenderMeshes = new List<BlenderMesh>();
+    //List of triangles, filled by worker thread
+    private volatile List<int[]> triangles = new List<int[]>();
+    //True if file is loaded
+    private volatile bool loaded = false;
+    private volatile string Path = "";
 
-	// Use this for initialization
-	void Start () {
+
+    // Use this for initialization
+    void Start () {
 	
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
-	}
+        //Debug.Log("Update " + DateTime.Now.Millisecond);
+        if (loaded)
+        {
+            LoadFileExecute();
+            blenderMeshes = new List<BlenderMesh>();
+            triangles = new List<int[]>();
+            loaded = false;
+            Path = "";
+        }
+    }
 
     public void LoadFile(string path)
     {
@@ -26,15 +43,30 @@ public class Loader : MonoBehaviour {
         {
             Destroy(meshNode.transform.GetChild(i).gameObject);
         }
+        this.Path = path;
+        Thread thread = new Thread(new ThreadStart(this.LoadFileWorker));
+        thread.Start();
+    }
 
-        //Load blender file
-        BlenderFile blenderFile = new BlenderFile(path);
-        List<BlenderMesh> bm = blenderFile.readMeshVertices();
+    private void LoadFileWorker()
+    {
+        BlenderFile b = new BlenderFile(Path);
+        blenderMeshes = b.readMeshVertices();
+        foreach (BlenderMesh blenderMesh in blenderMeshes)
+        {
+            triangles.Add(blenderMesh.createTriangleList());
+        }
+        loaded = true;
+        return;
+    }
 
-        foreach(BlenderMesh blenderMesh in bm)
+
+    private void LoadFileExecute()
+    {
+        for (int i = 0; i < blenderMeshes.Count; i++)
         {
             //Spawn object
-            GameObject objToSpawn = new GameObject("Test");
+            GameObject objToSpawn = new GameObject(blenderMeshes[i].Name);
 
             //Add Components
             objToSpawn.AddComponent<MeshFilter>();
@@ -48,48 +80,16 @@ public class Loader : MonoBehaviour {
             Mesh mesh = new Mesh();
             objToSpawn.GetComponent<MeshFilter>().mesh = mesh;
 
-            mesh.name = "mesh";
+            mesh.name = blenderMeshes[i].Name;
 
-            mesh.vertices = blenderMesh.VertexList;
-            mesh.normals = blenderMesh.NormalList;
+            mesh.vertices = blenderMeshes[i].VertexList;
+            mesh.normals = blenderMeshes[i].NormalList;
 
-            //generate triangle list
-            List<int> triangle = new List<int>();
-            foreach (PolygonListEntry polygon in blenderMesh.PolygonList)
-            {
-                for(int i=0; i < polygon.Lenght-2; i++)
-                {
-                    for(int j=0; j < 3; j++)
-                    {
-                        if (i == 0)
-                        {
-                            triangle.Add(blenderMesh.LoopList[polygon.StartIndex + j]);
-                        }
-                        else
-                        {
-                            if(j != 2)
-                            {
-                                triangle.Add(blenderMesh.LoopList[polygon.StartIndex + j + i + 1]);
-                            }
-                            else
-                            {
-                                triangle.Add(blenderMesh.LoopList[polygon.StartIndex]);
-                            }
-                        }
-
-                    }
-
-                }
-            }
-            
-            mesh.triangles = triangle.ToArray();
+            mesh.triangles = triangles[i];
 
             objToSpawn.transform.parent = meshNode.transform;
             //objToSpawn.transform.localPosition = new Vector3(0, 0, 0);
-            objToSpawn.transform.localScale = new Vector3(10, 10, 10);
+            //objToSpawn.transform.localScale = new Vector3(10, 10, 10);
         }
-
-        
-
     }
 }
