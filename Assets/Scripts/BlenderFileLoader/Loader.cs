@@ -42,6 +42,7 @@ public class Loader : MonoBehaviour {
         this.Path = path;
         Thread thread = new Thread(new ThreadStart(this.LoadFileWorker));
         thread.Start();
+        Debug.Log("Start Thread" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond);
         //LoadFileWorker();
     }
 
@@ -53,40 +54,46 @@ public class Loader : MonoBehaviour {
         blenderMeshes = b.readMesh();
         unityMeshes = BlenderFile.createSubmeshesForUnity(blenderMeshes);
         loaded = true;
-        Debug.Log("End Thread " + DateTime.Now.Second + ":" + DateTime.Now.Millisecond);
         return;
     }
 
 
     private void LoadFileExecute()
     {
+        Debug.Log("Start Execute" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond);
         foreach (List<UnityMesh> um in unityMeshes) {
-            foreach (UnityMesh blenderMesh in um)
+            foreach (UnityMesh unityMesh in um)
             {
                 //Spawn object
-                GameObject objToSpawn = new GameObject(blenderMesh.Name);
+                GameObject objToSpawn = new GameObject(unityMesh.Name);
+
+                objToSpawn.transform.parent = meshNode.transform; ;
+
+
                 //Add Components
                 objToSpawn.AddComponent<MeshFilter>();
-                objToSpawn.AddComponent<MeshCollider>();
+                //objToSpawn.AddComponent<MeshCollider>(); //TODO need to much time --> own thread?? Dont work in Unity!!
                 objToSpawn.AddComponent<MeshRenderer>();
+                
                 //Add material
                 objToSpawn.GetComponent<MeshRenderer>().material = defaultMaterial;
+               
                 //Create Mesh
                 Mesh mesh = new Mesh();
+                mesh.name = unityMesh.Name;
+                mesh.vertices = unityMesh.VertexList;
+                mesh.normals = unityMesh.NormalList;
+                mesh.triangles = unityMesh.TriangleList;
+
                 objToSpawn.GetComponent<MeshFilter>().mesh = mesh;
-                objToSpawn.GetComponent<MeshCollider>().sharedMesh = mesh;
+                //objToSpawn.GetComponent<MeshCollider>().sharedMesh = mesh;
 
-                mesh.name = blenderMesh.Name;
-                mesh.vertices = blenderMesh.VertexList;
-                mesh.normals = blenderMesh.NormalList;
-                mesh.triangles = blenderMesh.TriangleList;
-
-                objToSpawn.transform.parent = meshNode.transform; ; //TODO needs much time.
                 objToSpawn.transform.localPosition = new Vector3(0, 0, 0);
                 //objToSpawn.transform.localScale = new Vector3(1, 1, 1);
             }
             
         }
+        Debug.Log("End Execute" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond );
 
     }
 
