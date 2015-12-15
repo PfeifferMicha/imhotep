@@ -6,6 +6,8 @@ using UnityEngine;
 
 namespace BlenderMeshReader
 {
+    //This class repesents a mesh in unity
+    //Coordinate system is left-handed
     class UnityMesh : MeshInterface
     {
         public string Name { get; set; }

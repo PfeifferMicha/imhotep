@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace BlenderMeshReader
 {
-
+    //This class repesents a mesh in unity
+    //Coordinate system is right-handed
     class BlenderMesh : MeshInterface
     {
         public string Name { get; set; }
@@ -34,7 +35,7 @@ namespace BlenderMeshReader
             TriangleList = new int[0];
         }
 
-        //This method creates the TriangleList of the mesh from PolygonList and LoopList.
+        //This method creates the TriangleList from PolygonList and LoopList.
         //This method must be called after the VertexList, PolygonList and LoopList are complete
         public void createTriangleList()
         {
@@ -66,7 +67,44 @@ namespace BlenderMeshReader
                 }
             }
             TriangleList = triangle.ToArray();
+
+
             return;
+        }
+
+        //Return a unity mesh in a left-handed coordinate system
+        public UnityMesh ToUnityMesh()
+        {
+            UnityMesh result = new UnityMesh(this.Name);
+
+            Vector3[] vertices = new Vector3[VertexList.Length];
+            //Flip z component of all Vector3 in vertex list
+            for (int i = 0; i < VertexList.Length; i++)
+            {
+                vertices[i] = new Vector3(VertexList[i].x, VertexList[i].y,-VertexList[i].z);
+            }
+            result.VertexList = vertices;
+
+            Vector3[] normals = new Vector3[NormalList.Length];
+            //Flip z component of all Vector3 in normal list
+            for (int i = 0; i < NormalList.Length; i++)
+            {
+                normals[i] = new Vector3(NormalList[i].x, NormalList[i].y, -NormalList[i].z);
+            }
+            result.NormalList = normals;
+
+            int[] triangles = new int[TriangleList.Length];
+            //Flip the order of triangle vertices. v0,v1,v2 -> v0,v2,v1.
+            for (int i = 0; i < TriangleList.Length; i += 3)
+            {
+                triangles[i] = TriangleList[i];
+                triangles[i + 1] = TriangleList[i + 2];
+                triangles[i + 2] = TriangleList[i + 1];
+            }
+            result.TriangleList = triangles;
+
+            return result;
+
         }
 
 

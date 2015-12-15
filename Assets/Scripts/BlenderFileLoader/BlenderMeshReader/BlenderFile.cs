@@ -262,7 +262,8 @@ namespace BlenderMeshReader
 
                     foreach (FileBlock f in FileBockList)
                     {
-                        if(f.OldAddess == mVertAddress)
+                        //Read vertices and normals
+                        if (f.OldAddess == mVertAddress)
                         {
                             currentMesh.VertexList = new Vector3[f.Count];
                             currentMesh.NormalList = new Vector3[f.Count];
@@ -282,6 +283,7 @@ namespace BlenderMeshReader
                             }
                         }
 
+                        //Read polygon list
                         if (f.OldAddess == mPolyAddress)
                         {
                             reader.BaseStream.Position = f.StartAddess + (PointerSize == 8 ? 24 : 20);
@@ -294,6 +296,7 @@ namespace BlenderMeshReader
                             }
                         }
 
+                        //Read loop list
                         if (f.OldAddess == mLoopAddress)
                         {
                             currentMesh.LoopList = new int[f.Count];
@@ -342,8 +345,11 @@ namespace BlenderMeshReader
             List<List<UnityMesh>> result = new List<List<UnityMesh>>();
 
             //Iterate all complete meshes found in file
-            foreach (BlenderMesh completeMesh in blenderMesh)
-            {               
+            foreach (BlenderMesh completeBlenderMesh in blenderMesh)
+            {
+
+                UnityMesh completeMesh = completeBlenderMesh.ToUnityMesh();
+
                 List<UnityMesh> outterListElement = new List<UnityMesh>();
                 result.Add(outterListElement);
 

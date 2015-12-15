@@ -9,12 +9,8 @@ public class Loader : MonoBehaviour {
     public GameObject meshNode;
     public Material defaultMaterial;
 
-    //List of blender meshes, filled by worker thread
-    private volatile List<BlenderMesh> blenderMeshes = new List<BlenderMesh>();
     //List of lists of UnityMeshes with max. 2^16 vertices per mesh
     private volatile List<List<UnityMesh>> unityMeshes = new List<List<UnityMesh>>();
-    //List of triangles, filled by worker thread
-    private volatile List<int[]> triangles = new List<int[]>();
     //True if file is loaded
     private volatile bool loaded = false;
     private volatile string Path = "";
@@ -27,12 +23,10 @@ public class Loader : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        //Debug.Log("Update " + DateTime.Now.Millisecond);
         if (loaded)
         {
             LoadFileExecute();
-            blenderMeshes = new List<BlenderMesh>();
-            triangles = new List<int[]>();
+            unityMeshes = new List<List<UnityMesh>>();
             loaded = false;
             Path = "";
         }
@@ -55,9 +49,11 @@ public class Loader : MonoBehaviour {
     private void LoadFileWorker()
     {
         BlenderFile b = new BlenderFile(Path);
+        List<BlenderMesh> blenderMeshes = new List<BlenderMesh>();
         blenderMeshes = b.readMesh();
         unityMeshes = BlenderFile.createSubmeshesForUnity(blenderMeshes);
         loaded = true;
+        Debug.Log("End Thread " + DateTime.Now.Second + ":" + DateTime.Now.Millisecond);
         return;
     }
 
@@ -69,30 +65,29 @@ public class Loader : MonoBehaviour {
             {
                 //Spawn object
                 GameObject objToSpawn = new GameObject(blenderMesh.Name);
-
                 //Add Components
                 objToSpawn.AddComponent<MeshFilter>();
                 objToSpawn.AddComponent<MeshCollider>();
                 objToSpawn.AddComponent<MeshRenderer>();
-
                 //Add material
                 objToSpawn.GetComponent<MeshRenderer>().material = defaultMaterial;
-
                 //Create Mesh
                 Mesh mesh = new Mesh();
                 objToSpawn.GetComponent<MeshFilter>().mesh = mesh;
+                objToSpawn.GetComponent<MeshCollider>().sharedMesh = mesh;
 
                 mesh.name = blenderMesh.Name;
-
                 mesh.vertices = blenderMesh.VertexList;
                 mesh.normals = blenderMesh.NormalList;
-
                 mesh.triangles = blenderMesh.TriangleList;
 
-                objToSpawn.transform.parent = meshNode.transform;
+                objToSpawn.transform.parent = meshNode.transform; ; //TODO needs much time.
                 objToSpawn.transform.localPosition = new Vector3(0, 0, 0);
-                //objToSpawn.transform.localScale = new Vector3(10, 10, 10);
+                //objToSpawn.transform.localScale = new Vector3(1, 1, 1);
             }
+            
         }
+
     }
+
 }
