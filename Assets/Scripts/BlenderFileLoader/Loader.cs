@@ -42,7 +42,6 @@ public class Loader : MonoBehaviour {
         this.Path = path;
         Thread thread = new Thread(new ThreadStart(this.LoadFileWorker));
         thread.Start();
-        Debug.Log("Start Thread" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond);
         //LoadFileWorker();
     }
 
@@ -60,7 +59,6 @@ public class Loader : MonoBehaviour {
 
     private void LoadFileExecute()
     {
-        Debug.Log("Start Execute" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond);
         foreach (List<UnityMesh> um in unityMeshes) {
             foreach (UnityMesh unityMesh in um)
             {
@@ -93,8 +91,6 @@ public class Loader : MonoBehaviour {
             }
             
         }
-        Debug.Log("End Execute" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond );
-
     }
 
 }

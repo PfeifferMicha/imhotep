@@ -172,7 +172,7 @@ namespace BlenderMeshReader
         }
 
         public List<BlenderMesh> readMesh()
-        {
+        { 
             List<BlenderMesh> result = new List<BlenderMesh>();
 
             //get information about the structure of a mesh block
@@ -228,7 +228,6 @@ namespace BlenderMeshReader
                 }
 
             }
-
             //read vertices, polys and loops
             BinaryReader reader = new BinaryReader(File.Open(Filename, FileMode.Open, FileAccess.Read));
             foreach (FileBlock fileBlock in FileBockList)
@@ -282,9 +281,8 @@ namespace BlenderMeshReader
                                 reader.BaseStream.Position += lengthMVert - 18 ; //skip other data in MVert (co[3] + no[3] = 18byte)
                             }
                         }
-
                         //Read polygon list
-                        if (f.OldAddess == mPolyAddress)
+                        else if (f.OldAddess == mPolyAddress)
                         {
                             reader.BaseStream.Position = f.StartAddess + (PointerSize == 8 ? 24 : 20);
                             for (int i = 0; i < f.Count; i++)
@@ -295,9 +293,8 @@ namespace BlenderMeshReader
                                 reader.BaseStream.Position += lengthMPoly - 8; //skip other data in MPoly (loopstart + totloop = 8byte)
                             }
                         }
-
                         //Read loop list
-                        if (f.OldAddess == mLoopAddress)
+                        else if (f.OldAddess == mLoopAddress)
                         {
                             currentMesh.LoopList = new int[f.Count];
 
@@ -308,12 +305,11 @@ namespace BlenderMeshReader
                                 reader.BaseStream.Position += lengthMLoop - 4; //skip other data in MEdge (v  = 4byte)
                             }
                         }
-                        currentMesh.createTriangleList();
-
                     }
+                    currentMesh.createTriangleList();
 
                 }
-            }
+            } 
 
             /*foreach(BlenderMesh m in result)
             {
@@ -333,8 +329,7 @@ namespace BlenderMeshReader
                 }
             }*/
 
-
-
+            Debug.Log("After Vertex read" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond);
             reader.Close();
             return result;
         }
