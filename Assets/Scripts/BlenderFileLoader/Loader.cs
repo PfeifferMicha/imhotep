@@ -48,11 +48,13 @@ public class Loader : MonoBehaviour {
     //Runs in own thread
     private void LoadFileWorker()
     {
+        DateTime start = DateTime.Now;
         BlenderFile b = new BlenderFile(Path);
         List<BlenderMesh> blenderMeshes = new List<BlenderMesh>();
         blenderMeshes = b.readMesh();
         unityMeshes = BlenderFile.createSubmeshesForUnity(blenderMeshes);
         loaded = true;
+        Debug.Log("Loading time: " + (DateTime.Now - start));
         return;
     }
 

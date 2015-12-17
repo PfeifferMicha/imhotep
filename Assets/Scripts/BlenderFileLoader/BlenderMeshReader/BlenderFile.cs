@@ -1,10 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace BlenderMeshReader
 {
+    [StructLayout(LayoutKind.Explicit, Pack = 4, Size = 8)]
+    struct MLoop
+    {
+        [FieldOffset(0)]
+        public int v;
+        [FieldOffset(4)]
+        public int e;
+    }
+
+    [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 12)]
+    struct MPoly
+    {
+        [FieldOffset(0)]
+        public int loopstart;
+        [FieldOffset(4)]
+        public int totloop;
+        [FieldOffset(8)]
+        public short mat_nr;
+        [FieldOffset(10)]
+        public byte flag;
+        [FieldOffset(11)]
+        public byte pad;
+    }
+
+    [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 20)]
+    struct MVert
+    {
+        [FieldOffset(0)]
+        public float coX;
+        [FieldOffset(4)]
+        public float coY;
+        [FieldOffset(8)]
+        public float coZ;
+
+        [FieldOffset(12)]
+        public short noX;
+        [FieldOffset(14)]
+        public short noY;
+        [FieldOffset(16)]
+        public short noZ;
+
+        [FieldOffset(18)]
+        public byte flag;
+
+        [FieldOffset(19)]
+        public byte bweight;
+    }
+
     class BlenderFile
     {
         public static int PointerSize { get; private set; }
@@ -172,7 +221,7 @@ namespace BlenderMeshReader
         }
 
         public List<BlenderMesh> readMesh()
-        { 
+        {
             List<BlenderMesh> result = new List<BlenderMesh>();
 
             //get information about the structure of a mesh block
@@ -186,7 +235,6 @@ namespace BlenderMeshReader
 
             int startPositionMLoop = -1;
             int lengthMLoop = 0;
-
 
             foreach (Structure s in StructureList)
             {
@@ -267,30 +315,32 @@ namespace BlenderMeshReader
                             currentMesh.VertexList = new Vector3[f.Count];
                             currentMesh.NormalList = new Vector3[f.Count];
 
+                            MVert[] readVerts = new MVert[f.Count];
                             reader.BaseStream.Position = f.StartAddess + (PointerSize == 8 ? 24 : 20);
-                            for (int i = 0; i < f.Count; i++)
+                            byte[] readBytes = reader.ReadBytes(f.Count * Marshal.SizeOf(typeof(MVert)));
+                            GCHandle pinnedHandle = GCHandle.Alloc(readVerts, GCHandleType.Pinned);
+                            Marshal.Copy(readBytes, 0, pinnedHandle.AddrOfPinnedObject(), readBytes.Length);
+                            pinnedHandle.Free();
+
+                            for (int i = 0; i < readVerts.Length; i++)
                             {
-                                float vertX = reader.ReadSingle();
-                                float vertY = reader.ReadSingle();
-                                float vertZ = reader.ReadSingle();
-                                currentMesh.VertexList[i] = new Vector3(vertX, vertY, vertZ);
-                                short noX = reader.ReadInt16();
-                                short noY = reader.ReadInt16();
-                                short noZ = reader.ReadInt16(); ;
-                                currentMesh.NormalList[i] = new Vector3(noX, noY, noZ);
-                                reader.BaseStream.Position += lengthMVert - 18 ; //skip other data in MVert (co[3] + no[3] = 18byte)
+                                currentMesh.VertexList[i] = new Vector3(readVerts[i].coX, readVerts[i].coY, readVerts[i].coZ);
+                                currentMesh.NormalList[i] = new Vector3(readVerts[i].noX, readVerts[i].noY, readVerts[i].noZ);
                             }
                         }
                         //Read polygon list
                         else if (f.OldAddess == mPolyAddress)
                         {
+                            MPoly[] readPoly = new MPoly[f.Count];
                             reader.BaseStream.Position = f.StartAddess + (PointerSize == 8 ? 24 : 20);
-                            for (int i = 0; i < f.Count; i++)
+                            byte[] readBytes = reader.ReadBytes(f.Count * Marshal.SizeOf(typeof(MPoly)));
+                            GCHandle pinnedHandle = GCHandle.Alloc(readPoly, GCHandleType.Pinned);
+                            Marshal.Copy(readBytes, 0, pinnedHandle.AddrOfPinnedObject(), readBytes.Length);
+                            pinnedHandle.Free();
+                            
+                            for (int i = 0; i < readPoly.Length; i++)
                             {
-                                int loopstart = reader.ReadInt32();
-                                int totloop = reader.ReadInt32();
-                                currentMesh.PolygonList.Add(new PolygonListEntry(loopstart, totloop));
-                                reader.BaseStream.Position += lengthMPoly - 8; //skip other data in MPoly (loopstart + totloop = 8byte)
+                               currentMesh.PolygonList.Add(new PolygonListEntry(readPoly[i].loopstart, readPoly[i].totloop));
                             }
                         }
                         //Read loop list
@@ -299,17 +349,23 @@ namespace BlenderMeshReader
                             currentMesh.LoopList = new int[f.Count];
 
                             reader.BaseStream.Position = f.StartAddess + (PointerSize == 8 ? 24 : 20);
-                            for (int i = 0; i < f.Count; i++)
+                            MLoop[] readLoop = new MLoop[f.Count];
+                            byte[] readBytes = reader.ReadBytes(f.Count * Marshal.SizeOf(typeof(MLoop)));
+                            GCHandle pinnedHandle = GCHandle.Alloc(readLoop, GCHandleType.Pinned);
+                            Marshal.Copy(readBytes, 0, pinnedHandle.AddrOfPinnedObject(), readBytes.Length);
+                            pinnedHandle.Free();
+
+                            for(int i = 0; i< readLoop.Length; i++)
                             {
-                                currentMesh.LoopList[i] = reader.ReadInt32();
-                                reader.BaseStream.Position += lengthMLoop - 4; //skip other data in MEdge (v  = 4byte)
+                                currentMesh.LoopList[i] = readLoop[i].v;
                             }
                         }
                     }
                     currentMesh.createTriangleList();
 
+
                 }
-            } 
+            }
 
             /*foreach(BlenderMesh m in result)
             {
@@ -329,7 +385,6 @@ namespace BlenderMeshReader
                 }
             }*/
 
-            Debug.Log("After Vertex read" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond);
             reader.Close();
             return result;
         }
