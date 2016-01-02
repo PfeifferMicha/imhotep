@@ -59,7 +59,7 @@ public class PatientLoader {
 
         mPatientEntries.Clear();
         
-        string raw = File.ReadAllText(patientsDirectoryFile);
+		string raw = "";//File.ReadAllText(patientsDirectoryFile);
 
         JsonData data = JsonMapper.ToObject(raw);
 

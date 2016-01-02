@@ -89,7 +89,7 @@ namespace BlenderMeshReader
                 throw new FileNotFoundException("File not found.");
             }
 
-            BinaryReader reader = new BinaryReader(File.Open(Filename, FileMode.Open, FileAccess.Read));
+            BinaryReader reader = new BinaryReader(File.Open(Filename, FileMode.Open ));
 
             if(System.Text.Encoding.ASCII.GetString(reader.ReadBytes(7)) != "BLENDER")
             {
@@ -110,7 +110,7 @@ namespace BlenderMeshReader
         private List<FileBlock> readFileBlockList()
         {
             List<FileBlock> result = new List<FileBlock>();
-            BinaryReader reader = new BinaryReader(File.Open(Filename, FileMode.Open, FileAccess.Read));
+            BinaryReader reader = new BinaryReader(File.Open(Filename, FileMode.Open));
 
             reader.ReadBytes(12); //skip file header
 
@@ -141,7 +141,7 @@ namespace BlenderMeshReader
         private List<Structure> readDNA1Block(long startAddress, int size)
         {
             //List<FileBlock> result = new List<FileBlock>();
-            BinaryReader reader = new BinaryReader(File.Open(Filename, FileMode.Open, FileAccess.Read));
+            BinaryReader reader = new BinaryReader(File.Open(Filename, FileMode.Open));
             reader.BaseStream.Position = startAddress + (PointerSize == 8 ? 24 : 20) + 4; //set position to data
 
             reader.ReadBytes(4); //read NAME
@@ -277,7 +277,7 @@ namespace BlenderMeshReader
 
             }
             //read vertices, polys and loops
-            BinaryReader reader = new BinaryReader(File.Open(Filename, FileMode.Open, FileAccess.Read));
+            BinaryReader reader = new BinaryReader(File.Open(Filename, FileMode.Open));
             foreach (FileBlock fileBlock in FileBockList)
             {
                 if(fileBlock.SDNAIndex == indexMesh)

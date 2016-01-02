@@ -37,7 +37,7 @@ public class DicomLoaderITK
 			Debug.Log ("\t" + series[i] );
 
 		// Find the series with the most files:
-		// DEBUG: TODO: Replace this with the possibility to choose the DICOM series:
+		// DEBUG: TODO: Replace this with the possibility to choose the DICOM series in the GUI.
 		int seriesToLoad = 0;
 		int maximum = 0;
 		for( int i = 0; i < series.Count; i++ )
@@ -64,21 +64,75 @@ public class DicomLoaderITK
 		Image image = reader.Execute();
 		UInt32 numberOfPixels = image.GetWidth () * image.GetHeight () * image.GetDepth ();
 
-		VectorUInt32 size = image.GetSize();
+		int origTexWidth = (int)image.GetWidth ();
+		int origTexHeight = (int)image.GetHeight ();
+		int origTexDepth = (int)image.GetDepth ();
+		int texWidth = Mathf.NextPowerOfTwo ((int)image.GetWidth ());
+		int texHeight = Mathf.NextPowerOfTwo ((int)image.GetHeight ());
+		int texDepth = Mathf.NextPowerOfTwo ((int)image.GetDepth ());
 		Debug.Log ("\tImage: " + image.ToString());
 		Debug.Log ("\tImage Pixel Type: " + image.GetPixelID());
+		Debug.Log ("\tImage size: " + origTexWidth + "x" + origTexHeight + "x" + origTexDepth );
+		Debug.Log ("\tTexture size: " + texWidth + "x" + texHeight + "x" + texDepth );
 		Debug.Log ("\tImage number of pixels: " + numberOfPixels);
+		
+		Color[] colors = new Color[ texWidth*texHeight*texDepth ];		
+		int maxCol = 0;
 
 		if (image.GetDimension () != 2 && image.GetDimension () != 3)
 		{
-			Debug.LogWarning ( "Cannot read DICOM. Only 2D and 3D images are currently supported. Dimensions of image:: " + image.GetDimension());
+			Debug.LogWarning ( "Cannot read DICOM. Only 2D and 3D images are currently supported. Dimensions of image: " + image.GetDimension());
 			return false;
 		}
 
 		IntPtr bufferPtr;
-		if( image.GetPixelID() == PixelIDValueEnum.sitkUInt16 )
-		{
-			bufferPtr = image.GetBufferAsUInt16();
+		if (image.GetPixelID () == PixelIDValueEnum.sitkUInt16) {
+			bufferPtr = image.GetBufferAsUInt16 ();
+
+			Int16[] colorsTmp = new Int16[ numberOfPixels ];
+			Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
+
+			int index = 0;
+			for (UInt32 z = 0; z < texWidth; z++) {
+				for (UInt32 y = 0; y < texHeight; y++) {
+					for (UInt32 x = 0; x < texDepth; x++) {
+						if( x < origTexWidth && y < origTexHeight && z < origTexDepth )
+						{
+							if( colorsTmp[index] > maxCol )
+							{
+								maxCol = (int)colorsTmp[index];
+							}
+							
+							colors[ z + y*texWidth + x*texWidth*texHeight ] = F2C( (UInt16)colorsTmp[index] );
+							index ++;
+						}
+					}
+				}
+			}
+
+		} else if ( image.GetPixelID() == PixelIDValueEnum.sitkInt16 ) {
+			bufferPtr = image.GetBufferAsInt16 ();
+
+			Int16[] colorsTmp = new Int16[ numberOfPixels ];
+			Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
+
+			int index = 0;
+			for (UInt32 z = 0; z < texWidth; z++) {
+				for (UInt32 y = 0; y < texHeight; y++) {
+					for (UInt32 x = 0; x < texDepth; x++) {
+						if( x < origTexWidth && y < origTexHeight && z < origTexDepth )
+						{
+							if( colorsTmp[index] > maxCol )
+							{
+								maxCol = (int)colorsTmp[index];
+							}
+							
+							colors[ z + y*texWidth + x*texWidth*texHeight ] = F2C( colorsTmp[index] );
+							index ++;
+						}
+					}
+				}
+			}
 		} else {
 			Debug.LogWarning ( "Cannot read DICOM. Unsupported pixel format: " + image.GetPixelID());
 			return false;
@@ -86,38 +140,10 @@ public class DicomLoaderITK
 
 		//UInt16* buffer = (UInt32*)bufferPtr.ToPointer();
 
-		Int16[] colorsTmp = new Int16[ numberOfPixels ];
-		Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
-		
-		int origTexWidth = (int)image.GetWidth ();
-		int origTexHeight = (int)image.GetHeight ();
-		int origTexDepth = (int)image.GetDepth ();
-		int texWidth = Mathf.NextPowerOfTwo ((int)image.GetWidth ());
-		int texHeight = Mathf.NextPowerOfTwo ((int)image.GetHeight ());
-		int texDepth = Mathf.NextPowerOfTwo ((int)image.GetDepth ());
-		Color[] colors = new Color[ texWidth*texHeight*texDepth ];
-		Debug.Log (texWidth + " " + texHeight + " " + texDepth);
-		UInt16 maxCol = 0;
-		int index = 0;
-		for (UInt32 z = 0; z < texWidth; z++) {
-			for (UInt32 y = 0; y < texHeight; y++) {
-				for (UInt32 x = 0; x < texDepth; x++) {
-					if( x < origTexWidth && y < origTexHeight && z < origTexDepth )
-					{
-						if( colorsTmp[index] > maxCol )
-						{
-							maxCol = (UInt16)colorsTmp[index];
-						}
-						
-						colors[ z + y*texWidth + x*texWidth*texHeight ] = F2C( (UInt16)colorsTmp[index] );
-						index ++;
-					}
-				}
-			}
-		}
+
 
 		Texture3D tex = new Texture3D( texWidth, texHeight, texDepth, TextureFormat.RGBA32, false);
-		tex.SetPixels(colors);
+		tex.SetPixels( colors	);
 		tex.Apply();
 
 		GameObject dicomViewer = GameObject.Find("DICOM_Plane");
@@ -136,13 +162,15 @@ public class DicomLoaderITK
 		byte[] bytes = BitConverter.GetBytes( value );
 
 		float R = (float)bytes[0];
-		//Debug.Log (R + " " + R/255.0f);
 		float G = (float)bytes[1];
-//		float B = 0;
-//		//Debug.Log (B + " " + B/255.0f);
-//		float A = 0;
-//		if( print )
-//			Debug.Log (value + " " + R + " " + R/255.0f + " " + G + " " + G/255.0f + " " + bytes.GetLength(0));
+		return new Color( R/255.0f, G/255.0f, 0.0f, 0.0f );
+	}
+	Color F2C(Int16 value)
+	{
+		byte[] bytes = BitConverter.GetBytes( value );
+		
+		float R = (float)bytes[0];
+		float G = (float)bytes[1];
 		return new Color( R/255.0f, G/255.0f, 0.0f, 0.0f );
 	}
 
