@@ -55,7 +55,7 @@
 			
 			float C2F( float4 col )
 			{
-				return (col.g*256*256 + col.r*256)/globalMaximum;
+				return (col.g*65536 + col.r*256)/globalMaximum;
 				//return (col.g*255)/globalMaximum;
 			}
 			
