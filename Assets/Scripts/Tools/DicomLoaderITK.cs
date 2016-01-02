@@ -36,17 +36,28 @@ public class DicomLoaderITK
 		for (int i = 0; i < series.Count; i++)
 			Debug.Log ("\t" + series[i] );
 
+		// Find the series with the most files:
+		// DEBUG: TODO: Replace this with the possibility to choose the DICOM series:
+		int seriesToLoad = 0;
+		int maximum = 0;
+		for( int i = 0; i < series.Count; i++ )
+		{   
+		    VectorString files = ImageSeriesReader.GetGDCMSeriesFileNames( directory, series[i] );
+			if( files.Count > maximum )
+			{
+				seriesToLoad = i;
+				maximum = files.Count;
+			}
+		}
+
 		// Get the file names for the series:
-		Debug.Log("\tLoading series " + series[1]);
-		VectorString fileNames = ImageSeriesReader.GetGDCMSeriesFileNames( directory, series[2] );
+		Debug.Log("\tLoading series " + series[seriesToLoad]);
+		VectorString fileNames = ImageSeriesReader.GetGDCMSeriesFileNames( directory, series[seriesToLoad] );
 
 		Debug.Log("\tFound " + fileNames.Count + " files.");
 		
 		if (fileNames.Count <= 0)
 			return false;
-		
-		//for (int i = 0; i < fileNames.Count; i++)
-		//	Debug.Log ("\t" + fileNames[i] );
 
 		reader.SetFileNames (fileNames);
 		
