@@ -9,7 +9,7 @@ public class Patient
     public Patient( string directory )
     {
         Debug.Log("Path: " + directory);
-        mDicomLoader = new DicomLoader(directory + "/DICOM" );
+        //mDicomLoader = new DicomLoader(directory + "/DICOM" );
     }
 
     

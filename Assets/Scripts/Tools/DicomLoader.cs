@@ -43,7 +43,7 @@ public class DicomLoader {
         Directory d = new Directory();
         uint nfiles = d.Load(directory);
         if (nfiles == 0) return;
-        //Debug.Log( "Files:\n" + d.toString() );
+        Debug.Log( "Files:\n" + d.toString() );
 
         // Use a StrictScanner, need to use a reference to pass the C++ pointer to
         // MyWatcher implementation

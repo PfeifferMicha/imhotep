@@ -2,9 +2,11 @@
 {
 	Properties
 	{
-		_MainTex ("Texture", 2D) = "white" {}
+		_MainTex ("Texture", 3D) = "white" {}
 		minValue("Minimum", Range(0, 1)) = 0
 		maxValue("Maximum", Range(0, 1)) = 1
+		layer("Layer", Range(0, 1)) = 0
+		globalMaximum("GloablMaximum", Range(0, 65536)) = 65536
 	}
 	SubShader
 	{
@@ -27,32 +29,42 @@
 				float2 uv : TEXCOORD0;
 			};
 
-			struct v2f
+			struct v3f
 			{
-				float2 uv : TEXCOORD0;
+				float3 uv : TEXCOORD0;
 				UNITY_FOG_COORDS(1)
 				float4 vertex : SV_POSITION;
 			};
 
-			sampler2D _MainTex;
+			sampler3D _MainTex;
 			float4 _MainTex_ST;
 			float minValue;
 			float maxValue;
+			float layer;
+			float globalMaximum;
 			
-			v2f vert (appdata v)
+			v3f vert (appdata v)
 			{
-				v2f o;
+				v3f o;
 				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
-				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+				float2 tmp = TRANSFORM_TEX(v.uv, _MainTex);
+				o.uv = float3( tmp.x, tmp.y, layer );
 				UNITY_TRANSFER_FOG(o,o.vertex);
 				return o;
 			}
 			
-			fixed4 frag (v2f i) : SV_Target
+			float C2F( float4 col )
+			{
+				return (col.g*256*256 + col.r*256)/globalMaximum;
+				//return (col.g*255)/globalMaximum;
+			}
+			
+			fixed4 frag (v3f i) : SV_Target
 			{
 				// sample the texture
 				//fixed4 col = tex2D(_MainTex, i.uv);
-				float val = tex2D(_MainTex, i.uv).r;
+				float val = C2F( tex3D(_MainTex, i.uv) );
+				
 				val = (val - minValue) / (maxValue - minValue);
 				fixed4 col = fixed4(val, val, val, 1.0);
 				// apply fog
