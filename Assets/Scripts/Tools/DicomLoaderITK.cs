@@ -20,9 +20,8 @@ public class DicomLoaderITK
 
 	public bool load( string directory )
 	{
-		Debug.Log("Loading Dicoms from: " + directory);
-		//Tag tagStudyInstanceUID = new Tag(0x20, 0x000d);
-		//Tag tagSeriesInstanceUID = new Tag(0x20, 0x000e);
+
+		Debug.Log("Loading DICOMs from: " + directory);
 
 		// Read the Dicom image series
 		ImageSeriesReader reader = new ImageSeriesReader ();
@@ -78,6 +77,7 @@ public class DicomLoaderITK
 		
 		Color[] colors = new Color[ texWidth*texHeight*texDepth ];		
 		int maxCol = 0;
+		int minCol = 65535;
 
 		if (image.GetDimension () != 2 && image.GetDimension () != 3)
 		{
@@ -128,11 +128,21 @@ public class DicomLoaderITK
 							}
 							
 							colors[ z + y*texWidth + x*texWidth*texHeight ] = F2C( colorsTmp[index] );
+
+							if( colorsTmp[index] < minCol )
+							{
+								minCol = (int)colorsTmp[index];
+								Debug.Log( "New minimum: " + minCol + " " + colors[  z + y*texWidth + x*texWidth*texHeight ]);
+							}
+
 							index ++;
 						}
 					}
 				}
 			}
+
+			minCol += 32768;	// Signed Int16 to unsigned Int16
+			maxCol += 32768;	// Signed Int16 to unsigned Int16
 		} else {
 			Debug.LogWarning ( "Cannot read DICOM. Unsupported pixel format: " + image.GetPixelID());
 			return false;
@@ -152,7 +162,9 @@ public class DicomLoaderITK
 			Renderer dicomRenderer = dicomViewer.GetComponent<Renderer>();
 			dicomRenderer.material.mainTexture = tex;
 			dicomRenderer.material.SetFloat("globalMaximum", (float)maxCol);
-		} else { Debug.Log("Can't find obj"); }
+			dicomRenderer.material.SetFloat("globalMinimum", (float)minCol);
+			dicomRenderer.material.SetFloat("range", (float)(maxCol-minCol));
+		} else { Debug.LogWarning("Can't find DICOM display object."); }
 		
 		return true;
 	}
@@ -167,7 +179,8 @@ public class DicomLoaderITK
 	}
 	Color F2C(Int16 value)
 	{
-		byte[] bytes = BitConverter.GetBytes( value );
+		UInt16 valueUInt = (UInt16)((int)value + 32768);
+		byte[] bytes = BitConverter.GetBytes( valueUInt  );
 		
 		float R = (float)bytes[0];
 		float G = (float)bytes[1];

@@ -7,6 +7,7 @@
 		maxValue("Maximum", Range(0, 1)) = 1
 		layer("Layer", Range(0, 1)) = 0
 		globalMaximum("GloablMaximum", Range(0, 65536)) = 65536
+		globalMinimum("GloablMinimum", Range(-65536, 0)) = 0
 	}
 	SubShader
 	{
@@ -42,6 +43,7 @@
 			float maxValue;
 			float layer;
 			float globalMaximum;
+			float globalMinimum;
 			
 			v3f vert (appdata v)
 			{
@@ -55,7 +57,7 @@
 			
 			float C2F( float4 col )
 			{
-				return (col.g*65536 + col.r*256)/globalMaximum;
+				return (col.g*65536 + col.r*256 - globalMinimum)/(globalMaximum-globalMinimum);
 				//return (col.g*255)/globalMaximum;
 			}
 			
