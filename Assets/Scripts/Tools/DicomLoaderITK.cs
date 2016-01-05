@@ -70,10 +70,10 @@ public class DicomLoaderITK
 		int texHeight = Mathf.NextPowerOfTwo ((int)image.GetHeight ());
 		int texDepth = Mathf.NextPowerOfTwo ((int)image.GetDepth ());
 		Debug.Log ("\tImage: " + image.ToString());
-		Debug.Log ("\tImage Pixel Type: " + image.GetPixelID());
+		/*Debug.Log ("\tImage Pixel Type: " + image.GetPixelID());
 		Debug.Log ("\tImage size: " + origTexWidth + "x" + origTexHeight + "x" + origTexDepth );
 		Debug.Log ("\tTexture size: " + texWidth + "x" + texHeight + "x" + texDepth );
-		Debug.Log ("\tImage number of pixels: " + numberOfPixels);
+		Debug.Log ("\tImage number of pixels: " + numberOfPixels);*/
 		
 		Color[] colors = new Color[ texWidth*texHeight*texDepth ];		
 		int maxCol = 0;
@@ -132,7 +132,7 @@ public class DicomLoaderITK
 							if( colorsTmp[index] < minCol )
 							{
 								minCol = (int)colorsTmp[index];
-								Debug.Log( "New minimum: " + minCol + " " + colors[  z + y*texWidth + x*texWidth*texHeight ]);
+								//Debug.Log( "New minimum: " + minCol + " " + colors[  z + y*texWidth + x*texWidth*texHeight ]);
 							}
 
 							index ++;
