@@ -26,14 +26,16 @@ public class DicomLoaderITK
 		// Read the Dicom image series
 		ImageSeriesReader reader = new ImageSeriesReader ();
 		VectorString series = ImageSeriesReader.GetGDCMSeriesIDs( directory );
-		
-		Debug.Log("\tFound " + series.Count + " series.");
+
+		string str = "\tFound " + series.Count + " series.";
+
+		for (int i = 0; i < series.Count; i++)
+			str += "\n\t\t" + series [i];
+
+		Debug.Log (str);
 
 		if (series.Count <= 0)
 			return false;
-
-		for (int i = 0; i < series.Count; i++)
-			Debug.Log ("\t" + series[i] );
 
 		// Find the series with the most files:
 		// DEBUG: TODO: Replace this with the possibility to choose the DICOM series in the GUI.
@@ -48,6 +50,9 @@ public class DicomLoaderITK
 				maximum = files.Count;
 			}
 		}
+
+		// DEBUG:
+		seriesToLoad = 1;
 
 		// Get the file names for the series:
 		Debug.Log("\tLoading series " + series[seriesToLoad]);
@@ -98,11 +103,14 @@ public class DicomLoaderITK
 					for (UInt32 x = 0; x < texDepth; x++) {
 						if( x < origTexWidth && y < origTexHeight && z < origTexDepth )
 						{
-							if( colorsTmp[index] > maxCol )
-							{
+							if( colorsTmp[index] > maxCol ){
 								maxCol = (int)colorsTmp[index];
 							}
-							
+
+							if (colorsTmp [index] < minCol) {
+								minCol = (int)colorsTmp [index];
+							}
+
 							colors[ z + y*texWidth + x*texWidth*texHeight ] = F2C( (UInt16)colorsTmp[index] );
 							index ++;
 						}
@@ -122,18 +130,15 @@ public class DicomLoaderITK
 					for (UInt32 x = 0; x < texDepth; x++) {
 						if( x < origTexWidth && y < origTexHeight && z < origTexDepth )
 						{
-							if( colorsTmp[index] > maxCol )
-							{
+							if( colorsTmp[index] > maxCol ){
 								maxCol = (int)colorsTmp[index];
+							}
+							if( colorsTmp[index] < minCol ){
+								minCol = (int)colorsTmp[index];
 							}
 							
 							colors[ z + y*texWidth + x*texWidth*texHeight ] = F2C( colorsTmp[index] );
 
-							if( colorsTmp[index] < minCol )
-							{
-								minCol = (int)colorsTmp[index];
-								//Debug.Log( "New minimum: " + minCol + " " + colors[  z + y*texWidth + x*texWidth*texHeight ]);
-							}
 
 							index ++;
 						}
@@ -149,7 +154,6 @@ public class DicomLoaderITK
 		}
 
 		//UInt16* buffer = (UInt32*)bufferPtr.ToPointer();
-
 
 
 		Texture3D tex = new Texture3D( texWidth, texHeight, texDepth, TextureFormat.RGBA32, false);
