@@ -182,7 +182,8 @@ public class DicomLoaderITK
 							UInt32 yTex = (UInt32)texHeight - y - 1;
 
 							//colors[ z + (x + yTex*texWidth)*texDepth ] = F2C( (UInt16)colorsTmp[index] );
-							colors[ (texWidth-1-x) + y*texWidth + z*texWidth*texHeight ] = F2C( (UInt16)colorsTmp[index] );
+							// Shift the signed int into the unsigned int range by adding 32768.
+							colors[ (texWidth-1-x) + y*texWidth + z*texWidth*texHeight ] = F2C( (UInt16)(colorsTmp[index]+32768) );
 
 							index ++;
 						}
@@ -196,6 +197,8 @@ public class DicomLoaderITK
 			throw(new System.Exception ("Cannot read DICOM. Unsupported pixel format: " + image.GetPixelID()));
 		}
 
+		Debug.Log ("Min, max: " + minCol + " " + maxCol);
+
 		Texture3D tex = new Texture3D( texWidth, texHeight, texDepth, TextureFormat.RGBA32, false);
 		tex.SetPixels( colors	);
 		tex.Apply();
@@ -203,8 +206,8 @@ public class DicomLoaderITK
 		DICOM dicom = new DICOM ();
 		dicom.setTexture (tex);
 		dicom.setHeader (header);
-		dicom.setMaximum (maxCol);
-		dicom.setMinimum (minCol);
+		dicom.setMaximum ((UInt32)maxCol);
+		dicom.setMinimum ((UInt32)minCol);
 		
 		return dicom;
 	}
