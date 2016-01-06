@@ -50,7 +50,7 @@
 				v3f o;
 				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 				float2 tmp = TRANSFORM_TEX(v.uv, _MainTex);
-				o.uv = float3( tmp.x, layer, tmp.y );
+				o.uv = float3( tmp.x, tmp.y, layer );
 				UNITY_TRANSFER_FOG(o,o.vertex);
 				return o;
 			}
