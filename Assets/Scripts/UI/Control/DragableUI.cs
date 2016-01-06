@@ -12,11 +12,14 @@ public class DragableUI : MonoBehaviour {
 
     public GameObject mouse;
 
-	private Vector3 offset;
+	private Vector3 mOffset;
+	private float mDistance;
 
 	// Use this for initialization
 	void Start () {
-	
+		Transform grandparent = transform.parent.transform.parent;
+		Vector3 diff = Camera.main.transform.position - grandparent.position;
+		mDistance = diff.magnitude;
 	}
 	
 	// Update is called once per frame
@@ -36,12 +39,12 @@ public class DragableUI : MonoBehaviour {
                     if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMousePlane))
                     {
                         //Vector3 offset = (mouse.transform.localPosition - Camera.main.transform.position).normalized * 10f;
-						grandparent.position = hit.point - offset;
+						grandparent.position = hit.point - mOffset;
 
 						// Vector from camera to position:
 						Vector3 diff = grandparent.position - Camera.main.transform.position;
 						diff.Normalize ();
-						grandparent.position = Camera.main.transform.position + diff * hit.distance;
+						grandparent.position = Camera.main.transform.position + diff * mDistance;
 
 						// Trace toward center of widget:
 						RaycastHit hitCenter;
@@ -63,14 +66,14 @@ public class DragableUI : MonoBehaviour {
     public void MoveElement()
     {
 		if (dragUI == false) {
-			offset = new Vector3 (0, 0, 0);
+			mOffset = new Vector3 (0, 0, 0);
 			RaycastHit hit;
 			Ray ray = new Ray (Camera.main.transform.position, mouse.transform.localPosition - Camera.main.transform.position);
 			LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
 
 			if (Physics.Raycast (ray, out hit, Mathf.Infinity, onlyMousePlane)) {
 				Transform grandparent = transform.parent.transform.parent;
-				offset = hit.point - grandparent.position;
+				mOffset = hit.point - grandparent.position;
 			}
 			dragUI = true;
 		}
