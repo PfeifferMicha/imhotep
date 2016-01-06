@@ -27,7 +27,7 @@ public class MouseSphereMovement : MonoBehaviour {
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMousePlane))
             {
-                Vector3 offset = new Vector3(0.1f, 0.1f, 0.1f);
+                //Vector3 offset = new Vector3(0.1f, 0.1f, 0.1f);
                 transform.position = hit.point;
             }
            

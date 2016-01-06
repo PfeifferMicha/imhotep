@@ -101,16 +101,16 @@ public class DicomLoaderITK
 		// Some of the following tags may not be in the DICOM Header, so catch and ignore "not found" exceptions:
 		try {
 			header.setPatientName ( metaDataImage.GetMetaData( "0010|0010" ) );
-		} catch( ApplicationException exp ) {}
+		} catch( ApplicationException exp ) { Debug.LogWarning ("Could not find DICOM tag: (0010|0010)");}
 		try {
 			header.setSeriesDate( metaDataImage.GetMetaData( "0008|0021" ) );
-		} catch( ApplicationException exp ) {}
+		} catch( ApplicationException exp ) { Debug.LogWarning ("Could not find DICOM tag: (0008|0021)");}
 		try {
 			header.mModality = metaDataImage.GetMetaData( "0008|0060" );
-		} catch( ApplicationException exp ) {}
+		} catch( ApplicationException exp ) { Debug.LogWarning ("Could not find DICOM tag: (0008|0060)");}
 		try {
 			header.mInstitutionName = metaDataImage.GetMetaData( "0008|0080" );
-		} catch( ApplicationException exp ) {}
+		} catch( ApplicationException exp ) { Debug.LogWarning ("Could not find DICOM tag: (0008|0080)");}
 
 		Debug.Log (header);
 		
@@ -144,11 +144,6 @@ public class DicomLoaderITK
 								minCol = (int)colorsTmp [index];
 							}
 
-							// DICOM stores Pixel Data left to right - top to bottom.
-							// Unity expects Pixel Data left to right - bottom to top.
-							// => flip y coordinate:
-							UInt32 yTex = (UInt32)texHeight - y - 1;
-
 							//colors[ z + (x + yTex*texWidth)*texDepth ] = F2C( (UInt16)colorsTmp[index] );
 							colors[ (texWidth-1-x) + y*texWidth + z*texWidth*texHeight ] = F2C( (UInt16)colorsTmp[index] );
 							index ++;
@@ -175,11 +170,6 @@ public class DicomLoaderITK
 							if( colorsTmp[index] < minCol ){
 								minCol = (int)colorsTmp[index];
 							}
-
-							// DICOM stores Pixel Data left to right - top to bottom.
-							// Unity expects Pixel Data left to right - bottom to top.
-							// => flip y coordinate:
-							UInt32 yTex = (UInt32)texHeight - y - 1;
 
 							//colors[ z + (x + yTex*texWidth)*texDepth ] = F2C( (UInt16)colorsTmp[index] );
 							// Shift the signed int into the unsigned int range by adding 32768.
