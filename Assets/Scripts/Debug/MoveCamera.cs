@@ -5,10 +5,13 @@ public class MoveCamera : MonoBehaviour {
 
     public float speed = 5f;
 
+    private Vector3 cameraStartPosition;
+
 	// Use this for initialization
 	void Start () {
-	
-	}
+        cameraStartPosition = Camera.main.transform.position;
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -29,6 +32,11 @@ public class MoveCamera : MonoBehaviour {
             movement = movement * speed * shift;            
 
             transform.localPosition = transform.localPosition + movement;
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            Camera.main.transform.position = cameraStartPosition;
         }
 
     }
