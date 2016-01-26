@@ -3,6 +3,7 @@ using BlenderMeshReader;
 using System;
 using System.Threading;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 public class Loader : MonoBehaviour {
 
@@ -12,7 +13,7 @@ public class Loader : MonoBehaviour {
     //List of lists of UnityMeshes with max. 2^16 vertices per mesh
     private volatile List<List<UnityMesh>> unityMeshes = new List<List<UnityMesh>>();
     //True if file is loaded
-    private volatile bool loaded = false;
+    private bool loaded = false;
     private volatile string Path = "";
 
 
@@ -40,24 +41,43 @@ public class Loader : MonoBehaviour {
             Destroy(meshNode.transform.GetChild(i).gameObject);
         }
         this.Path = path;
-        Thread thread = new Thread(new ThreadStart(this.LoadFileWorker));
-        thread.Start();
+
+        ThreadUtil t = new ThreadUtil(this.LoadFileWorker, this.LoadFileCallback);
+        t.Execute();
+
+
+
+        //Thread thread = new Thread(new ThreadStart(this.LoadFileWorker));
+        //thread.Start();
         //LoadFileWorker();
     }
 
     //Runs in own thread
-    private void LoadFileWorker()
+    private void LoadFileWorker(object sender, DoWorkEventArgs e)
     {
-        DateTime start = DateTime.Now;
         BlenderFile b = new BlenderFile(Path);
         List<BlenderMesh> blenderMeshes = new List<BlenderMesh>();
         blenderMeshes = b.readMesh();
         unityMeshes = BlenderFile.createSubmeshesForUnity(blenderMeshes);
-        loaded = true;
-        Debug.Log("Loading time: " + (DateTime.Now - start));
         return;
     }
 
+
+    private void LoadFileCallback(object sender, RunWorkerCompletedEventArgs e)
+    {        
+        BackgroundWorker worker = sender as BackgroundWorker;
+        if (e.Cancelled)
+        {
+            Debug.Log("Loading cancelled");
+        }else if (e.Error != null)
+        {
+            Debug.LogError("Error while loading the mesh");
+        }
+        else
+        {
+            loaded = true;
+        }
+    }
 
     private void LoadFileExecute()
     {
@@ -90,6 +110,10 @@ public class Loader : MonoBehaviour {
 
                 objToSpawn.transform.localPosition = new Vector3(0, 0, 0);
                 //objToSpawn.transform.localScale = new Vector3(1, 1, 1);
+
+                unityMeshes = new List<List<UnityMesh>>();
+                loaded = false;
+                Path = "";
             }
             
         }
