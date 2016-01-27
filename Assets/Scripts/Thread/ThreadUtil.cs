@@ -92,7 +92,7 @@ public class ThreadUtil {
         Debug.Log("[ThreadUtil] Thread finished - duration: " + (DateTime.Now - start));
     }
 
-    public void Execute()
+    public void Run()
     {
         start = DateTime.Now;
         backgroundWorker.RunWorkerAsync();
