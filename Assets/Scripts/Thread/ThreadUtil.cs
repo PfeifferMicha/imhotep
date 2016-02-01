@@ -44,7 +44,7 @@ public class Worker
     static void Main(string[] args)
     {
         ThreadUtil t = new ThreadUtil(this.DoWork, this.Callback);
-        t.Execute();
+        t.Run();
 
         if(t.IsBusy())
         {

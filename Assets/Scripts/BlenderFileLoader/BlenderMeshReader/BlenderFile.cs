@@ -403,7 +403,7 @@ namespace BlenderMeshReader
                 List<UnityMesh> outterListElement = new List<UnityMesh>();
                 result.Add(outterListElement);
 
-                int maxVerts = 65534;
+                int maxVerts = 6000;//65534; //TODO this is only a workaround 
                 int positionTriangleList = 0;
                 //Go over the complete triangle list of mesh
                 while (positionTriangleList < completeMesh.TriangleList.Length)
