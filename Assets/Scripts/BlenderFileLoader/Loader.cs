@@ -82,12 +82,17 @@ public class Loader : MonoBehaviour {
     private IEnumerator LoadFileExecute()
     {
         foreach (List<UnityMesh> um in unityMeshes) {
+
+            GameObject containerObject = new GameObject(um[0].Name);
+            containerObject.transform.parent = meshNode.transform;
+            containerObject.transform.localPosition = new Vector3(0, 0, 0);
+
             foreach (UnityMesh unityMesh in um)
             {
                 //Spawn object
                 GameObject objToSpawn = new GameObject(unityMesh.Name);
 
-                objToSpawn.transform.parent = meshNode.transform; ;
+                objToSpawn.transform.parent = containerObject.transform;
 
 
                 //Add Components
