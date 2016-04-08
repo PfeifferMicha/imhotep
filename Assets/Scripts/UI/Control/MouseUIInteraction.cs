@@ -33,7 +33,7 @@ public class MouseUIInteraction : MonoBehaviour
         foreach (RaycastResult rr in raycastResults)
         {
             // hit contains a dragable ui element
-            if (rr.gameObject.GetComponent<DragableUI>() != null)
+            if (rr.gameObject.GetComponent<DragableUI>() != null && rr.gameObject.GetComponent<DragableUI>().mouse != null)
             {
                 rr.gameObject.GetComponent<DragableUI>().MoveElement();
             }
