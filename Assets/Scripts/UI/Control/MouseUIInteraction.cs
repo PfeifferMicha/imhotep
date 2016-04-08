@@ -37,8 +37,6 @@ public class MouseUIInteraction : MonoBehaviour
 		pos.y *= mTextureSize.y;
 		pointer.position = pos;//UICamera.WorldToScreenPoint(pos);//Camera.main.transform.position + mouseElement.transform.position - Camera.main.transform.position);
 
-		Debug.Log (pos);
-		Debug.Log ("Pointer: " + pointer);
 
         // shoot ray
         EventSystem.current.RaycastAll(pointer, raycastResults);
