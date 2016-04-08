@@ -7,8 +7,6 @@ This script moves the object it is attached to, over the object which has the la
     */
 public class MouseSphereMovement : MonoBehaviour {
 
-    public float speed = 10f;
-
     // Use this for initialization
     void Start () {
     }
@@ -16,20 +14,24 @@ public class MouseSphereMovement : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-
-
         if ( (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0) && !Input.GetMouseButton(2))
         {
-
             RaycastHit hit;
-            Ray ray = new Ray(Camera.main.transform.position, transform.localPosition - Camera.main.transform.position + new Vector3(Input.GetAxis("Mouse X") * speed, Input.GetAxis("Mouse Y") * speed, 0));
+			//Vector3 dir = transform.localPosition - Camera.main.transform.position + new Vector3(Input.GetAxis("Mouse X") * scale, Input.GetAxis("Mouse Y") * scale, 0);
+			//Ray ray = new Ray(Camera.main.transform.position, dir);
+			Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
             LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
 
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMousePlane))
-            {
-                //Vector3 offset = new Vector3(0.1f, 0.1f, 0.1f);
-                transform.position = hit.point;
-            }
+			Debug.Log (new Vector3 (Input.GetAxis ("Mouse X"), Input.GetAxis ("Mouse Y"), 0));
+
+			if (Physics.Raycast (ray, out hit, Mathf.Infinity, onlyMousePlane)) {
+				//Vector3 offset = new Vector3(0.1f, 0.1f, 0.1f);
+				transform.position = hit.point;
+				Debug.DrawRay(Camera.main.transform.position, dir, Color.red );
+			} else {
+				Debug.DrawRay(Camera.main.transform.position, dir, Color.green );
+			}
+
            
         }
     }
