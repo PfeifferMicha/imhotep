@@ -1,0 +1,4 @@
+LitJSON
+=============================
+
+The LitJSON library was released by Leonardo "lbv" B., and dedicated to the Public Domain.
