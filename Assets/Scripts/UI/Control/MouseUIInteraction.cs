@@ -6,15 +6,23 @@ using System.Collections.Generic;
 public class MouseUIInteraction : MonoBehaviour
 {
 
-    public Transform mouseElement;
+	public Transform mouseElement;
+
+	public Camera UICamera;
     private List<Button> hoverList;
+	private Vector2 mTextureSize;
 
     private PointerEventData p = new PointerEventData(EventSystem.current);
+	
+	private MouseSphereMovement mMouse;
 
     // Use this for initialization
     void Start()
     {
         hoverList = new List<Button>();
+		mMouse = mouseElement.GetComponent<MouseSphereMovement> ();
+		mTextureSize.x = UICamera.targetTexture.width;
+		mTextureSize.y = UICamera.targetTexture.height;
     }
 
     // Update is called once per frame
@@ -24,7 +32,13 @@ public class MouseUIInteraction : MonoBehaviour
         List<RaycastResult> raycastResults = new List<RaycastResult>();
 
         // convert to a 2D position
-        pointer.position = Camera.main.WorldToScreenPoint(Camera.main.transform.position + mouseElement.transform.position - Camera.main.transform.position);
+		Vector2 pos = mMouse.getUVCoordinates();
+		pos.x *= mTextureSize.x;
+		pos.y *= mTextureSize.y;
+		pointer.position = pos;//UICamera.WorldToScreenPoint(pos);//Camera.main.transform.position + mouseElement.transform.position - Camera.main.transform.position);
+
+		Debug.Log (pos);
+		Debug.Log ("Pointer: " + pointer);
 
         // shoot ray
         EventSystem.current.RaycastAll(pointer, raycastResults);
