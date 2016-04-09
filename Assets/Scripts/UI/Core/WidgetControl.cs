@@ -28,7 +28,7 @@ namespace UI
                 newButton.SetActive(true);
 
                 // Attach the new button to the list:
-                newButton.transform.SetParent(defaultWidgetButton.transform.parent);
+                newButton.transform.SetParent(defaultWidgetButton.transform.parent, false);
 
                 // Change button text to name of tool:
                 GameObject textObject = newButton.transform.Find("OverlayImage/Text").gameObject;
