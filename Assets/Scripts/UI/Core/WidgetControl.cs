@@ -54,11 +54,13 @@ namespace UI
         }
 
         void StartWidget(GameObject widget)
-        {
+		{
+			Debug.Log("Creating: " + widget.name);
             GameObject newWidget = Instantiate(widget);
-            newWidget.transform.Translate(new Vector3(0, Random.value*10, 0));
             newWidget.SetActive(true);
-            Debug.Log("Created: " + widget.name);
+			newWidget.transform.SetParent (transform.parent, false);
+			newWidget.transform.localPosition = new Vector3 (0, 0, 0);
+			newWidget.transform.localScale = transform.localScale;
         }
 
         public void ShowWidgetList()
