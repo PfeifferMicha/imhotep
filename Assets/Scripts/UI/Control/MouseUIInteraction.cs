@@ -5,22 +5,20 @@ using System.Collections.Generic;
 
 public class MouseUIInteraction : MonoBehaviour
 {
-
-	public Transform mouseElement;
-
-	public Camera UICamera;
     private List<Button> hoverList;
-	private Vector2 mTextureSize;
 
     private PointerEventData p = new PointerEventData(EventSystem.current);
-	
+
+	private Camera UICamera;
 	private MouseSphereMovement mMouse;
+	private Vector2 mTextureSize;
 
     // Use this for initialization
     void Start()
     {
         hoverList = new List<Button>();
-		mMouse = mouseElement.GetComponent<MouseSphereMovement> ();
+		mMouse = GameObject.Find ("3DMouse").GetComponent<MouseSphereMovement> ();
+		UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
 		mTextureSize.x = UICamera.targetTexture.width;
 		mTextureSize.y = UICamera.targetTexture.height;
     }
@@ -45,7 +43,7 @@ public class MouseUIInteraction : MonoBehaviour
         foreach (RaycastResult rr in raycastResults)
         {
             // hit contains a dragable ui element
-            if (rr.gameObject.GetComponent<DragableUI>() != null && rr.gameObject.GetComponent<DragableUI>().mouse != null)
+			if (Input.GetMouseButton(0) && rr.gameObject.GetComponent<DragableUI>() != null )
             {
                 rr.gameObject.GetComponent<DragableUI>().MoveElement();
             }
