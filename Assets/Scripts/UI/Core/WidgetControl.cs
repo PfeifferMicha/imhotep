@@ -9,7 +9,8 @@ namespace UI
 
         public GameObject[] AvailableWidgets;
 
-        GameObject mScrollView;
+		GameObject mScrollView;
+		private Camera UICamera;
 
         // Use this for initialization
         void Start()
@@ -45,6 +46,9 @@ namespace UI
                 msg += widget.name + "\n";
             }
             Debug.Log(msg);
+
+
+			UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
         }
 
         // Update is called once per frame
@@ -59,8 +63,10 @@ namespace UI
             GameObject newWidget = Instantiate(widget);
             newWidget.SetActive(true);
 			newWidget.transform.SetParent (transform.parent, false);
-			newWidget.transform.localPosition = new Vector3 (0, 0, 0);
+			//newWidget.transform.localPosition = new Vector3 (0, 0, 0);
 			newWidget.transform.localScale = transform.localScale;
+			Canvas cv = newWidget.transform.FindChild("Canvas").GetComponent<Canvas> ();
+			cv.worldCamera = UICamera;
         }
 
         public void ShowWidgetList()

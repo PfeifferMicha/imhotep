@@ -20,8 +20,6 @@ public class DragableUI : MonoBehaviour {
 		UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
 		mViewSize.y = UICamera.orthographicSize * 2;
 		mViewSize.x = mViewSize.y * UICamera.aspect;
-
-		Debug.Log ("View Size: " + mViewSize);
 	}
 	
 	// Update is called once per frame
@@ -51,7 +49,6 @@ public class DragableUI : MonoBehaviour {
             else
             {
 				mDragged = false;
-				Debug.Log ("Releasing");
             }
         }
     }
