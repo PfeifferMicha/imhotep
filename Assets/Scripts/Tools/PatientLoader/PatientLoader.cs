@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using LitJson;
 
 public struct PatientEntry
@@ -56,10 +57,11 @@ public class PatientLoader {
             msg = msg + "\tNo Patients.json found - invalid Patients folder.";
             return;
         }
+		Debug.Log (msg);
 
         mPatientEntries.Clear();
         
-		string raw = "";//File.ReadAllText(patientsDirectoryFile);
+		string raw = File.ReadAllText(patientsDirectoryFile);
 
         JsonData data = JsonMapper.ToObject(raw);
 
@@ -73,10 +75,11 @@ public class PatientLoader {
                     JsonData patient = patientArray[i];
 
                     if (patient.Keys.Contains("Path"))
-                    {
+					{
                         string subfolder = patient["Path"].ToString();
                         string patientFolder = Path.Combine(mPath, subfolder);
                         string patientMetaFile = Path.Combine( patientFolder, "meta.json" );
+
                         if (Directory.Exists(patientFolder) && File.Exists(patientMetaFile))
                         {
                             PatientEntry patientEntry;

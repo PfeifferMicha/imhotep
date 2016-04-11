@@ -10,9 +10,10 @@ public class Patient
     {
         Debug.Log("Path: " + directory);
         //mDicomLoader = new DicomLoader(directory + "/DICOM" );
+		DicomLoaderITK loader = new DicomLoaderITK();
+		loader.loadDirectory (directory + "/DICOM");
     }
-
     
-    DicomLoader mDicomLoader;
+    private DicomLoader mDicomLoader;
     List<Dicom> mLoadedDicoms;
 }

@@ -28,7 +28,7 @@ public class PatientLoaderWidget : Widget {
             newButton.SetActive(true);
 
             // Attach the new button to the list:
-            newButton.transform.SetParent(defaultPatientButton.transform.parent);
+			newButton.transform.SetParent(defaultPatientButton.transform.parent, false );
 
             // Fill button's text object:
             Text t = newButton.transform.Find("OverlayImage/Text").GetComponent<Text>();
