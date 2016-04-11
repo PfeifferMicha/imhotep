@@ -34,10 +34,21 @@ public class MouseUIInteraction : MonoBehaviour
 		pos.x *= mTextureSize.x;
 		pos.y *= mTextureSize.y;
 		pointer.position = pos;//UICamera.WorldToScreenPoint(pos);//Camera.main.transform.position + mouseElement.transform.position - Camera.main.transform.position);
+		Ray ray = UICamera.ScreenPointToRay( pos );
+		Debug.DrawRay (ray.origin, ray.direction, Color.green);
+
+		//Vector3 position3D = UICamera.ScreenToWorldPoint ( new Vector3( pos.x, pos.y, UICamera.nearClipPlane + 1 ) );
+		//pointer.position = UICamera.WorldToScreenPoint (position3D);
+		/*Debug.Log ("Position: " + position3D);
+		//GameObject.Find ("Mouse3D").transform.position = p;
+		GameObject mouse = GameObject.Find("3DMouse");
+		mouse.transform.position = position3D;*/
 
 
         // shoot ray
         EventSystem.current.RaycastAll(pointer, raycastResults);
+
+		Debug.Log (raycastResults.Count);
 
         // handle hits
         foreach (RaycastResult rr in raycastResults)
