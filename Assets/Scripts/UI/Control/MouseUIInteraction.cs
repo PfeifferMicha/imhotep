@@ -48,7 +48,7 @@ public class MouseUIInteraction : MonoBehaviour
         // shoot ray
         EventSystem.current.RaycastAll(pointer, raycastResults);
 
-		Debug.Log (raycastResults.Count);
+		// Debug.Log ("Objects under mouse: " + raycastResults.Count);
 
         // handle hits
         foreach (RaycastResult rr in raycastResults)

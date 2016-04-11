@@ -114,7 +114,7 @@ public class Loader : MonoBehaviour {
                 objToSpawn.GetComponent<MeshCollider>().sharedMesh = mesh; //TODO Reduce mesh??
 
                 objToSpawn.transform.localPosition = new Vector3(0, 0, 0);
-                //objToSpawn.transform.localScale = new Vector3(1, 1, 1);
+                objToSpawn.transform.localScale = new Vector3(0.005f, 0.005f, 0.005f);
 
                 unityMeshes = new List<List<UnityMesh>>();
                 loaded = false;
