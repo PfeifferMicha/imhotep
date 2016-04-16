@@ -92,16 +92,16 @@ public class DicomLoaderITK
 		// Some of the following tags may not be in the DICOM Header, so catch and ignore "not found" exceptions:
 		try {
 			header.setPatientName ( metaDataImage.GetMetaData( "0010|0010" ) );
-		} catch( ApplicationException exp ) { Debug.LogWarning ("Could not find DICOM tag: (0010|0010)");}
+		} catch { Debug.LogWarning ("Could not find DICOM tag: (0010|0010)");}
 		try {
 			header.setSeriesDate( metaDataImage.GetMetaData( "0008|0021" ) );
-		} catch( ApplicationException exp ) { Debug.LogWarning ("Could not find DICOM tag: (0008|0021)");}
+		} catch { Debug.LogWarning ("Could not find DICOM tag: (0008|0021)");}
 		try {
 			header.mModality = metaDataImage.GetMetaData( "0008|0060" );
-		} catch( ApplicationException exp ) { Debug.LogWarning ("Could not find DICOM tag: (0008|0060)");}
+		} catch { Debug.LogWarning ("Could not find DICOM tag: (0008|0060)");}
 		try {
 			header.mInstitutionName = metaDataImage.GetMetaData( "0008|0080" );
-		} catch( ApplicationException exp ) { Debug.LogWarning ("Could not find DICOM tag: (0008|0080)");}
+		} catch { Debug.LogWarning ("Could not find DICOM tag: (0008|0080)");}
 
 		Debug.Log (header);
 		
