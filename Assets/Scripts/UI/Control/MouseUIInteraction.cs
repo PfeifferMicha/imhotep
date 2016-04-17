@@ -10,14 +10,14 @@ public class MouseUIInteraction : MonoBehaviour
     private PointerEventData p = new PointerEventData(EventSystem.current);
 
 	private Camera UICamera;
-	private MouseSphereMovement mMouse;
+	private Mouse3DMovement mMouse;
 	private Vector2 mTextureSize;
 
     // Use this for initialization
     void Start()
     {
 		hoverList = new List<Selectable>();
-		mMouse = GameObject.Find ("3DMouse").GetComponent<MouseSphereMovement> ();
+		mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> ();
 		UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
 		mTextureSize.x = UICamera.targetTexture.width;
 		mTextureSize.y = UICamera.targetTexture.height;
@@ -41,7 +41,7 @@ public class MouseUIInteraction : MonoBehaviour
 		//pointer.position = UICamera.WorldToScreenPoint (position3D);
 		/*Debug.Log ("Position: " + position3D);
 		//GameObject.Find ("Mouse3D").transform.position = p;
-		GameObject mouse = GameObject.Find("3DMouse");
+		GameObject mouse = GameObject.Find("Mouse3D");
 		mouse.transform.position = position3D;*/
 
 

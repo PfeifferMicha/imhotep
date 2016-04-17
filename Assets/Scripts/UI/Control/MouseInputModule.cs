@@ -10,12 +10,12 @@ using UnityEngine.EventSystems;
 public class MouseInputModule : StandaloneInputModule {
 
 	private Camera UICamera;
-	private MouseSphereMovement mMouse;
+	private Mouse3DMovement mMouse;
 	private Vector2 mTextureSize;
 
 	void Start()
 	{
-		mMouse = GameObject.Find ("3DMouse").GetComponent<MouseSphereMovement> ();
+		mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> ();
 		UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
 		mTextureSize.x = UICamera.targetTexture.width;
 		mTextureSize.y = UICamera.targetTexture.height;

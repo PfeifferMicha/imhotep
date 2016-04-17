@@ -16,7 +16,7 @@ public class DragableUI : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		//mMouse = GameObject.Find ("3DMouse").GetComponent<MouseSphereMovement> ();
+		//mMouse = GameObject.Find ("Mouse3D").GetComponent<MouseSphereMovement> ();
 		UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
 		mViewSize.y = UICamera.orthographicSize * 2;
 		mViewSize.x = mViewSize.y * UICamera.aspect;

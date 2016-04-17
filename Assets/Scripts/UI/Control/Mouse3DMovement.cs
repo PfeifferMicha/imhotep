@@ -5,7 +5,7 @@ using System.Collections;
 /*
 This script moves the object it is attached to, over the object which has the layer 8 (MousePlane)
     */
-public class MouseSphereMovement : MonoBehaviour {
+public class Mouse3DMovement : MonoBehaviour {
 
 	private Vector2 mCurrentUVCoordinates;
 
