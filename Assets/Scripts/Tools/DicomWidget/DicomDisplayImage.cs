@@ -22,7 +22,6 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler {
 		float layer = mMaterial.GetFloat ("layer");
 		layer = layer + Mathf.Ceil( 2.0f*eventData.scrollDelta.y )/ numLayers;
 		layer = Mathf.Clamp (layer, 0.0f, 1.0f);
-		Debug.Log ("layer: " + layer);
 		mMaterial.SetFloat ("layer", layer);
 	}
 

@@ -14,10 +14,12 @@ public class DicomCache : MonoBehaviour {
 	}
 
 	// Use this for initialization
-	void Start () {
+
+	DicomCache()
+	{
+		mAvailableSeries = new VectorString ();
 		mDicomLoader = new DicomLoaderITK ();
 		mPath = "";
-		mAvailableSeries = new VectorString ();
 	}
 	
 	// Update is called once per frame

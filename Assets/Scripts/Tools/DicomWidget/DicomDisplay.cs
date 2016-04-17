@@ -18,6 +18,7 @@ public class DicomDisplay : MonoBehaviour {
 	{
 		mDicomList = transform.Find ("Canvas/DicomList").GetComponent<Dropdown>();
 		mDicomImage = transform.Find ("Canvas/DicomImage").GetComponent<RawImage>();
+		mDicomImage.material.mainTexture = new Texture3D (4,4,4, TextureFormat.RGBA32, false);
 	}
 
 	void OnEnable()
