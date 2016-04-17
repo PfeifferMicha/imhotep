@@ -17,6 +17,7 @@ public class DicomCache : MonoBehaviour {
 	void Start () {
 		mDicomLoader = new DicomLoaderITK ();
 		mPath = "";
+		mAvailableSeries = new VectorString ();
 	}
 	
 	// Update is called once per frame
