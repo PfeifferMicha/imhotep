@@ -16,6 +16,7 @@ public class DicomCache : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		mDicomLoader = new DicomLoaderITK ();
+		mPath = "";
 	}
 	
 	// Update is called once per frame
@@ -26,13 +27,18 @@ public class DicomCache : MonoBehaviour {
 	public void loadDirectory( string path )
 	{
 		// Parse the directory:
-		mLoadedSeries = mDicomLoader.loadDirectory ( path );
+		mAvailableSeries = mDicomLoader.loadDirectory ( path );
 		triggerEvent (Event.NewDicomList);
+		mPath = path;
 
+		loadDicom (0);
+	}
 
+	public void loadDicom( int id )
+	{
 		// If at least one DICOM series was found, load it:
-		if (mLoadedSeries.Count > 0) {
-			mCurrentDICOM = mDicomLoader.load (path, mLoadedSeries [0]);
+		if (mAvailableSeries.Count > id) {
+			mCurrentDICOM = mDicomLoader.load ( mPath, mAvailableSeries [id]);
 			// If a series was loaded successfully, let listeners know:
 			if (mCurrentDICOM != null) {
 				triggerEvent (Event.NewDicomLoaded);
@@ -104,10 +110,21 @@ public class DicomCache : MonoBehaviour {
 		return instance.mCurrentDICOM;
 	}
 
+	public static List<string> getAvailableSeries()
+	{
+		List<string> list = new List<string>();
+		foreach( string s in instance.mAvailableSeries )
+		{
+			list.Add (s);
+		}
+		return list;
+	}
+
 	private DicomLoaderITK mDicomLoader;
 	private static DicomCache mInstance;
 	private Dictionary< Event, UnityEvent> mEventDictionary;
 
-	private VectorString mLoadedSeries;
+	private VectorString mAvailableSeries;
 	private DICOM mCurrentDICOM;
+	private string mPath;
 }

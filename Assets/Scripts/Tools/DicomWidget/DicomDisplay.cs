@@ -5,9 +5,9 @@ using System.Collections;
 
 public class DicomDisplay : MonoBehaviour {
 
-
 	// Use this for initialization
 	void Start () {
+
 	}
 	
 	// Update is called once per frame
@@ -16,8 +16,8 @@ public class DicomDisplay : MonoBehaviour {
 
 	void Awake()
 	{
-		Transform tf = transform.Find ("Canvas/DicomImage");
-		mDicomImage = tf.gameObject.GetComponent<RawImage>();
+		mDicomList = transform.Find ("Canvas/DicomList").GetComponent<Dropdown>();
+		mDicomImage = transform.Find ("Canvas/DicomImage").GetComponent<RawImage>();
 	}
 
 	void OnEnable()
@@ -27,6 +27,7 @@ public class DicomDisplay : MonoBehaviour {
 		DicomCache.startListening ( DicomCache.Event.NewDicomList, eventNewDicomList );
 		DicomCache.startListening ( DicomCache.Event.AllCleared, eventClear );
 		eventDisplayCurrentDicom ();
+		eventNewDicomList ();
 	}
 
 	void OnDisable()
@@ -52,11 +53,18 @@ public class DicomDisplay : MonoBehaviour {
 
 	void eventNewDicomList()
 	{
-
+		mDicomList.ClearOptions ();
+		mDicomList.AddOptions (DicomCache.getAvailableSeries());
 	}
 	void eventClear()
 	{
 	}
+	public void selectedNewDicom( int id )
+	{
+		Debug.Log (id);
+		DicomCache.instance.loadDicom ( id );
+	}
 
 	private RawImage mDicomImage;
+	private Dropdown mDicomList;
 }
