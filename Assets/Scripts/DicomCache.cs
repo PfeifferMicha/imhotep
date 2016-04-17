@@ -6,6 +6,13 @@ using itk.simple;
 
 public class DicomCache : MonoBehaviour {
 
+	// All possible Dicom-Related events:
+	public enum Event {
+		NewDicomList,
+		NewDicomLoaded,
+		AllCleared
+	}
+
 	// Use this for initialization
 	void Start () {
 		mDicomLoader = new DicomLoaderITK ();
@@ -20,12 +27,15 @@ public class DicomCache : MonoBehaviour {
 	{
 		// Parse the directory:
 		mLoadedSeries = mDicomLoader.loadDirectory ( path );
+		triggerEvent (Event.NewDicomList);
+
+
 		// If at least one DICOM series was found, load it:
 		if (mLoadedSeries.Count > 0) {
 			mCurrentDICOM = mDicomLoader.load (path, mLoadedSeries [0]);
 			// If a series was loaded successfully, let listeners know:
 			if (mCurrentDICOM != null) {
-				triggerEvent ("NewDicomLoaded");
+				triggerEvent (Event.NewDicomLoaded);
 			}
 		}
 	}
@@ -48,25 +58,25 @@ public class DicomCache : MonoBehaviour {
 	{
 		if( mEventDictionary == null )
 		{
-			mEventDictionary = new Dictionary< string, UnityEvent >();
+			mEventDictionary = new Dictionary< Event, UnityEvent >();
 		}
 	}
 
-	public static void startListening( string eventName, UnityAction listener )
+	public static void startListening( Event eventType, UnityAction listener )
 	{
 		UnityEvent thisEvent = null;
 		// Attempt to get the the UnityEvent from the dictionary. If this succeeds,
 		// thisEvent will be filled and the if will evaluate to true:
-		if (instance.mEventDictionary.TryGetValue (eventName, out thisEvent)) {
+		if (instance.mEventDictionary.TryGetValue (eventType, out thisEvent)) {
 			thisEvent.AddListener (listener);
 		} else {
 			thisEvent = new UnityEvent ();
 			thisEvent.AddListener (listener);
-			instance.mEventDictionary.Add (eventName, thisEvent);
+			instance.mEventDictionary.Add (eventType, thisEvent);
 		}
-		Debug.Log ("Added event listener for event: " + eventName);
+		Debug.Log ("Added event listener for event: " + eventType);
 	}
-	public static void stopListening( string eventName, UnityAction listener )
+	public static void stopListening( Event eventType, UnityAction listener )
 	{
 		if (mInstance == null)
 			return;
@@ -74,19 +84,19 @@ public class DicomCache : MonoBehaviour {
 		UnityEvent thisEvent = null;
 		// Attempt to get the the UnityEvent from the dictionary. If this succeeds,
 		// thisEvent will be filled and the if will evaluate to true:
-		if (instance.mEventDictionary.TryGetValue (eventName, out thisEvent)) {
+		if (instance.mEventDictionary.TryGetValue (eventType, out thisEvent)) {
 			thisEvent.RemoveListener (listener);
 		}
-		Debug.Log ("Removed event listener for event: " + eventName);
+		Debug.Log ("Removed event listener for event: " + eventType);
 	}
-	public static void triggerEvent( string eventName )
+	public static void triggerEvent( Event eventType)
 	{
 		UnityEvent thisEvent = null;
 		// Attempt to get the the UnityEvent from the dictionary. If this succeeds,
 		// thisEvent will be filled and the if will evaluate to true:
-		if (instance.mEventDictionary.TryGetValue (eventName, out thisEvent)) {
+		if (instance.mEventDictionary.TryGetValue (eventType, out thisEvent)) {
 			thisEvent.Invoke ();
-			Debug.Log ("Triggered Event:" + eventName);
+			Debug.Log ("Triggered Event:" + eventType);
 		}
 	}
 	public static DICOM getCurrentDicom()
@@ -96,7 +106,7 @@ public class DicomCache : MonoBehaviour {
 
 	private DicomLoaderITK mDicomLoader;
 	private static DicomCache mInstance;
-	private Dictionary< string, UnityEvent> mEventDictionary;
+	private Dictionary< Event, UnityEvent> mEventDictionary;
 
 	private VectorString mLoadedSeries;
 	private DICOM mCurrentDICOM;

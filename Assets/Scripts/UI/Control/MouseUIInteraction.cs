@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class MouseUIInteraction : MonoBehaviour
 {
-    private List<Button> hoverList;
+	private List<Selectable> hoverList;
 
     private PointerEventData p = new PointerEventData(EventSystem.current);
 
@@ -16,7 +16,7 @@ public class MouseUIInteraction : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        hoverList = new List<Button>();
+		hoverList = new List<Selectable>();
 		mMouse = GameObject.Find ("3DMouse").GetComponent<MouseSphereMovement> ();
 		UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
 		mTextureSize.x = UICamera.targetTexture.width;
@@ -35,7 +35,7 @@ public class MouseUIInteraction : MonoBehaviour
 		pos.y *= mTextureSize.y;
 		pointer.position = pos;//UICamera.WorldToScreenPoint(pos);//Camera.main.transform.position + mouseElement.transform.position - Camera.main.transform.position);
 		Ray ray = UICamera.ScreenPointToRay( pos );
-		Debug.DrawRay (ray.origin, ray.direction, Color.green);
+		//Debug.DrawRay (ray.origin, ray.direction, Color.green);
 
 		//Vector3 position3D = UICamera.ScreenToWorldPoint ( new Vector3( pos.x, pos.y, UICamera.nearClipPlane + 1 ) );
 		//pointer.position = UICamera.WorldToScreenPoint (position3D);
@@ -51,7 +51,7 @@ public class MouseUIInteraction : MonoBehaviour
 		// Debug.Log ("Objects under mouse: " + raycastResults.Count);
 
         // handle hits
-        foreach (RaycastResult rr in raycastResults)
+        /*foreach (RaycastResult rr in raycastResults)
         {
             // hit contains a dragable ui element
 			if (Input.GetMouseButton(0) && rr.gameObject.GetComponent<DragableUI>() != null )
@@ -60,49 +60,67 @@ public class MouseUIInteraction : MonoBehaviour
             }
 
             // hit contains a button component
-            if (rr.gameObject.GetComponent<Button>() != null)
-            {
-                Button b = rr.gameObject.GetComponent<Button>();
+			if (rr.gameObject.GetComponent<Selectable> () != null) {
+				Selectable b = rr.gameObject.GetComponent<Selectable> ();
 
-                //HOVER
-                if (!hoverList.Contains(b))
-                {
-                    //PointerEventData p = new PointerEventData(EventSystem.current);
-                    b.OnPointerEnter(p);
-                    hoverList.Add(b);
-                    //Debug.Log("Added button, count: " + hoverList.Count);
-                }
+				//HOVER
+				if (!hoverList.Contains (b)) {
+					//PointerEventData p = new PointerEventData(EventSystem.current);
+					b.OnPointerEnter (p);
+					hoverList.Add (b);
+					//Debug.Log("Added button, count: " + hoverList.Count);
+				}
 
-                //BUTTON DOWN
-                if (Input.GetMouseButtonDown(0))
-                {
-                    //PointerEventData p = new PointerEventData(EventSystem.current);
-                    b.OnPointerDown(p);
-                }
+				//BUTTON DOWN
+				if (Input.GetMouseButtonDown (0)) {
+					//PointerEventData p = new PointerEventData(EventSystem.current);
+					b.OnPointerDown (p);
+				}
 
-                //BUTTON UP
-                if (Input.GetMouseButtonUp(0))
-                {
-                    //PointerEventData p = new PointerEventData(EventSystem.current);
-                    b.OnPointerUp(p);
-                    //b.OnSubmit(p); //TODO works also but what is the difference?
-                    b.OnPointerClick(p);
-                }
-            }
+				//BUTTON UP
+				if (Input.GetMouseButtonUp (0)) {
+					//PointerEventData p = new PointerEventData(EventSystem.current);
+					b.OnPointerUp (p);
+					//b.OnSubmit(p); //TODO works also but what is the difference?
+					if (b is Button) {
+						Button button = (Button)b;
+						button.OnPointerClick (p);
+					} else if (b is Dropdown) {
+						Dropdown dropdown = (Dropdown)b;
+						dropdown.OnPointerClick (p);
+					}
+				}
+			} else if (rr.gameObject.GetComponent<Toggle> () != null) {
+				Toggle b = rr.gameObject.GetComponent<Toggle> ();
+
+				//BUTTON DOWN
+				if (Input.GetMouseButtonDown (0)) {
+					//PointerEventData p = new PointerEventData(EventSystem.current);
+					b.OnPointerDown (p);
+				}
+
+				//BUTTON UP
+				if (Input.GetMouseButtonUp (0)) {
+					//PointerEventData p = new PointerEventData(EventSystem.current);
+					b.OnPointerUp (p);
+					//b.OnSubmit(p); //TODO works also but what is the difference?
+				}
+			}
 
         }
 
         //TODO geht besser
         //un-hover all buttons not in raycastResults
-        List<Button> deleteList = new List<Button>();
-        foreach (Button b in hoverList)
+		List<Selectable> deleteList = new List<Selectable>();
+		foreach (Selectable b in hoverList)
         {
             bool isInRR = false;
             foreach (RaycastResult rr in raycastResults)
             {
-                if(rr.gameObject.GetComponent<Button>() != null && rr.gameObject.GetComponent<Button>() == b)
+				if(rr.gameObject.GetComponent<Selectable>() != null && rr.gameObject.GetComponent<Selectable>() == b)
                 {
                     isInRR = true;
+					break;
                 }
             }
 
@@ -111,7 +129,7 @@ public class MouseUIInteraction : MonoBehaviour
                 deleteList.Add(b);
             }
         }
-        foreach(Button b in deleteList)
+		foreach(Selectable b in deleteList)
         {
             //PointerEventData p = new PointerEventData(EventSystem.current);
             if (b != null)
@@ -120,7 +138,7 @@ public class MouseUIInteraction : MonoBehaviour
                 hoverList.Remove(b);
             }
             //Debug.Log("Removed button, count: " + hoverList.Count);
-        }
+        }*/
 
 
     }

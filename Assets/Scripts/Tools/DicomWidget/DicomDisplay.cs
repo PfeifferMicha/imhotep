@@ -22,37 +22,40 @@ public class DicomDisplay : MonoBehaviour {
 
 	void OnEnable()
 	{
-		DicomCache.startListening ("NewDicomLoaded", eventDisplayCurrentDicom );
-		DICOM dicom = DicomCache.getCurrentDicom();
-		if( dicom != null )
-		{
-			/*DicomRenderer.material.mainTexture = dicom.getTexture ();*/
-
-			mDicomImage.material.mainTexture = dicom.getTexture();
-			mDicomImage.material.SetFloat ("globalMaximum", (float)dicom.getMaximum ());
-			mDicomImage.material.SetFloat ("globalMinimum", (float)dicom.getMinimum ());
-			mDicomImage.material.SetFloat ("range", (float)(dicom.getMaximum () - dicom.getMinimum ()));
-		}
-
+		// Register event callbacks for all DICOM events:
+		DicomCache.startListening ( DicomCache.Event.NewDicomLoaded, eventDisplayCurrentDicom );
+		DicomCache.startListening ( DicomCache.Event.NewDicomList, eventNewDicomList );
+		DicomCache.startListening ( DicomCache.Event.AllCleared, eventClear );
+		eventDisplayCurrentDicom ();
 	}
 
 	void OnDisable()
 	{
-		DicomCache.stopListening ("NewDicomLoaded", eventDisplayCurrentDicom );
+		// Unregister myself - no longer receives events (until the next OnEnable() call):
+		DicomCache.stopListening ( DicomCache.Event.NewDicomLoaded, eventDisplayCurrentDicom );
+		DicomCache.stopListening ( DicomCache.Event.NewDicomList, eventNewDicomList );
+		DicomCache.stopListening ( DicomCache.Event.AllCleared, eventClear );
 	}
 
+	// Called when a new DICOM was loaded:
 	void eventDisplayCurrentDicom()
 	{
 		DICOM dicom = DicomCache.getCurrentDicom();
 		if( dicom != null )
 		{
-			/*DicomRenderer.material.mainTexture = dicom.getTexture ();*/
-
 			mDicomImage.material.mainTexture = dicom.getTexture();
 			mDicomImage.material.SetFloat ("globalMaximum", (float)dicom.getMaximum ());
 			mDicomImage.material.SetFloat ("globalMinimum", (float)dicom.getMinimum ());
 			mDicomImage.material.SetFloat ("range", (float)(dicom.getMaximum () - dicom.getMinimum ()));
 		}
+	}
+
+	void eventNewDicomList()
+	{
+
+	}
+	void eventClear()
+	{
 	}
 
 	private RawImage mDicomImage;
