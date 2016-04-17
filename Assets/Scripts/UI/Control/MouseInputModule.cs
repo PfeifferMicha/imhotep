@@ -32,7 +32,7 @@ public class MouseInputModule : StandaloneInputModule {
 		cursorPos.x *= mTextureSize.x;
 		cursorPos.y *= mTextureSize.y;
 
-		MouseState m = new MouseState();
+		//MouseState m = new MouseState();
 
 		// Populate the left button...
 		PointerEventData leftData;

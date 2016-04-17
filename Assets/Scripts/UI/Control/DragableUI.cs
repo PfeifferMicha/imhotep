@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
-
 /*
     If an element uses this component, you can drag this element and the parent canvas and the parent game objects moves too.
 */
-public class DragableUI : MonoBehaviour {
+public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
 
     private bool mDragged = false;
 
@@ -53,8 +54,9 @@ public class DragableUI : MonoBehaviour {
         }
     }
 
-    public void MoveElement()
-    {
+	// Event which is called when the mouse clicks on this panel:
+	public void OnPointerDown(PointerEventData dt) {
+		Debug.Log ("Draggable Mouse Down");
 		if (mDragged == false) {
 			mOffset = new Vector3 (0, 0, 0);
 			RaycastHit hit;
@@ -71,6 +73,12 @@ public class DragableUI : MonoBehaviour {
 			}
 			mDragged = true;
 		}
-    }
+	}
+
+	// Event which is called when the mouse is released:
+	public void OnPointerUp(PointerEventData dt) {
+		Debug.Log ("Draggable mouse up");
+		mDragged = false;
+	}
 
 }
