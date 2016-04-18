@@ -5,6 +5,14 @@ using System.Collections;
 
 public class DicomDisplay : MonoBehaviour {
 
+	void Awake()
+	{
+		mDicomList = transform.Find ("Canvas/DicomList").GetComponent<Dropdown>();
+		mDicomImage = transform.Find ("Canvas/DicomImage").GetComponent<RawImage>();
+		mDicomImage.material = new Material (mDicomImage.material);
+		mDicomImage.material.mainTexture = new Texture3D (4,4,4, TextureFormat.RGBA32, false);
+	}
+
 	// Use this for initialization
 	void Start () {
 
@@ -12,13 +20,6 @@ public class DicomDisplay : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	}
-
-	void Awake()
-	{
-		mDicomList = transform.Find ("Canvas/DicomList").GetComponent<Dropdown>();
-		mDicomImage = transform.Find ("Canvas/DicomImage").GetComponent<RawImage>();
-		mDicomImage.material.mainTexture = new Texture3D (4,4,4, TextureFormat.RGBA32, false);
 	}
 
 	void OnEnable()
