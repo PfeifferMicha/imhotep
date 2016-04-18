@@ -6,6 +6,14 @@ using itk.simple;
 
 public class DicomCache : MonoBehaviour {
 
+    private DicomLoaderITK mDicomLoader;
+	private static DicomCache mInstance;
+	private Dictionary< Event, UnityEvent> mEventDictionary;
+
+	private VectorString mAvailableSeries;
+	private DICOM mCurrentDICOM;
+	private string mPath;
+
 	// All possible Dicom-Related events:
 	public enum Event {
 		NewDicomList,
@@ -123,11 +131,4 @@ public class DicomCache : MonoBehaviour {
 		return list;
 	}
 
-	private DicomLoaderITK mDicomLoader;
-	private static DicomCache mInstance;
-	private Dictionary< Event, UnityEvent> mEventDictionary;
-
-	private VectorString mAvailableSeries;
-	private DICOM mCurrentDICOM;
-	private string mPath;
 }

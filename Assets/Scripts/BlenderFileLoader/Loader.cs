@@ -70,7 +70,7 @@ public class Loader : MonoBehaviour {
             Debug.Log("Loading cancelled");
         }else if (e.Error != null)
         {
-            Debug.LogError("Error while loading the mesh");
+            Debug.LogError("[Loader.cs] Error while loading the mesh");
         }
         else
         {
@@ -126,6 +126,15 @@ public class Loader : MonoBehaviour {
         }
 
         yield return null;
+    }
+
+    public void RemoveMesh()
+    {
+        //Destroy current game objectes attached to mesh node
+        for (int i = 0; i < meshNode.transform.childCount; i++)
+        {
+            Destroy(meshNode.transform.GetChild(i).gameObject);
+        }
     }
 
 }

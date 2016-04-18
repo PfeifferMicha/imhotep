@@ -15,6 +15,9 @@ public struct PatientEntry
 
 public class PatientLoader {
 
+    private string mPath;
+    private List<PatientEntry> mPatientEntries;
+
     public PatientLoader()
     {
         mPath = "";
@@ -111,7 +114,7 @@ public class PatientLoader {
         if (index >= 0 && index < mPatientEntries.Count)
         {
             PatientEntry entry = mPatientEntries[index];
-            Patient p = new Patient(entry.path);
+            Patient p = new Patient(entry.path, entry);
             return p;
         }
         else
@@ -120,6 +123,4 @@ public class PatientLoader {
         }
     }
 
-    string mPath;
-    List<PatientEntry> mPatientEntries;
 }
