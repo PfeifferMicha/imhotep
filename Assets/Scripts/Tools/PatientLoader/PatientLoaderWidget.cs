@@ -5,7 +5,8 @@ using UI;
 
 public class PatientLoaderWidget : Widget {
 
-    GameObject mScrollView;
+    private GameObject mScrollView;
+    private PatientLoader mPatientLoader;
 
     // Use this for initialization
     void Start () {
@@ -52,8 +53,8 @@ public class PatientLoaderWidget : Widget {
     void ChoosePatient( int index )
     {
         // TODO make singleton? Unload any previous patient.
-        mPatientLoader.loadPatient(index);
+        //mPatientLoader.loadPatient(index);
+        PatientCache.instance.openPatient(index);
     }
 
-    PatientLoader mPatientLoader;
 }

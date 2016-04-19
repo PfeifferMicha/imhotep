@@ -9,8 +9,15 @@ using itk.simple;
 
 public class Patient
 {
-    public Patient( string directory )
+    private string directory;
+    private PatientEntry patientEntry;
+
+    public Patient( string directory, PatientEntry patientEntry)
     {
+        this.directory = directory;
+        this.patientEntry = patientEntry;
+
+        /*
         Debug.Log("Path: " + directory);
 
 		Loader mModelLoader = GameObject.Find ("GlobalScript").GetComponent<Loader> ();
@@ -24,5 +31,17 @@ public class Patient
 			
 		DicomCache dicomCache = DicomCache.instance;
 		dicomCache.loadDirectory (directory + "/DICOM");
+        */
     }
+
+    public string getDirectory()
+    {
+        return directory;
+    }
+
+    public PatientEntry getPatientEntry()
+    {
+        return patientEntry;
+    }
+
 }
