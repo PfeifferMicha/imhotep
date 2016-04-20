@@ -9,7 +9,7 @@ namespace UI
 
         public GameObject[] AvailableWidgets;
 
-		GameObject mScrollView;
+		private GameObject mScrollView;
 		private Camera UICamera;
 
         // Use this for initialization
@@ -54,7 +54,6 @@ namespace UI
         // Update is called once per frame
         void Update()
         {
-
         }
 
         void StartWidget(GameObject widget)
@@ -73,6 +72,7 @@ namespace UI
         {
             mScrollView.SetActive(true);
         }
+
         public void HideWidgetList()
         {
             mScrollView.SetActive(false);
