@@ -5,6 +5,9 @@ using System.Collections;
 
 public class DicomDisplay : MonoBehaviour {
 
+    private RawImage mDicomImage;
+	private Dropdown mDicomList;
+
 	void Awake()
 	{
 		mDicomList = transform.Find ("Canvas/DicomList").GetComponent<Dropdown>();
@@ -67,6 +70,4 @@ public class DicomDisplay : MonoBehaviour {
 		DicomCache.instance.loadDicom ( id );
 	}
 
-	private RawImage mDicomImage;
-	private Dropdown mDicomList;
 }

@@ -84,6 +84,7 @@ public class Loader : MonoBehaviour {
         foreach (List<UnityMesh> um in unityMeshes) {
 
             GameObject containerObject = new GameObject(um[0].Name);
+            containerObject.layer = meshNode.layer; //Set same layer as parent
             containerObject.transform.parent = meshNode.transform;
             containerObject.transform.localPosition = new Vector3(0, 0, 0);
 
@@ -91,6 +92,7 @@ public class Loader : MonoBehaviour {
             {
                 //Spawn object
                 GameObject objToSpawn = new GameObject(unityMesh.Name);
+                objToSpawn.layer = meshNode.layer; //Set same layer as parent
 
                 objToSpawn.transform.parent = containerObject.transform;
 
