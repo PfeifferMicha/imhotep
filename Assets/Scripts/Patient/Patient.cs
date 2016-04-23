@@ -7,15 +7,10 @@ using System.IO;
 using System.Collections;
 using itk.simple;
 
-public class Patient
+public class Patient : PatientMeta
 {
-    private string directory;
-    private PatientEntry patientEntry;
-
-    public Patient( string directory, PatientEntry patientEntry)
+	public Patient( PatientMeta meta ) : base(meta)
     {
-        this.directory = directory;
-        this.patientEntry = patientEntry;
 
         /*
         Debug.Log("Path: " + directory);
@@ -33,15 +28,4 @@ public class Patient
 		dicomCache.loadDirectory (directory + "/DICOM");
         */
     }
-
-    public string getDirectory()
-    {
-        return directory;
-    }
-
-    public PatientEntry getPatientEntry()
-    {
-        return patientEntry;
-    }
-
 }

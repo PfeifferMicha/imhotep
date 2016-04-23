@@ -22,7 +22,7 @@ public class PatientLoaderWidget : Widget {
 
         for( int index = 0; index < mPatientLoader.getCount(); index ++ )
         {
-            PatientEntry patient = mPatientLoader.getEntry(index);
+            PatientMeta patient = mPatientLoader.getEntry(index);
 
             // Create a new instance of the list button:
             GameObject newButton = Instantiate(defaultPatientButton);

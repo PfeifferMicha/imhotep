@@ -35,14 +35,14 @@ public class PatientCache : MonoBehaviour {
     {
         currentPatient = mPatientLoader.loadPatient(index);
 
-        Debug.Log("Path: " + currentPatient.getDirectory());
+		Debug.Log("Path: " + currentPatient.path);
 
         DicomCache dicomCache = DicomCache.instance;
-        dicomCache.loadDirectory(currentPatient.getDirectory() + "/DICOM");
+		dicomCache.loadDirectory(currentPatient.path + "/DICOM");
 
         Loader mModelLoader = GameObject.Find("GlobalScript").GetComponent<Loader>();
         // Load model in the directory:
-        string modelPath = currentPatient.getDirectory() + "/all_r.blend";
+		string modelPath = currentPatient.path + "/all_r.blend";
         if (File.Exists(modelPath)) //TODO use path from json file
         {
             mModelLoader.LoadFile(modelPath);

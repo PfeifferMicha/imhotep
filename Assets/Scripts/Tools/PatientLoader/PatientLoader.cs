@@ -5,23 +5,15 @@ using System.IO;
 using System.Text;
 using LitJson;
 
-public struct PatientEntry
-{
-    public string name;
-    public string birthDate;
-    public string operationDate;
-    public string path;
-}
-
 public class PatientLoader {
 
     private string mPath;
-    private List<PatientEntry> mPatientEntries;
+    private List<PatientMeta> mPatientEntries;
 
     public PatientLoader()
     {
         mPath = "";
-        mPatientEntries = new List<PatientEntry>();
+        mPatientEntries = new List<PatientMeta>();
     }
 
     public void setPath(string newPath)
@@ -40,7 +32,7 @@ public class PatientLoader {
         return mPatientEntries.Count;
     }
 
-    public PatientEntry getEntry( int index )
+	public PatientMeta getEntry( int index )
     {
         if (index >= 0 && index < mPatientEntries.Count)
             return mPatientEntries[index];
@@ -50,9 +42,20 @@ public class PatientLoader {
 
     private void parsePath()
     {
-        string msg = "Looking for Patients in:\n" + mPath + "\n";
+		Debug.Log ("Looking for Patients in:\n" + mPath);
 
-        string patientsDirectoryFile = Path.Combine(mPath, "Patients.json");
+		string[] folders = Directory.GetDirectories (mPath);
+
+		foreach( string folder in folders )
+		{
+			PatientMeta newPatient = PatientMeta.createFromFolder (folder);
+			if (newPatient != null) {
+				Debug.Log (newPatient.ToString ());
+				mPatientEntries.Add(newPatient);
+			}
+		}
+
+        /*string patientsDirectoryFile = Path.Combine(mPath, "Patients.json");
         if (File.Exists(patientsDirectoryFile))
         {
             msg = msg + "\tFound Patients.json.";
@@ -60,7 +63,6 @@ public class PatientLoader {
             msg = msg + "\tNo Patients.json found - invalid Patients folder.";
             return;
         }
-		Debug.Log (msg);
 
         mPatientEntries.Clear();
         
@@ -106,15 +108,15 @@ public class PatientLoader {
                     }
                 }
             }
-        }
+        }*/
     }
 
     public Patient loadPatient( int index )
     {
         if (index >= 0 && index < mPatientEntries.Count)
         {
-            PatientEntry entry = mPatientEntries[index];
-            Patient p = new Patient(entry.path, entry);
+			PatientMeta entry = mPatientEntries[index];
+			Patient p = new Patient (entry);
             return p;
         }
         else
