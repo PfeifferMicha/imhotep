@@ -10,7 +10,6 @@ public class PatientCache : MonoBehaviour {
     private Dictionary<Event, UnityEvent> mEventDictionary;
 
     private Patient currentPatient;
-    private PatientLoader mPatientLoader;
 
     public enum Event
     {
@@ -20,9 +19,9 @@ public class PatientCache : MonoBehaviour {
 
     // Use this for initialization
     public PatientCache () {
-        currentPatient = null;
-        mPatientLoader = new PatientLoader();
-        mPatientLoader.setPath("../Patients/");
+        /*currentPatient = null;
+        mPatientLoader = new PatientDirectoryLoader();
+        mPatientLoader.setPath("../Patients/");*/
     }
 	
 	// Update is called once per frame
@@ -33,7 +32,7 @@ public class PatientCache : MonoBehaviour {
 
     public void openPatient(int index)
     {
-        currentPatient = mPatientLoader.loadPatient(index);
+        //currentPatient = mPatientLoader.loadPatient(index);
 
 		Debug.Log("Path: " + currentPatient.path);
 
@@ -61,13 +60,6 @@ public class PatientCache : MonoBehaviour {
     {
         return instance.currentPatient;
     }
-
-
-
-
-
-
-
 
 
     //TODO Same code in DICOM Cache, merge it or use inheritance
