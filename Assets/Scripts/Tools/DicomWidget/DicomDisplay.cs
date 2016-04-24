@@ -28,9 +28,12 @@ public class DicomDisplay : MonoBehaviour {
 	void OnEnable()
 	{
 		// Register event callbacks for all DICOM events:
-		DicomCache.startListening ( DicomCache.Event.NewDicomLoaded, eventDisplayCurrentDicom );
+		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewList, eventNewDicomList );
+		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewLoaded, eventDisplayCurrentDicom );
+		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_AllCleared, eventClear );
+		/*DicomCache.startListening ( DicomCache.Event.NewDicomLoaded, eventDisplayCurrentDicom );
 		DicomCache.startListening ( DicomCache.Event.NewDicomList, eventNewDicomList );
-		DicomCache.startListening ( DicomCache.Event.AllCleared, eventClear );
+		DicomCache.startListening ( DicomCache.Event.AllCleared, eventClear );*/
 		eventDisplayCurrentDicom ();
 		eventNewDicomList ();
 	}
@@ -38,15 +41,18 @@ public class DicomDisplay : MonoBehaviour {
 	void OnDisable()
 	{
 		// Unregister myself - no longer receives events (until the next OnEnable() call):
-		DicomCache.stopListening ( DicomCache.Event.NewDicomLoaded, eventDisplayCurrentDicom );
+		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewList, eventNewDicomList );
+		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewLoaded, eventDisplayCurrentDicom );
+		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_AllCleared, eventClear );
+		/*DicomCache.stopListening ( DicomCache.Event.NewDicomLoaded, eventDisplayCurrentDicom );
 		DicomCache.stopListening ( DicomCache.Event.NewDicomList, eventNewDicomList );
-		DicomCache.stopListening ( DicomCache.Event.AllCleared, eventClear );
+		DicomCache.stopListening ( DicomCache.Event.AllCleared, eventClear );*/
 	}
 
 	// Called when a new DICOM was loaded:
 	void eventDisplayCurrentDicom()
 	{
-		DICOM dicom = DicomCache.getCurrentDicom();
+		DICOM dicom = PatientDICOMLoader.getCurrentDicom();
 		if( dicom != null )
 		{
 			mDicomImage.material.mainTexture = dicom.getTexture();
@@ -59,7 +65,7 @@ public class DicomDisplay : MonoBehaviour {
 	void eventNewDicomList()
 	{
 		mDicomList.ClearOptions ();
-		mDicomList.AddOptions (DicomCache.getAvailableSeries());
+		mDicomList.AddOptions (PatientDICOMLoader.getAvailableSeries());
 	}
 	void eventClear()
 	{
@@ -67,7 +73,7 @@ public class DicomDisplay : MonoBehaviour {
 	public void selectedNewDicom( int id )
 	{
 		Debug.Log (id);
-		DicomCache.instance.loadDicom ( id );
+		PatientDICOMLoader.loadDicom ( id );
 	}
 
 }

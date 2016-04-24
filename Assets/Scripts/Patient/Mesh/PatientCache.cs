@@ -36,8 +36,9 @@ public class PatientCache : MonoBehaviour {
 
 		Debug.Log("Path: " + currentPatient.path);
 
-        DicomCache dicomCache = DicomCache.instance;
-		dicomCache.loadDirectory(currentPatient.path + "/DICOM");
+        //DicomCache dicomCache = DicomCache.instance;
+		//dicomCache.loadDirectory(currentPatient.path + "/DICOM");
+
 
         Loader mModelLoader = GameObject.Find("GlobalScript").GetComponent<Loader>();
         // Load model in the directory:

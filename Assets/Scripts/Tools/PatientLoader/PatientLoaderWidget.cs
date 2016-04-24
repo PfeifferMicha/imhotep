@@ -29,7 +29,8 @@ public class PatientLoaderWidget : Widget {
     {
         // TODO make singleton? Unload any previous patient.
         //mPatientLoader.loadPatient(index);
-        PatientCache.instance.openPatient(index);
+		PatientDirectoryLoader.loadPatient(index);
+        //PatientCache.instance.openPatient(index);
     }
 
 	void addPatientEntry()
@@ -37,7 +38,7 @@ public class PatientLoaderWidget : Widget {
 
 		// Remove all entries in the list:
 		foreach(Transform child in defaultPatientButton.transform.parent) {
-			Debug.Log (child.name);
+			//Debug.Log (child.name);
 			// Remove all buttons except for the default button:
 			if( child.gameObject.activeSelf ) {
 				Destroy (child.gameObject);
@@ -69,7 +70,7 @@ public class PatientLoaderWidget : Widget {
 		RectTransform rectTf = defaultPatientButton.transform.parent.GetComponent<RectTransform>();
 		RectTransform buttonRectTF = defaultPatientButton.transform.GetComponent<RectTransform>();
 		float newWidth = PatientDirectoryLoader.getCount () * (buttonRectTF.rect.width + 2.0f);
-		Debug.Log( newWidth+ " " + rectTf.rect.height + " " + buttonRectTF.rect.width + " " + PatientDirectoryLoader.getCount());
+		//Debug.Log( newWidth+ " " + rectTf.rect.height + " " + buttonRectTF.rect.width + " " + PatientDirectoryLoader.getCount());
 		rectTf.SetSizeWithCurrentAnchors (RectTransform.Axis.Horizontal, newWidth);
 	}
 

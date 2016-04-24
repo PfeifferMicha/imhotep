@@ -70,6 +70,7 @@ public class PatientDirectoryLoader {
         {
 			PatientMeta entry = mPatientEntries[index];
 			Patient p = new Patient (entry);
+			PatientDICOMLoader.loadDirectory (entry.dicomPath);
             return p;
         }
         else

@@ -36,6 +36,8 @@ public class PatientMeta
 				operationDate = metaData ["DateOfOperation"].ToString ();
 			}
 		}
+
+		dicomPath = path + "/DICOM";
 	}
 
 	// Copy constructor:
@@ -57,6 +59,7 @@ public class PatientMeta
 	public string birthDate { get; private set; }
 	public string operationDate { get; private set; }
 	public string path { get; private set; }
+	public string dicomPath { get; private set; }
 
 	public static PatientMeta createFromFolder( string folder )
 	{
