@@ -65,6 +65,7 @@ public class PatientLoaderWidget : Widget {
 			int capturedIndex = index;
 			Button b = newButton.GetComponent<Button>();
 			b.onClick.AddListener(() => ChoosePatient(capturedIndex));
+			b.onClick.AddListener(() => Close());
 		}
 
 		RectTransform rectTf = defaultPatientButton.transform.parent.GetComponent<RectTransform>();
