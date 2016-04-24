@@ -70,7 +70,14 @@ public class PatientDirectoryLoader {
         {
 			PatientMeta entry = mPatientEntries[index];
 			Patient p = new Patient (entry);
+
+			// Start parsing the DICOM directory:
 			PatientDICOMLoader.loadDirectory (entry.dicomPath);
+
+			// Load model in the directory:
+			Loader mModelLoader = GameObject.Find("GlobalScript").GetComponent<Loader>();
+			mModelLoader.LoadFile(entry.meshPath);
+
             return p;
         }
         else

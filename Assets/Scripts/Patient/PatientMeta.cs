@@ -38,6 +38,7 @@ public class PatientMeta
 		}
 
 		dicomPath = path + "/DICOM";
+		meshPath = path + "/Models/all_r.blend";
 	}
 
 	// Copy constructor:
@@ -60,6 +61,7 @@ public class PatientMeta
 	public string operationDate { get; private set; }
 	public string path { get; private set; }
 	public string dicomPath { get; private set; }
+	public string meshPath { get; private set; }
 
 	public static PatientMeta createFromFolder( string folder )
 	{

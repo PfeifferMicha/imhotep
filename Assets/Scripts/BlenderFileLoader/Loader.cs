@@ -5,6 +5,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Collections;
+using System.IO;
 
 public class Loader : MonoBehaviour {
 
@@ -36,15 +37,18 @@ public class Loader : MonoBehaviour {
 
     public void LoadFile(string path)
     {
-        //Destroy current game objectes attached to mesh node
-        for (int i = 0; i < meshNode.transform.childCount; i++)
-        {
-            Destroy(meshNode.transform.GetChild(i).gameObject);
-        }
-        this.Path = path;
+		if (File.Exists (path)) {
+			//Destroy current game objectes attached to mesh node
+			for (int i = 0; i < meshNode.transform.childCount; i++) {
+				Destroy (meshNode.transform.GetChild (i).gameObject);
+			}
+			this.Path = path;
 
-        ThreadUtil t = new ThreadUtil(this.LoadFileWorker, this.LoadFileCallback);
-        t.Run();
+			ThreadUtil t = new ThreadUtil (this.LoadFileWorker, this.LoadFileCallback);
+			t.Run ();
+		} else {
+			Debug.LogWarning ("Could not load mesh from: " + path + ", file not found.");
+		}
         
         //Thread thread = new Thread(new ThreadStart(this.LoadFileWorker));
         //thread.Start();

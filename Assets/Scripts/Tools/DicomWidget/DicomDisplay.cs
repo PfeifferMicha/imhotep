@@ -16,24 +16,12 @@ public class DicomDisplay : MonoBehaviour {
 		mDicomImage.material.mainTexture = new Texture3D (4,4,4, TextureFormat.RGBA32, false);
 	}
 
-	// Use this for initialization
-	void Start () {
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	}
-
 	void OnEnable()
 	{
 		// Register event callbacks for all DICOM events:
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewList, eventNewDicomList );
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewLoaded, eventDisplayCurrentDicom );
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_AllCleared, eventClear );
-		/*DicomCache.startListening ( DicomCache.Event.NewDicomLoaded, eventDisplayCurrentDicom );
-		DicomCache.startListening ( DicomCache.Event.NewDicomList, eventNewDicomList );
-		DicomCache.startListening ( DicomCache.Event.AllCleared, eventClear );*/
 		eventDisplayCurrentDicom ();
 		eventNewDicomList ();
 	}
@@ -44,9 +32,6 @@ public class DicomDisplay : MonoBehaviour {
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewList, eventNewDicomList );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewLoaded, eventDisplayCurrentDicom );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_AllCleared, eventClear );
-		/*DicomCache.stopListening ( DicomCache.Event.NewDicomLoaded, eventDisplayCurrentDicom );
-		DicomCache.stopListening ( DicomCache.Event.NewDicomList, eventNewDicomList );
-		DicomCache.stopListening ( DicomCache.Event.AllCleared, eventClear );*/
 	}
 
 	// Called when a new DICOM was loaded:
