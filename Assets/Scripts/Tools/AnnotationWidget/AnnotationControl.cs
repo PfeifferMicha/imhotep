@@ -7,6 +7,7 @@ public class AnnotationControl : MonoBehaviour {
 
     public GameObject annotationPointObj;
     public InputField annotationTextInput;
+    public GameObject annotationLabel;
     public Button addAnnotationButton;
     public Button saveButton;
     public Button annotationListButton;
@@ -85,6 +86,18 @@ public class AnnotationControl : MonoBehaviour {
         {
             AnnotationPoint ap = currentAnnotatinPoint.AddComponent<AnnotationPoint>();
             ap.text = annotationTextInput.text;
+
+            //Create Label
+            GameObject newAnnotationLabel = (GameObject)Instantiate(annotationLabel, currentAnnotatinPoint.transform.position, Quaternion.identity);
+            newAnnotationLabel.transform.localScale *= meshNode.localScale.x; //x,y,z are the same
+            newAnnotationLabel.transform.parent = meshNode;
+            Vector3 offset = new Vector3(90,20,0);
+            newAnnotationLabel.transform.localPosition += offset;
+            // Change button text to name of tool:
+            GameObject textObject = newAnnotationLabel.transform.Find("Button/OverlayImage/Text").gameObject;
+            Text buttonText = textObject.GetComponent<Text>();
+            buttonText.text = ap.text;
+
             annotationTextInput.text = "";
             currentAnnotatinPoint = null;
             changeCurrentStateToIdle();
@@ -107,7 +120,7 @@ public class AnnotationControl : MonoBehaviour {
         //Destroy all object up to one button
         for(int i = 0; i < annotationListButton.transform.parent.childCount; i++)
         {
-            if(i != 0) //TODO
+            if(i != 0) //TODO !=0
             {
                 Destroy(annotationListButton.transform.parent.GetChild(i).gameObject);
             }
