@@ -70,6 +70,17 @@ public class AnnotationControl : MonoBehaviour {
             }
         }
 
+        //Update lines from annotation point to label
+        //because line are no game objects
+        foreach(GameObject g in annotationPoints)
+        {
+            if(g.GetComponent<AnnotationPoint>() != null)
+            {
+                g.GetComponent<LineRenderer>().SetPosition(0, g.transform.position);
+                g.GetComponent<LineRenderer>().SetPosition(1, g.GetComponent<AnnotationPoint>().annotationLabel.transform.position);
+            }
+        }
+
     }
 
     public void AddAnnotationPressed()
@@ -93,10 +104,15 @@ public class AnnotationControl : MonoBehaviour {
             newAnnotationLabel.transform.parent = meshNode;
             Vector3 offset = new Vector3(90,20,0);
             newAnnotationLabel.transform.localPosition += offset;
-            // Change button text to name of tool:
+            ap.annotationLabel = newAnnotationLabel;
+            // Change label text:
             GameObject textObject = newAnnotationLabel.transform.Find("Button/OverlayImage/Text").gameObject;
             Text buttonText = textObject.GetComponent<Text>();
             buttonText.text = ap.text;
+
+            //Create line form point to label
+            currentAnnotatinPoint.GetComponent<LineRenderer>().SetPosition(0, currentAnnotatinPoint.transform.position);
+            currentAnnotatinPoint.GetComponent<LineRenderer>().SetPosition(1, newAnnotationLabel.transform.position);
 
             annotationTextInput.text = "";
             currentAnnotatinPoint = null;
@@ -106,10 +122,18 @@ public class AnnotationControl : MonoBehaviour {
 
     public void clearAllPressed()
     {
-        foreach(GameObject g in annotationPoints)
+        foreach (GameObject g in annotationPoints)
         {
+            //Destroy Label
+            GameObject label = g.GetComponent<AnnotationPoint>().annotationLabel;
+            if (label != null)
+            {
+                Destroy(label);
+            }
+            //Delete points
             Destroy(g);
         }
+        //Delete list
         annotationPoints = new List<GameObject>();
 
         changeCurrentStateToIdle();
