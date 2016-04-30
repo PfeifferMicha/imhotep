@@ -71,8 +71,12 @@ public class PatientLoaderWidget : Widget {
 		RectTransform rectTf = defaultPatientButton.transform.parent.GetComponent<RectTransform>();
 		RectTransform buttonRectTF = defaultPatientButton.transform.GetComponent<RectTransform>();
 		float newWidth = PatientDirectoryLoader.getCount () * (buttonRectTF.rect.width + 2.0f);
-		//Debug.Log( newWidth+ " " + rectTf.rect.height + " " + buttonRectTF.rect.width + " " + PatientDirectoryLoader.getCount());
 		rectTf.SetSizeWithCurrentAnchors (RectTransform.Axis.Horizontal, newWidth);
+
+		// Set the scroll view position:
+		Vector2 currentScrollPos = mScrollView.GetComponent<ScrollRect>().normalizedPosition;
+		mScrollView.GetComponent<ScrollRect>().normalizedPosition = new Vector2(0,currentScrollPos.y);
+
 	}
 
 	private GameObject defaultPatientButton = null;
