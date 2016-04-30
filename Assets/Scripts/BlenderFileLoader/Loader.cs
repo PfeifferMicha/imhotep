@@ -126,6 +126,14 @@ public class Loader : MonoBehaviour {
                 loaded = false;
                 Path = "";
 
+				Material mat = matForMeshName (mesh.name);
+				Debug.Log (mat);
+				if (mat != null) {
+					var materials = objToSpawn.GetComponent<MeshRenderer> ().materials;
+					materials [0] = mat;
+					objToSpawn.GetComponent<MeshRenderer> ().materials = materials;
+				}
+
                 yield return null;
             }
             
@@ -142,5 +150,61 @@ public class Loader : MonoBehaviour {
             Destroy(meshNode.transform.GetChild(i).gameObject);
         }
     }
+
+	private Material matForMeshName( string meshName )
+	{
+		bool contains;
+
+		contains = meshName.IndexOf("tumor", StringComparison.OrdinalIgnoreCase) >= 0;
+		if( contains )
+		{
+			return Resources.Load("Materials/Tumor", typeof(Material)) as Material;
+		}
+
+		contains = meshName.IndexOf("liver", StringComparison.OrdinalIgnoreCase) >= 0;
+		if( contains )
+		{
+			return Resources.Load("Materials/Liver", typeof(Material)) as Material;
+		}
+
+		contains = meshName.IndexOf ("artery", StringComparison.OrdinalIgnoreCase) >= 0 ||
+			meshName.IndexOf ("arteries", StringComparison.OrdinalIgnoreCase) >= 0;
+		if( contains )
+		{
+			return  (Material)Resources.Load("Materials/Arteries", typeof(Material));
+		}
+
+		contains = meshName.IndexOf ("vein", StringComparison.OrdinalIgnoreCase) >= 0;
+		if( contains )
+		{
+			return  (Material)Resources.Load("Materials/VenaCava", typeof(Material));
+		}
+
+		contains = meshName.IndexOf ("gall", StringComparison.OrdinalIgnoreCase) >= 0;
+		if( contains )
+		{
+			return  (Material)Resources.Load("Materials/Gallbladder", typeof(Material));
+		}
+
+		contains = meshName.IndexOf ("pancreas", StringComparison.OrdinalIgnoreCase) >= 0;
+		if( contains )
+		{
+			return  (Material)Resources.Load("Materials/Pancreas", typeof(Material));
+		}
+
+		contains = meshName.IndexOf("spleen", StringComparison.OrdinalIgnoreCase) >= 0;
+		if( contains )
+		{
+			return Resources.Load("Materials/Spleen", typeof(Material)) as Material;
+		}
+
+		contains = meshName.IndexOf("kidney", StringComparison.OrdinalIgnoreCase) >= 0;
+		if( contains )
+		{
+			return Resources.Load("Materials/Kidney", typeof(Material)) as Material;
+		}
+
+		return null;
+	}
 
 }
