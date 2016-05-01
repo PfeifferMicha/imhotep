@@ -17,12 +17,14 @@ public class MeshLoader : MonoBehaviour {
     //True if file is loaded
     private bool loaded = false;
     private volatile string Path = "";
+    //Contains a list of game objects. This game objects are parents of actual meshs. 
+    public List<GameObject> MeshGameObjectContainers { get; set; }
 
 
     // Use this for initialization
     void Start () {
-	
-	}
+        MeshGameObjectContainers = new List<GameObject>();
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -43,6 +45,7 @@ public class MeshLoader : MonoBehaviour {
 				Destroy (meshNode.transform.GetChild (i).gameObject);
 			}
 			this.Path = path;
+            MeshGameObjectContainers = new List<GameObject>();
 
 			ThreadUtil t = new ThreadUtil (this.LoadFileWorker, this.LoadFileCallback);
 			t.Run ();
@@ -91,6 +94,7 @@ public class MeshLoader : MonoBehaviour {
             containerObject.layer = meshNode.layer; //Set same layer as parent
             containerObject.transform.parent = meshNode.transform;
             containerObject.transform.localPosition = new Vector3(0, 0, 0);
+            MeshGameObjectContainers.Add(containerObject);
 
             foreach (UnityMesh unityMesh in um)
             {

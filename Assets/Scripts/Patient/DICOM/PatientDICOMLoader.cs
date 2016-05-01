@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using itk.simple;
 
 
@@ -22,6 +23,8 @@ public class PatientDICOMLoader
 
 	//! Simple lock, used to prevent loading multiple directory or DICOMs at the same time:
 	private static bool isLoading = false;
+
+    private static int DicomIDForThread = 0;
 
 
 	public static void loadDirectory( string path )
@@ -49,20 +52,56 @@ public class PatientDICOMLoader
 			// Lock:
 			isLoading = true;
 
-			// If there was a series found with the given ID, laod it:
-			if (mAvailableSeries.Count > id) {
-				mCurrentDICOM = mDicomLoader.load (mPath, mAvailableSeries [id]);
-				// If a series was loaded successfully, let listeners know:
-				if (mCurrentDICOM != null) {
-					PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_NewLoaded);
-				}
-			}
-			// Unlock:
-			isLoading = false;
-		}
+            /*DicomIDForThread = id;
+
+            ThreadUtil t = new ThreadUtil(loadDicomWorker, loadDicomCallback);
+            t.Run();	*/
+
+            //Dont work, because mDicomLoader.load() creates a untiy game object TODO
+            
+             
+
+
+
+            // If there was a series found with the given ID, laod it:
+            if (mAvailableSeries.Count > DicomIDForThread)
+            {
+                mCurrentDICOM = mDicomLoader.load(mPath, mAvailableSeries[DicomIDForThread]);
+            }
+
+            if (mCurrentDICOM != null)
+            {
+                PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewLoaded);
+            }
+            // Unlock:
+            isLoading = false;
+
+        }
 	}
 
-	public static List<string> getAvailableSeries()
+    private static void loadDicomWorker(object sender, DoWorkEventArgs e)
+    {
+        // If there was a series found with the given ID, laod it:
+        if (mAvailableSeries.Count > DicomIDForThread)
+        {
+            mCurrentDICOM = mDicomLoader.load(mPath, mAvailableSeries[DicomIDForThread]);
+        }
+    }
+
+    private static void loadDicomCallback(object sender, RunWorkerCompletedEventArgs e)
+    {
+        // If a series was loaded successfully, let listeners know:
+        if (mCurrentDICOM != null)
+        {
+            PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewLoaded);
+        }
+        // Unlock:
+        isLoading = false;
+    }
+
+
+
+    public static List<string> getAvailableSeries()
 	{
 		List<string> list = new List<string>();
 		foreach( string s in mAvailableSeries )
