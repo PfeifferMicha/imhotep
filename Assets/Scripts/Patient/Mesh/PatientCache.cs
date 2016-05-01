@@ -30,7 +30,7 @@ public class PatientCache : MonoBehaviour {
 	}*/
 
 
-    public void openPatient(int index)
+    public void openPatient1(int index)
     {
         //currentPatient = mPatientLoader.loadPatient(index);
 
@@ -42,7 +42,7 @@ public class PatientCache : MonoBehaviour {
 		
     }
 
-    public void closePatient()
+    public void closePatient1()
     {
         currentPatient = null;
         MeshLoader mModelLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();

@@ -40,10 +40,7 @@ public class MeshLoader : MonoBehaviour {
     public void LoadFile(string path)
     {
 		if (File.Exists (path)) {
-			//Destroy current game objectes attached to mesh node
-			for (int i = 0; i < meshNode.transform.childCount; i++) {
-				Destroy (meshNode.transform.GetChild (i).gameObject);
-			}
+            this.RemoveMesh();
 			this.Path = path;
             MeshGameObjectContainers = new List<GameObject>();
 

@@ -71,7 +71,7 @@ public class AnnotationControl : MonoBehaviour {
         }
 
         //Update lines from annotation point to label
-        //because line are no game objects
+        //because lines are no game objects
         foreach(GameObject g in annotationPoints)
         {
             if(g.GetComponent<AnnotationPoint>() != null)
