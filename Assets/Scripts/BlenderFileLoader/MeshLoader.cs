@@ -7,7 +7,7 @@ using System.ComponentModel;
 using System.Collections;
 using System.IO;
 
-public class Loader : MonoBehaviour {
+public class MeshLoader : MonoBehaviour {
 
     public GameObject meshNode;
     public Material defaultMaterial;

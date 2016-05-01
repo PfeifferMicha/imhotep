@@ -7,6 +7,18 @@ using LitJson;
 
 public class PatientMeta
 {
+	public string firstName { get; private set; }
+	public string lastName { get; private set; }
+	public string name { 
+		get { return this.firstName + " " + this.lastName; }
+		private set { }
+	}
+	public string birthDate { get; private set; }
+	public string operationDate { get; private set; }
+	public string path { get; private set; }
+	public string dicomPath { get; private set; }
+	public string meshPath { get; private set; }
+
 	public PatientMeta ( string folder )
 	{
 		path = folder;
@@ -37,8 +49,23 @@ public class PatientMeta
 			}
 		}
 
-		dicomPath = path + "/DICOM";
-		meshPath = path + "/Models/all_r.blend";
+        if (data.Keys.Contains("mesh"))
+        {
+            JsonData metaData = data["mesh"];
+            if (metaData.Keys.Contains("path"))
+            {
+                meshPath = path + "/" + metaData["path"].ToString();
+            }
+        }
+
+        if (data.Keys.Contains("dicom"))
+        {
+            JsonData metaData = data["dicom"];
+            if (metaData.Keys.Contains("path"))
+            {
+                dicomPath = path + "/" + metaData["path"].ToString(); ;
+            }
+        }
 	}
 
 	// Copy constructor:
@@ -51,17 +78,6 @@ public class PatientMeta
 		path = toCopy.path;
 	}
 
-	public string firstName { get; private set; }
-	public string lastName { get; private set; }
-	public string name { 
-		get { return this.firstName + " " + this.lastName; }
-		private set { }
-	}
-	public string birthDate { get; private set; }
-	public string operationDate { get; private set; }
-	public string path { get; private set; }
-	public string dicomPath { get; private set; }
-	public string meshPath { get; private set; }
 
 	public static PatientMeta createFromFolder( string folder )
 	{

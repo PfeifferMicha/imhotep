@@ -45,7 +45,7 @@ public class PatientCache : MonoBehaviour {
     public void closePatient()
     {
         currentPatient = null;
-        Loader mModelLoader = GameObject.Find("GlobalScript").GetComponent<Loader>();
+        MeshLoader mModelLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
         mModelLoader.RemoveMesh();
     }
 }
