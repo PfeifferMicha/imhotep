@@ -18,7 +18,15 @@ public class AnnotationPoint : MonoBehaviour {
     }
 
     // Update is called once per frame
-    /*void Update () {
-	
-	}*/
+    void Update () {
+        //Update lines from annotation point to label
+        //because lines are no game objects
+       
+        if (annotationLabel != null)
+        {
+            this.GetComponent<LineRenderer>().SetPosition(0, this.transform.position);
+            this.GetComponent<LineRenderer>().SetPosition(1, this.annotationLabel.transform.position);
+        }
+        
+    }
 }

@@ -11,7 +11,7 @@ public class ModelRotator : MonoBehaviour
 
 	private void Update()
 	{
-		if (Input.GetMouseButton (2))
+		if (Input.GetMouseButton (2) || Input.GetKey(KeyCode.M))
 		{
 			float inputH = -Input.GetAxis ("Mouse X");
 			float inputV = -Input.GetAxis ("Mouse Y");

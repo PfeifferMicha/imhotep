@@ -70,17 +70,6 @@ public class AnnotationControl : MonoBehaviour {
             }
         }
 
-        //Update lines from annotation point to label
-        //because lines are no game objects
-        foreach(GameObject g in annotationPoints)
-        {
-            if(g.GetComponent<AnnotationPoint>() != null)
-            {
-                g.GetComponent<LineRenderer>().SetPosition(0, g.transform.position);
-                g.GetComponent<LineRenderer>().SetPosition(1, g.GetComponent<AnnotationPoint>().annotationLabel.transform.position);
-            }
-        }
-
     }
 
     public void AddAnnotationPressed()
