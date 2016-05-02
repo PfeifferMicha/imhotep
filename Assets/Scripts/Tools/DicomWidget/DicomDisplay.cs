@@ -37,7 +37,8 @@ public class DicomDisplay : MonoBehaviour {
 	// Called when a new DICOM was loaded:
 	void eventDisplayCurrentDicom()
 	{
-		DICOM dicom = PatientDICOMLoader.getCurrentDicom();
+        PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();        
+        DICOM dicom = mPatientDICOMLoader.getCurrentDicom();
 		if( dicom != null )
 		{
 			mDicomImage.material.mainTexture = dicom.getTexture();
@@ -49,16 +50,18 @@ public class DicomDisplay : MonoBehaviour {
 
 	void eventNewDicomList()
 	{
-		mDicomList.ClearOptions ();
-		mDicomList.AddOptions (PatientDICOMLoader.getAvailableSeries());
+        PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
+        mDicomList.ClearOptions ();
+		mDicomList.AddOptions (mPatientDICOMLoader.getAvailableSeries());
 	}
 	void eventClear()
 	{
 	}
 	public void selectedNewDicom( int id )
 	{
-		Debug.Log (id);
-		PatientDICOMLoader.loadDicom ( id );
+        PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
+        Debug.Log (id);
+		mPatientDICOMLoader.loadDicom ( id );
 	}
 
 }

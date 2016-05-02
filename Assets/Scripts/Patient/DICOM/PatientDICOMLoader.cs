@@ -1,4 +1,5 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,27 +8,70 @@ using itk.simple;
 
 /*! This class is respondible for parsing DICOM directories and loading the images.
  * When events happen, other modules are notified using the PatientEventSystem class. */
-public class PatientDICOMLoader
+public class PatientDICOMLoader : MonoBehaviour
 {
 	//! DICOM loader instance:
-	private static DicomLoaderITK mDicomLoader = new DicomLoaderITK ();
+	private DicomLoaderITK mDicomLoader = new DicomLoaderITK ();
 
 	//! Available series found in the folder:
-	private static VectorString mAvailableSeries = new VectorString ();
+	private VectorString mAvailableSeries = new VectorString ();
 
 	//! Already loaded DICOM:
-	private static DICOM mCurrentDICOM = null;
+	private DICOM mCurrentDICOM = null;
 
 	//! Path which should be searched:
-	private static string mPath = "";
+	private string mPath = "";
 
 	//! Simple lock, used to prevent loading multiple directory or DICOMs at the same time:
-	private static bool isLoading = false;
+	private bool isLoading = false;
 
-    private static int DicomIDForThread = 0;
+    private int DicomIDForThread = 0;
+    private DICOMLoadReturnObject returnObject = null;
+    private bool loadingFinished = false;
 
 
-	public static void loadDirectory( string path )
+    void Start()
+    {
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (loadingFinished)
+        {
+            loadingFinished = false;
+
+            if(returnObject != null) {           
+
+                Texture3D tex = new Texture3D(returnObject.texWidth, returnObject.texHeight, returnObject.texDepth, TextureFormat.RGBA32, false);
+                tex.SetPixels(returnObject.colors);
+                tex.Apply();
+
+                DICOM dicom = new DICOM();
+                dicom.setTexture(tex);
+                dicom.setHeader(returnObject.header);
+                dicom.setMaximum((UInt32)returnObject.maxCol);
+                dicom.setMinimum((UInt32)returnObject.minCol);
+
+                mCurrentDICOM = dicom;
+
+                // If a series was loaded successfully, let listeners know:
+                if (mCurrentDICOM != null)
+                {
+                    PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewLoaded);
+                }
+
+                // Unlock:
+                isLoading = false;
+
+                returnObject = null;
+            }
+        }
+    }
+
+
+
+    public void loadDirectory( string path )
 	{
 		if (!isLoading) {
 
@@ -46,24 +90,20 @@ public class PatientDICOMLoader
 		}
 	}
 
-	public static void loadDicom( int id )
+	public void loadDicom( int id )
 	{
-		if (!isLoading) {
+
+        if (!isLoading) {
 			// Lock:
 			isLoading = true;
 
-            /*DicomIDForThread = id;
+            DicomIDForThread = id;
 
             ThreadUtil t = new ThreadUtil(loadDicomWorker, loadDicomCallback);
-            t.Run();	*/
-
-            //Dont work, because mDicomLoader.load() creates a untiy game object TODO
-            
-             
+            t.Run();	
 
 
-
-            // If there was a series found with the given ID, laod it:
+            /*// If there was a series found with the given ID, laod it:
             if (mAvailableSeries.Count > DicomIDForThread)
             {
                 mCurrentDICOM = mDicomLoader.load(mPath, mAvailableSeries[DicomIDForThread]);
@@ -74,34 +114,28 @@ public class PatientDICOMLoader
                 PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewLoaded);
             }
             // Unlock:
-            isLoading = false;
+            isLoading = false;*/
 
         }
 	}
 
-    private static void loadDicomWorker(object sender, DoWorkEventArgs e)
+    private void loadDicomWorker(object sender, DoWorkEventArgs e)
     {
         // If there was a series found with the given ID, laod it:
         if (mAvailableSeries.Count > DicomIDForThread)
         {
-            mCurrentDICOM = mDicomLoader.load(mPath, mAvailableSeries[DicomIDForThread]);
+            returnObject = mDicomLoader.load(mPath, mAvailableSeries[DicomIDForThread]);
         }
     }
 
-    private static void loadDicomCallback(object sender, RunWorkerCompletedEventArgs e)
+    private void loadDicomCallback(object sender, RunWorkerCompletedEventArgs e)
     {
-        // If a series was loaded successfully, let listeners know:
-        if (mCurrentDICOM != null)
-        {
-            PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewLoaded);
-        }
-        // Unlock:
-        isLoading = false;
+        loadingFinished = true;
     }
 
 
 
-    public static List<string> getAvailableSeries()
+    public List<string> getAvailableSeries()
 	{
 		List<string> list = new List<string>();
 		foreach( string s in mAvailableSeries )
@@ -111,7 +145,7 @@ public class PatientDICOMLoader
 		return list;
 	}
 
-	public static DICOM getCurrentDicom()
+	public DICOM getCurrentDicom()
 	{
 		return mCurrentDICOM;
 	}

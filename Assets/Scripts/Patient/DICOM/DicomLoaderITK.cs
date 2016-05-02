@@ -29,7 +29,7 @@ public class DicomLoaderITK
 		return series;
 	}
 
-	public DICOM load( string directory, string seriesUID )
+	public DICOMLoadReturnObject load( string directory, string seriesUID )
 	{
 		VectorString series = loadDirectory (directory);
 
@@ -180,8 +180,11 @@ public class DicomLoaderITK
 
 		Debug.Log ("Min, max: " + minCol + " " + maxCol);
 
-		Texture3D tex = new Texture3D( texWidth, texHeight, texDepth, TextureFormat.RGBA32, false);
-		tex.SetPixels( colors	);
+
+        return new DICOMLoadReturnObject(texWidth, texHeight, texDepth, colors, header, maxCol, minCol);
+
+		/*Texture3D tex = new Texture3D( texWidth, texHeight, texDepth, TextureFormat.RGBA32, false);
+		tex.SetPixels(colors);
 		tex.Apply();
 
 		DICOM dicom = new DICOM ();
@@ -189,8 +192,8 @@ public class DicomLoaderITK
 		dicom.setHeader (header);
 		dicom.setMaximum ((UInt32)maxCol);
 		dicom.setMinimum ((UInt32)minCol);
-		
-		return dicom;
+        		
+		return dicom;*/
 	}
 
 	Color F2C(UInt16 value)

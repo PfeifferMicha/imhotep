@@ -72,7 +72,8 @@ public class PatientDirectoryLoader {
 			Patient p = new Patient (entry);
 
 			// Start parsing the DICOM directory:
-			PatientDICOMLoader.loadDirectory (entry.dicomPath);
+            PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
+            mPatientDICOMLoader.loadDirectory (entry.dicomPath);
 
 			// Load model in the directory:
 			MeshLoader mModelLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
