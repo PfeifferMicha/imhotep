@@ -28,7 +28,7 @@ public class PatientDICOMLoader : MonoBehaviour
     private int DicomIDForThread = 0;
     private DICOMLoadReturnObject returnObject = null;
     private bool loadingFinished = false;
-
+    private bool loadingDirectoryFinished = false;
 
     void Start()
     {
@@ -67,6 +67,19 @@ public class PatientDICOMLoader : MonoBehaviour
                 returnObject = null;
             }
         }
+
+        if (loadingDirectoryFinished)
+        {
+            loadingDirectoryFinished = false;
+
+            PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewList);
+
+            // Unlock:
+            isLoading = false;
+
+            loadDicom(0);
+        }
+
     }
 
 
@@ -79,18 +92,35 @@ public class PatientDICOMLoader : MonoBehaviour
 			isLoading = true;
 
 			mPath = path;
-			// Parse the directory:
-			mAvailableSeries = mDicomLoader.loadDirectory (path);
+
+            ThreadUtil t = new ThreadUtil(loadDirectoryWorker, loadDirectoryCallback);
+            t.Run();
+
+            /*
+            // Parse the directory:
+            mAvailableSeries = mDicomLoader.loadDirectory (path);
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_NewList);
 
 			// Unlock:
 			isLoading = false;
 
 			loadDicom (0);
+            */
 		}
 	}
 
-	public void loadDicom( int id )
+    private void loadDirectoryWorker(object sender, DoWorkEventArgs e)
+    {
+        // Parse the directory:
+        mAvailableSeries = mDicomLoader.loadDirectory(mPath);
+    }
+
+    private void loadDirectoryCallback(object sender, RunWorkerCompletedEventArgs e)
+    {
+        loadingDirectoryFinished = true;
+    }
+
+    public void loadDicom( int id )
 	{
 
         if (!isLoading) {
