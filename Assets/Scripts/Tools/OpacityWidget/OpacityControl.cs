@@ -1,24 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class OpacityControl : MonoBehaviour {
 
     public GameObject defaultLine;
 
-	// Use this for initialization
-	void Start () {
+    private MeshLoader mMeshLoader;
+
+    // Use this for initialization
+    void Start () {
+        mMeshLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
         defaultLine.SetActive(false);
-        drawContent();
+        createContent(); //TODO dont draw on start, use patient events
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
-	}
+    }
 
-    private void drawContent()
-    {
-        for (int i = 0; i < 5; i++)
+    private void createContent()
+    {        
+        foreach(GameObject g in mMeshLoader.MeshGameObjectContainers)
         {
             // Create a new instance of the list button:
             GameObject newLine = Instantiate(defaultLine).gameObject;
@@ -27,17 +31,15 @@ public class OpacityControl : MonoBehaviour {
             // Attach the new button to the list:
             newLine.transform.SetParent(defaultLine.transform.parent, false);
 
-            /*
+            //Save game object in slider
+            GameObject slider = newLine.transform.Find("Slider").gameObject;
+            slider.GetComponent<OpacitySlider>().gameObjectToChangeOpacity = g;
+
             // Change button text to name of tool:
-            GameObject textObject = newButton.transform.Find("OverlayImage/Text").gameObject;
+            GameObject textObject = newLine.transform.Find("Text").gameObject;
             Text buttonText = textObject.GetComponent<Text>();
-
-            AnnotationPoint ap = g.GetComponent<AnnotationPoint>();
-            if (ap != null)
-            {
-                buttonText.text = ap.text;
-            }*/
-
+            buttonText.text = g.name;
+   
         }
     }
 }
