@@ -100,6 +100,8 @@ public class PatientDICOMLoader : MonoBehaviour
 			// Let loading screen know what we're currently doing:
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_LoadingProcess,
 				"DICOM: Parsing directory...\n");
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_AddLoadingJob,
+				"DICOM");
 
             /*
             // Parse the directory:
@@ -141,6 +143,8 @@ public class PatientDICOMLoader : MonoBehaviour
 			// Let loading screen know what we're currently doing:
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_LoadingProcess,
 				"DICOM: Loading series...\n");
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_RemoveLoadingJob,
+				"DICOM");
 
             /*// If there was a series found with the given ID, laod it:
             if (mAvailableSeries.Count > DicomIDForThread)

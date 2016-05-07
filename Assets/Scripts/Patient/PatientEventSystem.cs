@@ -16,7 +16,6 @@ public class PatientEventSystem
 	/*! All possible events: */
 	public enum Event {
 		PATIENT_StartLoading,
-		PATIENT_FinishLoading,
 		PATIENT_LoadingProcess,
 
 		PATIENT_NewPatientDirectoryFound,
@@ -25,7 +24,10 @@ public class PatientEventSystem
 		//MESH_Closed
 		DICOM_NewList,
 		DICOM_NewLoaded,
-		DICOM_AllCleared
+		DICOM_AllCleared,
+
+		LOADING_AddLoadingJob,
+		LOADING_RemoveLoadingJob
 	}
 
 	/*! Returns the singleton instance: */

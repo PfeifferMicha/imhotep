@@ -37,13 +37,16 @@ public class MeshLoader : MonoBehaviour {
             loaded = false;
             Path = "";
 
-			// Let loading screen know what we're currently doing:
-			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_LoadingProcess,
-				"Mesh: Finished loading.\n");
-
         }
 		if(triggerEvent){
 			triggerEvent = false;
+
+			// Let loading screen know what we're currently doing:
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_LoadingProcess,
+				"Mesh: Finished loading.\n");
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_RemoveLoadingJob,
+				"mesh");
+			
 			PatientEventSystem.triggerEvent(PatientEventSystem.Event.MESH_Loaded);
 		}
     }
@@ -55,6 +58,8 @@ public class MeshLoader : MonoBehaviour {
 			// Let loading screen know what we're currently doing:
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_LoadingProcess,
 				"Mesh: Started loading...\n");
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_AddLoadingJob,
+				"mesh");
 			
             this.RemoveMesh();
 			this.Path = path;
