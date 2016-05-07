@@ -13,7 +13,7 @@ public class MouseInputModule : StandaloneInputModule {
 	private Mouse3DMovement mMouse;
 	private Vector2 mTextureSize;
 
-	void Start()
+	public new void Start()
 	{
 		mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> ();
 		UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
