@@ -228,13 +228,13 @@ namespace BlenderMeshReader
             int indexMesh = 0;
 
             int startPositionMVert = -1;
-            int lengthMVert = 0;
+            //int lengthMVert = 0;
 
             int startPositionMPoly = -1;
-            int lengthMPoly = 0;
+            //int lengthMPoly = 0;
 
             int startPositionMLoop = -1;
-            int lengthMLoop = 0;
+            //int lengthMLoop = 0;
 
             foreach (Structure s in StructureList)
             {
@@ -260,7 +260,7 @@ namespace BlenderMeshReader
                     }
                 }
                 
-                if(s.Name == "MVert") //search for structure information of MVert
+                /*if(s.Name == "MVert") //search for structure information of MVert
                 {
                     lengthMVert = s.getLength();
                 }
@@ -273,7 +273,7 @@ namespace BlenderMeshReader
                 if (s.Name == "MLoop") //search for structure information of MLoop
                 {
                     lengthMLoop = s.getLength();
-                }
+                }*/
 
             }
             //read vertices, polys and loops

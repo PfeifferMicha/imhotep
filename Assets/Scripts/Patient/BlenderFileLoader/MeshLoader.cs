@@ -85,7 +85,7 @@ public class MeshLoader : MonoBehaviour {
 
     private void LoadFileCallback(object sender, RunWorkerCompletedEventArgs e)
     {        
-        BackgroundWorker worker = sender as BackgroundWorker;
+        //BackgroundWorker worker = sender as BackgroundWorker;
         if (e.Cancelled)
         {
             Debug.Log("Loading cancelled");

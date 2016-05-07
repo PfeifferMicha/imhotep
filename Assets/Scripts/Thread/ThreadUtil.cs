@@ -69,14 +69,14 @@ public class ThreadUtil {
 
     BackgroundWorker backgroundWorker;
 
-    private DoWorkEventHandler threadedMethod;
+//    private DoWorkEventHandler threadedMethod;
     private RunWorkerCompletedEventHandler callbackMethod;
 
     private DateTime start;
 
     public ThreadUtil(DoWorkEventHandler threadedMethod, RunWorkerCompletedEventHandler callbackMethod)
     {
-        this.threadedMethod = threadedMethod;
+        //this.threadedMethod = threadedMethod;
         this.callbackMethod = callbackMethod;
 
         backgroundWorker = new BackgroundWorker();

@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 public class MouseUIInteraction : MonoBehaviour
 {
-	private List<Selectable> hoverList;
+//	private List<Selectable> hoverList;
 
-    private PointerEventData p = new PointerEventData(EventSystem.current);
+//    private PointerEventData p = new PointerEventData(EventSystem.current);
 
 	private Camera UICamera;
 	private Mouse3DMovement mMouse;
@@ -16,7 +16,7 @@ public class MouseUIInteraction : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-		hoverList = new List<Selectable>();
+		//hoverList = new List<Selectable>();
 		mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> ();
 		UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
 		mTextureSize.x = UICamera.targetTexture.width;
@@ -34,7 +34,7 @@ public class MouseUIInteraction : MonoBehaviour
 		pos.x *= mTextureSize.x;
 		pos.y *= mTextureSize.y;
 		pointer.position = pos;//UICamera.WorldToScreenPoint(pos);//Camera.main.transform.position + mouseElement.transform.position - Camera.main.transform.position);
-		Ray ray = UICamera.ScreenPointToRay( pos );
+		//Ray ray = UICamera.ScreenPointToRay( pos );
 		//Debug.DrawRay (ray.origin, ray.direction, Color.green);
 
 		//Vector3 position3D = UICamera.ScreenToWorldPoint ( new Vector3( pos.x, pos.y, UICamera.nearClipPlane + 1 ) );

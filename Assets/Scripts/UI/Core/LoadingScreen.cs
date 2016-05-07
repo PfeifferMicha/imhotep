@@ -52,7 +52,7 @@ public class LoadingScreen : MonoBehaviour {
 
 	void addLoadingJob( object obj )
 	{
-		if (!LoadingScreenWidget.active)
+		if (!LoadingScreenWidget.activeSelf)
 			return;
 			
 		string msg = obj as string;
@@ -64,7 +64,7 @@ public class LoadingScreen : MonoBehaviour {
 	}
 	void removeLoadingJob( object obj )
 	{
-		if (!LoadingScreenWidget.active)
+		if (!LoadingScreenWidget.activeSelf)
 			return;
 		
 		string msg = obj as string;
