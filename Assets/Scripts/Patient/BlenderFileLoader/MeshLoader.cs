@@ -101,7 +101,9 @@ public class MeshLoader : MonoBehaviour {
     }
 
     private IEnumerator LoadFileExecute()
-    {
+	{
+		Bounds bounds = new Bounds(Vector3.zero, Vector3.zero);
+
         foreach (List<UnityMesh> um in unityMeshes) {
 
             GameObject containerObject = new GameObject(um[0].Name);
@@ -116,9 +118,8 @@ public class MeshLoader : MonoBehaviour {
                 GameObject objToSpawn = new GameObject(unityMesh.Name);
                 objToSpawn.layer = meshNode.layer; //Set same layer as parent
 
-                objToSpawn.transform.parent = containerObject.transform;
-
-
+				objToSpawn.transform.parent = containerObject.transform;
+				 
                 //Add Components
                 objToSpawn.AddComponent<MeshFilter>();
                 objToSpawn.AddComponent<MeshCollider>(); //TODO need to much time --> own thread?? Dont work in Unity!!
@@ -145,17 +146,27 @@ public class MeshLoader : MonoBehaviour {
                 Path = "";
 
 				Material mat = matForMeshName (mesh.name);
-				Debug.Log (mat);
 				if (mat != null) {
 					var materials = objToSpawn.GetComponent<MeshRenderer> ().materials;
 					materials [0] = mat;
 					objToSpawn.GetComponent<MeshRenderer> ().materials = materials;
 				}
 
+				// Increase the common bounding box to contain this object:
+				bounds.Encapsulate (mesh.bounds.min);
+				bounds.Encapsulate (mesh.bounds.max);
+				Debug.Log (bounds);
+
                 yield return null;
             }
+
+			// Move the object by half the size of all of the meshes.
+			// This makes sure the object will rotate around its actual center:
+			meshNode.transform.localPosition = -bounds.center;
             
         }
+
+
 		triggerEvent = true;
 
         yield return null;

@@ -116,6 +116,7 @@ Transform:
   - {fileID: 1844044541}
   - {fileID: 304307828}
   - {fileID: 353876827}
+  - {fileID: 2092595206}
   m_Father: {fileID: 0}
   m_RootOrder: 1
 --- !u!1 &121480049
@@ -1396,7 +1397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 298ada501b66cef4aba483b4b1b23ad0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshNode: {fileID: 2105285539}
+  meshNode: {fileID: 1120745101}
   defaultMaterial: {fileID: 2100000, guid: b806c111270ad314dbdbb4cdd406dd94, type: 2}
 --- !u!114 &795904946
 MonoBehaviour:
@@ -1806,6 +1807,33 @@ CanvasRenderer:
     type: 2}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1083357523}
+--- !u!1 &1120745101
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1120745102}
+  m_Layer: 9
+  m_Name: PositionNode
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1120745102
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1120745101}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2105285540}
+  m_RootOrder: 0
 --- !u!1 &1136306205
 GameObject:
   m_ObjectHideFlags: 0
@@ -1950,7 +1978,7 @@ Light:
   m_Type: 2
   m_Color: {r: 1, g: 0.94411767, b: 0.8602941, a: 1}
   m_Intensity: 5
-  m_Range: 10
+  m_Range: 7
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -3205,6 +3233,81 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &2092595205
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 2092595206}
+  - 33: {fileID: 2092595209}
+  - 65: {fileID: 2092595208}
+  - 23: {fileID: 2092595207}
+  m_Layer: 0
+  m_Name: Wall
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &2092595206
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2092595205}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 12.64}
+  m_LocalScale: {x: 25.082111, y: 31.361076, z: 7.2237873}
+  m_Children: []
+  m_Father: {fileID: 26487849}
+  m_RootOrder: 6
+--- !u!23 &2092595207
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2092595205}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_Materials:
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 1
+  m_ReflectionProbeUsage: 1
+  m_ProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+--- !u!65 &2092595208
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2092595205}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!33 &2092595209
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2092595205}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &2105285539
 GameObject:
   m_ObjectHideFlags: 0
@@ -3232,7 +3335,8 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 0.005, y: 0.005, z: 0.005}
-  m_Children: []
+  m_Children:
+  - {fileID: 1120745102}
   m_Father: {fileID: 26487849}
   m_RootOrder: 1
 --- !u!114 &2105285541
