@@ -3,6 +3,16 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
+/*! Loading Screen control.
+ * This controls the LoadingScreenWidget and sets the texts on the LoadingScreenWidget.
+ * Texts and the Widget must be assigned in the editor.
+ * This class reactis to events in the PatientEventSystem.
+ * Activate the Loading Screen by triggering "Event.PATIENT_StartLoading".
+ * Then add jobs by using Event.LOADING_AddLoadingJob.
+ * Each of these should later be followed by an Event.LOADING_RemoveLoadingJob (with the
+ * same name passed as argument!)
+ * Once all jobs have been removed, the loading screen automatically disappears.
+ */
 public class LoadingScreen : MonoBehaviour {
 
 	public GameObject LoadingScreenWidget;
@@ -21,8 +31,6 @@ public class LoadingScreen : MonoBehaviour {
 		// Start listening to events which are called during the loading process:
 		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_StartLoading,
 			loadingStarted);
-		/*PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_LoadingProcess,
-			newProcessInfo);*/
 		PatientEventSystem.startListening (PatientEventSystem.Event.LOADING_AddLoadingJob,
 			addLoadingJob);
 		PatientEventSystem.startListening (PatientEventSystem.Event.LOADING_RemoveLoadingJob,
@@ -40,15 +48,6 @@ public class LoadingScreen : MonoBehaviour {
 
 		mTextLoadingProcess.text = "Started Loading\n";
 		LoadingScreenWidget.SetActive (true);
-	}
-
-	// Called when some new event happend that should be displayed on the loading screen:
-	void newProcessInfo( object obj = null )
-	{
-		string msg = obj as string;
-		if (msg != null) {
-			mTextLoadingProcess.text += msg;
-		}
 	}
 
 	void addLoadingJob( object obj )
