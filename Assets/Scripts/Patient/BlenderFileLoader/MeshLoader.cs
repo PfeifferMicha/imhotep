@@ -16,6 +16,7 @@ public class MeshLoader : MonoBehaviour {
     private volatile List<List<UnityMesh>> unityMeshes = new List<List<UnityMesh>>();
     //True if file is loaded
     private bool loaded = false;
+	private bool triggerEvent = false;
     private volatile string Path = "";
     //Contains a list of game objects. This game objects are parents of actual meshs. 
     public List<GameObject> MeshGameObjectContainers { get; set; }
@@ -28,13 +29,18 @@ public class MeshLoader : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (loaded)
+
+		if (loaded)
         {
             StartCoroutine("LoadFileExecute");
             unityMeshes = new List<List<UnityMesh>>();
             loaded = false;
             Path = "";
         }
+		if(triggerEvent){
+			triggerEvent = false;
+			PatientEventSystem.triggerEvent(PatientEventSystem.Event.MESH_Loaded);
+		}
     }
 
     public void LoadFile(string path)
@@ -139,6 +145,7 @@ public class MeshLoader : MonoBehaviour {
             }
             
         }
+		triggerEvent = true;
 
         yield return null;
     }

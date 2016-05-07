@@ -9,11 +9,26 @@ public class OpacityControl : MonoBehaviour {
 
     private MeshLoader mMeshLoader;
 
+	void OnEnable()
+	{
+		// Register event callbacks for MESH events:
+		PatientEventSystem.startListening (PatientEventSystem.Event.MESH_Loaded, createContent);
+	}
+
+	void OnDisable()
+	{
+		// Unregister myself - no longer receives events (until the next OnEnable() call):
+		PatientEventSystem.stopListening( PatientEventSystem.Event.MESH_Loaded, createContent);
+	}
+
+
     // Use this for initialization
     void Start () {
         mMeshLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
         defaultLine.SetActive(false);
-        createContent(); //TODO dont draw on start, use patient events
+		if (mMeshLoader.MeshGameObjectContainers.Count != 0) {
+			createContent ();
+		}
 	}
 	
 	// Update is called once per frame
@@ -21,7 +36,16 @@ public class OpacityControl : MonoBehaviour {
     }
 
     private void createContent()
-    {        
+    {
+		//Destroy all object except for default line
+		for(int i = 0; i < defaultLine.transform.parent.childCount; i++)
+		{
+			if(i != 0) //TODO !=0
+			{
+				Destroy(defaultLine.transform.parent.GetChild(i).gameObject);
+			}
+		}
+		
         foreach(GameObject g in mMeshLoader.MeshGameObjectContainers)
         {
             // Create a new instance of the list button:

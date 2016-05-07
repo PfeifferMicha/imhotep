@@ -8,11 +8,14 @@ using System.Collections.Generic;
  * This class is a (static) signleton. */
 public class PatientEventSystem
 {
+	private Dictionary< Event, UnityEvent> mEventDictionary;
+	private static PatientEventSystem mInstance = null;
 
 	/*! All possible events: */
 	public enum Event {
 		PATIENT_NewPatientDirectoryFound,
 		MESH_Loaded,
+		//MESH_Closed
 		DICOM_NewList,
 		DICOM_NewLoaded,
 		DICOM_AllCleared
@@ -78,7 +81,5 @@ public class PatientEventSystem
 		}
 	}
 
-	private Dictionary< Event, UnityEvent> mEventDictionary;
-	private static PatientEventSystem mInstance = null;
 }
 
