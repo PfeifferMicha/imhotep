@@ -55,13 +55,17 @@ public class PatientDICOMLoader : MonoBehaviour
                 if (mCurrentDICOM != null)
                 {
                     PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewLoaded);
-                }
+				}
 
                 // Unlock:
                 isLoading = false;
 
                 returnObject = null;
             }
+
+			// Let loading screen know what we're currently doing:
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_RemoveLoadingJob,
+				"DICOM");
         }
 
         if (loadingDirectoryFinished)
@@ -69,8 +73,8 @@ public class PatientDICOMLoader : MonoBehaviour
             loadingDirectoryFinished = false;
 
 			// Let loading screen know what we're currently doing:
-			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_LoadingProcess,
-				"DICOM: Finished parsing directory.\n");
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_RemoveLoadingJob,
+				"DICOM search");
 
             PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewList);
 
@@ -98,10 +102,8 @@ public class PatientDICOMLoader : MonoBehaviour
 
 
 			// Let loading screen know what we're currently doing:
-			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_LoadingProcess,
-				"DICOM: Parsing directory...\n");
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_AddLoadingJob,
-				"DICOM");
+				"DICOM search");
 
             /*
             // Parse the directory:
@@ -141,9 +143,7 @@ public class PatientDICOMLoader : MonoBehaviour
 
 
 			// Let loading screen know what we're currently doing:
-			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_LoadingProcess,
-				"DICOM: Loading series...\n");
-			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_RemoveLoadingJob,
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_AddLoadingJob,
 				"DICOM");
 
             /*// If there was a series found with the given ID, laod it:

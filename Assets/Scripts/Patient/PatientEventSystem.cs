@@ -16,7 +16,7 @@ public class PatientEventSystem
 	/*! All possible events: */
 	public enum Event {
 		PATIENT_StartLoading,
-		PATIENT_LoadingProcess,
+		//PATIENT_LoadingProcess,
 
 		PATIENT_NewPatientDirectoryFound,
 

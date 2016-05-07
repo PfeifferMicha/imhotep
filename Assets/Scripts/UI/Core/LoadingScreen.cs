@@ -21,8 +21,8 @@ public class LoadingScreen : MonoBehaviour {
 		// Start listening to events which are called during the loading process:
 		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_StartLoading,
 			loadingStarted);
-		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_LoadingProcess,
-			newProcessInfo);
+		/*PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_LoadingProcess,
+			newProcessInfo);*/
 		PatientEventSystem.startListening (PatientEventSystem.Event.LOADING_AddLoadingJob,
 			addLoadingJob);
 		PatientEventSystem.startListening (PatientEventSystem.Event.LOADING_RemoveLoadingJob,
@@ -61,6 +61,7 @@ public class LoadingScreen : MonoBehaviour {
 			Debug.Log ("Adding: " + msg);
 			activeJobs.Add (msg);
 		}
+		updateInfo ();
 	}
 	void removeLoadingJob( object obj )
 	{
@@ -74,11 +75,21 @@ public class LoadingScreen : MonoBehaviour {
 				activeJobs.Remove (msg);
 			}
 		}
+		updateInfo ();
 
 		// If all jobs have finished, close loading screen:
 		if (activeJobs.Count <= 0) {
 			LoadingScreenWidget.SetActive (false);
 		}
+	}
+	void updateInfo ()
+	{
+		string info = "";
+		foreach( string s in activeJobs )
+		{
+			info += s + ": Loading\n";
+		}
+		mTextLoadingProcess.text = info;
 	}
 
 }
