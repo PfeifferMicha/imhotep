@@ -67,8 +67,11 @@ public class PatientDirectoryLoader {
     public static Patient loadPatient( int index )
     {
         if (index >= 0 && index < mPatientEntries.Count)
-        {
+		{
 			PatientMeta entry = mPatientEntries[index];
+
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_StartLoading, entry);
+
 			Patient p = new Patient (entry);
 
 			// Start parsing the DICOM directory:

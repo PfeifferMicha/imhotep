@@ -36,6 +36,11 @@ public class MeshLoader : MonoBehaviour {
             unityMeshes = new List<List<UnityMesh>>();
             loaded = false;
             Path = "";
+
+			// Let loading screen know what we're currently doing:
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_LoadingProcess,
+				"Mesh: Finished loading.\n");
+
         }
 		if(triggerEvent){
 			triggerEvent = false;
@@ -46,6 +51,11 @@ public class MeshLoader : MonoBehaviour {
     public void LoadFile(string path)
     {
 		if (File.Exists (path)) {
+
+			// Let loading screen know what we're currently doing:
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_LoadingProcess,
+				"Mesh: Started loading...\n");
+			
             this.RemoveMesh();
 			this.Path = path;
             MeshGameObjectContainers = new List<GameObject>();
@@ -79,11 +89,11 @@ public class MeshLoader : MonoBehaviour {
         {
             Debug.Log("Loading cancelled");
         }else if (e.Error != null)
-        {
+		{
             Debug.LogError("[Loader.cs] Error while loading the mesh");
         }
         else
-        {
+		{
             loaded = true;
         }
         return;

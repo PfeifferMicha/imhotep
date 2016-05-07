@@ -33,7 +33,7 @@ public class PatientLoaderWidget : Widget {
         //PatientCache.instance.openPatient(index);
     }
 
-	void addPatientEntry()
+	void addPatientEntry( object obj = null )
 	{
 
 		// Remove all entries in the list:

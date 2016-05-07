@@ -35,7 +35,7 @@ public class OpacityControl : MonoBehaviour {
 	void Update () {
     }
 
-    private void createContent()
+	private void createContent( object obj = null )
     {
 		//Destroy all object except for default line
 		for(int i = 0; i < defaultLine.transform.parent.childCount; i++)

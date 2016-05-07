@@ -3,17 +3,24 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
+public class ObjectEvent : UnityEvent<object> {} //empty class; just needs to exist
+
 /*! Event system for all patient-related events.
  * Listeners can register for specific events and will be notified from now on.
  * This class is a (static) signleton. */
 public class PatientEventSystem
 {
-	private Dictionary< Event, UnityEvent> mEventDictionary;
+	private Dictionary< Event, ObjectEvent> mEventDictionary;
 	private static PatientEventSystem mInstance = null;
 
 	/*! All possible events: */
 	public enum Event {
+		PATIENT_StartLoading,
+		PATIENT_FinishLoading,
+		PATIENT_LoadingProcess,
+
 		PATIENT_NewPatientDirectoryFound,
+
 		MESH_Loaded,
 		//MESH_Closed
 		DICOM_NewList,
@@ -31,9 +38,9 @@ public class PatientEventSystem
 			return mInstance;
 		}
 	}
-	public static void startListening(Event eventType, UnityAction listener)
+	public static void startListening(Event eventType, UnityAction<object> listener)
 	{
-		UnityEvent thisEvent = null;
+		ObjectEvent thisEvent = null;
 		// Attempt to get the the UnityEvent from the dictionary. If this succeeds,
 		// thisEvent will be filled and the if will evaluate to true:
 		if (instance.mEventDictionary.TryGetValue(eventType, out thisEvent))
@@ -41,18 +48,18 @@ public class PatientEventSystem
 			thisEvent.AddListener(listener);
 		}
 		else {
-			thisEvent = new UnityEvent();
+			thisEvent = new ObjectEvent();
 			thisEvent.AddListener(listener);
 			instance.mEventDictionary.Add(eventType, thisEvent);
 		}
 		Debug.Log("Added event listener for event: " + eventType);
 	}
-	public static void stopListening(Event eventType, UnityAction listener)
+	public static void stopListening(Event eventType, UnityAction<object> listener)
 	{
 		if (mInstance == null)
 			return;
 
-		UnityEvent thisEvent = null;
+		ObjectEvent thisEvent = null;
 		// Attempt to get the the UnityEvent from the dictionary. If this succeeds,
 		// thisEvent will be filled and the if will evaluate to true:
 		if (instance.mEventDictionary.TryGetValue(eventType, out thisEvent))
@@ -61,15 +68,15 @@ public class PatientEventSystem
 		}
 		Debug.Log("Removed event listener for event: " + eventType);
 	}
-	public static void triggerEvent(Event eventType)
+	public static void triggerEvent(Event eventType, object obj = null )
 	{
-		UnityEvent thisEvent = null;
+		ObjectEvent thisEvent = null;
 		// Attempt to get the the UnityEvent from the dictionary. If this succeeds,
 		// thisEvent will be filled and the if will evaluate to true:
 		if (instance.mEventDictionary.TryGetValue(eventType, out thisEvent))
 		{
 			Debug.Log("Triggering Event: " + eventType);
-			thisEvent.Invoke();
+			thisEvent.Invoke( obj );
 		}
 	}
 
@@ -77,7 +84,7 @@ public class PatientEventSystem
 	{
 		if( mEventDictionary == null )
 		{
-			mEventDictionary = new Dictionary< Event, UnityEvent >();
+			mEventDictionary = new Dictionary< Event, ObjectEvent >();
 		}
 	}
 

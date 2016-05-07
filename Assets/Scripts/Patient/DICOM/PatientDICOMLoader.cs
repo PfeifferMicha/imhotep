@@ -30,10 +30,6 @@ public class PatientDICOMLoader : MonoBehaviour
     private bool loadingFinished = false;
     private bool loadingDirectoryFinished = false;
 
-    void Start()
-    {
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -72,6 +68,10 @@ public class PatientDICOMLoader : MonoBehaviour
         {
             loadingDirectoryFinished = false;
 
+			// Let loading screen know what we're currently doing:
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_LoadingProcess,
+				"DICOM: Finished parsing directory.\n");
+
             PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewList);
 
             // Unlock:
@@ -95,6 +95,11 @@ public class PatientDICOMLoader : MonoBehaviour
 
             ThreadUtil t = new ThreadUtil(loadDirectoryWorker, loadDirectoryCallback);
             t.Run();
+
+
+			// Let loading screen know what we're currently doing:
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_LoadingProcess,
+				"DICOM: Parsing directory...\n");
 
             /*
             // Parse the directory:
@@ -132,6 +137,10 @@ public class PatientDICOMLoader : MonoBehaviour
             ThreadUtil t = new ThreadUtil(loadDicomWorker, loadDicomCallback);
             t.Run();	
 
+
+			// Let loading screen know what we're currently doing:
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_LoadingProcess,
+				"DICOM: Loading series...\n");
 
             /*// If there was a series found with the given ID, laod it:
             if (mAvailableSeries.Count > DicomIDForThread)
