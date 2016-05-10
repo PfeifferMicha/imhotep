@@ -60,7 +60,10 @@ public class AnnotationControl : MonoBehaviour {
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMeshViewLayer))
             {
-                GameObject newAnnotationPoint = (GameObject)Instantiate(annotationPointObj, hit.point, Quaternion.identity);
+				// Calculate quaternion which looks along the normal of the hit surface (hopefully "away" from the object).
+				Quaternion lookDirection = Quaternion.LookRotation( hit.normal );
+
+				GameObject newAnnotationPoint = (GameObject)Instantiate(annotationPointObj, hit.point, lookDirection);
                 newAnnotationPoint.transform.localScale *= meshNode.localScale.x; //x,y,z are the same
                 newAnnotationPoint.transform.parent = meshNode;
                 annotationPoints.Add(newAnnotationPoint);
@@ -91,7 +94,13 @@ public class AnnotationControl : MonoBehaviour {
             GameObject newAnnotationLabel = (GameObject)Instantiate(annotationLabel, currentAnnotatinPoint.transform.position, Quaternion.identity);
             newAnnotationLabel.transform.localScale *= meshNode.localScale.x; //x,y,z are the same
             newAnnotationLabel.transform.parent = meshNode;
-            Vector3 offset = new Vector3(90,20,0);
+
+			// Since the currentAnnotationPoint faces along the normal of the attached object,
+			// we can get an offset direction from its rotation:
+			Vector3 offsetDirection = currentAnnotatinPoint.transform.localRotation*Vector3.forward;
+			Vector3 offset = offsetDirection * 90;
+
+            //Vector3 offset = new Vector3(90,20,0);
             newAnnotationLabel.transform.localPosition += offset;
             ap.annotationLabel = newAnnotationLabel;
             // Change label text:
