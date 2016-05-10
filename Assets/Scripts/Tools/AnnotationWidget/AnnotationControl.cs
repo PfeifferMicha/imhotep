@@ -93,7 +93,7 @@ public class AnnotationControl : MonoBehaviour {
             //Create Label
             GameObject newAnnotationLabel = (GameObject)Instantiate(annotationLabel, currentAnnotatinPoint.transform.position, Quaternion.identity);
             newAnnotationLabel.transform.localScale *= meshNode.localScale.x; //x,y,z are the same
-            newAnnotationLabel.transform.parent = meshNode;
+			newAnnotationLabel.transform.SetParent( meshNode, true );
 
 			// Since the currentAnnotationPoint faces along the normal of the attached object,
 			// we can get an offset direction from its rotation:
