@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using UI;
 
-public class PatientLoaderWidget : Widget {
+public class PatientSelector : MonoBehaviour {
 
     private GameObject mScrollView;
 
@@ -65,7 +65,7 @@ public class PatientLoaderWidget : Widget {
 			int capturedIndex = index;
 			Button b = newButton.GetComponent<Button>();
 			b.onClick.AddListener(() => ChoosePatient(capturedIndex));
-			b.onClick.AddListener(() => Close());
+			b.onClick.AddListener(() => transform.GetComponent<Widget>().Close());
 		}
 
 		RectTransform rectTf = defaultPatientButton.transform.parent.GetComponent<RectTransform>();
