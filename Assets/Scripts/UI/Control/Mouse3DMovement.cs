@@ -45,5 +45,4 @@ public class Mouse3DMovement : MonoBehaviour {
 	{
 		mCurrentUVCoordinates = v;
 	}
-
 }
