@@ -4,13 +4,15 @@ using System.Collections.Generic;
 
 namespace UI
 {
-    public class Core : MonoBehaviour
+    public class UICore : MonoBehaviour
     {
         Dictionary<string, Widget> widgets = new Dictionary<string, Widget>();
 
         // Use this for initialization
         void Start()
         {
+			// Move the UI rendering far away from the main scene at startup:
+			transform.position = new Vector3 (1000, 0, 0);
         }
 
         public bool RegisterWidget(string uniqueID, Widget widget)
