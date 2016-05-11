@@ -40,4 +40,10 @@ public class Mouse3DMovement : MonoBehaviour {
 	{
 		return mCurrentUVCoordinates;
 	}
+
+	public void setUVCoordinates(Vector2 v)
+	{
+		mCurrentUVCoordinates = v;
+	}
+
 }
