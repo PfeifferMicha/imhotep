@@ -84,7 +84,6 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 	public void OnPointerUp(PointerEventData dt) {
 		//if (mDragged) {
 			// Move the panel a few units forward while it's dragged:
-			Transform grandparent = transform.parent.transform.parent;
 			mDragged = false;
 		//}
 	}

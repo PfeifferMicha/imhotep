@@ -66,6 +66,8 @@ namespace UI
 			newWidget.transform.localScale = transform.localScale;
 			Canvas cv = newWidget.transform.FindChild("Canvas").GetComponent<Canvas> ();
 			cv.worldCamera = UICamera;
+
+			UI.UICore.HighlightSelectedWidget (newWidget.transform);
         }
 
         public void ShowWidgetList()
