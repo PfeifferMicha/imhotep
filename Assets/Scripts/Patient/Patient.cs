@@ -9,6 +9,8 @@ using itk.simple;
 
 public class Patient : PatientMeta
 {
+	static private Patient loadedPatient = null;
+
 	public Patient( PatientMeta meta ) : base(meta)
     {
 
@@ -27,5 +29,12 @@ public class Patient : PatientMeta
 		DicomCache dicomCache = DicomCache.instance;
 		dicomCache.loadDirectory (directory + "/DICOM");
         */
+
+		loadedPatient = this;
     }
+
+	public static Patient getLoadedPatient()
+	{
+		return loadedPatient;
+	}
 }

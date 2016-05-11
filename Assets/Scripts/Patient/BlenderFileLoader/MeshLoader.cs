@@ -155,7 +155,6 @@ public class MeshLoader : MonoBehaviour {
 				// Increase the common bounding box to contain this object:
 				bounds.Encapsulate (mesh.bounds.min);
 				bounds.Encapsulate (mesh.bounds.max);
-				Debug.Log (bounds);
 
                 yield return null;
             }

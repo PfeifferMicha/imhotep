@@ -13,7 +13,7 @@ namespace UI
         void Start()
         {
 			// Move the UI rendering far away from the main scene at startup:
-			//transform.position = new Vector3 (1000, 0, 0);
+			transform.position = new Vector3 (1000, 0, 0);
         }
 
         public bool RegisterWidget(string uniqueID, Widget widget)

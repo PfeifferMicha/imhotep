@@ -74,6 +74,9 @@ public class PatientDirectoryLoader {
 
 			Patient p = new Patient (entry);
 
+			// Let other widgets know the patient information is now available:
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_Loaded, p);
+
 			// Start parsing the DICOM directory:
             PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
             mPatientDICOMLoader.loadDirectory (entry.dicomPath);
@@ -81,6 +84,7 @@ public class PatientDirectoryLoader {
 			// Load model in the directory:
 			MeshLoader mModelLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
 			mModelLoader.LoadFile(entry.meshPath);
+
 
             return p;
         }
