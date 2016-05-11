@@ -56,29 +56,39 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 
 	// Event which is called when the mouse clicks on this panel:
 	public void OnPointerDown(PointerEventData dt) {
-		Debug.Log ("Draggable Mouse Down");
 		if (mDragged == false) {
 			mOffset = new Vector3 (0, 0, 0);
+				Debug.Log ("Draggable Mouse Down");
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
 			LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
+			Transform grandparent = transform.parent.transform.parent;
+			// Move the panel a few units forward while it's dragged:
+			Vector3 curPos = grandparent.transform.localPosition;
+
+			UI.UICore.HighlightSelectedWidget (grandparent);
+		
 
 			if (Physics.Raycast (ray, out hit, Mathf.Infinity, onlyMousePlane)) {
-				Transform grandparent = transform.parent.transform.parent;
 
 				//Debug.Log ("name:");
 				Vector2 uv = hit.textureCoord2;
 				Vector3 mousePos = new Vector3 (uv.x * mViewSize.x, uv.y * mViewSize.y, 0);
 				mOffset = mousePos - grandparent.localPosition;
 			}
+
 			mDragged = true;
 		}
 	}
 
 	// Event which is called when the mouse is released:
 	public void OnPointerUp(PointerEventData dt) {
-		Debug.Log ("Draggable mouse up");
-		mDragged = false;
+		//if (mDragged) {
+			Debug.Log ("Draggable Mouse Down");
+			// Move the panel a few units forward while it's dragged:
+			Transform grandparent = transform.parent.transform.parent;
+			mDragged = false;
+		//}
 	}
 
 }
