@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 
+
 public class ViveControllerInteraction : MonoBehaviour {
 
 	private SteamVR_Controller.Device controller { get{ return SteamVR_Controller.Input ((int)trackedObj.index);}}
@@ -33,7 +34,7 @@ public class ViveControllerInteraction : MonoBehaviour {
 		}
 
 		//Detect trigger
-		if (controller != null) {
+		/*if (controller != null) {
 			if (controller.GetPressDown (triggerButton)) {
 				Debug.Log ("Trigger pressed");
 
@@ -41,7 +42,7 @@ public class ViveControllerInteraction : MonoBehaviour {
 
 		} else {
 			Debug.LogWarning ("Controller is null");
-		}
+		}*/
 
 	}
 }

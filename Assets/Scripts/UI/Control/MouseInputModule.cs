@@ -13,12 +13,23 @@ public class MouseInputModule : StandaloneInputModule {
 	private Mouse3DMovement mMouse;
 	private Vector2 mTextureSize;
 
+	public GameObject controllerLeft;
+	public GameObject controllerRight;
+
+	private SteamVR_Controller.Device controller { get{ return SteamVR_Controller.Input ((int)trackedObj.index);}}
+	private SteamVR_TrackedObject trackedObj;
+
+	private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
+
+	private bool triggerPressedPrev = false;
+
 	public new void Start()
 	{
 		mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> ();
 		UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
 		mTextureSize.x = UICamera.targetTexture.width;
 		mTextureSize.y = UICamera.targetTexture.height;
+		trackedObj = controllerLeft.GetComponent<SteamVR_TrackedObject> ();
 	}
 
 	// This is the real function we want, the two commented out lines (Input.mousePosition)
@@ -66,10 +77,29 @@ public class MouseInputModule : StandaloneInputModule {
 		CopyFromTo(leftData, middleData);
 		middleData.button = PointerEventData.InputButton.Middle;
 
+		PointerEventData.FramePressState triggerState = PointerEventData.FramePressState.NotChanged;
+		bool triggerPressed = controller.GetPressDown (triggerButton);
+
+		if (triggerPressed == triggerPressedPrev) {
+			triggerState = PointerEventData.FramePressState.NotChanged;
+		} else {
+			if (triggerPressed) {
+				triggerState = PointerEventData.FramePressState.Pressed;
+			} else {
+				triggerState = PointerEventData.FramePressState.Released;
+			}
+		}
+		triggerPressedPrev = triggerPressed;
+
 		m_MouseState.SetButtonState(PointerEventData.InputButton.Left, StateForMouseButton(0), leftData);
+
+		//m_MouseState.SetButtonState(PointerEventData.InputButton.Left, triggerState, leftData);
 		m_MouseState.SetButtonState(PointerEventData.InputButton.Right, StateForMouseButton(1), rightData);
 		m_MouseState.SetButtonState(PointerEventData.InputButton.Middle, StateForMouseButton(2), middleData);
 
+		//Debug.Log( m_MouseState.GetButtonState (PointerEventData.InputButton.Left) );
+
+		//Debug.Log (triggerState);
 		return m_MouseState;
 	}
 
