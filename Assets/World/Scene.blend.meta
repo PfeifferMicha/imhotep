@@ -31,6 +31,9 @@ ModelImporter:
     100046: Circle_013
     100048: Circle_015
     100050: Cylinder_001
+    100052: Cube_003
+    100054: BezierCurve_000
+    100056: EmptyProject
     400000: BezierCurve
     400002: BezierCurve_001
     400004: Center
@@ -57,6 +60,9 @@ ModelImporter:
     400046: Circle_013
     400048: Circle_015
     400050: Cylinder_001
+    400052: Cube_003
+    400054: BezierCurve_000
+    400056: EmptyProject
     2300000: BezierCurve
     2300002: BezierCurve_001
     2300004: Circle
@@ -81,6 +87,8 @@ ModelImporter:
     2300042: Circle_013
     2300044: Circle_015
     2300046: Cylinder_001
+    2300048: Cube_003
+    2300050: BezierCurve_000
     3300000: BezierCurve
     3300002: BezierCurve_001
     3300004: Circle
@@ -105,6 +113,8 @@ ModelImporter:
     3300042: Circle_013
     3300044: Circle_015
     3300046: Cylinder_001
+    3300048: Cube_003
+    3300050: BezierCurve_000
     4300000: Cylinder
     4300002: BezierCurve_001
     4300004: Cube_001
@@ -129,6 +139,8 @@ ModelImporter:
     4300042: Circle_011
     4300044: Circle_007
     4300046: Cylinder_001
+    4300048: Cube_003
+    4300050: BezierCurve_000
     7400000: Default Take
     9500000: //RootNode
   materials:
