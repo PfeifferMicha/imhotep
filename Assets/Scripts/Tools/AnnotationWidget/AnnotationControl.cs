@@ -49,10 +49,10 @@ public class AnnotationControl : MonoBehaviour {
 
         annotationListButton.gameObject.SetActive(false);
     }
-	
+
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetMouseButtonDown(0) && currentState == State.addAnnotationPressed)
+		if (Input.GetMouseButtonDown(0) && currentState == State.addAnnotationPressed)
         {
             RaycastHit hit;
             Ray ray = new Ray(Camera.main.transform.position, mMouse.transform.position - Camera.main.transform.position);

@@ -12,6 +12,8 @@ public class LeftButtonState : MonoBehaviour {
 	private PointerEventData.FramePressState leftButtonState;
 	private bool triggerPressedDown = false; //True of the trigger is pressed down
 
+	private bool helpState = false; //Before releasing the button press it again to avoid scrolling in lists
+
 	// Use this for initialization
 	void Start () {
 		trackedObj = this.GetComponent<SteamVR_TrackedObject> ();
@@ -30,15 +32,26 @@ public class LeftButtonState : MonoBehaviour {
 				leftButtonState = PointerEventData.FramePressState.Pressed;
 			}
 			if (!triggerPressed () && triggerPressedDown) {
-				leftButtonState = PointerEventData.FramePressState.Released;
+				if (helpState == false) {
+					leftButtonState = PointerEventData.FramePressState.Pressed;
+					helpState = true;
+				} else {
+					leftButtonState = PointerEventData.FramePressState.Released;
+				}
 			}
 			break;
 
 		case PointerEventData.FramePressState.Pressed:
-			triggerPressedDown = true;
-			//TODO improve clicking 
-			if (triggerPressed () && triggerPressedDown) {
-				leftButtonState = PointerEventData.FramePressState.NotChanged;
+			if (helpState) {
+				helpState = false;
+				leftButtonState = PointerEventData.FramePressState.Released;
+			} else {
+				triggerPressedDown = true;
+				if (triggerPressed () && triggerPressedDown) {
+					leftButtonState = PointerEventData.FramePressState.NotChanged;
+				} else if (!triggerPressed () && triggerPressedDown) {
+					leftButtonState = PointerEventData.FramePressState.Released;
+				}
 			}
 			break;
 
