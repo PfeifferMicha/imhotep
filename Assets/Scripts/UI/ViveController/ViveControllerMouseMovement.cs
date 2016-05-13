@@ -3,19 +3,15 @@ using System.Collections;
 using UnityEngine.EventSystems;
 
 
-public class ViveControllerInteraction : MonoBehaviour {
+public class ViveControllerMouseMovement : MonoBehaviour {
 
-	private SteamVR_Controller.Device controller { get{ return SteamVR_Controller.Input ((int)trackedObj.index);}}
-	private SteamVR_TrackedObject trackedObj;
 
-	private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
 
 	private Mouse3DMovement mMouse;
 
 	// Use this for initialization
 	void Start () {
 		mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> ();
-		trackedObj = this.GetComponent<SteamVR_TrackedObject> ();
 	}
 	
 	// Update is called once per frame
@@ -30,19 +26,7 @@ public class ViveControllerInteraction : MonoBehaviour {
 			//Vector3 offset = new Vector3(0.1f, 0.1f, 0.1f);
 			mMouse.transform.position = hit.point;
 			// Remember my UV coordinates, because the MouseUIInteraction script will use them to handle UI input:
-			mMouse.setUVCoordinates(hit.textureCoord2);
+			mMouse.setUVCoordinates(hit.textureCoord2, this.gameObject);
 		}
-
-		//Detect trigger
-		/*if (controller != null) {
-			if (controller.GetPressDown (triggerButton)) {
-				Debug.Log ("Trigger pressed");
-
-			}
-
-		} else {
-			Debug.LogWarning ("Controller is null");
-		}*/
-
 	}
 }
