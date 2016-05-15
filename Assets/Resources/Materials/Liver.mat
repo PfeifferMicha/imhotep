@@ -7,10 +7,10 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Liver
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: fa5db193484894dcd95062bb4e69e542, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
@@ -78,6 +78,13 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _SpecGlossMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
@@ -91,6 +98,14 @@ Material:
         first:
           name: _Cutoff
         second: 0.5
+      data:
+        first:
+          name: _minY
+        second: -102.08568
+      data:
+        first:
+          name: _maxY
+        second: 83.88541
       data:
         first:
           name: _Parallax
@@ -127,6 +142,14 @@ Material:
         first:
           name: _Metallic
         second: 0
+      data:
+        first:
+          name: _min
+        second: -64.6823
+      data:
+        first:
+          name: _max
+        second: 73.318405
     m_Colors:
       data:
         first:
@@ -135,4 +158,8 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 0.64, g: 0.120623, b: 0.036754, a: 0.822}
+        second: {r: 0.7352941, g: 0.31898788, b: 0.31898788, a: 0}
+      data:
+        first:
+          name: _SpecColor
+        second: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}

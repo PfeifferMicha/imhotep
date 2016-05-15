@@ -7,10 +7,10 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Arteries
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: fa5db193484894dcd95062bb4e69e542, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
@@ -93,6 +93,14 @@ Material:
         second: 0.5
       data:
         first:
+          name: _minY
+        second: -102.009796
+      data:
+        first:
+          name: _maxY
+        second: 43.634495
+      data:
+        first:
           name: _Parallax
         second: 0.02
       data:
@@ -127,6 +135,14 @@ Material:
         first:
           name: _Metallic
         second: 0
+      data:
+        first:
+          name: _min
+        second: -64.953384
+      data:
+        first:
+          name: _max
+        second: 123.15857
     m_Colors:
       data:
         first:

@@ -149,6 +149,10 @@ public class MeshLoader : MonoBehaviour {
 				if (mat != null) {
 					var materials = objToSpawn.GetComponent<MeshRenderer> ().materials;
 					materials [0] = mat;
+					float min = mat.GetFloat ("_min");
+					float max = mat.GetFloat ("_max");
+					mat.SetFloat ("_min", Math.Min( mesh.bounds.min.z, min ));
+					mat.SetFloat ("_max", Math.Max( mesh.bounds.max.z, max ));
 					objToSpawn.GetComponent<MeshRenderer> ().materials = materials;
 				}
 
