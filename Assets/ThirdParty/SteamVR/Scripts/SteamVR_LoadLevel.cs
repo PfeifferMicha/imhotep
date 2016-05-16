@@ -4,14 +4,10 @@
 //
 //=============================================================================
 
-using System;
-using System.Diagnostics;
 using UnityEngine;
 using System.Collections;
 using Valve.VR;
 using System.IO;
-
-using Debug = UnityEngine.Debug;
 
 public class SteamVR_LoadLevel : MonoBehaviour
 {
@@ -358,7 +354,7 @@ public class SteamVR_LoadLevel : MonoBehaviour
 #if UNITY_EDITOR
 				UnityEditor.EditorApplication.isPlaying = false;
 #else
-				Process.GetCurrentProcess().Kill();
+				System.Diagnostics.Process.GetCurrentProcess().Kill();
 #endif
 			}
 		}
