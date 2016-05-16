@@ -143,6 +143,10 @@ Material:
         first:
           name: _max
         second: 119.63818
+      data:
+        first:
+          name: _amount
+        second: 0
     m_Colors:
       data:
         first:

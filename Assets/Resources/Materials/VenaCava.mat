@@ -93,14 +93,6 @@ Material:
         second: 0.5
       data:
         first:
-          name: _minY
-        second: -88.097626
-      data:
-        first:
-          name: _maxY
-        second: 69.57048
-      data:
-        first:
           name: _Parallax
         second: 0.02
       data:
@@ -137,12 +129,24 @@ Material:
         second: 0
       data:
         first:
+          name: _minY
+        second: -88.097626
+      data:
+        first:
+          name: _maxY
+        second: 69.57048
+      data:
+        first:
           name: _min
         second: -52.431675
       data:
         first:
           name: _max
         second: 149.49336
+      data:
+        first:
+          name: _amount
+        second: 0
     m_Colors:
       data:
         first:
