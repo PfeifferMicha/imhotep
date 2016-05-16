@@ -6,6 +6,8 @@ using LitJson;
 using System;
 using System.IO;
 
+using BlenderMeshReader;
+
 public class AnnotationPointJson
 {
     public string Text { get; set; }
@@ -275,7 +277,7 @@ public class AnnotationControl : MonoBehaviour {
 
     public void saveAnnotation()
     {
-        if(Patient.getLoadedPatient() == null)
+        if (Patient.getLoadedPatient() == null)
         {
             return;
         }
