@@ -3,6 +3,7 @@
 		_Color ("Color", Color) = (1.0, 0.6, 0.6, 1.0)
 		_min("Min Scan Effect", float) = -1.0
 		_max("Max Scan Effect", float) = 1.0
+		_amount("Amount", float) = 0.5
 	}
 	SubShader {
 		Tags {
@@ -25,18 +26,18 @@
 		}
 
 		float4 _Color;
-		float amount;
+		float _amount;
 		float _min;
 		float _max;
 		float3 burnCol;
 
 		void surf (Input IN, inout SurfaceOutput o) {
-			float t = 0.5*_Time.y;
-			amount = t - floor(t);
-			float fullRange = (_max-_min);
-			float zPos = _max - amount*fullRange;
+			//float t = 0.5*_Time.y;
+			//amount = t - floor(t);
+			float fullRange = (_min-_max);
+			float zPos = _min - _amount*fullRange;
 			float dist = IN.localPos.z - zPos;
-			clip( dist );
+			clip( -dist );
 
 			dist = dist/fullRange;
 			float amount1 = 1.0-dist*5;

@@ -9,7 +9,7 @@ using System.IO;
 
 public class MeshLoader : MonoBehaviour {
 
-    public GameObject meshNode;
+	public GameObject meshNode;
     public Material defaultMaterial;
 
     //List of lists of UnityMeshes with max. 2^16 vertices per mesh
@@ -45,7 +45,7 @@ public class MeshLoader : MonoBehaviour {
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_RemoveLoadingJob,
 				"Mesh");
 			
-			PatientEventSystem.triggerEvent(PatientEventSystem.Event.MESH_Loaded);
+			PatientEventSystem.triggerEvent(PatientEventSystem.Event.MESH_LoadedAll);
 		}
     }
 
@@ -103,12 +103,14 @@ public class MeshLoader : MonoBehaviour {
     private IEnumerator LoadFileExecute()
 	{
 		Bounds bounds = new Bounds(Vector3.zero, Vector3.zero);
+		meshNode.transform.localScale = new Vector3 (0.007f, 0.007f, 0.007f);
 
         foreach (List<UnityMesh> um in unityMeshes) {
 
             GameObject containerObject = new GameObject(um[0].Name);
             containerObject.layer = meshNode.layer; //Set same layer as parent
-            containerObject.transform.parent = meshNode.transform;
+			containerObject.transform.SetParent( meshNode.transform, false );
+			//containerObject.transform.localScale = new Vector3 (400.0f, 400.0f, 400.0f);
             containerObject.transform.localPosition = new Vector3(0, 0, 0);
             MeshGameObjectContainers.Add(containerObject);
 
@@ -118,7 +120,7 @@ public class MeshLoader : MonoBehaviour {
                 GameObject objToSpawn = new GameObject(unityMesh.Name);
                 objToSpawn.layer = meshNode.layer; //Set same layer as parent
 
-				objToSpawn.transform.parent = containerObject.transform;
+				objToSpawn.transform.SetParent (containerObject.transform, false);
 				 
                 //Add Components
                 objToSpawn.AddComponent<MeshFilter>();
@@ -139,33 +141,39 @@ public class MeshLoader : MonoBehaviour {
                 objToSpawn.GetComponent<MeshCollider>().sharedMesh = mesh; //TODO Reduce mesh??
 
                 objToSpawn.transform.localPosition = new Vector3(0, 0, 0);
-                objToSpawn.transform.localScale = new Vector3(0.005f, 0.005f, 0.005f);
 
                 unityMeshes = new List<List<UnityMesh>>();
                 loaded = false;
                 Path = "";
 
-				Material mat = matForMeshName (mesh.name);
+				Material mat = MeshLoader.matForMeshName (mesh.name);
 				if (mat != null) {
-					var materials = objToSpawn.GetComponent<MeshRenderer> ().materials;
-					materials [0] = mat;
+					//var materials = objToSpawn.GetComponent<MeshRenderer> ().materials;
+					//materials [0] = mat;
+					objToSpawn.GetComponent<Renderer> ().material = mat;
+				
 					float min = mat.GetFloat ("_min");
 					float max = mat.GetFloat ("_max");
 					mat.SetFloat ("_min", Math.Min( mesh.bounds.min.z, min ));
 					mat.SetFloat ("_max", Math.Max( mesh.bounds.max.z, max ));
-					objToSpawn.GetComponent<MeshRenderer> ().materials = materials;
+					mat.SetFloat ("_amount", 0f );
+					//objToSpawn.GetComponent<MeshRenderer> ().materials = materials;
 				}
+
 
 				// Increase the common bounding box to contain this object:
 				bounds.Encapsulate (mesh.bounds.min);
 				bounds.Encapsulate (mesh.bounds.max);
+
+				// Let others know that a new mesh has been loaded:
+				PatientEventSystem.triggerEvent (PatientEventSystem.Event.MESH_LoadedSingle, objToSpawn);
 
                 yield return null;
             }
 
 			// Move the object by half the size of all of the meshes.
 			// This makes sure the object will rotate around its actual center:
-			meshNode.transform.localPosition = -bounds.center;
+			//containerObject.transform.localPosition = -bounds.center;
             
         }
 
@@ -184,7 +192,7 @@ public class MeshLoader : MonoBehaviour {
         }
     }
 
-	private Material matForMeshName( string meshName )
+	public static Material matForMeshName( string meshName )
 	{
 		bool contains;
 

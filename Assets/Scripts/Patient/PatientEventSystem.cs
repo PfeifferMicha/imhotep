@@ -20,8 +20,9 @@ public class PatientEventSystem
 
 		PATIENT_NewPatientDirectoryFound,
 
-		MESH_Loaded,
-		//MESH_Closed
+		MESH_LoadedSingle,		// Called whenever a new mesh has been loaded
+		MESH_LoadedAll,			// Called after all of the patient's meshes have been loaded
+
 		DICOM_NewList,
 		DICOM_NewLoaded,
 		DICOM_AllCleared,

@@ -12,13 +12,13 @@ public class OpacityControl : MonoBehaviour {
 	void OnEnable()
 	{
 		// Register event callbacks for MESH events:
-		PatientEventSystem.startListening (PatientEventSystem.Event.MESH_Loaded, createContent);
+		PatientEventSystem.startListening (PatientEventSystem.Event.MESH_LoadedAll, createContent);
 	}
 
 	void OnDisable()
 	{
 		// Unregister myself - no longer receives events (until the next OnEnable() call):
-		PatientEventSystem.stopListening( PatientEventSystem.Event.MESH_Loaded, createContent);
+		PatientEventSystem.stopListening( PatientEventSystem.Event.MESH_LoadedAll, createContent);
 	}
 
 
