@@ -59,7 +59,13 @@ public class MeshLoader : MonoBehaviour {
 			
             this.RemoveMesh();
 			this.Path = path;
-            MeshGameObjectContainers = new List<GameObject>();
+			MeshGameObjectContainers = new List<GameObject>();
+
+			// Reset scale, rotation, position:
+			meshNode.transform.localScale = new Vector3 (0.007f, 0.007f, 0.007f);
+			meshNode.transform.parent.localScale = new Vector3 (1.0f, 1.0f, 1.0f);
+			meshNode.transform.parent.localRotation = Quaternion.identity;
+			meshNode.transform.parent.Rotate (90, 0, 0);
 
 			ThreadUtil t = new ThreadUtil (this.LoadFileWorker, this.LoadFileCallback);
 			t.Run ();
@@ -103,7 +109,6 @@ public class MeshLoader : MonoBehaviour {
     private IEnumerator LoadFileExecute()
 	{
 		Bounds bounds = new Bounds(Vector3.zero, Vector3.zero);
-		meshNode.transform.localScale = new Vector3 (0.007f, 0.007f, 0.007f);
 
         foreach (List<UnityMesh> um in unityMeshes) {
 
@@ -243,6 +248,12 @@ public class MeshLoader : MonoBehaviour {
 		if( contains )
 		{
 			return Resources.Load("Materials/Kidney", typeof(Material)) as Material;
+		}
+
+		contains = meshName.IndexOf("bone", StringComparison.OrdinalIgnoreCase) >= 0;
+		if( contains )
+		{
+			return Resources.Load("Materials/Bone", typeof(Material)) as Material;
 		}
 
 		return null;

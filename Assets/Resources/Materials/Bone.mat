@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Kidney
+  m_Name: Bone
   m_Shader: {fileID: 4800000, guid: fa5db193484894dcd95062bb4e69e542, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
@@ -129,24 +129,16 @@ Material:
         second: 0
       data:
         first:
-          name: _minY
-        second: -79.57806
-      data:
-        first:
-          name: _maxY
-        second: 52.80423
-      data:
-        first:
           name: _min
-        second: -1.3102738
+        second: -1
       data:
         first:
           name: _max
-        second: 119.63818
+        second: 1
       data:
         first:
           name: _amount
-        second: 1
+        second: 0.5
     m_Colors:
       data:
         first:
@@ -155,4 +147,4 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 0.8235294, g: 0.41193172, b: 0.29065743, a: 1}
+        second: {r: 0.85294116, g: 0.8002594, b: 0.721237, a: 1}

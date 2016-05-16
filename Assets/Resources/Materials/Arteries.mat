@@ -146,7 +146,7 @@ Material:
       data:
         first:
           name: _amount
-        second: 0
+        second: 0.5
     m_Colors:
       data:
         first:

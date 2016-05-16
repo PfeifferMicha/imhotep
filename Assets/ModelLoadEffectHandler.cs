@@ -16,32 +16,33 @@ public class ModelLoadEffectHandler : MonoBehaviour {
 
 	List<LoadObject> loadingObjects = new List<LoadObject>();
 
-	// Use this for initialization
 	void Start () {
 		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_StartLoading, eventStartLoadingMesh);
 		PatientEventSystem.startListening( PatientEventSystem.Event.MESH_LoadedSingle, eventFinishLoadingMesh );
 		PatientEventSystem.startListening( PatientEventSystem.Event.MESH_LoadedAll, eventFinishLoadingAllMeshes );
 	}
 
-	// Update is called once per frame
 	void Update () {
 		
 		if (loadingEffectActive) {
 			bool allMeshesFinishedAnimation = true;
-			foreach (LoadObject obj in loadingObjects) {
-				obj.amount += Time.deltaTime;
-				Material mat = obj.gameObject.GetComponent<Renderer> ().material;
+			foreach (LoadObject lObj in loadingObjects) {
+				lObj.amount += Time.deltaTime*0.5f;
 
 				float amount;
 				if (currentlyLoadingNewMeshes) {
-					amount = obj.amount - (float)Math.Floor (obj.amount);
+					amount = lObj.amount - (float)Math.Floor (lObj.amount);
 				} else {
-					amount = obj.amount;
+					amount = lObj.amount;
 				}
 				if (amount < 1.0) {
 					allMeshesFinishedAnimation = false;
 				}
-				mat.SetFloat ("_amount", amount);
+
+				foreach (Transform child in lObj.gameObject.transform) {
+					Material mat = child.gameObject.GetComponent<Renderer> ().material;
+					mat.SetFloat ("_amount", amount);
+				}
 			}
 			if (!currentlyLoadingNewMeshes && allMeshesFinishedAnimation) {
 				loadingEffectActive = false;
@@ -56,15 +57,34 @@ public class ModelLoadEffectHandler : MonoBehaviour {
 		loadingEffectActive = true;
 	}
 
+	// Called when a new mesh-part has been fully loaded.
+	// Resets the shader loading animation for the parent of this mesh:
 	void eventFinishLoadingMesh( object obj )
 	{
 		GameObject gameObject = obj as GameObject;
 		if (gameObject != null) {
 
-			LoadObject newObj = new LoadObject ();
-			newObj.gameObject = gameObject;
-			newObj.amount = 0.0f;
-			loadingObjects.Add (newObj);
+			GameObject parentObject = gameObject.transform.parent.gameObject;
+			if( parentObject )
+			{
+				LoadObject loadObject = null;
+				// If the object already exists, reset its animation:
+				foreach (LoadObject lObj in loadingObjects) {
+					if( lObj.gameObject == parentObject )
+					{
+						loadObject = lObj;
+						loadObject.amount = 0.0f;
+						break;
+					}
+				}
+				// If the object does not yet exist, add an entry:
+				if (loadObject == null) {
+					loadObject = new LoadObject ();
+					loadObject.gameObject = parentObject;
+					loadObject.amount = 0.0f;
+					loadingObjects.Add (loadObject);
+				}
+			}
 		}
 	}
 	void eventFinishLoadingAllMeshes( object obj )
