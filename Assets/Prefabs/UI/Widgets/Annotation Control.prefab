@@ -463,7 +463,7 @@ GameObject:
   - 114: {fileID: 11407612}
   - 95: {fileID: 9508434}
   m_Layer: 0
-  m_Name: Button Load
+  m_Name: Button Save
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -652,7 +652,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 130178}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.277, y: 0.201, z: 0}
+  m_LocalPosition: {x: 1.281, y: 0.2, z: 0}
   m_LocalScale: {x: 0.0025, y: 0.0025, z: 0.0025}
   m_Children:
   - {fileID: 22404084}
@@ -766,7 +766,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 173776}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
@@ -798,7 +798,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 11407612}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 11458112}
+        m_MethodName: saveAnnotation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &11401554
@@ -971,8 +982,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 11487206}
   m_HandleRect: {fileID: 22472388}
   m_Direction: 2
-  m_Value: 0.99999917
-  m_Size: 0.5817931
+  m_Value: 0.9999994
+  m_Size: 0.58179265
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1953,7 +1964,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Load Annotations
+  m_Text: Save Annotations
 --- !u!114 &11486964
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -2,6 +2,20 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using LitJson;
+using System;
+using System.IO;
+
+public class AnnotationPointJson
+{
+    public string Text { get; set; }
+    public double PositionX { get; set; }
+    public double PositionY { get; set; }
+    public double PositionZ { get; set; }
+    public string Creator { get; set; }
+    public DateTime CreationDate { get; set; }
+
+}
 
 public class AnnotationControl : MonoBehaviour {
 
@@ -52,6 +66,7 @@ public class AnnotationControl : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+        //If user pressed "Add Annotation" and clicked 
 		if (Input.GetMouseButtonDown(0) && currentState == State.addAnnotationPressed)
         {
             RaycastHit hit;
@@ -77,7 +92,7 @@ public class AnnotationControl : MonoBehaviour {
 
     public void AddAnnotationPressed()
     {
-        if(currentState == State.idle)
+        if (currentState == State.idle)
         {
             changeCurrentStateToAddAnnotationPressed();
         }
@@ -98,7 +113,7 @@ public class AnnotationControl : MonoBehaviour {
 			// Since the currentAnnotationPoint faces along the normal of the attached object,
 			// we can get an offset direction from its rotation:
 			Vector3 offsetDirection = currentAnnotatinPoint.transform.localRotation*Vector3.forward;
-			Vector3 offset = offsetDirection * 90;
+            Vector3 offset = offsetDirection / 1.5f;
 
             //Vector3 offset = new Vector3(90,20,0);
             newAnnotationLabel.transform.localPosition += offset;
@@ -216,6 +231,40 @@ public class AnnotationControl : MonoBehaviour {
         saveButton.gameObject.SetActive(true);
 
         currentState = State.annotationPointSelected;
+    }
+
+    public void saveAnnotation()
+    {
+        if(Patient.getLoadedPatient() == null)
+        {
+            return;
+        }
+
+        Patient currentPatient = Patient.getLoadedPatient();
+        string path = currentPatient.path + "/annotation.json";
+
+        List<AnnotationPointJson> apjList = new List<AnnotationPointJson>();
+        foreach(GameObject ap in annotationPoints)
+        {
+            AnnotationPointJson apj = new AnnotationPointJson();
+            apj.Text = ap.GetComponent<AnnotationPoint>().text;
+            apj.PositionX = ap.transform.localPosition.x;
+            apj.PositionY = ap.transform.localPosition.y;
+            apj.PositionZ = ap.transform.localPosition.z;
+            apj.Creator = ap.GetComponent<AnnotationPoint>().creator;
+            apj.CreationDate = ap.GetComponent<AnnotationPoint>().creationDate;
+            apjList.Add(apj);
+        }
+        
+        string json_apj = JsonMapper.ToJson(apjList);
+
+        using (StreamWriter outputFile = new StreamWriter(currentPatient.path + @"\annotation.json"))
+        {
+           outputFile.WriteLine(json_apj);
+        }
+
+
+        return;
     }
 
 

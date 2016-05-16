@@ -16,7 +16,7 @@ public class Mouse3DMovement : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-		mouse = new GameObject ("mouse"); //the mouse has no gmaeobject to add to the list so we create a fake mouse object
+		mouse = new GameObject ("mouse"); //the real mouse has no gmaeobject to add to the list, so we create a fake mouse object
 		availibleControllers.Add(mouse);
 		owner = mouse;
 	}
