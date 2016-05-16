@@ -38,8 +38,7 @@ public class PatientDICOMLoader : MonoBehaviour
         {
             loadingFinished = false;
 
-            if(returnObject != null) {
-                DateTime begin = DateTime.Now;                
+            if(returnObject != null) {              
                 Texture3D tex = new Texture3D(returnObject.texWidth, returnObject.texHeight, returnObject.texDepth, TextureFormat.RGBA32, false);
                 tex.SetPixels(returnObject.colors); //needs around 0.15 sec for a small DICOM, TODO coroutine?
                 tex.Apply();
