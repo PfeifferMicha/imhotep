@@ -11,6 +11,7 @@ public class AnnotationPoint : MonoBehaviour {
     public string creator { get; set; }
     public DateTime creationDate { get; set; }
     public GameObject annotationLabel { get; set; }
+    public Vector3 normal { get; set; }
 
     // Use this for initialization
     void Start () {
