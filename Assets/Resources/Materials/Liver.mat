@@ -161,7 +161,6 @@ Material:
         first:
           name: _amount
         second: 0
-<<<<<<< HEAD
       data:
         first:
           name: _radius
@@ -174,8 +173,6 @@ Material:
         first:
           name: _RimPower
         second: 3
-=======
->>>>>>> 2555874d9002566149632237628b310875471f14
     m_Colors:
       data:
         first:
