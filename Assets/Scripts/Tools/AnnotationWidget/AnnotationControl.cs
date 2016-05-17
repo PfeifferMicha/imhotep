@@ -282,13 +282,13 @@ public class AnnotationControl : MonoBehaviour {
 
         if (!File.Exists(path))
         {
-            using (StreamWriter outputFile = new StreamWriter(currentPatient.path + @"\annotation.json",true))
+            using (StreamWriter outputFile = new StreamWriter(path,true))
             {
                 outputFile.Close();
             }
         }
 
-        using (StreamWriter outputFile = new StreamWriter(currentPatient.path + @"\annotation.json"))
+        using (StreamWriter outputFile = new StreamWriter(path))
         {
             foreach(GameObject ap in annotationPoints)
             {
@@ -323,7 +323,7 @@ public class AnnotationControl : MonoBehaviour {
         clearAllPressed();
 
         Patient currentPatient = Patient.getLoadedPatient();
-        string path = currentPatient.path + "/annotation.json"; //TODO read from meta.json??
+        string path = currentPatient.path + @"\annotation.json"; //TODO read from meta.json??
 
         if (!File.Exists(path))
         {
