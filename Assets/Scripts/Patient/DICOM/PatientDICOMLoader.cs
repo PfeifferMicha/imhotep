@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using itk.simple;
+using System;
 
 
 /*! This class is respondible for parsing DICOM directories and loading the images.
@@ -37,10 +38,9 @@ public class PatientDICOMLoader : MonoBehaviour
         {
             loadingFinished = false;
 
-            if(returnObject != null) {           
-
+            if(returnObject != null) {              
                 Texture3D tex = new Texture3D(returnObject.texWidth, returnObject.texHeight, returnObject.texDepth, TextureFormat.RGBA32, false);
-                tex.SetPixels(returnObject.colors);
+                tex.SetPixels(returnObject.colors); //needs around 0.15 sec for a small DICOM, TODO coroutine?
                 tex.Apply();
 
                 DICOM dicom = new DICOM();
@@ -48,7 +48,6 @@ public class PatientDICOMLoader : MonoBehaviour
                 dicom.setHeader(returnObject.header);
                 dicom.setMaximum((UInt32)returnObject.maxCol);
                 dicom.setMinimum((UInt32)returnObject.minCol);
-
                 mCurrentDICOM = dicom;
 
                 // If a series was loaded successfully, let listeners know:

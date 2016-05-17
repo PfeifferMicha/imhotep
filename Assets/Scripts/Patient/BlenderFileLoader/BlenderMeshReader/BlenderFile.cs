@@ -54,6 +54,68 @@ namespace BlenderMeshReader
         public byte bweight;
     }
 
+
+    [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 104)]
+    struct BoundBox
+    {
+        [FieldOffset(0)]
+        public float vec00;
+        [FieldOffset(4)]
+        public float vec10;
+        [FieldOffset(8)]
+        public float vec20;
+        [FieldOffset(12)]
+        public float vec30;
+        [FieldOffset(16)]
+        public float vec40;
+        [FieldOffset(20)]
+        public float vec50;
+        [FieldOffset(24)]
+        public float vec60;
+        [FieldOffset(28)]
+        public float vec70;
+
+        [FieldOffset(32)]
+        public float vec01;
+        [FieldOffset(36)]
+        public float vec11;
+        [FieldOffset(40)]
+        public float vec21;
+        [FieldOffset(44)]
+        public float vec31;
+        [FieldOffset(48)]
+        public float vec41;
+        [FieldOffset(52)]
+        public float vec51;
+        [FieldOffset(56)]
+        public float vec61;
+        [FieldOffset(60)]
+        public float vec71;
+
+        [FieldOffset(64)]
+        public float vec02;
+        [FieldOffset(68)]
+        public float vec12;
+        [FieldOffset(72)]
+        public float vec22;
+        [FieldOffset(76)]
+        public float vec32;
+        [FieldOffset(80)]
+        public float vec42;
+        [FieldOffset(84)]
+        public float vec52;
+        [FieldOffset(88)]
+        public float vec62;
+        [FieldOffset(92)]
+        public float vec72;
+
+        [FieldOffset(96)]
+        public int flag;
+
+        [FieldOffset(100)]
+        public int pad;
+    }
+
     class BlenderFile
     {
         public static int PointerSize { get; private set; }
@@ -218,6 +280,112 @@ namespace BlenderMeshReader
 
             reader.Close();
             return sList;
+        }
+
+        //Return a list of bounding boxes or an empty list if there are no bounding boxes 
+        public List<BoundingBox> readBoundingBoxes()
+        {
+            List<BoundingBox> result = new List<BoundingBox>();
+
+            //get information about the structure of a mesh block
+            int indexMesh = 0;
+
+            int startPositionBoundBox = -1;
+   
+
+            foreach (Structure s in StructureList)
+            {
+                if (s.Name == "Mesh") //search index of mesh structure and start position of *bb in mesh structure
+                {
+                    indexMesh = s.Index;
+                    int countLenght = 0;
+                    foreach (Field f in s.Fields)
+                    {
+                        if (f.Name == "*bb")
+                        {
+                            startPositionBoundBox = countLenght;
+                        }
+                        countLenght += f.getLength();
+                    }
+                }
+
+            }
+            //read bound box
+            BinaryReader reader = new BinaryReader(File.Open(Filename, FileMode.Open));
+            foreach (FileBlock fileBlock in FileBockList)
+            {
+                if (fileBlock.SDNAIndex == indexMesh)
+                {
+                    //read name
+                    reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + 32;
+                    string name = "";
+                    for (int i = 0; i < 66; i++)
+                    {
+                        char c = reader.ReadChar();
+                        if (c == 0x0)
+                        {
+                            break;
+                        }
+                        name += c;
+                    }
+                    
+                    reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + startPositionBoundBox;
+                    ulong boundBoxAddress = PointerSize == 8 ? reader.ReadUInt64() : reader.ReadUInt32(); //pointer to file block with BoundBox structures
+                    if(boundBoxAddress == 0)
+                    {
+                        continue; //continue if there are no bounding box
+                    }
+
+                    BoundingBox currentBoundingBox = new BoundingBox();
+                    currentBoundingBox.name = name;
+                    result.Add(currentBoundingBox);
+
+                    foreach (FileBlock f in FileBockList)
+                    {
+                        //Read bound box
+                        if (f.OldAddess == boundBoxAddress)
+                        {
+
+                            BoundBox readBoundBox = new BoundBox();
+                            reader.BaseStream.Position = f.StartAddess + (PointerSize == 8 ? 24 : 20);
+                            byte[] readBytes = reader.ReadBytes(f.Count * Marshal.SizeOf(typeof(BoundBox)));
+                            GCHandle pinnedHandle = GCHandle.Alloc(readBoundBox, GCHandleType.Pinned);
+                            Marshal.Copy(readBytes, 0, pinnedHandle.AddrOfPinnedObject(), readBytes.Length);
+                            pinnedHandle.Free();
+
+                            currentBoundingBox.vec[0, 0] = readBoundBox.vec00;
+                            currentBoundingBox.vec[1, 0] = readBoundBox.vec10;
+                            currentBoundingBox.vec[2, 0] = readBoundBox.vec20;
+                            currentBoundingBox.vec[3, 0] = readBoundBox.vec30;
+                            currentBoundingBox.vec[4, 0] = readBoundBox.vec40;
+                            currentBoundingBox.vec[5, 0] = readBoundBox.vec50;
+                            currentBoundingBox.vec[6, 0] = readBoundBox.vec60;
+                            currentBoundingBox.vec[7, 0] = readBoundBox.vec70;
+                            currentBoundingBox.vec[0, 1] = readBoundBox.vec01;
+                            currentBoundingBox.vec[1, 1] = readBoundBox.vec11;
+                            currentBoundingBox.vec[2, 1] = readBoundBox.vec21;
+                            currentBoundingBox.vec[3, 1] = readBoundBox.vec31;
+                            currentBoundingBox.vec[4, 1] = readBoundBox.vec41;
+                            currentBoundingBox.vec[5, 1] = readBoundBox.vec51;
+                            currentBoundingBox.vec[6, 1] = readBoundBox.vec61;
+                            currentBoundingBox.vec[7, 1] = readBoundBox.vec71;
+                            currentBoundingBox.vec[0, 2] = readBoundBox.vec02;
+                            currentBoundingBox.vec[1, 2] = readBoundBox.vec12;
+                            currentBoundingBox.vec[2, 2] = readBoundBox.vec22;
+                            currentBoundingBox.vec[3, 2] = readBoundBox.vec32;
+                            currentBoundingBox.vec[4, 2] = readBoundBox.vec42;
+                            currentBoundingBox.vec[5, 2] = readBoundBox.vec52;
+                            currentBoundingBox.vec[6, 2] = readBoundBox.vec62;
+                            currentBoundingBox.vec[7, 2] = readBoundBox.vec72;
+
+                        }
+                       
+                    }
+                }
+            }
+
+            reader.Close();
+            return result;
         }
 
         public List<BlenderMesh> readMesh()

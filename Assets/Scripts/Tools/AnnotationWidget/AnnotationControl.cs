@@ -2,6 +2,24 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using LitJson;
+using System;
+using System.IO;
+
+public class AnnotationPointJson
+{
+    public string Text { get; set; }
+    public double PositionX { get; set; }
+    public double PositionY { get; set; }
+    public double PositionZ { get; set; }
+    public double RotationW { get; set; }
+    public double RotationX { get; set; }
+    public double RotationY { get; set; }
+    public double RotationZ { get; set; }
+    public string Creator { get; set; }
+    public DateTime CreationDate { get; set; } //TODO
+
+}
 
 public class AnnotationControl : MonoBehaviour {
 
@@ -25,6 +43,23 @@ public class AnnotationControl : MonoBehaviour {
     private Mouse3DMovement mMouse;
     private GameObject currentAnnotatinPoint = null;
     private List<GameObject> annotationPoints = new List<GameObject>();
+
+
+    void OnEnable()
+    {
+        meshNode = GameObject.Find("MeshViewer").GetComponent<Transform>(); //TODO error if name of MeshViewer is changed
+
+        // Register event callbacks:
+        PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Loaded, loadAnnotationFromFile);
+        loadAnnotationFromFile();
+    }
+
+    void OnDisable()
+    {
+        // Unregister myself:
+        PatientEventSystem.stopListening(PatientEventSystem.Event.PATIENT_Loaded, loadAnnotationFromFile);
+        clearAllPressed();
+    }
 
 
     // Use this for initialization
@@ -52,6 +87,7 @@ public class AnnotationControl : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+        //If user pressed "Add Annotation" and clicked 
 		if (Input.GetMouseButtonDown(0) && currentState == State.addAnnotationPressed)
         {
             RaycastHit hit;
@@ -60,24 +96,31 @@ public class AnnotationControl : MonoBehaviour {
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMeshViewLayer))
             {
-				// Calculate quaternion which looks along the normal of the hit surface (hopefully "away" from the object).
-				Quaternion lookDirection = Quaternion.LookRotation( hit.normal );
-
-				GameObject newAnnotationPoint = (GameObject)Instantiate(annotationPointObj, hit.point, lookDirection);
-                newAnnotationPoint.transform.localScale *= meshNode.localScale.x; //x,y,z are the same
-                newAnnotationPoint.transform.parent = meshNode;
-                annotationPoints.Add(newAnnotationPoint);
+                // Calculate quaternion which looks along the normal of the hit surface (hopefully "away" from the object).
+                GameObject newAnnotationPoint = createAnnotationPoint(Quaternion.LookRotation(hit.normal), hit.point);
                 currentAnnotatinPoint = newAnnotationPoint;
-
                 changeCurrentStateToAnnotationPointSelected();
             }
         }
 
     }
 
+    private GameObject createAnnotationPoint(Quaternion rotation, Vector3 point)
+    {
+        GameObject newAnnotationPoint = (GameObject)Instantiate(annotationPointObj, point, rotation);
+        newAnnotationPoint.transform.localScale *= meshNode.localScale.x; //x,y,z are the same
+        newAnnotationPoint.transform.parent = meshNode;
+
+        AnnotationPoint ap = newAnnotationPoint.AddComponent<AnnotationPoint>();
+        ap.enabled = false;
+
+        annotationPoints.Add(newAnnotationPoint);
+        return newAnnotationPoint;
+    }
+
     public void AddAnnotationPressed()
     {
-        if(currentState == State.idle)
+        if (currentState == State.idle)
         {
             changeCurrentStateToAddAnnotationPressed();
         }
@@ -87,30 +130,7 @@ public class AnnotationControl : MonoBehaviour {
     {
         if (currentState == State.annotationPointSelected && currentAnnotatinPoint != null)
         {
-            AnnotationPoint ap = currentAnnotatinPoint.AddComponent<AnnotationPoint>();
-            ap.text = annotationTextInput.text;
-
-            //Create Label
-            GameObject newAnnotationLabel = (GameObject)Instantiate(annotationLabel, currentAnnotatinPoint.transform.position, Quaternion.identity);
-            newAnnotationLabel.transform.localScale *= meshNode.localScale.x; //x,y,z are the same
-			newAnnotationLabel.transform.SetParent( meshNode, true );
-
-			// Since the currentAnnotationPoint faces along the normal of the attached object,
-			// we can get an offset direction from its rotation:
-			Vector3 offsetDirection = currentAnnotatinPoint.transform.localRotation*Vector3.forward;
-			Vector3 offset = offsetDirection * 90;
-
-            //Vector3 offset = new Vector3(90,20,0);
-            newAnnotationLabel.transform.localPosition += offset;
-            ap.annotationLabel = newAnnotationLabel;
-            // Change label text:
-            GameObject textObject = newAnnotationLabel.transform.Find("Button/OverlayImage/Text").gameObject;
-            Text buttonText = textObject.GetComponent<Text>();
-            buttonText.text = ap.text;
-
-            //Create line form point to label
-            currentAnnotatinPoint.GetComponent<LineRenderer>().SetPosition(0, currentAnnotatinPoint.transform.position);
-            currentAnnotatinPoint.GetComponent<LineRenderer>().SetPosition(1, newAnnotationLabel.transform.position);
+            createAnnotationLabelAndLine(currentAnnotatinPoint, annotationTextInput.text);
 
             annotationTextInput.text = "";
             currentAnnotatinPoint = null;
@@ -118,18 +138,50 @@ public class AnnotationControl : MonoBehaviour {
         }
     }
 
+    private void createAnnotationLabelAndLine(GameObject annotationPoint, string textLabel)
+    {
+        AnnotationPoint ap = annotationPoint.GetComponent<AnnotationPoint>();
+        ap.text = textLabel;
+        ap.enabled = true;
+
+        //Create Label
+        GameObject newAnnotationLabel = (GameObject)Instantiate(annotationLabel, annotationPoint.transform.position, annotationPoint.transform.localRotation);
+        newAnnotationLabel.transform.localScale *= meshNode.localScale.x; //x,y,z are the same
+        newAnnotationLabel.transform.SetParent(meshNode, true);
+
+        // Since the currentAnnotationPoint faces along the normal of the attached object,
+        // we can get an offset direction from its rotation:
+        Vector3 offsetDirection = annotationPoint.transform.localRotation * Vector3.forward;
+        Vector3 offset = offsetDirection / 1.5f;
+
+        //Vector3 offset = new Vector3(90,20,0);
+        newAnnotationLabel.transform.localPosition += offset;
+        ap.annotationLabel = newAnnotationLabel;
+        // Change label text:
+        GameObject textObject = newAnnotationLabel.transform.Find("Button/OverlayImage/Text").gameObject;
+        Text buttonText = textObject.GetComponent<Text>();
+        buttonText.text = ap.text;
+
+        //Create line form point to label
+        annotationPoint.GetComponent<LineRenderer>().SetPosition(0, annotationPoint.transform.position);
+        annotationPoint.GetComponent<LineRenderer>().SetPosition(1, newAnnotationLabel.transform.position);
+    }
+
     public void clearAllPressed()
     {
         foreach (GameObject g in annotationPoints)
         {
-            //Destroy Label
-            GameObject label = g.GetComponent<AnnotationPoint>().annotationLabel;
-            if (label != null)
+            if(g != null)
             {
-                Destroy(label);
+                //Destroy Label
+                GameObject label = g.GetComponent<AnnotationPoint>().annotationLabel;
+                if (label != null)
+                {
+                    Destroy(label);
+                }
+                //Delete points
+                Destroy(g);
             }
-            //Delete points
-            Destroy(g);
         }
         //Delete list
         annotationPoints = new List<GameObject>();
@@ -216,6 +268,93 @@ public class AnnotationControl : MonoBehaviour {
         saveButton.gameObject.SetActive(true);
 
         currentState = State.annotationPointSelected;
+    }
+
+    public void saveAnnotationInFile()
+    {
+        if (Patient.getLoadedPatient() == null)
+        {
+            return;
+        }
+
+        Patient currentPatient = Patient.getLoadedPatient();
+        string path = currentPatient.path + @"\annotation.json";
+
+        if (!File.Exists(path))
+        {
+            using (StreamWriter outputFile = new StreamWriter(currentPatient.path + @"\annotation.json",true))
+            {
+                outputFile.Close();
+            }
+        }
+
+        using (StreamWriter outputFile = new StreamWriter(currentPatient.path + @"\annotation.json"))
+        {
+            foreach(GameObject ap in annotationPoints)
+            {
+                AnnotationPointJson apj = new AnnotationPointJson();
+                apj.Text = ap.GetComponent<AnnotationPoint>().text;
+                apj.PositionX = ap.transform.localPosition.x;
+                apj.PositionY = ap.transform.localPosition.y;
+                apj.PositionZ = ap.transform.localPosition.z;
+
+                apj.RotationW = ap.transform.localRotation.w;
+                apj.RotationX = ap.transform.localRotation.x;
+                apj.RotationY = ap.transform.localRotation.y;
+                apj.RotationZ = ap.transform.localRotation.z;
+
+                apj.Creator = ap.GetComponent<AnnotationPoint>().creator;
+                apj.CreationDate = ap.GetComponent<AnnotationPoint>().creationDate;
+                outputFile.WriteLine(JsonMapper.ToJson(apj));
+            }
+            outputFile.Close();
+        }
+        
+        return;
+    }
+
+    private void loadAnnotationFromFile(object obj = null)
+    {
+        if (Patient.getLoadedPatient() == null)
+        {
+            return;
+        }
+
+        clearAllPressed();
+
+        Patient currentPatient = Patient.getLoadedPatient();
+        string path = currentPatient.path + "/annotation.json"; //TODO read from meta.json??
+
+        if (!File.Exists(path))
+        {
+            return;
+        }
+
+        List<AnnotationPointJson> apjList = new List<AnnotationPointJson>();
+
+
+        // Read the file
+        string line;
+        System.IO.StreamReader file = new System.IO.StreamReader(path);
+        while ((line = file.ReadLine()) != null)
+        {
+            AnnotationPointJson apj = JsonMapper.ToObject<AnnotationPointJson>(line);
+            apjList.Add(apj);
+        }
+        file.Close();
+
+        foreach(AnnotationPointJson apj in apjList)
+        {
+            Quaternion rotation = new Quaternion((float)apj.RotationX, (float)apj.RotationY, (float)apj.RotationZ, (float)apj.RotationW);
+            Vector3 position = new Vector3((float)apj.PositionX, (float)apj.PositionY, (float)apj.PositionZ);
+
+            GameObject annotationPoint = createAnnotationPoint(Quaternion.identity, meshNode.transform.TransformPoint(position));
+            annotationPoint.transform.localRotation = rotation;
+            createAnnotationLabelAndLine(annotationPoint, apj.Text);
+        }
+
+        updateAnnotationList();      
+
     }
 
 
