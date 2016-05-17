@@ -58,6 +58,7 @@ public class AnnotationControl : MonoBehaviour {
     {
         // Unregister myself:
         PatientEventSystem.stopListening(PatientEventSystem.Event.PATIENT_Loaded, loadAnnotationFromFile);
+        saveAnnotationInFile();
         clearAllPressed();
     }
 
