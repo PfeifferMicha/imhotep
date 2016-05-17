@@ -800,7 +800,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 11458112}
-        m_MethodName: saveAnnotation
+        m_MethodName: saveAnnotationInFile
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

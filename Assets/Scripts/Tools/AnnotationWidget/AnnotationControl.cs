@@ -14,11 +14,12 @@ public class AnnotationPointJson
     public double PositionX { get; set; }
     public double PositionY { get; set; }
     public double PositionZ { get; set; }
-    public double NormalX { get; set; }
-    public double NormalY { get; set; }
-    public double NormalZ { get; set; }
+    //public double RotationW { get; set; }
+    public double RotationX { get; set; }
+    public double RotationY { get; set; }
+    public double RotationZ { get; set; }
     public string Creator { get; set; }
-    public DateTime CreationDate { get; set; }
+    public DateTime CreationDate { get; set; } //TODO
 
 }
 
@@ -51,14 +52,14 @@ public class AnnotationControl : MonoBehaviour {
         meshNode = GameObject.Find("MeshViewer").GetComponent<Transform>(); //TODO error if name of MeshViewer is changed
 
         // Register event callbacks:
-        PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Loaded, loadAnnotation);
-        loadAnnotation();
+        PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Loaded, loadAnnotationFromFile);
+        loadAnnotationFromFile();
     }
 
     void OnDisable()
     {
         // Unregister myself:
-        PatientEventSystem.stopListening(PatientEventSystem.Event.PATIENT_Loaded, loadAnnotation);
+        PatientEventSystem.stopListening(PatientEventSystem.Event.PATIENT_Loaded, loadAnnotationFromFile);
         clearAllPressed();
     }
 
@@ -108,18 +109,18 @@ public class AnnotationControl : MonoBehaviour {
 
     private GameObject createAnnotationPoint(Vector3 normal, Vector3 point, bool isPointInWorldspace)
     {
-        Quaternion lookDirection = Quaternion.LookRotation(normal);
         Vector3 pointInWorldspace = point;
         if (!isPointInWorldspace)
         {
             pointInWorldspace = meshNode.transform.TransformPoint(point);
         }
-        GameObject newAnnotationPoint = (GameObject)Instantiate(annotationPointObj, pointInWorldspace, lookDirection);
+        Quaternion direction = Quaternion.LookRotation(normal);
+        GameObject newAnnotationPoint = (GameObject)Instantiate(annotationPointObj, pointInWorldspace, direction);
         newAnnotationPoint.transform.localScale *= meshNode.localScale.x; //x,y,z are the same
         newAnnotationPoint.transform.parent = meshNode;
 
         AnnotationPoint ap = newAnnotationPoint.AddComponent<AnnotationPoint>();
-        ap.normal = normal;
+        ap.rotation = normal;
         ap.enabled = false;
 
         annotationPoints.Add(newAnnotationPoint);
@@ -179,14 +180,17 @@ public class AnnotationControl : MonoBehaviour {
     {
         foreach (GameObject g in annotationPoints)
         {
-            //Destroy Label
-            GameObject label = g.GetComponent<AnnotationPoint>().annotationLabel;
-            if (label != null)
+            if(g != null)
             {
-                Destroy(label);
+                //Destroy Label
+                GameObject label = g.GetComponent<AnnotationPoint>().annotationLabel;
+                if (label != null)
+                {
+                    Destroy(label);
+                }
+                //Delete points
+                Destroy(g);
             }
-            //Delete points
-            Destroy(g);
         }
         //Delete list
         annotationPoints = new List<GameObject>();
@@ -275,7 +279,7 @@ public class AnnotationControl : MonoBehaviour {
         currentState = State.annotationPointSelected;
     }
 
-    public void saveAnnotation()
+    public void saveAnnotationInFile()
     {
         if (Patient.getLoadedPatient() == null)
         {
@@ -283,7 +287,15 @@ public class AnnotationControl : MonoBehaviour {
         }
 
         Patient currentPatient = Patient.getLoadedPatient();
-        string path = currentPatient.path + "/annotation.json";
+        string path = currentPatient.path + @"\annotation.json";
+
+        if (!File.Exists(path))
+        {
+            using (StreamWriter outputFile = new StreamWriter(currentPatient.path + @"\annotation.json",true))
+            {
+                outputFile.Close();
+            }
+        }
 
         using (StreamWriter outputFile = new StreamWriter(currentPatient.path + @"\annotation.json"))
         {
@@ -295,9 +307,10 @@ public class AnnotationControl : MonoBehaviour {
                 apj.PositionY = ap.transform.localPosition.y;
                 apj.PositionZ = ap.transform.localPosition.z;
 
-                apj.NormalX = ap.GetComponent<AnnotationPoint>().normal.x;
-                apj.NormalY = ap.GetComponent<AnnotationPoint>().normal.y;
-                apj.NormalZ = ap.GetComponent<AnnotationPoint>().normal.z;
+                //apj.RotationW = ap.GetComponent<AnnotationPoint>().rotation.w;
+                apj.RotationX = ap.GetComponent<AnnotationPoint>().rotation.x;
+                apj.RotationY = ap.GetComponent<AnnotationPoint>().rotation.y;
+                apj.RotationZ = ap.GetComponent<AnnotationPoint>().rotation.z;
 
                 apj.Creator = ap.GetComponent<AnnotationPoint>().creator;
                 apj.CreationDate = ap.GetComponent<AnnotationPoint>().creationDate;
@@ -310,7 +323,7 @@ public class AnnotationControl : MonoBehaviour {
         return;
     }
 
-    private void loadAnnotation(object obj = null)
+    private void loadAnnotationFromFile(object obj = null)
     {
         if (Patient.getLoadedPatient() == null)
         {
@@ -322,14 +335,20 @@ public class AnnotationControl : MonoBehaviour {
         Patient currentPatient = Patient.getLoadedPatient();
         string path = currentPatient.path + "/annotation.json";
 
+        if (!File.Exists(path))
+        {
+            return;
+        }
+
         List<AnnotationPointJson> apjList = new List<AnnotationPointJson>();
 
-        string line;
 
         // Read the file
+        string line;
         System.IO.StreamReader file = new System.IO.StreamReader(path);
         while ((line = file.ReadLine()) != null)
         {
+            Debug.LogWarning(line);
             AnnotationPointJson apj = JsonMapper.ToObject<AnnotationPointJson>(line);
             apjList.Add(apj);
         }
@@ -337,9 +356,11 @@ public class AnnotationControl : MonoBehaviour {
 
         foreach(AnnotationPointJson apj in apjList)
         {
-            Vector3 normal = new Vector3((float)apj.NormalX, (float)apj.NormalY, (float)apj.NormalZ);
+            Debug.LogWarning("Foreach loop");
+            //Quaternion direction = new Quaternion((float)apj.RotationX, (float)apj.RotationY, (float)apj.RotationZ, (float)apj.RotationW);
+            Vector3 rotation = new Vector3((float)apj.RotationX, (float)apj.RotationY, (float)apj.RotationZ);
             Vector3 position = new Vector3((float)apj.PositionX, (float)apj.PositionY, (float)apj.PositionZ);
-            GameObject annotationPoint = createAnnotationPoint(normal, position, false);
+            GameObject annotationPoint = createAnnotationPoint(rotation, position, false);
             createAnnotationLabelAndLine(annotationPoint, apj.Text);
         }
 
