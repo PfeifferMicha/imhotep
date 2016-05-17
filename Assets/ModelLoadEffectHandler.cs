@@ -60,12 +60,15 @@ public class ModelLoadEffectHandler : MonoBehaviour {
 			}
 		}
 
+		// Update the distance of the shaders to the distance between the camera and the camera cutting plane:
 		if (cutMesh) {
-			shaderCuttingPlane.transform.rotation = Quaternion.LookRotation (
-				cameraObject.transform.position - shaderCuttingPlane.transform.position);
 			foreach (Material mat in loadedMaterials) {
 				float distance = Vector3.Distance (cameraObject.transform.position, shaderCuttingPlane.transform.position);
-				mat.SetFloat( "_cuttingPlaneDistToCamera", distance);
+				mat.SetFloat ("_cuttingPlaneDistToCamera", distance);
+			}
+		} else {
+			foreach (Material mat in loadedMaterials) {
+				mat.SetFloat ("_cuttingPlaneDistToCamera", 9999);		// High number: Show everything, no clipping!
 			}
 		}
 	}

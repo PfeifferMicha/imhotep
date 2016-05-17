@@ -12,19 +12,17 @@
 				"Queue"="Geometry"
 				"RenderType"="Opaque"
 			}
-			Cull Front
+			Cull Off
 
 			CGPROGRAM
 			#pragma surface surf Lambert vertex:vert
 			#pragma target 3.0
 
 			struct Input {
-				float3 worldPos;
 				float3 localPos;
 				float3 viewDir;
 				float3 tangentSpaceNormal;
 				float3 tangentSpaceNormalFlipped;
-				INTERNAL_DATA
 			};
 
 			 void vert (inout appdata_full v, out Input o) {
