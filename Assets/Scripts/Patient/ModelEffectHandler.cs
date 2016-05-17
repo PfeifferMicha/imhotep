@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class ModelLoadEffectHandler : MonoBehaviour {
+public class ModelEffectHandler : MonoBehaviour {
 
 	private bool loadingEffectActive = false;
 	private bool currentlyLoadingNewMeshes = false;
