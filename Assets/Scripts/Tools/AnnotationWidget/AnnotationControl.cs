@@ -278,7 +278,7 @@ public class AnnotationControl : MonoBehaviour {
         }
 
         Patient currentPatient = Patient.getLoadedPatient();
-        string path = currentPatient.path + @"\annotation.json";
+        string path = currentPatient.path + "/annotation.json";
 
         if (!File.Exists(path))
         {
@@ -323,7 +323,7 @@ public class AnnotationControl : MonoBehaviour {
         clearAllPressed();
 
         Patient currentPatient = Patient.getLoadedPatient();
-        string path = currentPatient.path + @"\annotation.json"; //TODO read from meta.json??
+        string path = currentPatient.path + "/annotation.json"; //TODO read from meta.json??
 
         if (!File.Exists(path))
         {
