@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
 
 public class OpacityControl : MonoBehaviour {
 
-    public GameObject defaultLine;
+	public GameObject defaultLine;
+	public GameObject clippingPlane;
 
     private MeshLoader mMeshLoader;
 
@@ -19,6 +20,12 @@ public class OpacityControl : MonoBehaviour {
 	{
 		// Unregister myself - no longer receives events (until the next OnEnable() call):
 		PatientEventSystem.stopListening( PatientEventSystem.Event.MESH_LoadedAll, createContent);
+	}
+
+	public void setClippingPlaneDistance( float newVal )
+	{
+		Vector3 pos = clippingPlane.transform.localPosition;
+		clippingPlane.transform.localPosition = new Vector3 (pos.x, pos.y, newVal * 6 - 3);
 	}
 
 
