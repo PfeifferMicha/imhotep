@@ -130,15 +130,19 @@ Material:
       data:
         first:
           name: _min
-        second: -1
+        second: -113.04639
       data:
         first:
           name: _max
-        second: 1
+        second: 165.80002
       data:
         first:
           name: _amount
-        second: 0.5
+        second: 0
+      data:
+        first:
+          name: _cuttingPlaneDistToCamera
+        second: 3
     m_Colors:
       data:
         first:
@@ -147,4 +151,4 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 0.85294116, g: 0.8002594, b: 0.721237, a: 1}
+        second: {r: 0.77205884, g: 0.6918775, b: 0.59039795, a: 1}

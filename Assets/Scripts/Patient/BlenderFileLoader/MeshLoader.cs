@@ -256,6 +256,12 @@ public class MeshLoader : MonoBehaviour {
 			return Resources.Load("Materials/Bone", typeof(Material)) as Material;
 		}
 
+		contains = meshName.IndexOf("ventricles", StringComparison.OrdinalIgnoreCase) >= 0;
+		if( contains )
+		{
+			return Resources.Load("Materials/Ventricles", typeof(Material)) as Material;
+		}
+
 		return null;
 	}
 

@@ -138,15 +138,19 @@ Material:
       data:
         first:
           name: _min
-        second: -0.5
+        second: -60.87683
       data:
         first:
           name: _max
-        second: 0.5
+        second: 69.520676
       data:
         first:
           name: _amount
-        second: 0.2
+        second: 0
+      data:
+        first:
+          name: _cuttingPlaneDistToCamera
+        second: 3
     m_Colors:
       data:
         first:

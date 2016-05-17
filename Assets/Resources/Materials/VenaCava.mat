@@ -146,7 +146,11 @@ Material:
       data:
         first:
           name: _amount
-        second: 1
+        second: 0
+      data:
+        first:
+          name: _cuttingPlaneDistToCamera
+        second: 3
     m_Colors:
       data:
         first:

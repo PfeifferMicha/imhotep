@@ -7,6 +7,10 @@ public class ModelLoadEffectHandler : MonoBehaviour {
 
 	private bool loadingEffectActive = false;
 	private bool currentlyLoadingNewMeshes = false;
+	private bool cutMesh = true;
+
+	public GameObject cameraObject;
+	public GameObject shaderCuttingPlane;
 
 	class LoadObject
 	{
@@ -15,6 +19,7 @@ public class ModelLoadEffectHandler : MonoBehaviour {
 	};
 
 	List<LoadObject> loadingObjects = new List<LoadObject>();
+	List<Material> loadedMaterials = new List<Material>();
 
 	void Start () {
 		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_StartLoading, eventStartLoadingMesh);
@@ -46,6 +51,21 @@ public class ModelLoadEffectHandler : MonoBehaviour {
 			}
 			if (!currentlyLoadingNewMeshes && allMeshesFinishedAnimation) {
 				loadingEffectActive = false;
+				foreach (LoadObject lObj in loadingObjects) {
+					foreach (Transform child in lObj.gameObject.transform) {
+						Material mat = child.gameObject.GetComponent<Renderer> ().material;
+						mat.SetFloat ("_amount", 1.5f);
+					}
+				}
+			}
+		}
+
+		if (cutMesh) {
+			shaderCuttingPlane.transform.rotation = Quaternion.LookRotation (
+				cameraObject.transform.position - shaderCuttingPlane.transform.position);
+			foreach (Material mat in loadedMaterials) {
+				float distance = Vector3.Distance (cameraObject.transform.position, shaderCuttingPlane.transform.position);
+				mat.SetFloat( "_cuttingPlaneDistToCamera", distance);
 			}
 		}
 	}
@@ -53,6 +73,7 @@ public class ModelLoadEffectHandler : MonoBehaviour {
 	void eventStartLoadingMesh( object obj )
 	{
 		loadingObjects = new List<LoadObject>();
+		loadedMaterials = new List<Material>();
 		currentlyLoadingNewMeshes = true;
 		loadingEffectActive = true;
 	}
@@ -83,6 +104,21 @@ public class ModelLoadEffectHandler : MonoBehaviour {
 					loadObject.gameObject = parentObject;
 					loadObject.amount = 0.0f;
 					loadingObjects.Add (loadObject);
+				}
+
+
+				Material newMaterial = gameObject.GetComponent<Renderer> ().material;
+				bool found = false;
+				// If the material is not yet in the list, add it:
+				foreach (Material mat in loadedMaterials) {
+					if( mat == newMaterial )
+					{
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					loadedMaterials.Add( newMaterial );
 				}
 			}
 		}
