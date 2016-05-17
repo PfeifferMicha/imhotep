@@ -8,6 +8,6 @@ public class TargetLooker : MonoBehaviour {
 	void Update () {
 		// Always look at target:
 		transform.rotation = Quaternion.LookRotation (
-			targetObject.transform.position - transform.position);
+			targetObject.transform.position - transform.position, targetObject.transform.up);
 	}
 }
