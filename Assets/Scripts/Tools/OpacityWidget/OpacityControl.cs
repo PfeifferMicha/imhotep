@@ -25,7 +25,7 @@ public class OpacityControl : MonoBehaviour {
 	public void setClippingPlaneDistance( float newVal )
 	{
 		Vector3 pos = clippingPlane.transform.localPosition;
-		clippingPlane.transform.localPosition = new Vector3 (pos.x, pos.y, newVal * 6 - 3);
+		clippingPlane.transform.localPosition = new Vector3 (pos.x, pos.y, - newVal * 6 + 3);
 	}
 
 

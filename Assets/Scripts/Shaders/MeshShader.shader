@@ -84,7 +84,7 @@
 				burnDist2 = clamp( pow(burnDist2,3), 0.0, 1.0 );
 
 				float burnDist3 = 1.0-distToCuttingPlane*100;
-				//burnDist3 = clamp( pow(burnDist3,3), 0.0, 1.0 );
+				burnDist3 = clamp( burnDist3, 0.0, 1.0 );
 
 
 				//float amount1 = 10*dist-9;
