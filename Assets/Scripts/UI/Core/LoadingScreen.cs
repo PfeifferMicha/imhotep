@@ -79,6 +79,9 @@ public class LoadingScreen : MonoBehaviour {
 		// If all jobs have finished, close loading screen:
 		if (activeJobs.Count <= 0) {
 			LoadingScreenWidget.SetActive (false);
+			// Let others know that loading is considered finished:
+			// (TODO: maybe move this elsewhere?
+			PatientEventSystem.triggerEvent( PatientEventSystem.Event.PATIENT_FinishedLoading );
 		}
 	}
 	void updateInfo ()

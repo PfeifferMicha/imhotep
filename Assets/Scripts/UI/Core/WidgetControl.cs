@@ -1,54 +1,35 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace UI
 {
     public class WidgetControl : MonoBehaviour
     {
 
+		public GameObject PatientLoaderButton;		// Button which starts the patient loader
+		public GameObject ToolLoaderButton;			// Button which starts a tool
+		public GameObject PatientCloseButton;			// Button which starts a tool
+
+		// Widgets:
+		public GameObject PatientLoaderWidget;
         public GameObject[] AvailableWidgets;
 
-		private GameObject mScrollView;
+		private List<GameObject> ToolButtonList = new List<GameObject> ();
+
 		private Camera UICamera;
 
         // Use this for initialization
         void Start()
-        {
-            mScrollView = transform.Find("Canvas/Scroll View").gameObject;
-
-            // Find the default button and disable it:
-            GameObject defaultWidgetButton = mScrollView.transform.Find("Viewport/Content/WidgetSelectorButton").gameObject;
-            defaultWidgetButton.SetActive(false);
-            
-            string msg = "Available Widgets:\n";
-            foreach (GameObject widget in AvailableWidgets)
-            {
-                // Create a new instance of the list button:
-                GameObject newButton = Instantiate(defaultWidgetButton);
-                newButton.SetActive(true);
-
-                // Attach the new button to the list:
-                newButton.transform.SetParent(defaultWidgetButton.transform.parent, false);
-
-                // Change button text to name of tool:
-                GameObject textObject = newButton.transform.Find("OverlayImage/Text").gameObject;
-                Text t = textObject.GetComponent<Text>();
-                t.text = widget.name;
-
-                GameObject captured = widget;       // needed, because otherwise this is changed every iteration
-
-                // Set the button actions:
-                Button b = newButton.GetComponent<Button>();
-                b.onClick.AddListener(() => HideWidgetList());
-                b.onClick.AddListener(() => StartWidget(captured));
-
-                msg += widget.name + "\n";
-            }
-            Debug.Log(msg);
-
+		{
+			ToolLoaderButton.SetActive (false);
+			PatientCloseButton.SetActive (false);
 
 			UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
+
+			// Whenever a Patient has been loaded, display the tool list:
+			PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_FinishedLoading, ShowWidgetList);
         }
 
         // Update is called once per frame
@@ -70,14 +51,70 @@ namespace UI
 			UI.UICore.HighlightSelectedWidget (newWidget.transform);
         }
 
-        public void ShowWidgetList()
+		public void ShowPatientLoader()
+		{
+			PatientLoaderButton.SetActive (false);
+			StartWidget (PatientLoaderWidget);
+		}
+
+		public void ClosePatient()
+		{
+			//ToolLoaderButton.
+			HideWidgetList();
+			PatientLoaderButton.SetActive (true);
+		}
+
+		public void ShowWidgetList( object obj = null )
         {
-            mScrollView.SetActive(true);
+			ToolButtonList.Clear ();
+			PatientLoaderButton.SetActive (false);
+
+			float width = ToolLoaderButton.GetComponent<RectTransform>().rect.width;
+
+			int numOfToolButtons = AvailableWidgets.Length + 1;
+			int iter = 0;
+			foreach (GameObject widget in AvailableWidgets)
+			{
+				// Create a new instance of the list button:
+				GameObject newButton = Instantiate(ToolLoaderButton);
+				newButton.SetActive(true);
+
+				// Attach the new button to the list:
+				newButton.transform.SetParent(ToolLoaderButton.transform.parent, false);
+
+				Vector3 pos = newButton.transform.localPosition;
+				newButton.transform.localPosition = new Vector3 (
+					-(numOfToolButtons - 1)*width*0.5f + iter*width, pos.y, pos.z);
+
+				// Change button text to name of tool:
+				GameObject textObject = newButton.transform.Find("OverlayImage/Text").gameObject;
+				Text t = textObject.GetComponent<Text>();
+				t.text = widget.name;
+
+				GameObject captured = widget;       // needed, because otherwise this is changed every iteration
+
+				// Set the button actions:
+				Button b = newButton.GetComponent<Button>();
+				b.onClick.AddListener(() => StartWidget(captured));
+
+				ToolButtonList.Add (newButton);
+
+				iter++;
+			}
+
+			Vector3 position = PatientCloseButton.transform.localPosition;
+			PatientCloseButton.transform.localPosition = new Vector3 (
+				-(numOfToolButtons - 1)*width*0.5f + iter*width, position.y, position.z);
+			PatientCloseButton.SetActive (true);
         }
 
         public void HideWidgetList()
         {
-            mScrollView.SetActive(false);
+			foreach (GameObject toolButton in ToolButtonList) {
+				Destroy (toolButton);
+			}
+			ToolButtonList.Clear ();
+			PatientCloseButton.SetActive (false);
         }
         
     }
