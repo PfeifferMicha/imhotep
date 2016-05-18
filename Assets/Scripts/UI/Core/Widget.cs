@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 
@@ -6,6 +7,8 @@ namespace UI
 {
     public class Widget : MonoBehaviour
     {
+		public Sprite ToolIcon;
+
         public void OnEnable()
         {
         }

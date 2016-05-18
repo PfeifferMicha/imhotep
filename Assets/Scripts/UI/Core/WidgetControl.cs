@@ -91,7 +91,14 @@ namespace UI
 				Text t = textObject.GetComponent<Text>();
 				t.text = widget.name;
 
-				GameObject captured = widget;       // needed, because otherwise this is changed every iteration
+				GameObject imgObject = newButton.transform.Find("OverlayImage/Image").gameObject;
+				Image im = imgObject.GetComponent<Image> ();
+				Widget widg = widget.GetComponent<Widget>();
+				if (widg != null && widg.ToolIcon != null) {
+					im.sprite = widg.ToolIcon;
+				}
+
+				GameObject captured = widget;       // needed, because otherwise the 'widget' variable is changed every iteration
 
 				// Set the button actions:
 				Button b = newButton.GetComponent<Button>();
