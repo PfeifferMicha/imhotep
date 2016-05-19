@@ -11,6 +11,7 @@ public class ModelEffectHandler : MonoBehaviour {
 
 	public GameObject cameraObject;
 	public GameObject shaderCuttingPlane;
+	public GameObject meshNode;
 
 	class LoadObject
 	{
@@ -64,7 +65,9 @@ public class ModelEffectHandler : MonoBehaviour {
 		if (cutMesh) {
 			foreach (Material mat in loadedMaterials) {
 				float distance = Vector3.Distance (cameraObject.transform.position, shaderCuttingPlane.transform.position);
-				mat.SetFloat ("_cuttingPlaneDistToCamera", distance);
+				//mat.SetFloat ("_cuttingPlaneDistToCamera", distance);
+				mat.SetVector ("_cuttingPlanePosition", meshNode.transform.InverseTransformPoint(shaderCuttingPlane.transform.position));
+				mat.SetVector ("_cuttingPlaneNormal", meshNode.transform.InverseTransformDirection( shaderCuttingPlane.transform.forward ) );
 			}
 		} else {
 			foreach (Material mat in loadedMaterials) {

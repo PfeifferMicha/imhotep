@@ -107,6 +107,22 @@ Material:
         second: 0.5
       data:
         first:
+          name: _min
+        second: -64.6823
+      data:
+        first:
+          name: _max
+        second: 73.318405
+      data:
+        first:
+          name: _amount
+        second: 0
+      data:
+        first:
+          name: _cuttingPlaneDistToCamera
+        second: 3
+      data:
+        first:
           name: _Parallax
         second: 0.02
       data:
@@ -151,24 +167,8 @@ Material:
         second: 83.88541
       data:
         first:
-          name: _min
-        second: -64.6823
-      data:
-        first:
-          name: _max
-        second: 168.8357
-      data:
-        first:
-          name: _amount
-        second: 0
-      data:
-        first:
           name: _radius
         second: 1
-      data:
-        first:
-          name: _cuttingPlaneDistToCamera
-        second: 3
       data:
         first:
           name: _RimPower
@@ -190,3 +190,11 @@ Material:
         first:
           name: _RimColor
         second: {r: 0.25999996, g: 0.18999997, b: 0.15999997, a: 0}
+      data:
+        first:
+          name: _cuttingPlaneNormal
+        second: {r: 1, g: 0, b: 0, a: 1}
+      data:
+        first:
+          name: _cuttingPlanePosition
+        second: {r: 0, g: 0, b: 0, a: 1}

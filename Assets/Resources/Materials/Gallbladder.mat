@@ -93,6 +93,22 @@ Material:
         second: 0.5
       data:
         first:
+          name: _min
+        second: 0
+      data:
+        first:
+          name: _max
+        second: 71.30249
+      data:
+        first:
+          name: _amount
+        second: 0
+      data:
+        first:
+          name: _cuttingPlaneDistToCamera
+        second: 3
+      data:
+        first:
           name: _Parallax
         second: 0.02
       data:
@@ -135,22 +151,6 @@ Material:
         first:
           name: _maxY
         second: 15.38076
-      data:
-        first:
-          name: _min
-        second: 0
-      data:
-        first:
-          name: _max
-        second: 83.92871
-      data:
-        first:
-          name: _amount
-        second: 0
-      data:
-        first:
-          name: _cuttingPlaneDistToCamera
-        second: 3
     m_Colors:
       data:
         first:
@@ -160,3 +160,11 @@ Material:
         first:
           name: _Color
         second: {r: 0.001558, g: 0.64, b: 0.027655, a: 1}
+      data:
+        first:
+          name: _cuttingPlaneNormal
+        second: {r: 1, g: 0, b: 0, a: 1}
+      data:
+        first:
+          name: _cuttingPlanePosition
+        second: {r: 0, g: 0, b: 0, a: 1}
