@@ -50,7 +50,7 @@ public class AnnotationControl : MonoBehaviour {
 
     void OnEnable()
     {
-        meshNode = GameObject.Find("MeshViewer").GetComponent<Transform>(); //TODO error if name of MeshViewer is changed
+        meshNode = GameObject.Find("MeshViewer/MeshRotationNode").GetComponent<Transform>(); //TODO error if name of MeshViewer is changed
 
         // Register event callbacks:
         PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Loaded, loadAnnotationFromFile);
@@ -72,7 +72,7 @@ public class AnnotationControl : MonoBehaviour {
 		mouseInputModul = GameObject.Find ("GlobalScript").GetComponent<MouseInputModule>();
 
         mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> (); //TODO error if name of Mouse3D is changed
-        meshNode = GameObject.Find("MeshViewer").GetComponent<Transform>(); //TODO error if name of MeshViewer is changed
+        meshNode = GameObject.Find("MeshViewer/MeshRotationNode").GetComponent<Transform>(); //TODO error if name of MeshViewer is changed
 
         if(annotationPointObj == null)
         {
@@ -142,6 +142,8 @@ public class AnnotationControl : MonoBehaviour {
             annotationTextInput.text = "";
             currentAnnotatinPoint = null;
             changeCurrentStateToIdle();
+
+            saveAnnotationInFile();
         }
     }
 
