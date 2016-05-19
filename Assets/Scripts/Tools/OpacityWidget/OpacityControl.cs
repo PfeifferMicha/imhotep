@@ -6,7 +6,9 @@ using System.Collections.Generic;
 public class OpacityControl : MonoBehaviour {
 
 	public GameObject defaultLine;
-	public GameObject clippingPlane;
+	public GameObject mainControlSliderObject = null;
+	private Slider mainControlSlider = null;
+	private GameObject clippingPlane = null;
 
     private MeshLoader mMeshLoader;
 
@@ -14,18 +16,45 @@ public class OpacityControl : MonoBehaviour {
 	{
 		// Register event callbacks for MESH events:
 		PatientEventSystem.startListening (PatientEventSystem.Event.MESH_LoadedAll, createContent);
+
+		// Try to locate the clipping plane:
+		if (clippingPlane == null) {
+			GameObject meshViewer = GameObject.Find ("MeshViewer");
+			if (meshViewer != null) {
+				clippingPlane = new GameObject ();
+				clippingPlane.transform.SetParent (meshViewer.transform);
+
+				GameObject plane = GameObject.CreatePrimitive (PrimitiveType.Plane);
+				plane.transform.SetParent (clippingPlane.transform, false);
+				plane.transform.localScale = new Vector3 (0.35f, 0.35f, 0.35f);
+				plane.transform.Rotate (new Vector3 (-90f, 0f, 0f));
+
+				Material newMat = Resources.Load("Materials/ShaderCuttingPlane", typeof(Material)) as Material;
+				plane.GetComponent<Renderer>().material =  newMat;
+				//clippingPlane = meshViewer.transform.FindChild ("ShaderCuttingPlane").gameObject;
+			}
+		}
+
+		mainControlSlider = mainControlSliderObject.GetComponent<Slider> ();
+		mainControlSlider.value = 0.5f;
+		//setClippingPlaneDistance (0.5f);
 	}
 
 	void OnDisable()
 	{
 		// Unregister myself - no longer receives events (until the next OnEnable() call):
 		PatientEventSystem.stopListening( PatientEventSystem.Event.MESH_LoadedAll, createContent);
+
+		if (clippingPlane != null) {
+			Destroy (clippingPlane);
+			clippingPlane = null;
+		}
 	}
 
 	public void setClippingPlaneDistance( float newVal )
 	{
 		Vector3 pos = clippingPlane.transform.localPosition;
-		clippingPlane.transform.localPosition = new Vector3 (pos.x, pos.y, - newVal * 6 + 3);
+		clippingPlane.transform.localPosition = new Vector3 (pos.x, pos.y, newVal * 4 - 2);
 	}
 
 
@@ -36,6 +65,8 @@ public class OpacityControl : MonoBehaviour {
 		if (mMeshLoader.MeshGameObjectContainers.Count != 0) {
 			createContent ();
 		}
+
+
 	}
 	
 	// Update is called once per frame
