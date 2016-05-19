@@ -4,7 +4,8 @@
 		_min("Min Scan Effect", float) = -1.0
 		_max("Max Scan Effect", float) = 1.0
 		_amount("Amount", float) = 0.5
-		_cuttingPlaneDistToCamera("cuttingPlaneDistToCamera", float) = 3.0
+		_cuttingPlanePosition("Cutting Plane Position", Vector) = (0,1,0,1)
+		_cuttingPlaneNormal("Cutting Plane Normal", Vector) = (1,0,0,1)
 	}
 	SubShader {
 
@@ -50,7 +51,8 @@
 			float _amount;
 			float _min;
 			float _max;
-			float _cuttingPlaneDistToCamera;
+			float4 _cuttingPlanePosition;
+			float4 _cuttingPlaneNormal = float4( 1,0,0,1 );
 			float3 burnCol;
 
 			void surf (Input IN, inout SurfaceOutput o) {
@@ -70,11 +72,8 @@
 
 
 				// Clip anything infront of the clipping plane:
-				//float distToCamera = distance( _WorldSpaceCameraPos, IN.worldPos );
-				float4 vec = mul( UNITY_MATRIX_MV, float4( IN.localPos.xyz, 1.0) );
-				float distToCamera = -vec.z;
-				float distToCuttingPlane = distToCamera - _cuttingPlaneDistToCamera;
-				clip( distToCuttingPlane );
+				float ang = dot( _cuttingPlaneNormal.xyz, IN.localPos - _cuttingPlanePosition );
+				clip(ang);
 
 				// Add some color if we're close to the cutting planes:
 				dist = dist/fullRange;
@@ -83,14 +82,14 @@
 				float burnDist2 = 1.0-dist*15;
 				burnDist2 = clamp( pow(burnDist2,3), 0.0, 1.0 );
 
-				float burnDist3 = 1.0-distToCuttingPlane*100;
-				burnDist3 = clamp( burnDist3, 0.0, 1.0 );
+				//float burnDist3 = 1.0-distToCuttingPlane*100;
+				//burnDist3 = clamp( burnDist3, 0.0, 1.0 );
 
 
 				//float amount1 = 10*dist-9;
 				burnCol = float3(1.0,0.8,0.4)*burnDist1;
 				burnCol += float3(1.0,1.0,1.0)*burnDist2;
-				burnCol += float3(1.0,0.4,0.4)*burnDist3;
+				burnCol += float3(1.0,0.4,0.4)*(1-ang);
 
 				o.Emission = burnCol;
 				o.Albedo = _Color;
