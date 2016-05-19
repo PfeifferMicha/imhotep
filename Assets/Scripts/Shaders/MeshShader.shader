@@ -1,11 +1,11 @@
 ﻿Shader "Custom/MeshShader" {
 	Properties {
-		_Color ("Color", Color) = (1.0, 0.6, 0.6, 1.0)
+		_Color ("Color", Color) = (0.6, 0.6, 0.6, 1.0)
 		_min("Min Scan Effect", float) = -1.0
 		_max("Max Scan Effect", float) = 1.0
 		_amount("Amount", float) = 0.5
-		_cuttingPlanePosition("Cutting Plane Position", Vector) = (0,1,0,1)
-		_cuttingPlaneNormal("Cutting Plane Normal", Vector) = (1,0,0,1)
+		_cuttingPlanePosition("Cutting Plane Position", Vector) = (9999,0,0,1)
+		_cuttingPlaneNormal("Cutting Plane Normal", Vector) = (-1,0,0,1)
 	}
 	SubShader {
 
