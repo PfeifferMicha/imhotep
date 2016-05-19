@@ -74,6 +74,7 @@
 				// Clip anything infront of the clipping plane:
 				float ang = dot( _cuttingPlaneNormal.xyz, IN.localPos - _cuttingPlanePosition );
 				clip(ang);
+				ang = clamp(ang,0.0,1.0);
 
 				// Add some color if we're close to the cutting planes:
 				dist = dist/fullRange;
