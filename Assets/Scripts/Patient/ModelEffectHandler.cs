@@ -32,7 +32,7 @@ public class ModelEffectHandler : MonoBehaviour {
 		if (loadingEffectActive) {
 			bool allMeshesFinishedAnimation = true;
 			foreach (LoadObject lObj in loadingObjects) {
-				lObj.amount += Time.deltaTime*0.35f;
+				lObj.amount += Time.deltaTime*0.25f;
 
 				float amount;
 				if (currentlyLoadingNewMeshes) {

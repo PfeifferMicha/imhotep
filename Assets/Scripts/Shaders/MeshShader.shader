@@ -67,7 +67,7 @@
 				//amount = t - floor(t);
 				float fullRange = (_min-_max);
 				float zPos = _min - _amount*fullRange;
-				float dist = IN.localPos.z - zPos + _amount*(1.1-_amount)*30*sin( IN.localPos.x/5 + IN.localPos.y/5 );
+				float dist = IN.localPos.z - zPos + _amount*(1.1-_amount)*30*sin( (IN.localPos.x/10) + (IN.localPos.y/8) );
 				clip( -dist );
 
 
@@ -78,7 +78,7 @@
 
 				// Add some color if we're close to the cutting planes:
 				dist = dist/fullRange;
-				float burnDist1 = 1.0-dist*2;
+				float burnDist1 = 1.0-dist*4;
 				burnDist1 = clamp( pow(burnDist1,3), 0.0, 1.0 );
 				float burnDist2 = 1.0-dist*15;
 				burnDist2 = clamp( pow(burnDist2,3), 0.0, 1.0 );
@@ -90,8 +90,9 @@
 				//float amount1 = 10*dist-9;
 				//burnCol = float3(0.1,0.7,1.0)*burnDist1;
 				//burnCol += float3(0.7,0.8,1.0)*burnDist2;
-				burnCol = float3(0.0,0.5,1.0)*burnDist1;
-				burnCol += float3(0.9,0.9,1.0)*burnDist2;
+				burnCol = float3(0.0,0.3,1.0)*burnDist1;
+				burnCol += float3(1.0,1.0,1.0)*burnDist2;
+				burnCol = float3( burnCol.b, burnCol.g, burnCol.r );
 				burnCol += float3(1.0,0.4,0.4)*(1-ang);
 
 				o.Emission = burnCol;
