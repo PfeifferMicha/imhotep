@@ -19,15 +19,15 @@ Material:
       data:
         first:
           name: _min
-        second: -1
+        second: -61.135895
       data:
         first:
           name: _max
-        second: 1
+        second: 6.9795074
       data:
         first:
           name: _amount
-        second: 0.5
+        second: 0
     m_Colors:
       data:
         first:

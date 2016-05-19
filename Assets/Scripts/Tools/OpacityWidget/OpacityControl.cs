@@ -8,10 +8,18 @@ public class OpacityControl : MonoBehaviour {
 	public GameObject defaultLine;
 	public GameObject mainControlSliderObject = null;
 	private Slider mainControlSlider = null;
-	private GameObject clippingPlane = null;
+
+	private GameObject meshViewer = null;
 	private GameObject meshNode = null;
 
-	private List<GameObject> loadedObjects = new List<GameObject>();
+	public class ClippableObject
+	{
+		public GameObject meshObject = null;
+		public GameObject clippingPlane = null;
+		public GameObject slider = null;
+	}
+
+	private List<ClippableObject> loadedObjects = new List<ClippableObject>();
 
     private MeshLoader mMeshLoader;
 
@@ -20,24 +28,12 @@ public class OpacityControl : MonoBehaviour {
 		// Register event callbacks for MESH events:
 		PatientEventSystem.startListening (PatientEventSystem.Event.MESH_LoadedAll, createContent);
 
-		// Try to locate the clipping plane:
-		if (clippingPlane == null) {
-			GameObject meshViewer = GameObject.Find ("MeshViewer");
+		if (meshViewer == null || meshNode == null) {
+			meshViewer = GameObject.Find ("MeshViewer");
 			if (meshViewer != null) {
 
+				// Get the node which the objects are attached to:
 				meshNode = meshViewer.transform.Find ("MeshRotationNode/MeshPositionNode").gameObject;
-
-				clippingPlane = new GameObject ();
-				clippingPlane.transform.SetParent (meshViewer.transform, false);
-
-				GameObject plane = GameObject.CreatePrimitive (PrimitiveType.Plane);
-				plane.transform.SetParent (clippingPlane.transform, false);
-				plane.transform.localScale = new Vector3 (0.35f, 0.35f, 0.35f);
-				plane.transform.Rotate (new Vector3 (-90f, 0f, 0f));
-
-				Material newMat = Resources.Load("Materials/ShaderCuttingPlane", typeof(Material)) as Material;
-				plane.GetComponent<Renderer>().material =  newMat;
-				//clippingPlane = meshViewer.transform.FindChild ("ShaderCuttingPlane").gameObject;
 			}
 		}
 
@@ -50,18 +46,16 @@ public class OpacityControl : MonoBehaviour {
 	{
 		// Unregister myself - no longer receives events (until the next OnEnable() call):
 		PatientEventSystem.stopListening( PatientEventSystem.Event.MESH_LoadedAll, createContent);
-
-		if (clippingPlane != null) {
-			Destroy (clippingPlane);
-			clippingPlane = null;
-		}
 		ClearContent ();
 	}
 
 	public void setClippingPlaneDistance( float newVal )
 	{
-		Vector3 pos = clippingPlane.transform.localPosition;
-		clippingPlane.transform.localPosition = new Vector3 (pos.x, pos.y, newVal * 4 - 2);
+		//Vector3 pos = clippingPlane.transform.localPosition;
+		//clippingPlane.transform.localPosition = new Vector3 (pos.x, pos.y, newVal * 4 - 2);
+		foreach (ClippableObject clippable in loadedObjects) {
+			clippable.slider.GetComponent<Slider> ().value = newVal;
+		}
 	}
 
 
@@ -78,12 +72,12 @@ public class OpacityControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		foreach( GameObject container in loadedObjects ) {
-			foreach (Transform g in container.transform) {
+		foreach( ClippableObject clippable in loadedObjects ) {
+			foreach (Transform g in clippable.meshObject.transform) {
 				Material mat = g.GetComponent<Renderer> ().material;
 
-				mat.SetVector ("_cuttingPlanePosition", meshNode.transform.InverseTransformPoint (clippingPlane.transform.position));
-				mat.SetVector ("_cuttingPlaneNormal", meshNode.transform.InverseTransformDirection (clippingPlane.transform.forward));
+				mat.SetVector ("_cuttingPlanePosition", meshNode.transform.InverseTransformPoint (clippable.clippingPlane.transform.position));
+				mat.SetVector ("_cuttingPlaneNormal", meshNode.transform.InverseTransformDirection (clippable.clippingPlane.transform.forward));
 			}
 		}
     }
@@ -94,6 +88,10 @@ public class OpacityControl : MonoBehaviour {
 
         foreach(GameObject g in mMeshLoader.MeshGameObjectContainers)
         {
+			// Remember the object:
+			ClippableObject clippable = GenerateClippingPlane( g );
+			loadedObjects.Add ( clippable );
+
             // Create a new instance of the list button:
             GameObject newLine = Instantiate(defaultLine).gameObject;
             newLine.SetActive(true);
@@ -103,20 +101,21 @@ public class OpacityControl : MonoBehaviour {
 
             //Save game object in slider
             GameObject slider = newLine.transform.Find("Slider").gameObject;
-            slider.GetComponent<OpacitySlider>().gameObjectToChangeOpacity = g;
+			slider.GetComponent<OpacitySlider>().objectToClip = clippable;
+			slider.GetComponent<Slider> ().value = 0.5f;
 
-            // Change button text to name of tool:
+            // Change button text to name of object:
             GameObject textObject = newLine.transform.Find("Text").gameObject;
             Text buttonText = textObject.GetComponent<Text>();
             buttonText.text = g.name;
 
-			loadedObjects.Add (g);
+			clippable.slider = slider;
         }
     }
 
 	void ClearContent()
 	{
-		//Destroy all object except for default line
+		//Destroy all sliders:
 		for(int i = 0; i < defaultLine.transform.parent.childCount; i++)
 		{
 			if(i != 0) //TODO !=0
@@ -126,16 +125,38 @@ public class OpacityControl : MonoBehaviour {
 		}
 
 		// Reset shader for each of the loaded objects:
-		foreach( GameObject container in loadedObjects ) {
-			foreach (Transform g in container.transform) {
+		foreach( ClippableObject clippable in loadedObjects ) {
+			foreach (Transform g in clippable.meshObject.transform) {
 				Material mat = g.GetComponent<Renderer> ().material;
 
 				mat.SetVector ("_cuttingPlanePosition", new Vector4( 9999f, 0f, 0f, 1f ) );
 				mat.SetVector ("_cuttingPlaneNormal", new Vector4( -1f, 0f, 0f, 1f ) );
 			}
+			Destroy (clippable.clippingPlane);
 		}
 
 		// Clear previously loaded objects:
-		loadedObjects = new List<GameObject>();
+		loadedObjects = new List<ClippableObject>();
+	}
+
+	ClippableObject GenerateClippingPlane( GameObject meshObject )
+	{
+		// Generate the new clipping plane:
+		GameObject clippingPlane = new GameObject( "ClippingPlane" );
+		clippingPlane.transform.SetParent (meshViewer.transform, false);
+
+		GameObject plane = GameObject.CreatePrimitive (PrimitiveType.Plane);
+		plane.transform.SetParent (clippingPlane.transform, false);
+		plane.transform.localScale = new Vector3 (0.35f, 0.35f, 0.35f);
+		plane.transform.Rotate (new Vector3 (-90f, 0f, 0f));
+
+		Material newMat = Resources.Load("Materials/ShaderCuttingPlane", typeof(Material)) as Material;
+		plane.GetComponent<Renderer>().material =  newMat;
+
+		ClippableObject obj = new ClippableObject ();
+		obj.meshObject = meshObject;
+		obj.clippingPlane = clippingPlane;
+
+		return obj;
 	}
 }

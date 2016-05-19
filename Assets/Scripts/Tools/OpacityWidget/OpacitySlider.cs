@@ -3,7 +3,7 @@ using System.Collections;
 
 public class OpacitySlider : MonoBehaviour {
 
-    public GameObject gameObjectToChangeOpacity { get; set; }
+	public OpacityControl.ClippableObject objectToClip { get; set; }
 
 	// Use this for initialization
 	void Start () {
@@ -15,13 +15,9 @@ public class OpacitySlider : MonoBehaviour {
 	
 	}
 
-    public void changeOpacity(float f)
+    public void MoveClippingPlane(float f)
     {
-        Debug.Log(f);
-        foreach(MeshRenderer mr in gameObjectToChangeOpacity.GetComponentsInChildren<MeshRenderer>())
-        {
-            mr.material.color = new Color(mr.material.color.r, mr.material.color.g, mr.material.color.b, f);
-            //TODO How to change alpha???
-        }
+		Vector3 pos = objectToClip.clippingPlane.transform.localPosition;
+		objectToClip.clippingPlane.transform.localPosition = new Vector3 (pos.x, pos.y, f * 4 - 2);
     }
 }
