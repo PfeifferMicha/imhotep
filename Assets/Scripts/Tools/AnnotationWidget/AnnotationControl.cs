@@ -31,13 +31,6 @@ public class AnnotationControl : MonoBehaviour {
     public Button saveButton;
     public Button annotationListButton;
 
-    private enum State
-    {
-        idle,
-        addAnnotationPressed,
-        annotationPointSelected,
-        //textEntered
-    }
 
     private State currentState = State.idle;
     private Transform meshNode;
@@ -46,6 +39,14 @@ public class AnnotationControl : MonoBehaviour {
     private List<GameObject> annotationPoints = new List<GameObject>();
 
 	private MouseInputModule mouseInputModul;
+
+    private enum State
+    {
+        idle,
+        addAnnotationPressed,
+        annotationPointSelected,
+        //textEntered
+    }
 
     void OnEnable()
     {
@@ -218,7 +219,6 @@ public class AnnotationControl : MonoBehaviour {
             // Change button text to name of tool:
             GameObject textObject = newButton.transform.Find("OverlayImage/Text").gameObject;
             Text buttonText = textObject.GetComponent<Text>();
-
             AnnotationPoint ap = g.GetComponent<AnnotationPoint>();
             if(ap != null)
             {
@@ -361,6 +361,50 @@ public class AnnotationControl : MonoBehaviour {
 
         updateAnnotationList();      
 
+    }
+
+    public void deleteOneAnnotation(GameObject self)
+    {
+        Transform buttonWithText = self.transform.parent;
+        Text buttonText = buttonWithText.Find("OverlayImage/Text").gameObject.GetComponent<Text>();
+
+        //Delete point and label
+        foreach (GameObject g in annotationPoints)
+        {
+            //TODO dont use name to find the right game object
+            if (g.GetComponent<AnnotationPoint>().text == buttonText.text)
+            {
+                //Destroy Label
+                GameObject label = g.GetComponent<AnnotationPoint>().annotationLabel;
+                if (label != null)
+                {
+                    Destroy(label);
+                }
+                //Delete points
+                Destroy(g);
+            }
+        }
+
+        //Delete object in list
+        GameObject objToRemove = null;
+        foreach (GameObject g in annotationPoints)
+        {
+            if(g.GetComponent<AnnotationPoint>().text == buttonText.text)
+            {
+                objToRemove = g;
+                break;
+            }
+        }
+        if(objToRemove != null)
+        {
+            annotationPoints.Remove(objToRemove);
+        }
+
+        updateAnnotationList();
+
+        saveAnnotationInFile();
+
+        changeCurrentStateToIdle();
     }
 
 
