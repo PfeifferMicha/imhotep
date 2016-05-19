@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using LitJson;
 using System;
@@ -44,6 +45,7 @@ public class AnnotationControl : MonoBehaviour {
     private GameObject currentAnnotatinPoint = null;
     private List<GameObject> annotationPoints = new List<GameObject>();
 
+	private MouseInputModule mouseInputModul;
 
     void OnEnable()
     {
@@ -65,6 +67,8 @@ public class AnnotationControl : MonoBehaviour {
     // Use this for initialization
     void Start () {
         changeCurrentStateToIdle();
+
+		mouseInputModul = GameObject.Find ("GlobalScript").GetComponent<MouseInputModule>();
 
         mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> (); //TODO error if name of Mouse3D is changed
         meshNode = GameObject.Find("MeshViewer").GetComponent<Transform>(); //TODO error if name of MeshViewer is changed
@@ -88,7 +92,9 @@ public class AnnotationControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //If user pressed "Add Annotation" and clicked 
-		if (Input.GetMouseButtonDown(0) && currentState == State.addAnnotationPressed)
+		//if (Input.GetMouseButtonDown(0) && currentState == State.addAnnotationPressed)
+		if (mouseInputModul.framePressStateLeft == PointerEventData.FramePressState.Pressed && currentState == State.addAnnotationPressed)
+			
         {
             RaycastHit hit;
             Ray ray = new Ray(Camera.main.transform.position, mMouse.transform.position - Camera.main.transform.position);

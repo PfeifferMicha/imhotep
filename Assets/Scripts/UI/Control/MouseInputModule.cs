@@ -13,6 +13,8 @@ public class MouseInputModule : StandaloneInputModule {
 	private Mouse3DMovement mMouse;
 	private Vector2 mTextureSize;
 
+	public PointerEventData.FramePressState framePressStateLeft { get; set; } //Other scripts can get the current state of the left mouse button
+
 
 	public new void Start()
 	{
@@ -20,6 +22,7 @@ public class MouseInputModule : StandaloneInputModule {
 		UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
 		mTextureSize.x = UICamera.targetTexture.width;
 		mTextureSize.y = UICamera.targetTexture.height;
+		framePressStateLeft = PointerEventData.FramePressState.NotChanged;
 	}
 
 	// This is the real function we want, the two commented out lines (Input.mousePosition)
@@ -69,9 +72,11 @@ public class MouseInputModule : StandaloneInputModule {
 
 		if (mMouse.owner.name == "mouse") {
 			m_MouseState.SetButtonState (PointerEventData.InputButton.Left, StateForMouseButton (0), leftData);
+			framePressStateLeft = StateForMouseButton (0);
 		} else {
 			PointerEventData.FramePressState triggerState = mMouse.owner.GetComponent<LeftButtonState> ().getLeftButtonState ();
-			Debug.Log (triggerState);
+			//Debug.Log (triggerState);
+			framePressStateLeft = triggerState;
 			m_MouseState.SetButtonState(PointerEventData.InputButton.Left, triggerState, leftData);
 		}
 
