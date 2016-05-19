@@ -9,6 +9,9 @@ public class OpacityControl : MonoBehaviour {
 	public GameObject mainControlSliderObject = null;
 	private Slider mainControlSlider = null;
 	private GameObject clippingPlane = null;
+	private GameObject meshNode = null;
+
+	private List<GameObject> loadedObjects = new List<GameObject>();
 
     private MeshLoader mMeshLoader;
 
@@ -21,8 +24,11 @@ public class OpacityControl : MonoBehaviour {
 		if (clippingPlane == null) {
 			GameObject meshViewer = GameObject.Find ("MeshViewer");
 			if (meshViewer != null) {
+
+				meshNode = meshViewer.transform.Find ("MeshRotationNode/MeshPositionNode").gameObject;
+
 				clippingPlane = new GameObject ();
-				clippingPlane.transform.SetParent (meshViewer.transform);
+				clippingPlane.transform.SetParent (meshViewer.transform, false);
 
 				GameObject plane = GameObject.CreatePrimitive (PrimitiveType.Plane);
 				plane.transform.SetParent (clippingPlane.transform, false);
@@ -49,6 +55,7 @@ public class OpacityControl : MonoBehaviour {
 			Destroy (clippingPlane);
 			clippingPlane = null;
 		}
+		ClearContent ();
 	}
 
 	public void setClippingPlaneDistance( float newVal )
@@ -71,19 +78,20 @@ public class OpacityControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		foreach( GameObject container in loadedObjects ) {
+			foreach (Transform g in container.transform) {
+				Material mat = g.GetComponent<Renderer> ().material;
+
+				mat.SetVector ("_cuttingPlanePosition", meshNode.transform.InverseTransformPoint (clippingPlane.transform.position));
+				mat.SetVector ("_cuttingPlaneNormal", meshNode.transform.InverseTransformDirection (clippingPlane.transform.forward));
+			}
+		}
     }
 
 	private void createContent( object obj = null )
     {
-		//Destroy all object except for default line
-		for(int i = 0; i < defaultLine.transform.parent.childCount; i++)
-		{
-			if(i != 0) //TODO !=0
-			{
-				Destroy(defaultLine.transform.parent.GetChild(i).gameObject);
-			}
-		}
-		
+		ClearContent ();
+
         foreach(GameObject g in mMeshLoader.MeshGameObjectContainers)
         {
             // Create a new instance of the list button:
@@ -101,7 +109,33 @@ public class OpacityControl : MonoBehaviour {
             GameObject textObject = newLine.transform.Find("Text").gameObject;
             Text buttonText = textObject.GetComponent<Text>();
             buttonText.text = g.name;
-   
+
+			loadedObjects.Add (g);
         }
     }
+
+	void ClearContent()
+	{
+		//Destroy all object except for default line
+		for(int i = 0; i < defaultLine.transform.parent.childCount; i++)
+		{
+			if(i != 0) //TODO !=0
+			{
+				Destroy(defaultLine.transform.parent.GetChild(i).gameObject);
+			}
+		}
+
+		// Reset shader for each of the loaded objects:
+		foreach( GameObject container in loadedObjects ) {
+			foreach (Transform g in container.transform) {
+				Material mat = g.GetComponent<Renderer> ().material;
+
+				mat.SetVector ("_cuttingPlanePosition", new Vector4( 9999f, 0f, 0f, 1f ) );
+				mat.SetVector ("_cuttingPlaneNormal", new Vector4( -1f, 0f, 0f, 1f ) );
+			}
+		}
+
+		// Clear previously loaded objects:
+		loadedObjects = new List<GameObject>();
+	}
 }

@@ -20,7 +20,6 @@ public class ModelEffectHandler : MonoBehaviour {
 	};
 
 	List<LoadObject> loadingObjects = new List<LoadObject>();
-	List<Material> loadedMaterials = new List<Material>();
 
 	void Start () {
 		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_StartLoading, eventStartLoadingMesh);
@@ -60,26 +59,11 @@ public class ModelEffectHandler : MonoBehaviour {
 				}
 			}
 		}
-
-		// Update the distance of the shaders to the distance between the camera and the camera cutting plane:
-		if (cutMesh) {
-			foreach (Material mat in loadedMaterials) {
-				float distance = Vector3.Distance (cameraObject.transform.position, shaderCuttingPlane.transform.position);
-				//mat.SetFloat ("_cuttingPlaneDistToCamera", distance);
-				mat.SetVector ("_cuttingPlanePosition", meshNode.transform.InverseTransformPoint(shaderCuttingPlane.transform.position));
-				mat.SetVector ("_cuttingPlaneNormal", meshNode.transform.InverseTransformDirection( shaderCuttingPlane.transform.forward ) );
-			}
-		} else {
-			foreach (Material mat in loadedMaterials) {
-				mat.SetFloat ("_cuttingPlaneDistToCamera", 9999);		// High number: Show everything, no clipping!
-			}
-		}
 	}
 
 	void eventStartLoadingMesh( object obj )
 	{
 		loadingObjects = new List<LoadObject>();
-		loadedMaterials = new List<Material>();
 		currentlyLoadingNewMeshes = true;
 		loadingEffectActive = true;
 	}
@@ -110,21 +94,6 @@ public class ModelEffectHandler : MonoBehaviour {
 					loadObject.gameObject = parentObject;
 					loadObject.amount = 0.0f;
 					loadingObjects.Add (loadObject);
-				}
-
-
-				Material newMaterial = gameObject.GetComponent<Renderer> ().material;
-				bool found = false;
-				// If the material is not yet in the list, add it:
-				foreach (Material mat in loadedMaterials) {
-					if( mat == newMaterial )
-					{
-						found = true;
-						break;
-					}
-				}
-				if (!found) {
-					loadedMaterials.Add( newMaterial );
 				}
 			}
 		}
