@@ -12,6 +12,8 @@ public class AnnotationPoint : MonoBehaviour {
     public DateTime creationDate { get; set; }
     public GameObject annotationLabel { get; set; }
     public Quaternion rotation { get; set; }
+    [DefaultValue(-1)]
+    public int id { get; set; }
 
     // Use this for initialization
     void Start () {

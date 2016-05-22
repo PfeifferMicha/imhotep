@@ -40,6 +40,8 @@ public class AnnotationControl : MonoBehaviour {
 
 	private MouseInputModule mouseInputModul;
 
+    private static int annotationPointCounter = 0; //Used to create unique id for annoation point
+
     private enum State
     {
         idle,
@@ -119,10 +121,18 @@ public class AnnotationControl : MonoBehaviour {
         newAnnotationPoint.transform.parent = meshNode;
 
         AnnotationPoint ap = newAnnotationPoint.AddComponent<AnnotationPoint>();
+        ap.id = getUniqueAnnotationPointID();
         ap.enabled = false;
 
         annotationPoints.Add(newAnnotationPoint);
         return newAnnotationPoint;
+    }
+
+    private int getUniqueAnnotationPointID()
+    {
+        int result = annotationPointCounter;
+        annotationPointCounter++;
+        return result;
     }
 
     public void AddAnnotationPressed()
@@ -218,6 +228,7 @@ public class AnnotationControl : MonoBehaviour {
             // Attach the new button to the list:
             newButton.transform.SetParent(annotationListButton.transform.parent, false);
 
+
             // Change button text to name of tool:
             GameObject textObject = newButton.transform.Find("OverlayImage/Text").gameObject;
             Text buttonText = textObject.GetComponent<Text>();
@@ -225,6 +236,9 @@ public class AnnotationControl : MonoBehaviour {
             if(ap != null)
             {
                 buttonText.text = ap.text;
+
+                // Attach AnnotationPointID to the new button and save the id of the annotation point 
+                newButton.AddComponent<AnnotationPointID>().annotationPointID = ap.id;
             }
             
         }
@@ -368,13 +382,17 @@ public class AnnotationControl : MonoBehaviour {
     public void deleteOneAnnotation(GameObject self)
     {
         Transform buttonWithText = self.transform.parent;
-        Text buttonText = buttonWithText.Find("OverlayImage/Text").gameObject.GetComponent<Text>();
+        AnnotationPointID apID = buttonWithText.GetComponent<AnnotationPointID>();
+        if (buttonWithText == null || apID == null)
+        {
+            return;
+        }
 
         //Delete point and label
         foreach (GameObject g in annotationPoints)
         {
             //TODO dont use name to find the right game object
-            if (g.GetComponent<AnnotationPoint>().text == buttonText.text)
+            if (g.GetComponent<AnnotationPoint>().id == apID.annotationPointID)
             {
                 //Destroy Label
                 GameObject label = g.GetComponent<AnnotationPoint>().annotationLabel;
@@ -384,6 +402,8 @@ public class AnnotationControl : MonoBehaviour {
                 }
                 //Delete points
                 Destroy(g);
+
+                break;
             }
         }
 
@@ -391,13 +411,13 @@ public class AnnotationControl : MonoBehaviour {
         GameObject objToRemove = null;
         foreach (GameObject g in annotationPoints)
         {
-            if(g.GetComponent<AnnotationPoint>().text == buttonText.text)
+            if (g.GetComponent<AnnotationPoint>().id == apID.annotationPointID)
             {
                 objToRemove = g;
                 break;
             }
         }
-        if(objToRemove != null)
+        if (objToRemove != null)
         {
             annotationPoints.Remove(objToRemove);
         }
@@ -408,6 +428,5 @@ public class AnnotationControl : MonoBehaviour {
 
         changeCurrentStateToIdle();
     }
-
 
 }
