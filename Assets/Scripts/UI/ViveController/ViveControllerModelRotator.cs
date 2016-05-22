@@ -24,18 +24,14 @@ public class ViveControllerModelRotator : MonoBehaviour {
 			//Debug.LogWarning (axes);
 			if (axes.x > 0.5) {
 				inputH = -0.5f;
-				Debug.LogWarning ("1");
 			}else if(axes.x < -0.5){
 				inputH = 0.5f;
-				Debug.LogWarning ("2");
 			}
 
 			if (axes.y > 0.5) {
 				inputV = -0.5f;
-				Debug.LogWarning ("3");
 			}else if(axes.y < -0.5){
 				inputV = 0.5f;
-				Debug.LogWarning ("4");
 			}
 
 			Vector3 upVector = Camera.main.transform.up;

@@ -7,12 +7,17 @@ using System.Collections;
 */
 public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
 
-    private bool mDragged = false;
+	private bool mDragged = false;
 
 	private Camera UICamera;
 	//private MouseSphereMovement mMouse;
 	private Vector2 mViewSize;
 	private Vector3 mOffset;
+
+	private MouseInputModule mouseInputModul;
+	private bool leftButtonPressed = false; //True if left mouse button or trigger is pressed
+
+	private Mouse3DMovement mMouse;
 
 	// Use this for initialization
 	void Start () {
@@ -21,52 +26,68 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 		UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
 		mViewSize.y = UICamera.orthographicSize * 2;
 		mViewSize.x = mViewSize.y * UICamera.aspect;
+
+		mouseInputModul = GameObject.Find ("GlobalScript").GetComponent<MouseInputModule>();
+		mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> ();
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		if (mDragged)
-        {
-            if (Input.GetMouseButton(0))
-            {
-                if (transform.parent != null && transform.parent.transform.parent != null)
-                {
-                    Transform grandparent = transform.parent.transform.parent;
+		{
+			updateLeftButtonPressed ();
+
+			if (leftButtonPressed)
+			{
+				if (transform.parent != null && transform.parent.transform.parent != null)
+				{
+					Transform grandparent = transform.parent.transform.parent;
 
 					RaycastHit hit;
 					//Ray ray = new Ray(Camera.main.transform.position, mouse.transform.localPosition - Camera.main.transform.position);
-					Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
-                    LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
+					//Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
+					Ray ray = new Ray(Camera.main.transform.position, mMouse.transform.localPosition - Camera.main.transform.position);
 
-                    if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMousePlane))
-                    {
+					LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
+
+					if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMousePlane))
+					{
 						//Vector3 offset = (mouse.transform.localPosition - Camera.main.transform.position).normalized * 10f;
 						Vector2 uv = hit.textureCoord2;
 						Vector3 mousePos = new Vector3 (uv.x * mViewSize.x, uv.y * mViewSize.y, 0);
 						grandparent.localPosition = mousePos - mOffset;
 					}
-                }
-            }
-            else
-            {
+				}
+			}
+			else
+			{
 				mDragged = false;
-            }
-        }
-    }
+			}
+		}
+	}
+
+	private void updateLeftButtonPressed(){
+		if (mouseInputModul.framePressStateLeft == PointerEventData.FramePressState.Pressed) {
+			leftButtonPressed = true;
+		}else if (mouseInputModul.framePressStateLeft == PointerEventData.FramePressState.Released) {
+			leftButtonPressed = false;
+		}
+	}
 
 	// Event which is called when the mouse clicks on this panel:
 	public void OnPointerDown(PointerEventData dt) {
 		if (mDragged == false) {
 			mOffset = new Vector3 (0, 0, 0);
 			RaycastHit hit;
-			Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
+			//Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
+			Ray ray = new Ray(Camera.main.transform.position, mMouse.transform.localPosition - Camera.main.transform.position);
 			LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
 			Transform grandparent = transform.parent.transform.parent;
 			// Move the panel a few units forward while it's dragged:
 			Vector3 curPos = grandparent.transform.localPosition;
 
 			UI.UICore.HighlightSelectedWidget (grandparent);
-		
+
 
 			if (Physics.Raycast (ray, out hit, Mathf.Infinity, onlyMousePlane)) {
 
@@ -83,8 +104,8 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 	// Event which is called when the mouse is released:
 	public void OnPointerUp(PointerEventData dt) {
 		//if (mDragged) {
-			// Move the panel a few units forward while it's dragged:
-			mDragged = false;
+		// Move the panel a few units forward while it's dragged:
+		mDragged = false;
 		//}
 	}
 
