@@ -391,7 +391,6 @@ public class AnnotationControl : MonoBehaviour {
         //Delete point and label
         foreach (GameObject g in annotationPoints)
         {
-            //TODO dont use name to find the right game object
             if (g.GetComponent<AnnotationPoint>().id == apID.annotationPointID)
             {
                 //Destroy Label

@@ -9,9 +9,6 @@ public class ViveControllerModelRotator : MonoBehaviour {
 	private SteamVR_Controller.Device controller { get{ return SteamVR_Controller.Input ((int)trackedObj.index);}}
 	private SteamVR_TrackedObject trackedObj;
 
-	private Valve.VR.EVRButtonId dPadLeft = Valve.VR.EVRButtonId.k_EButton_DPad_Left;
-	private Valve.VR.EVRButtonId dPadRight = Valve.VR.EVRButtonId.k_EButton_DPad_Right;
-
 
 	// Use this for initialization
 	void Start () {
