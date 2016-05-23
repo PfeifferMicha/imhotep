@@ -18,6 +18,8 @@ namespace UI
 
 		private List<GameObject> ToolButtonList = new List<GameObject> ();
 
+		private List<string> activeUniqueWidgets = new List<string> ();
+
 		private Camera UICamera;
 
         // Use this for initialization
@@ -32,14 +34,12 @@ namespace UI
 			PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_FinishedLoading, ShowWidgetList);
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-        }
-
         void StartWidget(GameObject widget)
 		{
-			Debug.Log("Creating: " + widget.name);
+			if (activeUniqueWidgets.Contains (widget.name)) {
+				Debug.Log ("Unique widget already exists. Aborting widget creation!");
+				return;
+			}
             GameObject newWidget = Instantiate(widget);
             newWidget.SetActive(true);
 			newWidget.transform.SetParent (transform.parent, false);
@@ -49,6 +49,14 @@ namespace UI
 			cv.worldCamera = UICamera;
 
 			UI.UICore.HighlightSelectedWidget (newWidget.transform);
+
+			Widget widg = newWidget.GetComponent<Widget> ();
+			if (widg != null) {
+				widg.initialize (widget.name);
+				if (widg.unique) {
+					activeUniqueWidgets.Add(widg.uniqueWidgetName);
+				}
+			}
         }
 
 		public void ShowPatientLoader()
