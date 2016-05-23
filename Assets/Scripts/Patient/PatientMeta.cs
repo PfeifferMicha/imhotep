@@ -22,7 +22,6 @@ public class PatientMeta
 	public PatientMeta ( string folder )
 	{
 		path = folder;
-		Debug.Log ("[PatientMeta] " + path);
 
 		string metaFile = Path.Combine( path, "meta.json" );
 		string raw = File.ReadAllText(metaFile);

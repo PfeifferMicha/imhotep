@@ -49,7 +49,7 @@ namespace UI
 			if( selectedWidget )
 			{
 				Vector3 curPos = selectedWidget.localPosition;
-				selectedWidget.localPosition = new Vector3 (curPos.x, curPos.y, -0.1f );
+				selectedWidget.localPosition = new Vector3 (curPos.x, curPos.y, -0.5f );
 			}
 		}
     }

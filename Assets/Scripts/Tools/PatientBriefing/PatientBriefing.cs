@@ -25,7 +25,6 @@ public class PatientBriefing : MonoBehaviour {
 
 	void eventNewPatientLoaded( object obj )
 	{
-		Debug.Log ("TRIGGERED!");
 		Patient p = obj as Patient;
 		if (p != null) {
 			setPatientText (p);
@@ -39,6 +38,10 @@ public class PatientBriefing : MonoBehaviour {
 		msg += bold ("Patient Name: ") + p.name + "\n";
 		msg += bold ("Date of Birth: ") + p.birthDate + "\n";
 		msg += bold ("Date of Operation: ") + p.operationDate + "\n";
+
+		msg += "\n";
+
+		msg += p.getAdditionalInfo() + "\n";
 
 		text.text = msg;
 	}
