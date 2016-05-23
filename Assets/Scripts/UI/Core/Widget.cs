@@ -26,6 +26,8 @@ namespace UI
 		public void initialize( string name )
 		{
 			uniqueWidgetName = name;
+			WidgetEventSystem.triggerEvent (WidgetEventSystem.Event.WIDGET_Opened,
+				gameObject.GetComponent<Widget> ());
 		}
 
         // Use this for initialization
@@ -41,12 +43,12 @@ namespace UI
         public void Close()
         {
             Destroy(gameObject);
-            Debug.Log("Close " + gameObject.name);
         }
 
 		public void OnDestroy()
 		{
-			
+			WidgetEventSystem.triggerEvent (WidgetEventSystem.Event.WIDGET_Closed,
+				gameObject.GetComponent<Widget> ());
 		}
     }
 }

@@ -79,6 +79,13 @@ namespace UI
 		}
 		public void WidgetClosed( object obj = null )
 		{
+			Widget widg = obj as Widget;
+			if (widg != null) {
+				if (activeUniqueWidgets.Contains (widg.uniqueWidgetName)) {
+					Debug.Log ("Closed unique widget. Clearing lock.");
+					activeUniqueWidgets.Remove (widg.uniqueWidgetName);
+				}
+			}
 		}
 
 		public void ShowWidgetList( object obj = null )
