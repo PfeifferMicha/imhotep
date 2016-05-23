@@ -32,6 +32,8 @@ namespace UI
 
 			// Whenever a Patient has been loaded, display the tool list:
 			PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_FinishedLoading, ShowWidgetList);
+			WidgetEventSystem.startListening (WidgetEventSystem.Event.WIDGET_Opened, WidgetOpened);
+			WidgetEventSystem.startListening (WidgetEventSystem.Event.WIDGET_Closed, WidgetClosed);
         }
 
         void StartWidget(GameObject widget)
@@ -70,6 +72,13 @@ namespace UI
 			//ToolLoaderButton.
 			HideWidgetList();
 			PatientLoaderButton.SetActive (true);
+		}
+
+		public void WidgetOpened( object obj = null )
+		{
+		}
+		public void WidgetClosed( object obj = null )
+		{
 		}
 
 		public void ShowWidgetList( object obj = null )

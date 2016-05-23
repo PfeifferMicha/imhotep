@@ -46,8 +46,7 @@ namespace UI
 
 		public void OnDestroy()
 		{
-			Debug.Log("Destroyed " + gameObject.name);
-			Debug.Log ("Destroyed " + uniqueWidgetName);
+			
 		}
     }
 }
