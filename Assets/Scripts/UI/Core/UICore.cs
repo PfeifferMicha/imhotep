@@ -1,13 +1,23 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace UI
 {
-    public class UICore : MonoBehaviour
+	public class UICore : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         Dictionary<string, Widget> widgets = new Dictionary<string, Widget>();
 		private static Transform selectedWidget;
+
+		public bool mouseIsOverUIObject{ private set; get; }
+
+		public static UICore instance { private set; get; }
+
+		public UICore()
+		{
+			instance = this;
+		}
 
         // Use this for initialization
         void Start()
@@ -51,6 +61,15 @@ namespace UI
 				Vector3 curPos = selectedWidget.localPosition;
 				selectedWidget.localPosition = new Vector3 (curPos.x, curPos.y, -0.5f );
 			}
+		}
+
+		public void OnPointerEnter(PointerEventData dataName)
+		{
+			mouseIsOverUIObject = true;
+		}
+		public void OnPointerExit(PointerEventData dataName)
+		{
+			mouseIsOverUIObject = false;
 		}
     }
 }

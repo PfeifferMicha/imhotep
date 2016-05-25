@@ -14,10 +14,13 @@ public class Mouse3DMovement : MonoBehaviour {
 	private Vector2 mCurrentUVCoordinates;
 	private GameObject mouse;
 
+	private MeshRenderer mRenderer;
+
     // Use this for initialization
     void Start () {
 		mouse = new GameObject ("mouse"); //the real mouse has no gmaeobject to add to the list, so we create a fake mouse object
 		availibleControllers.Add(mouse);
+		mRenderer = transform.GetComponent<MeshRenderer> ();
 		owner = mouse;
 	}
 
@@ -38,15 +41,21 @@ public class Mouse3DMovement : MonoBehaviour {
 				// Remember my UV coordinates, because the MouseUIInteraction script will use them to handle UI input:
 				this.setUVCoordinates (hit.textureCoord2, mouse);
 
-			}
-
-           
+				mRenderer.enabled = true;
+			} else {
+				mRenderer.enabled = false;
+			}         
         }
     }
 
 	public Vector2 getUVCoordinates()
 	{
 		return mCurrentUVCoordinates;
+	}
+
+	public void setVisible( bool vis )
+	{
+		mRenderer.enabled = vis;
 	}
 
 	//Controller defines with game object has set the uv coordinates

@@ -28,30 +28,29 @@ namespace UnityStandardAssets.Utility
         private void Update()
         {
 
-            if (Input.GetAxis("Mouse ScrollWheel") != 0)
-            {
+			if (UI.UICore.instance.mouseIsOverUIObject == false) {
+				if (Input.GetAxis ("Mouse ScrollWheel") != 0) {
 
-                //TODO make movement smooth
+					//TODO make movement smooth
 
-                float inputScroll = Input.GetAxis("Mouse ScrollWheel");
+					float inputScroll = Input.GetAxis ("Mouse ScrollWheel");
 
-                m_OriginalZoom = transform.localScale.x;
+					m_OriginalZoom = transform.localScale.x;
 
-                m_TargetZoom = m_OriginalZoom + inputScroll/ (1/zoomingSpeed);
+					m_TargetZoom = m_OriginalZoom + inputScroll / (1 / zoomingSpeed);
 
-                if (m_TargetZoom > maxZoom)
-                {
-                    m_TargetZoom = maxZoom;
-                }
-                if (m_TargetZoom < minZoom)
-                {
-                    m_TargetZoom = minZoom;
-                }
+					if (m_TargetZoom > maxZoom) {
+						m_TargetZoom = maxZoom;
+					}
+					if (m_TargetZoom < minZoom) {
+						m_TargetZoom = minZoom;
+					}
 
-                transform.localScale = new Vector3(m_TargetZoom, m_TargetZoom, m_TargetZoom);
+					transform.localScale = new Vector3 (m_TargetZoom, m_TargetZoom, m_TargetZoom);
 
              
-            }
+				}
+			}
         }
     }
 }
