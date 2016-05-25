@@ -17,10 +17,19 @@ namespace UI
         public GameObject[] AvailableWidgets;
 
 		private List<GameObject> ToolButtonList = new List<GameObject> ();
+		private static List<GameObject> ActiveWidgets = new List<GameObject> ();
 
 		private List<string> activeUniqueWidgets = new List<string> ();
 
 		private Camera UICamera;
+
+		public static WidgetControl instance { private set; get; }
+
+		public WidgetControl()
+		{
+			instance = this;
+		}
+
 
         // Use this for initialization
         void Start()
@@ -50,8 +59,6 @@ namespace UI
 			Canvas cv = newWidget.transform.FindChild("Canvas").GetComponent<Canvas> ();
 			cv.worldCamera = UICamera;
 
-			UI.UICore.HighlightSelectedWidget (newWidget.transform);
-
 			Widget widg = newWidget.GetComponent<Widget> ();
 			if (widg != null) {
 				widg.initialize (widget.name);
@@ -59,6 +66,9 @@ namespace UI
 					activeUniqueWidgets.Add(widg.uniqueWidgetName);
 				}
 			}
+
+			ActiveWidgets.Add (newWidget);
+			HighlightSelectedWidget (newWidget);
         }
 
 		public void ShowPatientLoader()
@@ -86,6 +96,8 @@ namespace UI
 					activeUniqueWidgets.Remove (widg.uniqueWidgetName);
 				}
 			}
+			ActiveWidgets.Remove (widg.gameObject);
+			SortWidgets ();
 		}
 
 		public void ShowWidgetList( object obj = null )
@@ -147,6 +159,24 @@ namespace UI
 			ToolButtonList.Clear ();
 			PatientCloseButton.SetActive (false);
         }
-        
+
+
+		public static void HighlightSelectedWidget( GameObject g )
+		{
+			// Remove the widget from the list:
+			ActiveWidgets.Remove (g);
+			// ... Re-add the widget to the top of the list:
+			ActiveWidgets.Add (g);
+
+			SortWidgets ();
+		}
+		private static void SortWidgets()
+		{
+			for (int i = 0; i < ActiveWidgets.Count; i++) {
+				Transform tf = ActiveWidgets [ActiveWidgets.Count - 1 - i].transform;
+				Vector3 oldPos = tf.localPosition;
+				tf.localPosition = new Vector3 (oldPos.x, oldPos.y, i * 0.5f);
+			}
+		}
     }
 }

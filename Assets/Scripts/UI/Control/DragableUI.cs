@@ -86,8 +86,7 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 			// Move the panel a few units forward while it's dragged:
 			Vector3 curPos = grandparent.transform.localPosition;
 
-			UI.UICore.HighlightSelectedWidget (grandparent);
-
+			UI.WidgetControl.HighlightSelectedWidget (grandparent.gameObject);
 
 			if (Physics.Raycast (ray, out hit, Mathf.Infinity, onlyMousePlane)) {
 
