@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,6 +8,9 @@ public class OpacityControl : MonoBehaviour {
 
 	public GameObject defaultLine;
 	public GameObject mainControlSliderObject = null;
+	public Color clippingPlaneColor = new Color (0.3f, 0.7f, 0.3f, 0.1f);
+
+	public GameObject plane { private set; get; }
 	private Slider mainControlSlider = null;
 
 	private GameObject meshViewer = null;
@@ -39,6 +43,18 @@ public class OpacityControl : MonoBehaviour {
 
 		mainControlSlider = mainControlSliderObject.GetComponent<Slider> ();
 		mainControlSlider.value = 0.5f;
+
+
+		plane = GameObject.CreatePrimitive (PrimitiveType.Plane);
+		plane.transform.SetParent (meshViewer.transform, false);
+		plane.transform.localScale = new Vector3 (0.35f, 0.35f, 0.35f);
+		plane.transform.Rotate (new Vector3 (-90f, 0f, 0f));
+
+
+		Material newMat = Resources.Load("Materials/ShaderCuttingPlane", typeof(Material)) as Material;
+		//Material newMat = new Material (mat);	// Duplicate
+		newMat.SetColor ("_Color", clippingPlaneColor );
+		plane.GetComponent<Renderer>().material =  newMat;
 		//setClippingPlaneDistance (0.5f);
 	}
 
@@ -47,6 +63,7 @@ public class OpacityControl : MonoBehaviour {
 		// Unregister myself - no longer receives events (until the next OnEnable() call):
 		PatientEventSystem.stopListening( PatientEventSystem.Event.MESH_LoadedAll, createContent);
 		ClearContent ();
+		Destroy (plane);
 	}
 
 	public void setClippingPlaneDistance( float newVal )
@@ -66,8 +83,6 @@ public class OpacityControl : MonoBehaviour {
 		if (mMeshLoader.MeshGameObjectContainers.Count != 0) {
 			createContent ();
 		}
-
-
 	}
 	
 	// Update is called once per frame
@@ -80,6 +95,9 @@ public class OpacityControl : MonoBehaviour {
 				mat.SetVector ("_cuttingPlaneNormal", meshNode.transform.InverseTransformDirection (clippable.clippingPlane.transform.forward));
 			}
 		}
+		Color col = plane.GetComponent<Renderer>().material.GetColor ("_Color");
+		col.a = Math.Max (col.a - Time.deltaTime*0.1f, 0.0f);
+		plane.GetComponent<Renderer>().material.SetColor ("_Color", col);
     }
 
 	private void createContent( object obj = null )
@@ -100,9 +118,11 @@ public class OpacityControl : MonoBehaviour {
             newLine.transform.SetParent(defaultLine.transform.parent, false);
 
             //Save game object in slider
-            GameObject slider = newLine.transform.Find("Slider").gameObject;
-			slider.GetComponent<OpacitySlider>().objectToClip = clippable;
+			GameObject slider = newLine.transform.Find("Slider").gameObject;
 			slider.GetComponent<Slider> ().value = 0.5f;
+			slider.GetComponent<OpacitySlider>().objectToClip = clippable;
+			slider.GetComponent<OpacitySlider> ().parentControl = this;
+			slider.GetComponent<OpacitySlider> ().defaultColor = clippingPlaneColor;
 
             // Change button text to name of object:
             GameObject textObject = newLine.transform.Find("Text").gameObject;
@@ -144,14 +164,6 @@ public class OpacityControl : MonoBehaviour {
 		// Generate the new clipping plane:
 		GameObject clippingPlane = new GameObject( "ClippingPlane" );
 		clippingPlane.transform.SetParent (meshViewer.transform, false);
-
-		GameObject plane = GameObject.CreatePrimitive (PrimitiveType.Plane);
-		plane.transform.SetParent (clippingPlane.transform, false);
-		plane.transform.localScale = new Vector3 (0.35f, 0.35f, 0.35f);
-		plane.transform.Rotate (new Vector3 (-90f, 0f, 0f));
-
-		Material newMat = Resources.Load("Materials/ShaderCuttingPlane", typeof(Material)) as Material;
-		plane.GetComponent<Renderer>().material =  newMat;
 
 		ClippableObject obj = new ClippableObject ();
 		obj.meshObject = meshObject;

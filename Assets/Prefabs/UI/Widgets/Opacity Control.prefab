@@ -1165,6 +1165,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b347bc415cb995f4194ff8bd22291947, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultColor: {r: 0.5, g: 0.5, b: 1, a: 0.5}
+  parentControl: {fileID: 0}
 --- !u!114 &11475580
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1318,6 +1320,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultLine: {fileID: 112698}
   mainControlSliderObject: {fileID: 140540}
+  clippingPlaneColor: {r: 0.3, g: 0.7, b: 0.3, a: 0.1}
 --- !u!114 &11488468
 MonoBehaviour:
   m_ObjectHideFlags: 1
