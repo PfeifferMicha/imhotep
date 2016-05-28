@@ -1,12 +1,18 @@
 ﻿using System;
+using itk.simple;
 
 public class DICOMHeader
 {
-	public DICOMHeader ( string studyInstanceUID, string seriesInstanceUID )
+	public DICOMHeader ( Image metaDataImage )
 	{
-		mStudyUID = studyInstanceUID;
-		mSeriesUID = seriesInstanceUID;
+		mStudyUID = metaDataImage.GetMetaData ("0020|000d");;
+		mSeriesUID = metaDataImage.GetMetaData ("0020|000e");;
 		mPatientName = "Unknown";
+
+		mOrigin = metaDataImage.GetOrigin ();
+		mDimension = metaDataImage.GetDimension ();
+		mSpacing = metaDataImage.GetSpacing();
+		mDirection = metaDataImage.GetDirection();
 	}
 
 	public string getPatientName() {
@@ -67,6 +73,10 @@ public class DICOMHeader
 	public string mStudyUID { get; set; }
 	public string mModality { get; set; }
 	public string mInstitutionName { get; set; }
+	public uint mDimension{ get; private set; }
+	public VectorDouble mOrigin{ get; private set; }
+	public VectorDouble mSpacing{ get; private set; }
+	public VectorDouble mDirection{ get; private set; }
 
 	public override string ToString ()
 	{

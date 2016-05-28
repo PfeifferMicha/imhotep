@@ -5,15 +5,12 @@ using System.Collections;
 
 public class DicomDisplay : MonoBehaviour {
 
-    private RawImage mDicomImage;
+	private DicomDisplayImage mDicomImage;
 	private Dropdown mDicomList;
-
 	void Awake()
 	{
 		mDicomList = transform.Find ("Canvas/DicomList").GetComponent<Dropdown>();
-		mDicomImage = transform.Find ("Canvas/DicomImage").GetComponent<RawImage>();
-		mDicomImage.material = new Material (mDicomImage.material);
-		mDicomImage.material.mainTexture = new Texture3D (4,4,4, TextureFormat.RGBA32, false);
+		mDicomImage = transform.Find ("Canvas/DicomImage").gameObject.GetComponent<DicomDisplayImage>();
 	}
 
 	void OnEnable()
@@ -28,7 +25,7 @@ public class DicomDisplay : MonoBehaviour {
 
 	void OnDisable()
 	{
-		// Unregister myself - no longer receives events (until the next OnEnable() call):
+		// Unregister myself - no longer receive events (until the next OnEnable() call):
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewList, eventNewDicomList );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewLoaded, eventDisplayCurrentDicom );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_AllCleared, eventClear );
@@ -41,10 +38,7 @@ public class DicomDisplay : MonoBehaviour {
         DICOM dicom = mPatientDICOMLoader.getCurrentDicom();
 		if( dicom != null )
 		{
-			mDicomImage.material.mainTexture = dicom.getTexture();
-			mDicomImage.material.SetFloat ("globalMaximum", (float)dicom.getMaximum ());
-			mDicomImage.material.SetFloat ("globalMinimum", (float)dicom.getMinimum ());
-			mDicomImage.material.SetFloat ("range", (float)(dicom.getMaximum () - dicom.getMinimum ()));
+			mDicomImage.SetDicom (dicom);
 		}
 	}
 

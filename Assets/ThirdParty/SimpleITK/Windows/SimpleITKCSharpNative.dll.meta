@@ -13,10 +13,10 @@ PluginImporter:
       settings:
         CPU: AnyCPU
     Any:
-      enabled: 1
+      enabled: 0
       settings: {}
     Editor:
-      enabled: 1
+      enabled: 0
       settings:
         CPU: AnyCPU
         DefaultValueInitialized: true
@@ -50,11 +50,11 @@ PluginImporter:
       settings:
         STV_MODEL: STANDARD_13
     Win:
-      enabled: 1
+      enabled: 0
       settings:
         CPU: AnyCPU
     Win64:
-      enabled: 1
+      enabled: 0
       settings:
         CPU: AnyCPU
   userData: 

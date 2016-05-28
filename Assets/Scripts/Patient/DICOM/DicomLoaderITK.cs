@@ -78,16 +78,14 @@ public class DicomLoaderITK
 		Debug.Log ("\tImage number of pixels: " + numberOfPixels);
 
 		Image metaDataImage = SimpleITK.ReadImage( fileNames[0] );
-		VectorString keys = metaDataImage.GetMetaDataKeys();
+		/*VectorString keys = metaDataImage.GetMetaDataKeys();
 		str = "";
 		for (int i = 0; i < keys.Count; i++)
 			str += "\n\t" + keys [i];
-		Debug.Log ("\tMetadata:\n" + str);
+		Debug.Log ("\tMetadata:\n" + str);*/
 
-		string studyInstanceUID = metaDataImage.GetMetaData ("0020|000d");
-		string seriesInstanceUID = metaDataImage.GetMetaData ("0020|000e");
 
-		DICOMHeader header = new DICOMHeader (studyInstanceUID, seriesInstanceUID);
+		DICOMHeader header = new DICOMHeader (metaDataImage);
 
 		// Some of the following tags may not be in the DICOM Header, so catch and ignore "not found" exceptions:
 		try {
@@ -102,8 +100,6 @@ public class DicomLoaderITK
 		try {
 			header.mInstitutionName = metaDataImage.GetMetaData( "0008|0080" );
 		} catch { Debug.LogWarning ("Could not find DICOM tag: (0008|0080)");}
-
-		Debug.Log (header);
 		
 		Color[] colors = new Color[ texWidth*texHeight*texDepth ];		
 		int maxCol = 0;
@@ -177,9 +173,6 @@ public class DicomLoaderITK
 		} else {
 			throw(new System.Exception ("Cannot read DICOM. Unsupported pixel format: " + image.GetPixelID()));
 		}
-
-		Debug.Log ("Min, max: " + minCol + " " + maxCol);
-
 
         return new DICOMLoadReturnObject(texWidth, texHeight, texDepth, colors, header, maxCol, minCol);
 
