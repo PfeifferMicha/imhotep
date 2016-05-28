@@ -151,7 +151,7 @@ public class MeshLoader : MonoBehaviour {
                 loaded = false;
                 Path = "";
 
-				Material mat = MeshLoader.matForMeshName (mesh.name);
+				Material mat = new Material (MeshLoader.matForMeshName (mesh.name));
 				if (mat != null) {
 					//var materials = objToSpawn.GetComponent<MeshRenderer> ().materials;
 					//materials [0] = mat;
@@ -161,7 +161,7 @@ public class MeshLoader : MonoBehaviour {
 					float max = mat.GetFloat ("_max");
 					mat.SetFloat ("_min", Math.Min( mesh.bounds.min.z, min ));
 					mat.SetFloat ("_max", Math.Max( mesh.bounds.max.z, max ));
-					mat.SetFloat ("_amount", 0f );
+					mat.SetFloat ("_amount", -1f );		// Default: inactive.
 					//objToSpawn.GetComponent<MeshRenderer> ().materials = materials;
 				}
 
@@ -179,6 +179,8 @@ public class MeshLoader : MonoBehaviour {
 			// Move the object by half the size of all of the meshes.
 			// This makes sure the object will rotate around its actual center:
 			//containerObject.transform.localPosition = -bounds.center;
+
+			meshNode.GetComponent<ModelMover> ().targetPosition = Vector3.Scale(-bounds.center, meshNode.transform.localScale);
             
         }
 
@@ -262,7 +264,7 @@ public class MeshLoader : MonoBehaviour {
 			return Resources.Load("Materials/Ventricles", typeof(Material)) as Material;
 		}
 
-		return null;
+		return Resources.Load("Materials/DefaultMud", typeof(Material)) as Material;
 	}
 
 }

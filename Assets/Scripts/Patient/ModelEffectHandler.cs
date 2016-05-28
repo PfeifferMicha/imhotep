@@ -7,7 +7,6 @@ public class ModelEffectHandler : MonoBehaviour {
 
 	private bool loadingEffectActive = false;
 	private bool currentlyLoadingNewMeshes = false;
-	private bool cutMesh = true;
 
 	public GameObject cameraObject;
 	public GameObject shaderCuttingPlane;
@@ -32,30 +31,28 @@ public class ModelEffectHandler : MonoBehaviour {
 		if (loadingEffectActive) {
 			bool allMeshesFinishedAnimation = true;
 			foreach (LoadObject lObj in loadingObjects) {
-				lObj.amount += Time.deltaTime*0.25f;
-
-				float amount;
-				if (currentlyLoadingNewMeshes) {
-					amount = lObj.amount - (float)Math.Floor (lObj.amount);
-				} else {
-					amount = lObj.amount;
+				if (lObj.amount >= 0f) {
+					lObj.amount += Time.deltaTime * 0.25f;
 				}
-				if (amount < 1.3) {
+					
+				if (lObj.amount < 1.3) {
 					allMeshesFinishedAnimation = false;
 				}
+				lObj.gameObject.GetComponent<Renderer> ().material.SetFloat ("_amount", lObj.amount);
 
-				foreach (Transform child in lObj.gameObject.transform) {
+				/*foreach (Transform child in lObj.gameObject.transform) {
 					Material mat = child.gameObject.GetComponent<Renderer> ().material;
 					mat.SetFloat ("_amount", amount);
-				}
+				}*/
 			}
 			if (!currentlyLoadingNewMeshes && allMeshesFinishedAnimation) {
 				loadingEffectActive = false;
 				foreach (LoadObject lObj in loadingObjects) {
-					foreach (Transform child in lObj.gameObject.transform) {
+					lObj.gameObject.GetComponent<Renderer> ().material.SetFloat ("_amount", 1.5f);
+					/*foreach (Transform child in lObj.gameObject.transform) {
 						Material mat = child.gameObject.GetComponent<Renderer> ().material;
 						mat.SetFloat ("_amount", 1.5f);
-					}
+					}*/
 				}
 			}
 		}
@@ -75,8 +72,12 @@ public class ModelEffectHandler : MonoBehaviour {
 		GameObject gameObject = obj as GameObject;
 		if (gameObject != null) {
 
-			GameObject parentObject = gameObject.transform.parent.gameObject;
-			if( parentObject )
+			LoadObject loadObject = new LoadObject ();
+			loadObject.gameObject = gameObject;
+			loadObject.amount = 0.0f;
+			loadingObjects.Add (loadObject);
+			/* GameObject parentObject = gameObject.transform.parent.gameObject;
+			if( parentObject != null )
 			{
 				LoadObject loadObject = null;
 				// If the object already exists, reset its animation:
@@ -95,7 +96,7 @@ public class ModelEffectHandler : MonoBehaviour {
 					loadObject.amount = 0.0f;
 					loadingObjects.Add (loadObject);
 				}
-			}
+			}*/
 		}
 	}
 	void eventFinishLoadingAllMeshes( object obj )
