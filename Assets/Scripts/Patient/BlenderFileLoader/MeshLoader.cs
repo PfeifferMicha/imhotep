@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Collections;
 using System.IO;
+using LitJson;
+
 
 public class MeshLoader : MonoBehaviour {
 
@@ -13,11 +15,14 @@ public class MeshLoader : MonoBehaviour {
     public Material defaultMaterial;
 
     //List of lists of UnityMeshes with max. 2^16 vertices per mesh
-    private volatile List<List<UnityMesh>> unityMeshes = new List<List<UnityMesh>>();
+    private volatile List<List<UnityMesh>> unityMeshes = new List<List<UnityMesh>>();    
     //True if file is loaded
     private bool loaded = false;
 	private bool triggerEvent = false;
     private volatile string Path = "";
+
+    private MeshJson meshJson = null;
+
     //Contains a list of game objects. This game objects are parents of actual meshs. 
     public List<GameObject> MeshGameObjectContainers { get; set; }
 
@@ -39,24 +44,47 @@ public class MeshLoader : MonoBehaviour {
 
         }
 		if(triggerEvent){
+            meshJson = null;
 			triggerEvent = false;
 
 			// Let loading screen know what we're currently doing:
-			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_RemoveLoadingJob,
-				"Mesh");
-			
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_RemoveLoadingJob,	"Mesh");			
 			PatientEventSystem.triggerEvent(PatientEventSystem.Event.MESH_LoadedAll);
 		}
     }
 
-    public void LoadFile(string path)
+    public void LoadFile(string pathToMeshJson)
     {
-		if (File.Exists (path)) {
+        //Check if mesh.json exists
+        if (!File.Exists(pathToMeshJson))
+        {
+            Debug.LogWarning("Could not load mesh from: " + pathToMeshJson + ", file not found.");
+            return;
+        }
+
+        // Read mesh.json
+        string fileContent = "";
+        string line;
+        System.IO.StreamReader file = new System.IO.StreamReader(pathToMeshJson);
+        while ((line = file.ReadLine()) != null)
+        {
+            fileContent += line;
+        }
+        file.Close();
+        meshJson = JsonMapper.ToObject<MeshJson>(fileContent);
+        if(meshJson == null)
+        {
+            Debug.LogWarning("Error while parsing mesh.json");
+            return;
+        }
+        Patient currentPatient = Patient.getLoadedPatient();
+        string path = currentPatient.path + "/" + meshJson.pathToBlendFile;
+
+        //Loading blend file
+        if (File.Exists (path)) {
 
 			// Let loading screen know what we're currently doing:
-			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_AddLoadingJob,
-				"Mesh");
-			
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_AddLoadingJob, "Mesh");			
             this.RemoveMesh();
 			this.Path = path;
 			MeshGameObjectContainers = new List<GameObject>();
@@ -70,12 +98,8 @@ public class MeshLoader : MonoBehaviour {
 			ThreadUtil t = new ThreadUtil (this.LoadFileWorker, this.LoadFileCallback);
 			t.Run ();
 		} else {
-			Debug.LogWarning ("Could not load mesh from: " + path + ", file not found.");
+			Debug.LogWarning ("Could not load mesh from: '" + path + "', file not found.");
 		}
-        
-        //Thread thread = new Thread(new ThreadStart(this.LoadFileWorker));
-        //thread.Start();
-        //LoadFileWorker();
     }
 
     //Runs in own thread
@@ -97,7 +121,7 @@ public class MeshLoader : MonoBehaviour {
             Debug.Log("Loading cancelled");
         }else if (e.Error != null)
 		{
-            Debug.LogError("[Loader.cs] Error while loading the mesh");
+            Debug.LogError("[MeshLoader.cs] Error while loading the mesh");
         }
         else
 		{
@@ -150,6 +174,14 @@ public class MeshLoader : MonoBehaviour {
                 unityMeshes = new List<List<UnityMesh>>();
                 loaded = false;
                 Path = "";
+
+                foreach(MeshListElement mle in meshJson.meshList)
+                {
+                    if(mle.name == mesh.name)
+                    {
+                        Debug.LogWarning("TODO: Color of " + mle.name + " is " + mle.color); //TODO
+                    }
+                }
 
 				Material mat = new Material (MeshLoader.matForMeshName (mesh.name));
 				if (mat != null) {
