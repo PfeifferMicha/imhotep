@@ -1,18 +1,25 @@
 ﻿using System;
 using itk.simple;
+using UnityEngine;
 
 public class DICOMHeader
 {
-	public DICOMHeader ( Image metaDataImage )
+	public DICOMHeader ( Image image )
 	{
-		mStudyUID = metaDataImage.GetMetaData ("0020|000d");;
-		mSeriesUID = metaDataImage.GetMetaData ("0020|000e");;
+		mStudyUID = image.GetMetaData ("0020|000d");;
+		mSeriesUID = image.GetMetaData ("0020|000e");;
 		mPatientName = "Unknown";
 
-		mOrigin = metaDataImage.GetOrigin ();
-		mDimension = metaDataImage.GetDimension ();
-		mSpacing = metaDataImage.GetSpacing();
-		mDirection = metaDataImage.GetDirection();
+		mOrigin = image.GetOrigin ();
+		mDimension = image.GetDimension ();
+		mSpacing = image.GetSpacing();
+		mDirection = image.GetDirection();
+		Debug.Log ("New DICOM Header:");
+		Debug.Log (mOrigin[0] + " " + mOrigin[1] + " " + mOrigin[2]);
+		Debug.Log (mDimension);
+		Debug.Log (mSpacing[0] + " " + mSpacing[1] + " " + mSpacing[2]);
+		Debug.Log (mDirection[0] + " " + mDirection[1] + " " + mDirection[2] + " " + mDirection[3] + " " + mDirection[4] + " " + mDirection[5]);
+		Debug.Log (image.GetPixelIDTypeAsString ());
 	}
 
 	public string getPatientName() {

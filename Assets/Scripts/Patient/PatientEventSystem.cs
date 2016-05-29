@@ -79,7 +79,7 @@ public class PatientEventSystem
 		// thisEvent will be filled and the if will evaluate to true:
 		if (instance.mEventDictionary.TryGetValue(eventType, out thisEvent))
 		{
-			Debug.Log("Triggering Event: " + eventType);
+			//Debug.Log("Triggering Event: " + eventType);
 			thisEvent.Invoke( obj );
 		}
 	}

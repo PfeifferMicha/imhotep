@@ -114,4 +114,17 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler {
 		mMaxSlider.value = 1.0f;
 		mLayerSlider.value = 0.5f;
 	}
+
+	public void FlipHorizontal()
+	{
+		Rect uvRect = new Rect (GetComponent<RawImage> ().uvRect);
+		uvRect.width = -uvRect.width;
+		GetComponent<RawImage> ().uvRect = uvRect;
+	}
+	public void FlipVertical()
+	{
+		Rect uvRect = new Rect (GetComponent<RawImage> ().uvRect);
+		uvRect.height = -uvRect.height;
+		GetComponent<RawImage> ().uvRect = uvRect;
+	}
 }
