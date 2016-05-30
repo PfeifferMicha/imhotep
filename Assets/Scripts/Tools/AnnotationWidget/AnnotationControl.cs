@@ -58,6 +58,7 @@ public class AnnotationControl : MonoBehaviour {
 
         // Register event callbacks:
         PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Loaded, loadAnnotationFromFile);
+        PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Closed, closePatient);
         loadAnnotationFromFile();
     }
 
@@ -65,6 +66,7 @@ public class AnnotationControl : MonoBehaviour {
     {
         // Unregister myself:
         PatientEventSystem.stopListening(PatientEventSystem.Event.PATIENT_Loaded, loadAnnotationFromFile);
+        PatientEventSystem.stopListening(PatientEventSystem.Event.PATIENT_Closed, closePatient);
         clearAllPressed();
     }
 
@@ -310,6 +312,7 @@ public class AnnotationControl : MonoBehaviour {
         Patient currentPatient = Patient.getLoadedPatient();
         string path = currentPatient.path + "/annotation.json";
 
+        //Create file if it not exists
         if (!File.Exists(path))
         {
             using (StreamWriter outputFile = new StreamWriter(path,true))
@@ -318,6 +321,7 @@ public class AnnotationControl : MonoBehaviour {
             }
         }
 
+        //Write annotations in file
         using (StreamWriter outputFile = new StreamWriter(path))
         {
             foreach(GameObject ap in annotationPoints)
@@ -338,8 +342,7 @@ public class AnnotationControl : MonoBehaviour {
                 outputFile.WriteLine(JsonMapper.ToJson(apj));
             }
             outputFile.Close();
-        }
-        
+        }        
         return;
     }
 
@@ -434,6 +437,11 @@ public class AnnotationControl : MonoBehaviour {
         saveAnnotationInFile();
 
         changeCurrentStateToIdle();
+    }
+
+    public void closePatient(object obj = null)
+    {
+        clearAllPressed();
     }
 
 }

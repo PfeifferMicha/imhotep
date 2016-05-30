@@ -82,7 +82,9 @@ namespace UI
 			//ToolLoaderButton.
 			HideWidgetList();
 			PatientLoaderButton.SetActive (true);
-		}
+
+            PatientEventSystem.triggerEvent(PatientEventSystem.Event.PATIENT_Closed);
+        }
 
 		public void WidgetOpened( object obj = null )
 		{
