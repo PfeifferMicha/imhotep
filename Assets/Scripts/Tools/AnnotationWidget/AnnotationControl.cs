@@ -34,7 +34,7 @@ public class AnnotationControl : MonoBehaviour {
 
     private State currentState = State.idle;
     private Transform meshNode;
-	private Transform meshRotationNode;
+	private Transform meshPositionNode;
     private Mouse3DMovement mMouse;
     private GameObject currentAnnotatinPoint = null;
     private List<GameObject> annotationPoints = new List<GameObject>();
@@ -54,7 +54,7 @@ public class AnnotationControl : MonoBehaviour {
     void OnEnable()
     {
         meshNode = GameObject.Find("MeshViewer").GetComponent<Transform>(); //TODO error if name of MeshViewer is changed
-		meshRotationNode = GameObject.Find("MeshViewer/MeshRotationNode").GetComponent<Transform>();
+		meshPositionNode = GameObject.Find("MeshViewer/MeshRotationNode/MeshPositionNode").GetComponent<Transform>();
 
         // Register event callbacks:
         PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Loaded, loadAnnotationFromFile);
@@ -77,7 +77,7 @@ public class AnnotationControl : MonoBehaviour {
 
         mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> (); //TODO error if name of Mouse3D is changed
         meshNode = GameObject.Find("MeshViewer").GetComponent<Transform>(); //TODO error if name of MeshViewer is changed
-		meshRotationNode = GameObject.Find("MeshViewer/MeshRotationNode").GetComponent<Transform>();
+		meshPositionNode = GameObject.Find("MeshViewer/MeshRotationNode").GetComponent<Transform>();
 
         if(annotationPointObj == null)
         {
@@ -121,7 +121,7 @@ public class AnnotationControl : MonoBehaviour {
     {
         GameObject newAnnotationPoint = (GameObject)Instantiate(annotationPointObj, point, rotation);
         newAnnotationPoint.transform.localScale *= meshNode.localScale.x; //x,y,z are the same
-        newAnnotationPoint.transform.parent = meshRotationNode;
+		newAnnotationPoint.transform.parent = meshPositionNode;
 
         AnnotationPoint ap = newAnnotationPoint.AddComponent<AnnotationPoint>();
         ap.id = getUniqueAnnotationPointID();
@@ -169,7 +169,7 @@ public class AnnotationControl : MonoBehaviour {
         //Create Label
         GameObject newAnnotationLabel = (GameObject)Instantiate(annotationLabel, annotationPoint.transform.position, annotationPoint.transform.localRotation);
         newAnnotationLabel.transform.localScale *= meshNode.localScale.x; //x,y,z are the same
-        newAnnotationLabel.transform.SetParent(meshRotationNode, true);
+		newAnnotationLabel.transform.SetParent(meshPositionNode, true);
 
         // Since the currentAnnotationPoint faces along the normal of the attached object,
         // we can get an offset direction from its rotation:
@@ -373,7 +373,7 @@ public class AnnotationControl : MonoBehaviour {
             Quaternion rotation = new Quaternion((float)apj.RotationX, (float)apj.RotationY, (float)apj.RotationZ, (float)apj.RotationW);
             Vector3 position = new Vector3((float)apj.PositionX, (float)apj.PositionY, (float)apj.PositionZ);
 
-            GameObject annotationPoint = createAnnotationPoint(Quaternion.identity, meshRotationNode.transform.TransformPoint(position));
+			GameObject annotationPoint = createAnnotationPoint(Quaternion.identity, meshPositionNode.transform.TransformPoint(position));
             annotationPoint.transform.localRotation = rotation;
             createAnnotationLabelAndLine(annotationPoint, apj.Text);
         }
