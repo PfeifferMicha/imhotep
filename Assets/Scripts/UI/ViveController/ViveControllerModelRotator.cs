@@ -20,17 +20,17 @@ public class ViveControllerModelRotator : MonoBehaviour {
 		if (controller.GetPress (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad)) {
 			float inputV = 0;
 			float inputH = 0;
-			Vector2 axes = controller.GetAxis ();
+			Vector2 axis = controller.GetAxis ();
 			//Debug.LogWarning (axes);
-			if (axes.x > 0.5) {
+			if (axis.x > 0.5) {
 				inputH = -0.5f;
-			}else if(axes.x < -0.5){
+			}else if(axis.x < -0.5){
 				inputH = 0.5f;
 			}
 
-			if (axes.y > 0.5) {
+			if (axis.y > 0.5) {
 				inputV = -0.5f;
-			}else if(axes.y < -0.5){
+			}else if(axis.y < -0.5){
 				inputV = 0.5f;
 			}
 
