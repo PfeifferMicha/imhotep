@@ -77,7 +77,7 @@ public class AnnotationControl : MonoBehaviour {
 
         mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> (); //TODO error if name of Mouse3D is changed
         meshNode = GameObject.Find("MeshViewer").GetComponent<Transform>(); //TODO error if name of MeshViewer is changed
-		meshPositionNode = GameObject.Find("MeshViewer/MeshRotationNode").GetComponent<Transform>();
+		meshPositionNode = GameObject.Find("MeshViewer/MeshRotationNode/MeshPositionNode").GetComponent<Transform>();
 
         if(annotationPointObj == null)
         {
@@ -101,9 +101,14 @@ public class AnnotationControl : MonoBehaviour {
 		//if (Input.GetMouseButtonDown(0) && currentState == State.addAnnotationPressed)
 		if (mouseInputModul.framePressStateLeft == PointerEventData.FramePressState.Pressed && currentState == State.addAnnotationPressed)
 			
-        {
+        {			
             RaycastHit hit;
-            Ray ray = new Ray(Camera.main.transform.position, mMouse.transform.position - Camera.main.transform.position);
+			Ray ray;
+			if(mouseInputModul.mMouse.owner.name == "mouse"){ //TODO !!! Use interface 
+				ray= new Ray(Camera.main.transform.position, mMouse.transform.position - Camera.main.transform.position);
+			}else{				
+				ray= new Ray(mouseInputModul.mMouse.owner.transform.position, mouseInputModul.mMouse.owner.transform.forward);
+			}
             LayerMask onlyMeshViewLayer = 1000000000; // hit only the mesh view layer
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMeshViewLayer))
@@ -174,7 +179,7 @@ public class AnnotationControl : MonoBehaviour {
         // Since the currentAnnotationPoint faces along the normal of the attached object,
         // we can get an offset direction from its rotation:
         Vector3 offsetDirection = annotationPoint.transform.localRotation * Vector3.forward;
-        Vector3 offset = offsetDirection / 1.5f;
+        Vector3 offset = offsetDirection * 100f;
 
         //Vector3 offset = new Vector3(90,20,0);
         newAnnotationLabel.transform.localPosition += offset;

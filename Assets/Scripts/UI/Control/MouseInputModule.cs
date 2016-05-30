@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 public class MouseInputModule : StandaloneInputModule {
 
 	private Camera UICamera;
-	private Mouse3DMovement mMouse;
+	public Mouse3DMovement mMouse { get; set; }
 	private Vector2 mTextureSize;
 
 	public PointerEventData.FramePressState framePressStateLeft { get; set; } //Other scripts can get the current state of the left mouse button
