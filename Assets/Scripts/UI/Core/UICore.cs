@@ -6,8 +6,9 @@ using System.Collections.Generic;
 namespace UI
 {
 	public class UICore : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
-    {
-        Dictionary<string, Widget> widgets = new Dictionary<string, Widget>();
+	{
+		// Color which all buttons will turn when clicked:
+		public Color ButtonPressedColor = Color.white;
 
 		public bool mouseIsOverUIObject{ private set; get; }
 
@@ -18,13 +19,6 @@ namespace UI
 			instance = this;
 		}
 
-        // Use this for initialization
-        void Start()
-        {
-			// Move the UI rendering far away from the main scene at startup:
-			//transform.position = new Vector3 (1000, 0, 0);
-        }
-
 		public void OnPointerEnter(PointerEventData dataName)
 		{
 			mouseIsOverUIObject = true;
@@ -32,6 +26,16 @@ namespace UI
 		public void OnPointerExit(PointerEventData dataName)
 		{
 			mouseIsOverUIObject = false;
+		}
+
+		public Color getHighlightColorFor( Color baseCol )
+		{
+			return baseCol * 1.1f;
+		}
+
+		public Color getPressedColorFor( Color baseCol )
+		{
+			return ButtonPressedColor;
 		}
     }
 }

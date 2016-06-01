@@ -58,7 +58,7 @@ public class PatientSelector : MonoBehaviour {
 			newButton.transform.SetParent(defaultPatientButton.transform.parent, false );
 
 			// Fill button's text object:
-			Text t = newButton.transform.Find("OverlayImage/Text").GetComponent<Text>();
+			Text t = newButton.transform.Find("Text").GetComponent<Text>();
 			t.text = patient.name + "\n" + patient.birthDate + "\nOperation: " + patient.operationDate;
 
 			// Set up events:

@@ -125,11 +125,11 @@ namespace UI
 					-(numOfToolButtons - 1)*width*0.5f + iter*width, pos.y, pos.z);
 
 				// Change button text to name of tool:
-				GameObject textObject = newButton.transform.Find("OverlayImage/Text").gameObject;
+				GameObject textObject = newButton.transform.Find("Text").gameObject;
 				Text t = textObject.GetComponent<Text>();
 				t.text = widget.name;
 
-				GameObject imgObject = newButton.transform.Find("OverlayImage/Image").gameObject;
+				GameObject imgObject = newButton.transform.Find("Image").gameObject;
 				Image im = imgObject.GetComponent<Image> ();
 				Widget widg = widget.GetComponent<Widget>();
 				if (widg != null && widg.ToolIcon != null) {
