@@ -240,7 +240,7 @@ public class AnnotationControl : MonoBehaviour {
 
 
             // Change button text to name of tool:
-            GameObject textObject = newButton.transform.Find("OverlayImage/Text").gameObject;
+            GameObject textObject = newButton.transform.Find("Text").gameObject;
             Text buttonText = textObject.GetComponent<Text>();
             AnnotationPoint ap = g.GetComponent<AnnotationPoint>();
             if(ap != null)
