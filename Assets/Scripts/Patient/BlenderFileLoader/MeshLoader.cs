@@ -27,6 +27,19 @@ public class MeshLoader : MonoBehaviour {
     public List<GameObject> MeshGameObjectContainers { get; set; }
 
 
+	void OnEnable()
+	{
+		// Register event callbacks:
+		PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Closed, RemoveMesh);
+	}
+
+	void OnDisable()
+	{
+		// Unregister myself:
+		PatientEventSystem.stopListening(PatientEventSystem.Event.PATIENT_Closed, RemoveMesh);
+	}
+
+
     // Use this for initialization
     void Start () {
         MeshGameObjectContainers = new List<GameObject>();
@@ -222,7 +235,7 @@ public class MeshLoader : MonoBehaviour {
         yield return null;
     }
 
-    public void RemoveMesh()
+    public void RemoveMesh(object obj = null)
     {
         //Destroy current game objectes attached to mesh node
         for (int i = 0; i < meshNode.transform.childCount; i++)
