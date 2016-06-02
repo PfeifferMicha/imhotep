@@ -315,7 +315,7 @@ public class MeshLoader : MonoBehaviour {
 		return Resources.Load("Materials/DefaultMud", typeof(Material)) as Material;
 	}
 
-	// From the Unity Wiki:
+	// Adopted rom the Unity Wiki:
 	// http://wiki.unity3d.com/index.php?title=HexConverter
 	private string ColorToHex(Color32 color)
 	{
@@ -323,7 +323,7 @@ public class MeshLoader : MonoBehaviour {
 		return hex;
 	}
 
-	// From the Unity Wiki:
+	// Adopted rom the Unity Wiki:
 	// http://wiki.unity3d.com/index.php?title=HexConverter
 	Color HexToColor(string hex)
 	{

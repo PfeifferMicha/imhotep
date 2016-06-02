@@ -24,6 +24,7 @@ public class ModelEffectHandler : MonoBehaviour {
 		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_StartLoading, eventStartLoadingMesh);
 		PatientEventSystem.startListening( PatientEventSystem.Event.MESH_LoadedSingle, eventFinishLoadingMesh );
 		PatientEventSystem.startListening( PatientEventSystem.Event.MESH_LoadedAll, eventFinishLoadingAllMeshes );
+		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, eventPatientClosed );
 	}
 
 	void Update () {
@@ -101,6 +102,13 @@ public class ModelEffectHandler : MonoBehaviour {
 	}
 	void eventFinishLoadingAllMeshes( object obj )
 	{
+		currentlyLoadingNewMeshes = false;
+	}
+
+	void eventPatientClosed( object obj )
+	{
+		loadingObjects.Clear ();
+		loadingEffectActive = false;
 		currentlyLoadingNewMeshes = false;
 	}
 }
