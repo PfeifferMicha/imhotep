@@ -188,15 +188,7 @@ public class MeshLoader : MonoBehaviour {
                 loaded = false;
                 Path = "";
 
-                foreach(MeshListElement mle in meshJson.meshList)
-                {
-                    if(mle.name == mesh.name)
-                    {
-                        Debug.LogWarning("TODO: Color of " + mle.name + " is " + mle.color); //TODO
-                    }
-                }
-
-				Material mat = new Material (MeshLoader.matForMeshName (mesh.name));
+				Material mat = new Material (matForMeshName (mesh.name));
 				if (mat != null) {
 					//var materials = objToSpawn.GetComponent<MeshRenderer> ().materials;
 					//materials [0] = mat;
@@ -244,8 +236,19 @@ public class MeshLoader : MonoBehaviour {
         }
     }
 
-	public static Material matForMeshName( string meshName )
+	public Material matForMeshName( string meshName )
 	{
+		foreach(MeshListElement mle in meshJson.meshList)
+		{
+			if(mle.name == meshName)
+			{
+				Debug.Log("Found color for " + mle.name + ": " + mle.color);
+				Material mat = Resources.Load("Materials/Tumor", typeof(Material)) as Material;
+				mat.color = HexToColor (mle.color);
+				return mat;
+			}
+		}
+
 		bool contains;
 
 		contains = meshName.IndexOf("tumor", StringComparison.OrdinalIgnoreCase) >= 0;
@@ -311,5 +314,24 @@ public class MeshLoader : MonoBehaviour {
 
 		return Resources.Load("Materials/DefaultMud", typeof(Material)) as Material;
 	}
+
+	// From the Unity Wiki:
+	// http://wiki.unity3d.com/index.php?title=HexConverter
+	private string ColorToHex(Color32 color)
+	{
+		string hex = color.r.ToString("X2") + color.g.ToString("X2") + color.b.ToString("X2");
+		return hex;
+	}
+
+	// From the Unity Wiki:
+	// http://wiki.unity3d.com/index.php?title=HexConverter
+	Color HexToColor(string hex)
+	{
+		byte r = byte.Parse(hex.Substring(1,2), System.Globalization.NumberStyles.HexNumber);
+		byte g = byte.Parse(hex.Substring(3,2), System.Globalization.NumberStyles.HexNumber);
+		byte b = byte.Parse(hex.Substring(5,2), System.Globalization.NumberStyles.HexNumber);
+		return new Color32(r,g,b, 255);
+	}
+
 
 }
