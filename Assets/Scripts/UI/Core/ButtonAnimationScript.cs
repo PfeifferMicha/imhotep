@@ -60,9 +60,5 @@ public class ButtonAnimationScript : MonoBehaviour {
 
 		// Put this line at the end because when you assign a controller on an Animator, unity rebind all the animated properties
 		GetComponent<Animator> ().runtimeAnimatorController = overrideController; 
-
-		Debug.Log ("Base Color: " + BaseColor);
-		Debug.Log (highlightColor);
-		Debug.Log (pressedColor);
 	}
 }

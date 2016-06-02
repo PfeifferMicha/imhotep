@@ -145,11 +145,11 @@ Material:
       data:
         first:
           name: maxValue
-        second: 1
+        second: 0.8588938
       data:
         first:
           name: layer
-        second: 0.6667657
+        second: 0.5536528
       data:
         first:
           name: globalMaximum

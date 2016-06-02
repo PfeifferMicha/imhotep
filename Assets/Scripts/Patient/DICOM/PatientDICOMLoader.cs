@@ -4,8 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using itk.simple;
-using System;
-
 
 /*! This class is respondible for parsing DICOM directories and loading the images.
  * When events happen, other modules are notified using the PatientEventSystem class. */

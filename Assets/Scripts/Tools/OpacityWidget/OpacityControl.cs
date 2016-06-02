@@ -31,6 +31,7 @@ public class OpacityControl : MonoBehaviour {
 	{
 		// Register event callbacks for MESH events:
 		PatientEventSystem.startListening (PatientEventSystem.Event.MESH_LoadedAll, createContent);
+		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_Closed, clearContent);
 
 		if (meshViewer == null || meshNode == null) {
 			meshViewer = GameObject.Find ("MeshViewer");
@@ -62,7 +63,7 @@ public class OpacityControl : MonoBehaviour {
 	{
 		// Unregister myself - no longer receives events (until the next OnEnable() call):
 		PatientEventSystem.stopListening( PatientEventSystem.Event.MESH_LoadedAll, createContent);
-		ClearContent ();
+		clearContent ();
 		Destroy (plane);
 	}
 
@@ -102,7 +103,7 @@ public class OpacityControl : MonoBehaviour {
 
 	private void createContent( object obj = null )
     {
-		ClearContent ();
+		clearContent ();
 
         foreach(GameObject g in mMeshLoader.MeshGameObjectContainers)
         {
@@ -133,7 +134,7 @@ public class OpacityControl : MonoBehaviour {
         }
     }
 
-	void ClearContent()
+	void clearContent( object obj = null )
 	{
 		//Destroy all sliders:
 		for(int i = 0; i < defaultLine.transform.parent.childCount; i++)

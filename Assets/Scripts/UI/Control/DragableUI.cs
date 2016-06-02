@@ -83,8 +83,6 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 			Ray ray = new Ray(Camera.main.transform.position, mMouse.transform.localPosition - Camera.main.transform.position);
 			LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
 			Transform grandparent = transform.parent.transform.parent;
-			// Move the panel a few units forward while it's dragged:
-			Vector3 curPos = grandparent.transform.localPosition;
 
 			UI.WidgetControl.HighlightSelectedWidget (grandparent.gameObject);
 

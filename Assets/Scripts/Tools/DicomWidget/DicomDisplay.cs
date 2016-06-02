@@ -13,12 +13,13 @@ public class DicomDisplay : MonoBehaviour {
 		mDicomImage = transform.Find ("Canvas/DicomImage").gameObject.GetComponent<DicomDisplayImage>();
 	}
 
-	void OnEnable()
+	void Start()
 	{
 		// Register event callbacks for all DICOM events:
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewList, eventNewDicomList );
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewLoaded, eventDisplayCurrentDicom );
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_AllCleared, eventClear );
+		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, eventClear );
 		eventDisplayCurrentDicom ();
 		eventNewDicomList ();
 	}
@@ -50,6 +51,8 @@ public class DicomDisplay : MonoBehaviour {
 	}
 	void eventClear( object obj = null )
 	{
+		mDicomList.ClearOptions ();
+		mDicomImage.clear ();
 	}
 	public void selectedNewDicom( int id )
 	{

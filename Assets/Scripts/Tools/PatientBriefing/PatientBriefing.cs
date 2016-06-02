@@ -13,12 +13,15 @@ public class PatientBriefing : MonoBehaviour {
 		string msg = bold( "Patient Information" );
 		msg += "\n\nNo patient loaded.";
 		text.text = msg;
-			
+
 		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Loaded, eventNewPatientLoaded );
+		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, eventPatientClosed );
 
 		Patient loadedPatient = Patient.getLoadedPatient ();
 		if (loadedPatient != null) {
-			setPatientText( loadedPatient );
+			setPatientText (loadedPatient);
+		} else {
+			eventPatientClosed ();
 		}
 
 	}
@@ -49,5 +52,15 @@ public class PatientBriefing : MonoBehaviour {
 	private string bold( string input )
 	{
 		return "<b>" + input + "</b>";
+	}
+
+	void eventPatientClosed( object obj = null )
+	{
+		string msg = bold( "Patient Information" );
+		msg += "\n\n";
+
+		msg += bold ("Patient Name: ") + "No patient loaded.";
+
+		text.text = msg;
 	}
 }

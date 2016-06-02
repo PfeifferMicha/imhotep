@@ -16,36 +16,18 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler {
 	private Slider mLayerSlider;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		mMinValue = 0.0f;
 		mMaxValue = 1.0f;
 		mLayer = 0.0f;
-	}
-	void Awake() {
-		mMaterial = GetComponent<RawImage>().material;
 
+		mMaterial = GetComponent<RawImage>().material;
 
 		// Remember how large the image was at the beginning:
 		initialWidth = GetComponent<RectTransform> ().rect.width;
 		initialHeight = GetComponent<RectTransform> ().rect.height;
 
-		Texture3D tex = new Texture3D (4,4,4, TextureFormat.RGBA32, false);
-		// Fill with black:
-		Color32[] colors = new Color32[4*4*4];
-		for( int i = 0; i < 4*4*4; i ++ )
-		{
-			colors [i] = Color.black;
-		}
-		tex.SetPixels32 (colors);
-		tex.Apply();
-
-		mMaterial.mainTexture = tex;
-
-		// Set up sliders:
-		Transform tf = transform.parent.FindChild("SliderMin");
-		mMinSlider = transform.parent.FindChild("SliderMin").GetComponent<Slider>();
-		mMaxSlider = transform.parent.FindChild("SliderMax").GetComponent<Slider>();
-		mLayerSlider = transform.parent.FindChild("SliderLayer").GetComponent<Slider>();
+		clear ();
 	}
 
 	public void OnScroll(PointerEventData eventData)
@@ -102,6 +84,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler {
 
 		GetComponent<RectTransform> ().sizeDelta = new Vector2 (newWidth, newHeight);
 
+		Debug.Log (mMaterial);
+		Debug.Log (dicom);
 		mMaterial.SetFloat ("globalMaximum", (float)dicom.getMaximum ());
 		mMaterial.SetFloat ("globalMinimum", (float)dicom.getMinimum ());
 		mMaterial.SetFloat ("range", (float)(dicom.getMaximum () - dicom.getMinimum ()));
@@ -113,6 +97,26 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler {
 		mMinSlider.value = 0.0f;
 		mMaxSlider.value = 1.0f;
 		mLayerSlider.value = 0.5f;
+	}
+
+	public void clear()
+	{
+		Texture3D tex = new Texture3D (4,4,4, TextureFormat.RGBA32, false);
+		// Fill with black:
+		Color32[] colors = new Color32[4*4*4];
+		for( int i = 0; i < 4*4*4; i ++ )
+		{
+			colors [i] = Color.black;
+		}
+		tex.SetPixels32 (colors);
+		tex.Apply();
+
+		mMaterial.mainTexture = tex;
+
+		// Set up sliders:
+		mMinSlider = transform.parent.FindChild("SliderMin").GetComponent<Slider>();
+		mMaxSlider = transform.parent.FindChild("SliderMax").GetComponent<Slider>();
+		mLayerSlider = transform.parent.FindChild("SliderLayer").GetComponent<Slider>();
 	}
 
 	public void FlipHorizontal()
