@@ -222,12 +222,12 @@ GameObject:
   - 114: {fileID: 11407368}
   - 114: {fileID: 11492160}
   m_Layer: 0
-  m_Name: PatientBriefing
+  m_Name: Patient Briefing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &470174
 Transform:
   m_ObjectHideFlags: 1
@@ -296,7 +296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00ae918a45b8d5e44bec6b6a6d8a8c89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ToolIcon: {fileID: 0}
+  ToolIcon: {fileID: 21300000, guid: 3f92241b2f9e14a8e9be7f3f1d6b611a, type: 3}
   unique: 0
 --- !u!114 &11420158
 MonoBehaviour:
@@ -569,7 +569,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 22411756}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.74957967
+  m_Size: 0.7495799
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -866,8 +866,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 22421570}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0.25042033}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -939,7 +939,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 595}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!224 &22429066
 RectTransform:
@@ -955,9 +955,9 @@ RectTransform:
   m_Father: {fileID: 22438166}
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -17, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!224 &22438166
 RectTransform:
@@ -990,10 +990,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 22424592}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 342, y: -297.5}
+  m_SizeDelta: {x: 644, y: 575}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22473476
 RectTransform:
