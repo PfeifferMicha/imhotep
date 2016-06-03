@@ -39,6 +39,9 @@ ModelImporter:
     100062: CenterRotated_22_5
     100064: Circle_017
     100066: Circle_018
+    100068: Shutters
+    100070: CenterRotated_22_000
+    100072: CenterRotated_45
     400000: BezierCurve
     400002: BezierCurve_001
     400004: Center
@@ -73,6 +76,9 @@ ModelImporter:
     400062: CenterRotated_22_5
     400064: Circle_017
     400066: Circle_018
+    400068: Shutters
+    400070: CenterRotated_22_000
+    400072: CenterRotated_45
     2300000: BezierCurve
     2300002: BezierCurve_001
     2300004: Circle
@@ -103,6 +109,7 @@ ModelImporter:
     2300054: Circle_016
     2300056: Circle_017
     2300058: Circle_018
+    2300060: Shutters
     3300000: BezierCurve
     3300002: BezierCurve_001
     3300004: Circle
@@ -133,6 +140,7 @@ ModelImporter:
     3300054: Circle_016
     3300056: Circle_017
     3300058: Circle_018
+    3300060: Shutters
     4300000: Cylinder
     4300002: BezierCurve_001
     4300004: Cube_001
@@ -163,6 +171,7 @@ ModelImporter:
     4300054: Circle_016
     4300056: Circle_017
     4300058: Circle_018
+    4300060: Shutters
     7400000: Default Take
     9500000: //RootNode
   materials:
