@@ -47,6 +47,16 @@ ModelImporter:
     100078: CushionChairRed_001
     100080: CushionChairRed_002
     100082: LowTable
+    100084: Circle_019
+    100086: Circle_020
+    100088: Circle_021
+    100090: CenterRotated_90
+    100092: Supports_001
+    100094: Circle_022
+    100096: Shutters1
+    100098: Circle_023
+    100100: LowerWindows
+    100102: UpperWindows
     400000: BezierCurve
     400002: BezierCurve_001
     400004: Center
@@ -89,6 +99,16 @@ ModelImporter:
     400078: CushionChairRed_001
     400080: CushionChairRed_002
     400082: LowTable
+    400084: Circle_019
+    400086: Circle_020
+    400088: Circle_021
+    400090: CenterRotated_90
+    400092: Supports_001
+    400094: Circle_022
+    400096: Shutters1
+    400098: Circle_023
+    400100: LowerWindows
+    400102: UpperWindows
     2300000: BezierCurve
     2300002: BezierCurve_001
     2300004: Circle
@@ -125,6 +145,15 @@ ModelImporter:
     2300066: CushionChairRed_001
     2300068: CushionChairRed_002
     2300070: LowTable
+    2300072: Circle_019
+    2300074: Circle_020
+    2300076: Circle_021
+    2300078: Supports_001
+    2300080: Circle_022
+    2300082: Shutters1
+    2300084: Circle_023
+    2300086: LowerWindows
+    2300088: UpperWindows
     3300000: BezierCurve
     3300002: BezierCurve_001
     3300004: Circle
@@ -161,6 +190,15 @@ ModelImporter:
     3300066: CushionChairRed_001
     3300068: CushionChairRed_002
     3300070: LowTable
+    3300072: Circle_019
+    3300074: Circle_020
+    3300076: Circle_021
+    3300078: Supports_001
+    3300080: Circle_022
+    3300082: Shutters1
+    3300084: Circle_023
+    3300086: LowerWindows
+    3300088: UpperWindows
     4300000: Cylinder
     4300002: BezierCurve_001
     4300004: Cube_001
@@ -197,6 +235,15 @@ ModelImporter:
     4300066: CushionChairRed_001
     4300068: CushionChairRed
     4300070: LowTable
+    4300072: Circle_019
+    4300074: Circle_020
+    4300076: Circle_021
+    4300078: Supports_001
+    4300080: Circle_022
+    4300082: Shutters1
+    4300084: Circle_023
+    4300086: LowerWindows
+    4300088: UpperWindows
     7400000: Default Take
     9500000: //RootNode
   materials:
