@@ -8,10 +8,8 @@ namespace UI
     public class Widget : MonoBehaviour
     {
 		public Sprite ToolIcon;
-		public string uniqueWidgetName {
-			get;
-			private set;
-		}
+
+		public string uniqueWidgetName = "";
 		public bool unique = false;
 
 		public Widget()

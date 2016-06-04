@@ -42,6 +42,11 @@ ModelImporter:
     100068: Shutters
     100070: CenterRotated_22_000
     100072: CenterRotated_45
+    100074: Supports
+    100076: CushionChairRed
+    100078: CushionChairRed_001
+    100080: CushionChairRed_002
+    100082: LowTable
     400000: BezierCurve
     400002: BezierCurve_001
     400004: Center
@@ -79,6 +84,11 @@ ModelImporter:
     400068: Shutters
     400070: CenterRotated_22_000
     400072: CenterRotated_45
+    400074: Supports
+    400076: CushionChairRed
+    400078: CushionChairRed_001
+    400080: CushionChairRed_002
+    400082: LowTable
     2300000: BezierCurve
     2300002: BezierCurve_001
     2300004: Circle
@@ -110,6 +120,11 @@ ModelImporter:
     2300056: Circle_017
     2300058: Circle_018
     2300060: Shutters
+    2300062: Supports
+    2300064: CushionChairRed
+    2300066: CushionChairRed_001
+    2300068: CushionChairRed_002
+    2300070: LowTable
     3300000: BezierCurve
     3300002: BezierCurve_001
     3300004: Circle
@@ -141,6 +156,11 @@ ModelImporter:
     3300056: Circle_017
     3300058: Circle_018
     3300060: Shutters
+    3300062: Supports
+    3300064: CushionChairRed
+    3300066: CushionChairRed_001
+    3300068: CushionChairRed_002
+    3300070: LowTable
     4300000: Cylinder
     4300002: BezierCurve_001
     4300004: Cube_001
@@ -172,6 +192,11 @@ ModelImporter:
     4300056: Circle_017
     4300058: Circle_018
     4300060: Shutters
+    4300062: Supports
+    4300064: CushionChairRed_002
+    4300066: CushionChairRed_001
+    4300068: CushionChairRed
+    4300070: LowTable
     7400000: Default Take
     9500000: //RootNode
   materials:

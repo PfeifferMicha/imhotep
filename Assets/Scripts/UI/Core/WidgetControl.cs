@@ -7,7 +7,6 @@ namespace UI
 {
     public class WidgetControl : MonoBehaviour
     {
-
 		public GameObject PatientLoaderButton;		// Button which starts the patient loader
 		public GameObject ToolLoaderButton;			// Button which starts a tool
 		public GameObject PatientCloseButton;			// Button which starts a tool
