@@ -57,6 +57,9 @@ ModelImporter:
     100098: Circle_023
     100100: LowerWindows
     100102: UpperWindows
+    100104: Cube_004
+    100106: CenterLigths
+    100108: Cylinder_002
     400000: BezierCurve
     400002: BezierCurve_001
     400004: Center
@@ -109,6 +112,9 @@ ModelImporter:
     400098: Circle_023
     400100: LowerWindows
     400102: UpperWindows
+    400104: Cube_004
+    400106: CenterLigths
+    400108: Cylinder_002
     2300000: BezierCurve
     2300002: BezierCurve_001
     2300004: Circle
@@ -154,6 +160,8 @@ ModelImporter:
     2300084: Circle_023
     2300086: LowerWindows
     2300088: UpperWindows
+    2300090: Cube_004
+    2300092: Cylinder_002
     3300000: BezierCurve
     3300002: BezierCurve_001
     3300004: Circle
@@ -199,6 +207,8 @@ ModelImporter:
     3300084: Circle_023
     3300086: LowerWindows
     3300088: UpperWindows
+    3300090: Cube_004
+    3300092: Cylinder_002
     4300000: Cylinder
     4300002: BezierCurve_001
     4300004: Cube_001
@@ -244,6 +254,8 @@ ModelImporter:
     4300084: Circle_023
     4300086: LowerWindows
     4300088: UpperWindows
+    4300090: Cube_004
+    4300092: Cylinder_002
     7400000: Default Take
     9500000: //RootNode
   materials:

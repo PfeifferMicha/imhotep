@@ -6,11 +6,11 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: DICOM
-  m_Shader: {fileID: 4800000, guid: fc39f88d1d18b9749aa01043e7b27100, type: 3}
-  m_ShaderKeywords: 
+  m_Name: UITransparentReflection
+  m_Shader: {fileID: 4800000, guid: a2cc3f6bc59184c739d67606fd55a18d, type: 3}
+  m_ShaderKeywords: _ISREFLECTION_ON
   m_LightmapFlags: 5
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
@@ -19,7 +19,7 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 8400000, guid: 93900262b167f4e3fa3d9f9e3cb291b7, type: 2}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -78,13 +78,6 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
-      data:
-        first:
-          name: _SpecGlossMap
-        second:
-          m_Texture: {fileID: 0}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
@@ -98,10 +91,6 @@ Material:
         first:
           name: _Cutoff
         second: 0.5
-      data:
-        first:
-          name: PixelSnap
-        second: 0
       data:
         first:
           name: _Parallax
@@ -140,24 +129,8 @@ Material:
         second: 0
       data:
         first:
-          name: minValue
-        second: 0.17481714
-      data:
-        first:
-          name: maxValue
-        second: 0.79798585
-      data:
-        first:
-          name: layer
-        second: 0.668885
-      data:
-        first:
-          name: globalMaximum
-        second: 34523
-      data:
-        first:
-          name: globalMinimum
-        second: 31744
+          name: _isReflection
+        second: 1
     m_Colors:
       data:
         first:
@@ -169,5 +142,5 @@ Material:
         second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
-          name: _SpecColor
-        second: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+          name: _tint
+        second: {r: 1, g: 1, b: 1, a: 0.434}

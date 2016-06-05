@@ -193,6 +193,81 @@ AnimationClip:
     path: Scene/UpperWindows
     classID: 23
     script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      - time: 2.5166667
+        value: 0
+        inSlope: 2.2500005
+        outSlope: 2.2500005
+        tangentMode: 10
+      - time: 2.85
+        value: 1.5
+        inSlope: 4.500001
+        outSlope: 4.500001
+        tangentMode: 10
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_Intensity
+    path: Spotlight2
+    classID: 108
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      - time: 2.5166667
+        value: 0
+        inSlope: 2.2500005
+        outSlope: 2.2500005
+        tangentMode: 10
+      - time: 2.85
+        value: 1.5
+        inSlope: 4.500001
+        outSlope: 4.500001
+        tangentMode: 10
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_Intensity
+    path: Spotlight3
+    classID: 108
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      - time: 2.5166667
+        value: 0
+        inSlope: 2.2500005
+        outSlope: 2.2500005
+        tangentMode: 10
+      - time: 2.85
+        value: 1.5
+        inSlope: 4.500001
+        outSlope: 4.500001
+        tangentMode: 10
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_Intensity
+    path: Spotlight1
+    classID: 108
+    script: {fileID: 0}
   m_PPtrCurves: []
   m_SampleRate: 60
   m_WrapMode: 0
@@ -218,6 +293,24 @@ AnimationClip:
       script: {fileID: 0}
       classID: 23
       customType: 22
+      isPPtrCurve: 0
+    - path: 3628315274
+      attribute: 898800009
+      script: {fileID: 0}
+      classID: 108
+      customType: 25
+      isPPtrCurve: 0
+    - path: 2940502556
+      attribute: 898800009
+      script: {fileID: 0}
+      classID: 108
+      customType: 25
+      isPPtrCurve: 0
+    - path: 1095426864
+      attribute: 898800009
+      script: {fileID: 0}
+      classID: 108
+      customType: 25
       isPPtrCurve: 0
     - path: 3800987471
       attribute: 1303350129
@@ -261,7 +354,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 2
+    m_StopTime: 2.85
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -496,6 +589,81 @@ AnimationClip:
     attribute: material._Color.a
     path: Scene/UpperWindows
     classID: 23
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      - time: 2.5166667
+        value: 0
+        inSlope: 2.2500005
+        outSlope: 2.2500005
+        tangentMode: 10
+      - time: 2.85
+        value: 1.5
+        inSlope: 4.500001
+        outSlope: 4.500001
+        tangentMode: 10
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_Intensity
+    path: Spotlight2
+    classID: 108
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      - time: 2.5166667
+        value: 0
+        inSlope: 2.2500005
+        outSlope: 2.2500005
+        tangentMode: 10
+      - time: 2.85
+        value: 1.5
+        inSlope: 4.500001
+        outSlope: 4.500001
+        tangentMode: 10
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_Intensity
+    path: Spotlight3
+    classID: 108
+    script: {fileID: 0}
+  - curve:
+      serializedVersion: 2
+      m_Curve:
+      - time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 10
+      - time: 2.5166667
+        value: 0
+        inSlope: 2.2500005
+        outSlope: 2.2500005
+        tangentMode: 10
+      - time: 2.85
+        value: 1.5
+        inSlope: 4.500001
+        outSlope: 4.500001
+        tangentMode: 10
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    attribute: m_Intensity
+    path: Spotlight1
+    classID: 108
     script: {fileID: 0}
   m_EulerEditorCurves:
   - curve:

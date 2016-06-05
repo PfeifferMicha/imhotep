@@ -5,6 +5,7 @@
 		_MainTex ("Texture", 2D) = "white" {}
 		//_brightness ("Brightness", Range (0.0, 1.0)) = 1.0
 		_tint ("Tint", Color) = (1.0,1.0,1.0,1.0)
+		[MaterialToggle] _isReflection("Is Reflection", Float) = 0 
 	}
 	SubShader
 	{
@@ -36,6 +37,7 @@
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
 			float4 _tint;
+			bool _isReflection;
 			
 			v2f vert (appdata v)
 			{
@@ -54,6 +56,12 @@
 				if( col.a == 0 )
 				{
 					discard;
+				}
+				if( _isReflection )
+				{
+					float4 tint = _tint;
+					tint.a = tint.a*(1-3*i.uv[1]);
+					return col*tint;
 				}
 				return col*_tint;
 			}
