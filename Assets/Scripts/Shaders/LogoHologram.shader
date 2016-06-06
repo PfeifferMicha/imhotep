@@ -93,12 +93,12 @@ SubShader {
 				    float remainder = fmod( coord1.x*_MainTex_TexelSize[2], 50 );
 				    if( remainder <	4 )
 				    {
-				    	result = result + flicker*float4( 1, 1, 1, 0.1 );
+				    	result = result + flicker*float4( 1, 1, 1, 0.1 )*0.5*(1.5+sin(_Time[3]+i.texcoord.y*20));
 				    }
 				    remainder = fmod( coord1.y*_MainTex_TexelSize[3], 50 );
 				    if( remainder <	4 )
 				    {
-				    	result = result +flicker*float4( 1, 1, 1, 0.1 );
+				    	result = result + flicker*float4( 1, 1, 1, 0.1 )*0.5*(1.5+cos(_Time[3]+i.texcoord.y*20));
 				    }
 				}
 

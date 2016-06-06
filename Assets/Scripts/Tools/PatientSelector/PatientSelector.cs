@@ -68,14 +68,14 @@ public class PatientSelector : MonoBehaviour {
 			b.onClick.AddListener(() => transform.GetComponent<Widget>().Close());
 		}
 
-		RectTransform rectTf = defaultPatientButton.transform.parent.GetComponent<RectTransform>();
+		/*RectTransform rectTf = defaultPatientButton.transform.parent.GetComponent<RectTransform>();
 		RectTransform buttonRectTF = defaultPatientButton.transform.GetComponent<RectTransform>();
 		float newWidth = PatientDirectoryLoader.getCount () * (buttonRectTF.rect.width + 2.0f);
-		rectTf.SetSizeWithCurrentAnchors (RectTransform.Axis.Horizontal, newWidth);
+		rectTf.SetSizeWithCurrentAnchors (RectTransform.Axis.Horizontal, newWidth);*/
 
 		// Set the scroll view position:
-		Vector2 currentScrollPos = mScrollView.GetComponent<ScrollRect>().normalizedPosition;
-		mScrollView.GetComponent<ScrollRect>().normalizedPosition = new Vector2(0,currentScrollPos.y);
+		//Vector2 currentScrollPos = mScrollView.GetComponent<ScrollRect>().normalizedPosition;
+		//mScrollView.GetComponent<ScrollRect>().normalizedPosition = new Vector2(0,currentScrollPos.y);
 
 	}
 

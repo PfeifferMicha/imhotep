@@ -36,13 +36,12 @@ public class RoomLightControl : MonoBehaviour {
 
 	public void Update()
 	{
-		if (mLoweringShutters) {
+		/*if (mLoweringShutters) {
 			sun.GetComponent<Light> ().intensity = sun.GetComponent<Light> ().intensity - Time.deltaTime;
 			if (sun.GetComponent<Light> ().intensity < lowAmbientIntensity) {
 				sun.GetComponent<Light> ().intensity= lowAmbientIntensity;
 				mLoweringShutters = false;
 			}
-		}
-
+		}*/
 	}
 }
