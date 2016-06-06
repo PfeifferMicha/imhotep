@@ -60,6 +60,34 @@ ModelImporter:
     100104: Cube_004
     100106: CenterLigths
     100108: Cylinder_002
+    100110: Circle_024
+    100112: Circle_025
+    100114: Circle_026
+    100116: Circle_027
+    100118: Circle_028
+    100120: Chair
+    100122: Chair_002
+    100124: Chair_002_MeshPart0
+    100126: Chair_002_MeshPart1
+    100128: Chair_MeshPart0
+    100130: Chair_MeshPart1
+    100132: Circle_029
+    100134: Circle_030
+    100136: Circle_031
+    100138: Cup
+    100140: Cup_001
+    100142: CushionChairRed_003
+    100144: CushionChairRed_004
+    100146: CushionChairRed_005
+    100148: CushionChairRed_006
+    100150: Phone
+    100152: Plane
+    100154: Plane_001
+    100156: Circle_032
+    100158: Circle_033
+    100160: Circle_034
+    100162: Circle_035
+    100164: Circle_036
     400000: BezierCurve
     400002: BezierCurve_001
     400004: Center
@@ -115,6 +143,34 @@ ModelImporter:
     400104: Cube_004
     400106: CenterLigths
     400108: Cylinder_002
+    400110: Circle_024
+    400112: Circle_025
+    400114: Circle_026
+    400116: Circle_027
+    400118: Circle_028
+    400120: Chair
+    400122: Chair_002
+    400124: Chair_002_MeshPart0
+    400126: Chair_002_MeshPart1
+    400128: Chair_MeshPart0
+    400130: Chair_MeshPart1
+    400132: Circle_029
+    400134: Circle_030
+    400136: Circle_031
+    400138: Cup
+    400140: Cup_001
+    400142: CushionChairRed_003
+    400144: CushionChairRed_004
+    400146: CushionChairRed_005
+    400148: CushionChairRed_006
+    400150: Phone
+    400152: Plane
+    400154: Plane_001
+    400156: Circle_032
+    400158: Circle_033
+    400160: Circle_034
+    400162: Circle_035
+    400164: Circle_036
     2300000: BezierCurve
     2300002: BezierCurve_001
     2300004: Circle
@@ -162,6 +218,32 @@ ModelImporter:
     2300088: UpperWindows
     2300090: Cube_004
     2300092: Cylinder_002
+    2300094: Circle_024
+    2300096: Circle_025
+    2300098: Circle_026
+    2300100: Circle_027
+    2300102: Circle_028
+    2300104: Chair_002_MeshPart0
+    2300106: Chair_002_MeshPart1
+    2300108: Chair_MeshPart0
+    2300110: Chair_MeshPart1
+    2300112: Circle_029
+    2300114: Circle_030
+    2300116: Circle_031
+    2300118: Cup
+    2300120: Cup_001
+    2300122: CushionChairRed_003
+    2300124: CushionChairRed_004
+    2300126: CushionChairRed_005
+    2300128: CushionChairRed_006
+    2300130: Phone
+    2300132: Plane
+    2300134: Plane_001
+    2300136: Circle_032
+    2300138: Circle_033
+    2300140: Circle_034
+    2300142: Circle_035
+    2300144: Circle_036
     3300000: BezierCurve
     3300002: BezierCurve_001
     3300004: Circle
@@ -209,6 +291,32 @@ ModelImporter:
     3300088: UpperWindows
     3300090: Cube_004
     3300092: Cylinder_002
+    3300094: Circle_024
+    3300096: Circle_025
+    3300098: Circle_026
+    3300100: Circle_027
+    3300102: Circle_028
+    3300104: Chair_002_MeshPart0
+    3300106: Chair_002_MeshPart1
+    3300108: Chair_MeshPart0
+    3300110: Chair_MeshPart1
+    3300112: Circle_029
+    3300114: Circle_030
+    3300116: Circle_031
+    3300118: Cup
+    3300120: Cup_001
+    3300122: CushionChairRed_003
+    3300124: CushionChairRed_004
+    3300126: CushionChairRed_005
+    3300128: CushionChairRed_006
+    3300130: Phone
+    3300132: Plane
+    3300134: Plane_001
+    3300136: Circle_032
+    3300138: Circle_033
+    3300140: Circle_034
+    3300142: Circle_035
+    3300144: Circle_036
     4300000: Cylinder
     4300002: BezierCurve_001
     4300004: Cube_001
@@ -256,6 +364,32 @@ ModelImporter:
     4300088: UpperWindows
     4300090: Cube_004
     4300092: Cylinder_002
+    4300094: Circle_024
+    4300096: Circle_026
+    4300098: Circle_025
+    4300100: Circle_028
+    4300102: Circle_027
+    4300104: Cup_001
+    4300106: CushionChairRed_006
+    4300108: CushionChairRed_005
+    4300110: Plane_001
+    4300112: Plane
+    4300114: Chair_002_MeshPart0
+    4300116: Chair_002_MeshPart1
+    4300118: Circle_031
+    4300120: Circle_030
+    4300122: CushionChairRed_004
+    4300124: CushionChairRed_003
+    4300126: Circle_029
+    4300128: Phone
+    4300130: Chair_MeshPart0
+    4300132: Chair_MeshPart1
+    4300134: Cup
+    4300136: Circle_036
+    4300138: Circle_035
+    4300140: Circle_034
+    4300142: Circle_032
+    4300144: Circle_033
     7400000: Default Take
     9500000: //RootNode
   materials:
