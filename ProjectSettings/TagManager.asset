@@ -15,7 +15,7 @@ TagManager:
   - 
   - MousePlane
   - MeshViewer
-  - 
+  - Sprite
   - 
   - 
   - 
@@ -40,4 +40,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Sprites
+    uniqueID: 2518678021
     locked: 0
