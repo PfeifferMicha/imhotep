@@ -32,7 +32,7 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 1, g: 0.07058824, b: 0.20392157, a: 1}
+        second: {r: 0.34509805, g: 0.34901962, b: 0.827451, a: 1}
       data:
         first:
           name: _cuttingPlaneNormal
