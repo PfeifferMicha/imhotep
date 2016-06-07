@@ -149,7 +149,7 @@ Material:
       data:
         first:
           name: layer
-        second: 0.4355738
+        second: 0.5946601
       data:
         first:
           name: globalMaximum
