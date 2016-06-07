@@ -304,7 +304,7 @@ public class AnnotationControl : MonoBehaviour {
 
     public void saveAnnotationInFile()
     {
-        if (Patient.getLoadedPatient() == null)
+        /*if (Patient.getLoadedPatient() == null)
         {
             return;
         }
@@ -342,7 +342,7 @@ public class AnnotationControl : MonoBehaviour {
                 outputFile.WriteLine(JsonMapper.ToJson(apj));
             }
             outputFile.Close();
-        }        
+        }        */
         return;
     }
 
