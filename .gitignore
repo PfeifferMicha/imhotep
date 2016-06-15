@@ -21,3 +21,5 @@ obj/
 ehthumbs.db
 Thumbs.db
 *.blend1
+
+.directory
