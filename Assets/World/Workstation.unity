@@ -915,7 +915,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &304307826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3257,6 +3257,10 @@ Prefab:
       propertyPath: m_LocalScale.z
       value: 0.8492893
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 818f81acb7d0c4781973cff23f7b814c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 9500000, guid: 818f81acb7d0c4781973cff23f7b814c, type: 3}
   m_ParentPrefab: {fileID: 100100000, guid: 818f81acb7d0c4781973cff23f7b814c, type: 3}
@@ -4515,7 +4519,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 2105285540}
-  - 114: {fileID: 2105285541}
   - 114: {fileID: 2105285542}
   - 114: {fileID: 2105285544}
   m_Layer: 9
@@ -4538,17 +4541,6 @@ Transform:
   - {fileID: 1416113409}
   m_Father: {fileID: 26487849}
   m_RootOrder: 1
---- !u!114 &2105285541
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2105285539}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9dc2c6277af78404085b3d8f6bb8231d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &2105285542
 MonoBehaviour:
   m_ObjectHideFlags: 0
