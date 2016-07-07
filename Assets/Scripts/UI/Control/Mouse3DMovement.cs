@@ -14,6 +14,8 @@ public class Mouse3DMovement : MonoBehaviour {
 	private Vector2 mCurrentUVCoordinates;
 	private GameObject mouse;
 
+    public float mouseSpeed = 0.03f;
+
 	private MeshRenderer mRenderer;
 
     // Use this for initialization
@@ -29,22 +31,26 @@ public class Mouse3DMovement : MonoBehaviour {
         if ( (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0) && !Input.GetMouseButton(2))
         {
             RaycastHit hit;
-			//Vector3 dir = transform.localPosition - Camera.main.transform.position + new Vector3(Input.GetAxis("Mouse X") * scale, Input.GetAxis("Mouse Y") * scale, 0);
-			//Ray ray = new Ray(Camera.main.transform.position, dir);
-			Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
+            Vector3 dir = transform.localPosition - Camera.main.transform.position + new Vector3(Input.GetAxis("Mouse X") * mouseSpeed, Input.GetAxis("Mouse Y") * mouseSpeed, 0);
+            Ray ray = new Ray(Camera.main.transform.position, dir);
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
 
-			if (Physics.Raycast (ray, out hit, Mathf.Infinity, onlyMousePlane)) {
-				//Vector3 offset = new Vector3(0.1f, 0.1f, 0.1f);
-				transform.position = hit.point;
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMousePlane))
+            {
+                //Vector3 offset = new Vector3(0.1f, 0.1f, 0.1f);
+                transform.position = hit.point;
 
-				// Remember my UV coordinates, because the MouseUIInteraction script will use them to handle UI input:
-				this.setUVCoordinates (hit.textureCoord2, mouse);
+                // Remember my UV coordinates, because the MouseUIInteraction script will use them to handle UI input:
+                this.setUVCoordinates(hit.textureCoord2, mouse);
 
-				mRenderer.enabled = true;
-			} else {
-				mRenderer.enabled = false;
-			}         
+                mRenderer.enabled = true;
+            }
+            else
+            {
+                mRenderer.enabled = false;
+            }         
+                
         }
     }
 
