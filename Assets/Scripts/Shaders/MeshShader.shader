@@ -1,4 +1,7 @@
-﻿Shader "Custom/MeshShader" {
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
+Shader "Custom/MeshShader" {
 	Properties {
 		_Color ("Color", Color) = (0.6, 0.6, 0.6, 1.0)
 		_min("Min Scan Effect", float) = -1.0
@@ -33,12 +36,12 @@
 				o.localPos = v.vertex.xyz;
 
 				// Calculate the world normal
-				float3 wNormal = mul( _Object2World, float4( v.normal, 0.0 ) ).xyz;
+				float3 wNormal = mul( unity_ObjectToWorld, float4( v.normal, 0.0 ) ).xyz;
 				// Calculate the flipped world normal
 			    wNormal = -wNormal;
 
 			    // Calculate a rotation to get from object space to tangent space:
-			    float3 objUp = mul((float3x3)_World2Object, wNormal); // Convert world up to object up so it can be converted to tangent up.
+			    float3 objUp = mul((float3x3)unity_WorldToObject, wNormal); // Convert world up to object up so it can be converted to tangent up.
 				float3 binormal = cross( v.normal, v.tangent.xyz ) * v.tangent.w;
 				float3x3 rotation = float3x3( v.tangent.xyz, binormal, v.normal );
 
