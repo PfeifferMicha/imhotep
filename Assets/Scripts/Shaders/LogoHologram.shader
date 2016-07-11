@@ -49,7 +49,7 @@ SubShader {
 			}
 
 
-			const float weight[5] = {0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216};
+			float weight[5];// = {0.227027f, 0.1945946f, 0.1216216f, 0.054054f, 0.016216f};
 
 			fixed4 frag (v2f i) : SV_Target
 			{
@@ -63,6 +63,11 @@ SubShader {
 				half2 coord1 = i.texcoord;
 				coord1.y -= 0.02*t*(1+sin(_Time[2] + i.texcoord.x*50));
 
+				weight[0] = 0.227027;
+				weight[1] = 0.1945946;
+				weight[2] = 0.1216216;
+				weight[3] = 0.054054;
+				weight[4] = 0.016216;
 
 				if( t > 0 )
 				{
