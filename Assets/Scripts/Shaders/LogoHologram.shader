@@ -62,6 +62,7 @@ SubShader {
 				t = t-0.5;
 				half2 coord1 = i.texcoord;
 				coord1.y -= 0.02*t*(1+sin(_Time[2] + i.texcoord.x*50));
+				coord1.y = clamp( coord1.y, 0, 1 );
 
 				weight[0] = 0.227027;
 				weight[1] = 0.1945946;
