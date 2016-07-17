@@ -250,6 +250,12 @@ public class MeshLoader : MonoBehaviour {
 			}
 		}
 
+        Debug.Log("Found no color for " + meshName + ". Use default color");
+        Material mat1 = Resources.Load("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
+        mat1.color = HexToColor("#808080");
+        return mat1;
+
+        /*
 		bool contains;
 
 		contains = meshName.IndexOf("tumor", StringComparison.OrdinalIgnoreCase) >= 0;
@@ -313,8 +319,8 @@ public class MeshLoader : MonoBehaviour {
 			return Resources.Load("Materials/Ventricles", typeof(Material)) as Material;
 		}
 
-		return Resources.Load("Materials/DefaultMud", typeof(Material)) as Material;
-	}
+		return Resources.Load("Materials/DefaultMud", typeof(Material)) as Material; */
+    }
 
 	// Adopted rom the Unity Wiki:
 	// http://wiki.unity3d.com/index.php?title=HexConverter
@@ -328,6 +334,7 @@ public class MeshLoader : MonoBehaviour {
 	// http://wiki.unity3d.com/index.php?title=HexConverter
 	Color HexToColor(string hex)
 	{
+        Debug.LogWarning(hex);
 		byte r = byte.Parse(hex.Substring(1,2), System.Globalization.NumberStyles.HexNumber);
 		byte g = byte.Parse(hex.Substring(3,2), System.Globalization.NumberStyles.HexNumber);
 		byte b = byte.Parse(hex.Substring(5,2), System.Globalization.NumberStyles.HexNumber);
