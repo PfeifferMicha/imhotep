@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class OpacitySlider : MonoBehaviour {
+public class ClippingSlider : MonoBehaviour {
 
-	public OpacityControl.ClippableObject objectToClip { get; set; }
+	public ClippingControl.ClippableObject objectToClip { get; set; }
 	public Color defaultColor = new Color( 1.0f,0.7f,0.5f,0.1f);
-	public OpacityControl parentControl = null;
+	public ClippingControl parentControl = null;
 
-	public OpacitySlider()
+	public ClippingSlider()
 	{
 		objectToClip = null;
 	}

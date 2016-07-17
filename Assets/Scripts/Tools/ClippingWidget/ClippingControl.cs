@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class OpacityControl : MonoBehaviour {
+public class ClippingControl : MonoBehaviour {
 
 	public GameObject defaultLine;
 	public GameObject mainControlSliderObject = null;
@@ -121,9 +121,9 @@ public class OpacityControl : MonoBehaviour {
             //Save game object in slider
 			GameObject slider = newLine.transform.Find("Slider").gameObject;
 			slider.GetComponent<Slider> ().value = 0.5f;
-			slider.GetComponent<OpacitySlider>().objectToClip = clippable;
-			slider.GetComponent<OpacitySlider> ().parentControl = this;
-			slider.GetComponent<OpacitySlider> ().defaultColor = clippingPlaneColor;
+			slider.GetComponent<ClippingSlider>().objectToClip = clippable;
+			slider.GetComponent<ClippingSlider> ().parentControl = this;
+			slider.GetComponent<ClippingSlider> ().defaultColor = clippingPlaneColor;
 
             // Change button text to name of object:
             GameObject textObject = newLine.transform.Find("Text").gameObject;
