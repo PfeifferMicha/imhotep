@@ -194,11 +194,11 @@ public class MeshLoader : MonoBehaviour {
 					//materials [0] = mat;
 					objToSpawn.GetComponent<Renderer> ().material = mat;
 				
-					float min = mat.GetFloat ("_min");
+					/*float min = mat.GetFloat ("_min");
 					float max = mat.GetFloat ("_max");
 					mat.SetFloat ("_min", Math.Min( mesh.bounds.min.z, min ));
 					mat.SetFloat ("_max", Math.Max( mesh.bounds.max.z, max ));
-					mat.SetFloat ("_amount", -1f );		// Default: inactive.
+					mat.SetFloat ("_amount", -1f );*/		// Default: inactive.
 					//objToSpawn.GetComponent<MeshRenderer> ().materials = materials;
 				}
 
@@ -243,7 +243,8 @@ public class MeshLoader : MonoBehaviour {
 			if(mle.name == meshName)
 			{
 				Debug.Log("Found color for " + mle.name + ": " + mle.color);
-				Material mat = Resources.Load("Materials/Tumor", typeof(Material)) as Material;
+                //Material mat = Resources.Load("Materials/Tumor", typeof(Material)) as Material;
+                Material mat = Resources.Load("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
 				mat.color = HexToColor (mle.color);
 				return mat;
 			}

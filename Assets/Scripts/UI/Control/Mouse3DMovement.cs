@@ -31,9 +31,9 @@ public class Mouse3DMovement : MonoBehaviour {
         if ( (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0) && !Input.GetMouseButton(2))
         {
             RaycastHit hit;
-            Vector3 dir = transform.localPosition - Camera.main.transform.position + new Vector3(Input.GetAxis("Mouse X") * mouseSpeed, Input.GetAxis("Mouse Y") * mouseSpeed, 0);
-            Ray ray = new Ray(Camera.main.transform.position, dir);
-            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //Vector3 dir = transform.localPosition - Camera.main.transform.position + new Vector3(Input.GetAxis("Mouse X") * mouseSpeed, Input.GetAxis("Mouse Y") * mouseSpeed, 0);
+            //Ray ray = new Ray(Camera.main.transform.position, dir); //TODO use this line for build version
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMousePlane))

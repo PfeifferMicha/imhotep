@@ -14,30 +14,24 @@ Material:
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
-    m_TexEnvs: {}
+    m_TexEnvs: []
     m_Floats:
-      data:
-        first:
-          name: _min
-        second: -1
-      data:
-        first:
-          name: _max
-        second: 71.30249
-      data:
-        first:
-          name: _amount
-        second: 0
+    - first:
+        name: _amount
+      second: 0
+    - first:
+        name: _max
+      second: 71.30249
+    - first:
+        name: _min
+      second: -1
     m_Colors:
-      data:
-        first:
-          name: _Color
-        second: {r: 0.21723615, g: 0.7205882, b: 0.2207075, a: 1}
-      data:
-        first:
-          name: _cuttingPlaneNormal
-        second: {r: -1, g: 0, b: 0, a: 1}
-      data:
-        first:
-          name: _cuttingPlanePosition
-        second: {r: 9999, g: 0, b: 0, a: 1}
+    - first:
+        name: _Color
+      second: {r: 0.2172361, g: 0.7205882, b: 0.22070748, a: 0.966}
+    - first:
+        name: _cuttingPlaneNormal
+      second: {r: -1, g: 0, b: 0, a: 1}
+    - first:
+        name: _cuttingPlanePosition
+      second: {r: 9999, g: 0, b: 0, a: 1}
