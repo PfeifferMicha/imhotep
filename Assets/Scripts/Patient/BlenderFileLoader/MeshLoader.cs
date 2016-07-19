@@ -334,7 +334,7 @@ public class MeshLoader : MonoBehaviour {
 	// http://wiki.unity3d.com/index.php?title=HexConverter
 	Color HexToColor(string hex)
 	{
-        Debug.LogWarning(hex);
+        //Debug.LogWarning(hex);
 		byte r = byte.Parse(hex.Substring(1,2), System.Globalization.NumberStyles.HexNumber);
 		byte g = byte.Parse(hex.Substring(3,2), System.Globalization.NumberStyles.HexNumber);
 		byte b = byte.Parse(hex.Substring(5,2), System.Globalization.NumberStyles.HexNumber);
