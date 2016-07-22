@@ -12,6 +12,8 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 	private Camera UICamera;
 	//private MouseSphereMovement mMouse;
 	private Vector2 mViewSize;
+	private Vector2 mMinPos;
+	private Vector2 mMaxPos;
 	private Vector3 mOffset;
 
 	private MouseInputModule mouseInputModul;
@@ -27,11 +29,15 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 		mViewSize.y = UICamera.orthographicSize * 2;
 		mViewSize.x = mViewSize.y * UICamera.aspect;
 
+
 		mouseInputModul = GameObject.Find ("GlobalScript").GetComponent<MouseInputModule>();
 		mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> ();
+
+		// Ensure the canvas is placed around the origin of the widget:
+		RectTransform rt = transform.parent.GetComponent<RectTransform> ();
+		rt.localPosition = new Vector3( 0,0,0 );
 	}
 
-	// Update is called once per frame
 	void Update () {
 		if (mDragged)
 		{
@@ -42,6 +48,7 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 				if (transform.parent != null && transform.parent.transform.parent != null)
 				{
 					Transform grandparent = transform.parent.transform.parent;
+
 
 					RaycastHit hit;
 					//Ray ray = new Ray(Camera.main.transform.position, mouse.transform.localPosition - Camera.main.transform.position);
@@ -55,7 +62,25 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 						//Vector3 offset = (mouse.transform.localPosition - Camera.main.transform.position).normalized * 10f;
 						Vector2 uv = hit.textureCoord2;
 						Vector3 mousePos = new Vector3 (uv.x * mViewSize.x, uv.y * mViewSize.y, 0);
-						grandparent.localPosition = mousePos - mOffset;
+						Vector3 newPos = mousePos - mOffset;
+
+						Vector2 canvasSize = transform.parent.GetComponent<RectTransform> ().rect.size;
+						Vector2 canvasPos = transform.parent.GetComponent<RectTransform> ().rect.position;
+						Vector2 widgetScale = grandparent.localScale;
+
+						Debug.Log ("Canvas Size: " + canvasSize);
+						Vector2 widgetSize = new Vector2 (canvasSize.x * widgetScale.x,
+							canvasSize.y * widgetScale.y);
+
+						Debug.Log ("widegtSize: " + widgetSize);
+
+						mMinPos = (-mViewSize + widgetSize) / 2f;
+						mMaxPos = (mViewSize - widgetSize) / 2f;
+
+						grandparent.localPosition = new Vector3 (
+							Mathf.Clamp (newPos.x, mMinPos.x, mMaxPos.x),
+							Mathf.Clamp (newPos.y, mMinPos.y, mMaxPos.y),
+							newPos.y );
 					}
 				}
 			}
