@@ -34,7 +34,7 @@ Material:
       data:
         first:
           name: layer
-        second: 0
+        second: 0.7029156
       data:
         first:
           name: globalMaximum

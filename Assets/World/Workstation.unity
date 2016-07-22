@@ -2296,10 +2296,10 @@ Prefab:
     - target: {fileID: 3380982, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 1756751619}
+      objectReference: {fileID: 1828193696}
     - target: {fileID: 146900, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11463128, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: index
@@ -3149,7 +3149,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &1508808261
 AudioListener:
   m_ObjectHideFlags: 0
@@ -3963,7 +3963,53 @@ Canvas:
 Transform:
   m_PrefabParentObject: {fileID: 408240, guid: 151a097cbd6e0d9499bb78919b58f5b2, type: 2}
   m_PrefabInternal: {fileID: 288501633}
---- !u!43 &1756751619
+--- !u!1001 &1821689639
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 121480050}
+    m_Modifications:
+    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -0.592
+      objectReference: {fileID: 0}
+    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -0.587
+      objectReference: {fileID: 0}
+    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 121778, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
+      propertyPath: m_Name
+      value: LoadingScreenWidget
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
+  m_IsPrefabParent: 0
+--- !u!43 &1828193696
 Mesh:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -4091,52 +4137,6 @@ Mesh:
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshOptimized: 0
---- !u!1001 &1821689639
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 121480050}
-    m_Modifications:
-    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -0.592
-      objectReference: {fileID: 0}
-    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: -0.587
-      objectReference: {fileID: 0}
-    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 450826, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 121778, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
-      propertyPath: m_Name
-      value: LoadingScreenWidget
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 17d4e5f2ed1ce2948b1ce9d729e4bf39, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &1844044536
 GameObject:
   m_ObjectHideFlags: 0
