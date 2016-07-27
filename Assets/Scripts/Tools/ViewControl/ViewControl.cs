@@ -15,7 +15,7 @@ public class ViewControl : MonoBehaviour {
 	public Button buttoPrev, buttonNext;
 
 	public Shader meshShader, meshShaderTransparent;
-	private Transform meshViewerScaleNode, meshViewerRotationNode;
+	private GameObject meshViewerScaleNode, meshViewerRotationNode;
 
 	private int currentViewIndex = 0;
 
@@ -29,8 +29,8 @@ public class ViewControl : MonoBehaviour {
 		meshShader = Shader.Find("Custom/MeshShader");
 		meshShaderTransparent = Shader.Find("Custom/MeshShaderTransparent");
 
-		meshViewerScaleNode = GameObject.Find ("MeshViewer").transform;
-		meshViewerRotationNode = GameObject.Find ("MeshViewer/MeshRotationNode").transform;
+		meshViewerScaleNode = GameObject.Find ("MeshViewer");
+		meshViewerRotationNode = GameObject.Find ("MeshViewer/MeshRotationNode");
 
 		patientClosed ();
 		showMainPane ();
@@ -107,8 +107,8 @@ public class ViewControl : MonoBehaviour {
 				}
 				Patient.View newView = new Patient.View ();
 				newView.name = t;
-				newView.orientation = meshViewerRotationNode.localRotation;
-				newView.scale = meshViewerScaleNode.localScale;
+				newView.orientation = meshViewerRotationNode.transform.localRotation;
+				newView.scale = meshViewerScaleNode.transform.localScale;
 				newView.opacities = new Dictionary<string,float> ();
 
 				foreach (GameObject g in mMeshLoader.MeshGameObjectContainers) {
@@ -134,15 +134,14 @@ public class ViewControl : MonoBehaviour {
 				viewNameText.text += ": ";
 				viewNameText.text += view.name;
 
-				meshViewerRotationNode.localRotation = view.orientation;
-				meshViewerScaleNode.localScale = view.scale;
+				// Slowly zoom and rotate towards the target:
+				meshViewerScaleNode.GetComponent<ModelZoomer> ().setTargetZoom (view.scale);
+				meshViewerRotationNode.GetComponent<ModelRotator> ().setTargetOrientation (view.orientation);
 
 				foreach(KeyValuePair<string, float> entry in view.opacities)
 				{
 					setObjectOpacity( entry.Key, entry.Value );
 				}
-
-
 
 				currentViewIndex = index;
 			}

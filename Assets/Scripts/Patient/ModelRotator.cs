@@ -8,6 +8,16 @@ public class ModelRotator : MonoBehaviour
 {
 	public float rotationSpeed = 2.0f;
 
+	private Quaternion targetRotation;
+	public float autoRotateSpeed = 720f;
+	private float rotationStartTime = 0;
+	private float rotationTime = 0.3f;
+
+	void Start()
+	{
+		targetRotation = transform.localRotation;
+	}
+
 	private void Update()
 	{
 		if (UI.UICore.instance.mouseIsOverUIObject == false) {
@@ -19,8 +29,22 @@ public class ModelRotator : MonoBehaviour
 				Vector3 rightVector = Camera.main.transform.right;
 				transform.RotateAround (transform.position, upVector, inputH * rotationSpeed);
 				transform.RotateAround (transform.position, rightVector, -inputV * rotationSpeed);
+
+				targetRotation = transform.localRotation;
 			}
 		}
+
+		// Slowly rotate towards target, if any:
+		//float step =  Time.time;
+		transform.localRotation = Quaternion.Slerp( transform.localRotation, targetRotation, (Time.time - rotationStartTime)/rotationTime );
+
+	}
+
+	public void setTargetOrientation( Quaternion orientation, float timeForRotation = 0.6f )
+	{
+		targetRotation = orientation;
+		rotationStartTime = Time.time;
+		rotationTime = timeForRotation;
 	}
 }
 
