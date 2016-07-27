@@ -1,4 +1,4 @@
-﻿Shader "Custom/MeshShader" {
+﻿Shader "Custom/MeshShaderTransparent" {
 	Properties {
 		_Color ("Color", Color) = (0.6, 0.6, 0.6, 1.0)
 		_min("Min Scan Effect", float) = -1.0
@@ -10,13 +10,13 @@
 	SubShader {
 
 			Tags {
-				"Queue" = "Geometry"
-				"RenderType"="Opaque"
+				"Queue" = "Transparent"
+				"RenderType"="Transparent"
 			}
 			Cull Off
 
 			CGPROGRAM
-			#pragma surface surf Standard fullforwardshadows vertex:vert nofog
+			#pragma surface surf Standard fullforwardshadows vertex:vert alpha nofog
 			#pragma target 3.0
 
 			struct Input {

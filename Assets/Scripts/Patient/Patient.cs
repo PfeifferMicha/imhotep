@@ -28,6 +28,7 @@ public class Patient : PatientMeta
 		public string name { get; set; }
 		public Quaternion orientation;
 		public Vector3 scale;
+		public Dictionary<string, float> opacities;
 	}
 
 	public Patient( PatientMeta meta ) : base(meta)

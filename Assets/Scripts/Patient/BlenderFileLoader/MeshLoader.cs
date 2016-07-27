@@ -243,19 +243,19 @@ public class MeshLoader : MonoBehaviour {
 			if(mle.name == meshName)
 			{
 				Debug.Log("Found color for " + mle.name + ": " + mle.color);
-                //Material mat = Resources.Load("Materials/Tumor", typeof(Material)) as Material;
-                Material mat = Resources.Load("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
+				Material mat = Resources.Load("Materials/DefaultMud", typeof(Material)) as Material;
+                //Material mat = Resources.Load("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
 				mat.color = HexToColor (mle.color);
 				return mat;
 			}
 		}
 
-        Debug.Log("Found no color for " + meshName + ". Use default color");
+        /*Debug.Log("Found no color for " + meshName + ". Use default color");
         Material mat1 = Resources.Load("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
         mat1.color = HexToColor("#808080");
-        return mat1;
+        return mat1;*/
 
-        /*
+        
 		bool contains;
 
 		contains = meshName.IndexOf("tumor", StringComparison.OrdinalIgnoreCase) >= 0;
@@ -319,12 +319,12 @@ public class MeshLoader : MonoBehaviour {
 			return Resources.Load("Materials/Ventricles", typeof(Material)) as Material;
 		}
 
-		return Resources.Load("Materials/DefaultMud", typeof(Material)) as Material; */
+		return Resources.Load("Materials/DefaultMud", typeof(Material)) as Material;
     }
 
 	// Adopted rom the Unity Wiki:
 	// http://wiki.unity3d.com/index.php?title=HexConverter
-	private string ColorToHex(Color32 color)
+	public static string ColorToHex(Color32 color)
 	{
 		string hex = color.r.ToString("X2") + color.g.ToString("X2") + color.b.ToString("X2");
 		return hex;
@@ -332,7 +332,7 @@ public class MeshLoader : MonoBehaviour {
 
 	// Adopted rom the Unity Wiki:
 	// http://wiki.unity3d.com/index.php?title=HexConverter
-	Color HexToColor(string hex)
+	public static Color HexToColor(string hex)
 	{
         //Debug.LogWarning(hex);
 		byte r = byte.Parse(hex.Substring(1,2), System.Globalization.NumberStyles.HexNumber);

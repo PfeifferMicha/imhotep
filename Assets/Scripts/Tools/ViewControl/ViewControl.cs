@@ -23,7 +23,6 @@ public class ViewControl : MonoBehaviour {
 		mainPane = transform.FindChild ("Canvas/MainPane").gameObject;
 		editPane = transform.FindChild ("Canvas/EditPane").gameObject;
 
-
 		mMeshLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
 
 		patientClosed ();
@@ -104,6 +103,10 @@ public class ViewControl : MonoBehaviour {
 				newView.orientation = meshViewerRotationNode.transform.localRotation;
 				newView.scale = meshViewerScaleNode.transform.localScale;
 
+				foreach (GameObject g in mMeshLoader.MeshGameObjectContainers) {
+					newView.opacities [g.name] = 0.5f;
+				}
+
 				currentViewIndex = p.insertView ( newView, currentViewIndex + 1 );
 				setView (currentViewIndex);
 
@@ -126,6 +129,43 @@ public class ViewControl : MonoBehaviour {
 				meshViewerScaleNode.transform.localScale = view.scale;
 
 				currentViewIndex = index;
+			}
+		}
+	}
+
+	void setObjectOpacity( string name, float opacity )
+	{
+		GameObject gameObjectToChangeOpacity = null;
+		foreach (GameObject g in mMeshLoader.MeshGameObjectContainers) {
+			if (g.name == name) {
+				gameObjectToChangeOpacity = g;
+				break;
+			}
+		}
+		if (gameObjectToChangeOpacity != null) {
+			if (opacity == 0.0f) {
+				gameObjectToChangeOpacity.SetActive (false);
+				return;
+			} else {
+				gameObjectToChangeOpacity.SetActive (true);
+			}
+
+			foreach (MeshRenderer mr in gameObjectToChangeOpacity.GetComponentsInChildren<MeshRenderer>()) {
+				Color col = mr.material.color;
+				col.a = opacity;
+				mr.material.color = col;
+
+				/*if (f == 1.0f) { //Use opaque material
+					Material mat = Resources.Load ("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
+					mat.color = new Color (mr.material.color.r, mr.material.color.g, mr.material.color.b, f);
+
+					mr.material = new Material (mat);
+				} else if (f > 0.0 && f < 1.0f) { // Use transparent material
+					Material mat = Resources.Load ("Materials/DefaultMaterialAfterLoadingTransparent", typeof(Material)) as Material;
+					mat.color = new Color (mr.material.color.r, mr.material.color.g, mr.material.color.b, f);
+
+					mr.material = new Material (mat); 
+				}*/
 			}
 		}
 	}
