@@ -138,4 +138,10 @@ public class Patient : PatientMeta
 			return null;
 		}
 	}
+	public void deleteView( int index )
+	{
+		if (index >= 0 && mViews.Count > index) {
+			mViews.RemoveAt (index);
+		}
+	}
 }

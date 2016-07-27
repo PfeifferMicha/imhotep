@@ -10,11 +10,11 @@ public class ViewControl : MonoBehaviour {
 	public GameObject viewNameInputField;
 
 	private MeshLoader mMeshLoader;
-	public Button saveButton, editButton;
+	public Button saveButton, newButton;
 	public Text viewNameText;
 	public Button buttoPrev, buttonNext;
 
-	public Shader meshShader, meshShaderTransparent;
+	private Shader meshShader, meshShaderTransparent;
 	private GameObject meshViewerScaleNode, meshViewerRotationNode;
 
 	private int currentViewIndex = 0;
@@ -58,22 +58,18 @@ public class ViewControl : MonoBehaviour {
 	public void meshLoaded( object obj = null )
 	{
 		Patient p = Patient.getLoadedPatient ();
-		List<Patient.View> views = p.getViews ();
-		if (views.Count > 0) {
-		} else {
-			viewNameText.text = "No views configured.";
-		}
+		currentViewIndex = 0;
+		setView (currentViewIndex);
 
 		saveButton.interactable = true;
-		editButton.interactable = true;
+		newButton.interactable = true;
 
-		currentViewIndex = 0;
 		setView (currentViewIndex);
 	}
 	public void patientClosed( object obj = null )
 	{
 		saveButton.interactable = false;
-		editButton.interactable = false;
+		newButton.interactable = false;
 		viewNameText.text = "No patient loaded.";
 	}
 
@@ -124,10 +120,29 @@ public class ViewControl : MonoBehaviour {
 		}
 	}
 
+	public void deleteView()
+	{
+		Patient p = Patient.getLoadedPatient ();
+		if (p != null) {
+			p.deleteView (currentViewIndex);
+
+			if (p.getViews ().Count <= currentViewIndex) {
+				currentViewIndex = p.getViews ().Count - 1;
+			}
+		}
+		setView (currentViewIndex);
+	}
+
 	void setView( int index )
 	{
 		Patient p = Patient.getLoadedPatient ();
 		if (p != null) {
+
+			if (p.getViews ().Count == 0) {
+				viewNameText.text = "No views configured.";
+				return;
+			}
+
 			Patient.View view = p.getView (index);
 			if (view != null) {
 				viewNameText.text = (index + 1).ToString();
@@ -140,7 +155,7 @@ public class ViewControl : MonoBehaviour {
 
 				foreach(KeyValuePair<string, float> entry in view.opacities)
 				{
-					setObjectOpacity( entry.Key, entry.Value );
+					setMeshOpacity( entry.Key, entry.Value );
 				}
 
 				currentViewIndex = index;
@@ -148,7 +163,7 @@ public class ViewControl : MonoBehaviour {
 		}
 	}
 
-	void setObjectOpacity( string name, float opacity )
+	void setMeshOpacity( string name, float opacity )
 	{
 		// First, find the GameObject which holds the mesh given by "name"
 		GameObject gameObjectToChangeOpacity = null;

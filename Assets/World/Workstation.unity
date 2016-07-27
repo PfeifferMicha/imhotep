@@ -1990,6 +1990,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 5
+  autoRotateSpeed: 0.5
 --- !u!1 &1508808260
 GameObject:
   m_ObjectHideFlags: 0
@@ -2856,18 +2857,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 11
       objectReference: {fileID: 0}
-    - target: {fileID: 11435506, guid: 4c507fcbe3d9f4e1689b5a5c42e11a21, type: 2}
-      propertyPath: meshViewerRotationNode
-      value: 
-      objectReference: {fileID: 1416113408}
-    - target: {fileID: 11435506, guid: 4c507fcbe3d9f4e1689b5a5c42e11a21, type: 2}
-      propertyPath: meshViewerScaleNode
-      value: 
-      objectReference: {fileID: 2105285539}
     - target: {fileID: 22348292, guid: 4c507fcbe3d9f4e1689b5a5c42e11a21, type: 2}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 470118322}
+    - target: {fileID: 106494, guid: 4c507fcbe3d9f4e1689b5a5c42e11a21, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4c507fcbe3d9f4e1689b5a5c42e11a21, type: 2}
   m_IsPrefabParent: 0
@@ -3172,6 +3169,7 @@ MonoBehaviour:
   zoomingSpeed: 0.5
   maxZoom: 2
   minZoom: 0.2
+  autoZoomSpeed: 0.5
 --- !u!114 &2105285544
 MonoBehaviour:
   m_ObjectHideFlags: 0
