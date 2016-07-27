@@ -8,13 +8,14 @@ public class ViewControl : MonoBehaviour {
 	private GameObject mainPane;
 	private GameObject editPane;
 	public GameObject viewNameInputField;
-	public GameObject meshViewerRotationNode;
-	public GameObject meshViewerScaleNode;
 
 	private MeshLoader mMeshLoader;
 	public Button saveButton, editButton;
 	public Text viewNameText;
 	public Button buttoPrev, buttonNext;
+
+	public Shader meshShader, meshShaderTransparent;
+	private Transform meshViewerScaleNode, meshViewerRotationNode;
 
 	private int currentViewIndex = 0;
 
@@ -24,6 +25,12 @@ public class ViewControl : MonoBehaviour {
 		editPane = transform.FindChild ("Canvas/EditPane").gameObject;
 
 		mMeshLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
+
+		meshShader = Shader.Find("Custom/MeshShader");
+		meshShaderTransparent = Shader.Find("Custom/MeshShaderTransparent");
+
+		meshViewerScaleNode = GameObject.Find ("MeshViewer").transform;
+		meshViewerRotationNode = GameObject.Find ("MeshViewer/MeshRotationNode").transform;
 
 		patientClosed ();
 		showMainPane ();
@@ -100,16 +107,18 @@ public class ViewControl : MonoBehaviour {
 				}
 				Patient.View newView = new Patient.View ();
 				newView.name = t;
-				newView.orientation = meshViewerRotationNode.transform.localRotation;
-				newView.scale = meshViewerScaleNode.transform.localScale;
+				newView.orientation = meshViewerRotationNode.localRotation;
+				newView.scale = meshViewerScaleNode.localScale;
+				newView.opacities = new Dictionary<string,float> ();
 
 				foreach (GameObject g in mMeshLoader.MeshGameObjectContainers) {
-					newView.opacities [g.name] = 0.5f;
+					MeshRenderer mr = g.GetComponentInChildren<MeshRenderer> ();
+					newView.opacities [g.name] = mr.material.color.a;
 				}
 
 				currentViewIndex = p.insertView ( newView, currentViewIndex + 1 );
 				setView (currentViewIndex);
-
+		
 				showMainPane ();
 			}
 		}
@@ -125,8 +134,15 @@ public class ViewControl : MonoBehaviour {
 				viewNameText.text += ": ";
 				viewNameText.text += view.name;
 
-				meshViewerRotationNode.transform.localRotation = view.orientation;
-				meshViewerScaleNode.transform.localScale = view.scale;
+				meshViewerRotationNode.localRotation = view.orientation;
+				meshViewerScaleNode.localScale = view.scale;
+
+				foreach(KeyValuePair<string, float> entry in view.opacities)
+				{
+					setObjectOpacity( entry.Key, entry.Value );
+				}
+
+
 
 				currentViewIndex = index;
 			}
@@ -135,6 +151,7 @@ public class ViewControl : MonoBehaviour {
 
 	void setObjectOpacity( string name, float opacity )
 	{
+		// First, find the GameObject which holds the mesh given by "name"
 		GameObject gameObjectToChangeOpacity = null;
 		foreach (GameObject g in mMeshLoader.MeshGameObjectContainers) {
 			if (g.name == name) {
@@ -142,6 +159,8 @@ public class ViewControl : MonoBehaviour {
 				break;
 			}
 		}
+
+		// If we found such a GameObject, then set the opacity for all it's children (the meshes):
 		if (gameObjectToChangeOpacity != null) {
 			if (opacity == 0.0f) {
 				gameObjectToChangeOpacity.SetActive (false);
@@ -151,21 +170,17 @@ public class ViewControl : MonoBehaviour {
 			}
 
 			foreach (MeshRenderer mr in gameObjectToChangeOpacity.GetComponentsInChildren<MeshRenderer>()) {
-				Color col = mr.material.color;
-				col.a = opacity;
-				mr.material.color = col;
-
-				/*if (f == 1.0f) { //Use opaque material
-					Material mat = Resources.Load ("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
-					mat.color = new Color (mr.material.color.r, mr.material.color.g, mr.material.color.b, f);
-
-					mr.material = new Material (mat);
-				} else if (f > 0.0 && f < 1.0f) { // Use transparent material
-					Material mat = Resources.Load ("Materials/DefaultMaterialAfterLoadingTransparent", typeof(Material)) as Material;
-					mat.color = new Color (mr.material.color.r, mr.material.color.g, mr.material.color.b, f);
-
-					mr.material = new Material (mat); 
-				}*/
+				Material mat = mr.material;
+				if(opacity == 1.0f) //Use opaque material
+				{
+					mat.shader = meshShader;
+					mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, opacity);
+				}
+				else if(opacity > 0.0 && opacity < 1.0f) // Use transparent material
+				{
+					mat.shader = meshShaderTransparent;
+					mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, opacity);
+				}
 			}
 		}
 	}

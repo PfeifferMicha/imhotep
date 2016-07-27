@@ -5,17 +5,16 @@ public class OpacitySlider : MonoBehaviour
 {
 
 	public GameObject gameObjectToChangeOpacity { get; set; }
-	public Shader meshShader;
-	public Shader meshShaderTransparent;
+	public Shader meshShader, meshShaderTransparent;
 
     // Use this for initialization
     void Start()
 	{
 		meshShader = Shader.Find("Custom/MeshShader");
+		meshShaderTransparent = Shader.Find("Custom/MeshShaderTransparent");
 
 		//mat = Resources.Load("Materials/DefaultMaterialAfterLoadingTransparent", typeof(Material)) as Material;
 		//meshShaderTransparent = mat.shader;
-		meshShaderTransparent = Shader.Find("Custom/MeshShaderTransparent");
     }
 
     public void changeOpacity(float f)
@@ -51,7 +50,6 @@ public class OpacitySlider : MonoBehaviour
                 //mat.color = new Color(mr.material.color.r, mr.material.color.g, mr.material.color.b, f);
                 //mr.material = new Material(mat); 
             }
-
         }
     }
 }
