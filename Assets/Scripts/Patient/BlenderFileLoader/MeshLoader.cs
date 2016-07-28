@@ -106,7 +106,8 @@ public class MeshLoader : MonoBehaviour {
 			meshNode.transform.localScale = new Vector3 (0.007f, 0.007f, 0.007f);
 			meshNode.transform.parent.localScale = new Vector3 (1.0f, 1.0f, 1.0f);
 			meshNode.transform.parent.localRotation = Quaternion.identity;
-			meshNode.transform.parent.Rotate (90, 0, 0);
+			//meshNode.transform.parent.Rotate (90, 0, 0);
+			meshNode.transform.parent.GetComponent<ModelRotator>().setTargetOrientation( Quaternion.Euler(90,0,0), 0.01f );
 
 			ThreadUtil t = new ThreadUtil (this.LoadFileWorker, this.LoadFileCallback);
 			t.Run ();
