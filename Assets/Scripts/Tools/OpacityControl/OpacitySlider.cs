@@ -42,7 +42,7 @@ public class OpacitySlider : MonoBehaviour
 				//Material mat = Resources.Load("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
                 //mr.material = new Material(mat);
             }
-            else if(f > 0.0 && f < 1.0f) // Use transparent material
+            else
 			{
 				mat.shader = meshShaderTransparent;
 				mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, f);

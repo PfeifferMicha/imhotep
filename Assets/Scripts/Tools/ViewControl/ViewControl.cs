@@ -110,7 +110,11 @@ public class ViewControl : MonoBehaviour {
 
 				foreach (GameObject g in mMeshLoader.MeshGameObjectContainers) {
 					MeshRenderer mr = g.GetComponentInChildren<MeshRenderer> ();
-					newView.opacities [g.name] = mr.material.color.a;
+					if (g.activeSelf) {
+						newView.opacities [g.name] = mr.material.color.a;
+					} else {
+						newView.opacities [g.name] = 0.0f;
+					}
 				}
 
 				currentViewIndex = p.insertView ( newView, currentViewIndex + 1 );
@@ -195,7 +199,7 @@ public class ViewControl : MonoBehaviour {
 					mat.shader = meshShader;
 					mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, opacity);
 				}
-				else if(opacity > 0.0 && opacity < 1.0f) // Use transparent material
+				else
 				{
 					mat.shader = meshShaderTransparent;
 					mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, opacity);
