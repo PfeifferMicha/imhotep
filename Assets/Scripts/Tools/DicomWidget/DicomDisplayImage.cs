@@ -97,6 +97,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler {
 		mMinSlider.value = 0.0f;
 		mMaxSlider.value = 1.0f;
 		mLayerSlider.value = 0.5f;
+		LayerChanged( 0.5f );
 	}
 
 	public void clear()
