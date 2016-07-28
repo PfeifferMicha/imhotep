@@ -2,6 +2,7 @@
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class DicomDisplay : MonoBehaviour {
 
@@ -47,7 +48,16 @@ public class DicomDisplay : MonoBehaviour {
 	{
         PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
         mDicomList.ClearOptions ();
-		mDicomList.AddOptions (mPatientDICOMLoader.getAvailableSeries());
+		List<string> seriesUIDs = mPatientDICOMLoader.getAvailableSeries ();
+		List<string> customNames = new List<string> ();
+		Patient p = Patient.getLoadedPatient ();
+		if( p != null )
+		{
+			foreach (string uid in seriesUIDs) {
+				customNames.Add (p.getDICOMNameForSeriesUID (uid));
+			}
+		}
+		mDicomList.AddOptions ( customNames );
 	}
 	void eventClear( object obj = null )
 	{
