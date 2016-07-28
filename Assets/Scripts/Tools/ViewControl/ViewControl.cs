@@ -57,7 +57,6 @@ public class ViewControl : MonoBehaviour {
 
 	public void meshLoaded( object obj = null )
 	{
-		Patient p = Patient.getLoadedPatient ();
 		currentViewIndex = 0;
 		setView (currentViewIndex);
 
@@ -105,7 +104,7 @@ public class ViewControl : MonoBehaviour {
 				newView.name = t;
 				newView.orientation = meshViewerRotationNode.transform.localRotation;
 				newView.scale = meshViewerScaleNode.transform.localScale;
-				newView.opacities = new Dictionary<string,float> ();
+				//newView.opacities = new Dictionary<string,double> ();
 
 				foreach (GameObject g in mMeshLoader.MeshGameObjectContainers) {
 					MeshRenderer mr = g.GetComponentInChildren<MeshRenderer> ();
@@ -114,6 +113,8 @@ public class ViewControl : MonoBehaviour {
 
 				currentViewIndex = p.insertView ( newView, currentViewIndex + 1 );
 				setView (currentViewIndex);
+
+				p.saveViews ();
 		
 				showMainPane ();
 			}
@@ -125,6 +126,7 @@ public class ViewControl : MonoBehaviour {
 		Patient p = Patient.getLoadedPatient ();
 		if (p != null) {
 			p.deleteView (currentViewIndex);
+			p.saveViews ();
 
 			if (p.getViews ().Count <= currentViewIndex) {
 				currentViewIndex = p.getViews ().Count - 1;
@@ -153,9 +155,9 @@ public class ViewControl : MonoBehaviour {
 				meshViewerScaleNode.GetComponent<ModelZoomer> ().setTargetZoom (view.scale);
 				meshViewerRotationNode.GetComponent<ModelRotator> ().setTargetOrientation (view.orientation);
 
-				foreach(KeyValuePair<string, float> entry in view.opacities)
+				foreach(KeyValuePair<string, double> entry in view.opacities)
 				{
-					setMeshOpacity( entry.Key, entry.Value );
+					setMeshOpacity( entry.Key, (float)entry.Value );
 				}
 
 				currentViewIndex = index;

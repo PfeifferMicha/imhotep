@@ -7,6 +7,9 @@ using LitJson;
 using System;
 using System.IO;
 
+// TODO: Move saving and loading to Patient? I think the Patient class should have all info...
+// That way any other widget/tool can access the annotations as well, if needed in the future.
+
 public class AnnotationPointJson
 {
     public string Text { get; set; }
