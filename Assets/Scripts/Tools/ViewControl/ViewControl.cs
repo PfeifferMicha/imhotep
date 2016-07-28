@@ -13,6 +13,7 @@ public class ViewControl : MonoBehaviour {
 	public Button saveButton, newButton;
 	public Text viewNameText;
 	public Button buttoPrev, buttonNext;
+	public Text viewNumberText;
 
 	private Shader meshShader, meshShaderTransparent;
 	private GameObject meshViewerScaleNode, meshViewerRotationNode;
@@ -70,6 +71,7 @@ public class ViewControl : MonoBehaviour {
 		saveButton.interactable = false;
 		newButton.interactable = false;
 		viewNameText.text = "No patient loaded.";
+		viewNumberText.text = "";
 	}
 
 	public void showMainPane()
@@ -100,7 +102,7 @@ public class ViewControl : MonoBehaviour {
 				if (mMeshLoader.MeshGameObjectContainers.Count != 0) {
 					//createContent();
 				}
-				Patient.View newView = new Patient.View ();
+				View newView = new View ();
 				newView.name = t;
 				newView.orientation = meshViewerRotationNode.transform.localRotation;
 				newView.scale = meshViewerScaleNode.transform.localScale;
@@ -128,8 +130,8 @@ public class ViewControl : MonoBehaviour {
 			p.deleteView (currentViewIndex);
 			p.saveViews ();
 
-			if (p.getViews ().Count <= currentViewIndex) {
-				currentViewIndex = p.getViews ().Count - 1;
+			if (p.getViewCount() <= currentViewIndex) {
+				currentViewIndex = p.getViewCount() - 1;
 			}
 		}
 		setView (currentViewIndex);
@@ -140,12 +142,12 @@ public class ViewControl : MonoBehaviour {
 		Patient p = Patient.getLoadedPatient ();
 		if (p != null) {
 
-			if (p.getViews ().Count == 0) {
+			if (p.getViewCount() == 0) {
 				viewNameText.text = "No views configured.";
 				return;
 			}
 
-			Patient.View view = p.getView (index);
+			View view = p.getView (index);
 			if (view != null) {
 				viewNameText.text = (index + 1).ToString();
 				viewNameText.text += ": ";
@@ -162,6 +164,7 @@ public class ViewControl : MonoBehaviour {
 
 				currentViewIndex = index;
 			}
+			viewNumberText.text = (currentViewIndex+1).ToString () + "/" + p.getViewCount ().ToString ();
 		}
 	}
 

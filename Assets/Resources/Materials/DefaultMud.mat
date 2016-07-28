@@ -129,16 +129,16 @@ Material:
         second: 0
       data:
         first:
-          name: _amount
-        second: 0
-      data:
-        first:
           name: _min
         second: -205.71375
       data:
         first:
           name: _max
         second: 331.75943
+      data:
+        first:
+          name: _amount
+        second: 0
     m_Colors:
       data:
         first:
@@ -150,9 +150,9 @@ Material:
         second: {r: 1, g: 0.07058824, b: 0.20392157, a: 1}
       data:
         first:
-          name: _cuttingPlaneNormal
-        second: {r: -1, g: 0, b: 0, a: 1}
-      data:
-        first:
           name: _cuttingPlanePosition
         second: {r: 9999, g: 0, b: 0, a: 1}
+      data:
+        first:
+          name: _cuttingPlaneNormal
+        second: {r: -1, g: 0, b: 0, a: 1}
