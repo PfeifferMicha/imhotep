@@ -8,9 +8,9 @@ public class RoomLightControl : MonoBehaviour {
 	public float lowAmbientIntensity;
 
 	private Animator animator;
-	private float initialAmbientIntensity;
-	private bool mLoweringShutters = false;
-	private bool mRaisingShutters = false;
+	//private float initialAmbientIntensity;
+	//private bool mLoweringShutters = false;
+	//private bool mRaisingShutters = false;
 
 	void Start () {
 		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_StartLoading, lowerShutters);
@@ -18,20 +18,20 @@ public class RoomLightControl : MonoBehaviour {
 
 		animator = GetComponent<Animator>();
 
-		initialAmbientIntensity = sun.GetComponent<Light> ().intensity;
+		//initialAmbientIntensity = sun.GetComponent<Light> ().intensity;
 	}
 
 	public void lowerShutters( object obj = null )
 	{
 		animator.SetTrigger ("Shut");
-		mLoweringShutters = true;
-		mRaisingShutters = false;
+		//mLoweringShutters = true;
+		//mRaisingShutters = false;
 	}
 	public void raiseShutters( object obj = null )
 	{
 		animator.SetTrigger ("Open");
-		mLoweringShutters = false;
-		mRaisingShutters = true;
+		//mLoweringShutters = false;
+		//mRaisingShutters = true;
 	}
 
 	public void Update()

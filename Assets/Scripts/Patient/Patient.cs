@@ -216,22 +216,19 @@ public class Patient : PatientMeta
 		mViews.Clear ();
 		Debug.Log ("Loading Views: " + viewsFile);
 		if (File.Exists (viewsFile)) {
-			Debug.Log ("File found.");
-			//try {
+			try {
 				// Read the file
 				string line;
 				System.IO.StreamReader file = new System.IO.StreamReader (viewsFile);
-				Debug.Log ("file: " + file);
 				while ((line = file.ReadLine ()) != null) {
-					Debug.Log ("Line: " + line);
 					ViewJson vj = JsonMapper.ToObject<ViewJson> (line);
 					View view = new View (vj);
 					mViews.Add (view);
 				}
 				file.Close ();
-			//} catch {
-			//	mViews.Clear ();
-			//}
+			} catch {
+				mViews.Clear ();
+			}
 		}
 		Debug.Log ("Loaded: " + mViews.Count);
 	}

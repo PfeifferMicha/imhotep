@@ -65,7 +65,7 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 						Vector3 newPos = mousePos - mOffset;
 
 						Vector2 canvasSize = transform.parent.GetComponent<RectTransform> ().rect.size;
-						Vector2 canvasPos = transform.parent.GetComponent<RectTransform> ().rect.position;
+						//Vector2 canvasPos = transform.parent.GetComponent<RectTransform> ().rect.position;
 						Vector2 widgetScale = grandparent.localScale;
 
 						Vector2 widgetSize = new Vector2 (canvasSize.x * widgetScale.x,
