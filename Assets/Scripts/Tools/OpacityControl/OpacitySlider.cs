@@ -35,32 +35,31 @@ public class OpacitySlider : MonoBehaviour
 
         foreach (MeshRenderer mr in gameObjectToChangeOpacity.GetComponentsInChildren<MeshRenderer>())
         {
-			Material mat = mr.material;
+			//Material mat = mr.material;
             if(f == 1.0f) //Use opaque material
 			{
-				mat.shader = meshShader;
-                mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, f);
+				//mat.shader = meshShader;
+                //mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, f);
 
-				//Material mat = Resources.Load("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
-                //mr.material = new Material(mat);
+				Material mat = Resources.Load("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
+				mat.color = new Color(mr.material.color.r, mr.material.color.g, mr.material.color.b, f);
+                mr.material = new Material(mat);
             }
             else
 			{
-				mat.shader = meshShaderTransparent;
-				mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, f);
-                //Material mat = Resources.Load("Materials/DefaultMaterialAfterLoadingTransparent", typeof(Material)) as Material;
-                //mat.color = new Color(mr.material.color.r, mr.material.color.g, mr.material.color.b, f);
-                //mr.material = new Material(mat); 
+				//mat.shader = meshShaderTransparent;
+				//mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, f);
+                Material mat = Resources.Load("Materials/DefaultMaterialAfterLoadingTransparent", typeof(Material)) as Material;
+                mat.color = new Color(mr.material.color.r, mr.material.color.g, mr.material.color.b, f);
+                mr.material = new Material(mat); 
             }
         }
     }
 
 	void Update()
 	{
-		Debug.Log (1);
 		// Check if the game object changed opacity because of some external tool. If so, adjust slider.
-		if (gameObjectToChangeOpacity != null) {
-			Debug.Log (2);
+		/*if (gameObjectToChangeOpacity != null) {
 			float currentOpacity = 0f;
 			if (gameObjectToChangeOpacity.activeSelf) {
 				MeshRenderer mr = gameObjectToChangeOpacity.GetComponentInChildren<MeshRenderer> ();
@@ -72,6 +71,6 @@ public class OpacitySlider : MonoBehaviour
 			if (GetComponent<Slider> ().value != currentOpacity) {
 				GetComponent<Slider> ().value = currentOpacity;
 			}
-		}
+		}*/
 	}
 }
