@@ -33,6 +33,7 @@ public class ViveControllerModelRotator : MonoBehaviour {
 			Vector3 rightVector = Camera.main.transform.right;
 			meshNode.transform.RotateAround(meshNode.transform.position, upVector, (previousPos.x - this.transform.localPosition.x)*rotationSpeed);
 			meshNode.transform.RotateAround(meshNode.transform.position, rightVector, -(previousPos.y - this.transform.localPosition.y)*rotationSpeed );
+			meshNode.GetComponent<ModelRotator>().setTargetOrientation( meshNode.transform.localRotation );	// Make sure it doesn't auto-rotate back.	// TODO: fix?
 
 			previousPos = this.transform.localPosition;
 		}

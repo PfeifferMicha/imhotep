@@ -28,8 +28,7 @@ public class ModelZoomer : MonoBehaviour
     {
 		if (UI.UICore.instance.mouseIsOverUIObject == false) {
 			if (Input.GetAxis ("Mouse ScrollWheel") != 0) {
-
-				//TODO make movement smooth
+				
 
 				float inputScroll = Input.GetAxis ("Mouse ScrollWheel");
 
@@ -39,6 +38,7 @@ public class ModelZoomer : MonoBehaviour
 
 				transform.localScale = new Vector3 (zoom, zoom, zoom);
 				targetZoom = transform.localScale;
+				//setTargetZoom ( new Vector3(zoom, zoom, zoom), 0.02f );
 			}
 		}
 
@@ -46,11 +46,16 @@ public class ModelZoomer : MonoBehaviour
 		transform.localScale = Vector3.SmoothDamp(transform.localScale, targetZoom, ref zoomVelocity, scaleTime);
     }
 
-	public void setTargetZoom( Vector3 zoom, float timeForScaling = 0.6f )
+	public void setTargetZoom( Vector3 zoom, float timeForScaling = 0f )
 	{
 		targetZoom = zoom;
 		zoomVelocity = new Vector3 (0, 0, 0);
-		scaleTime = timeForScaling;
+		if (timeForScaling == 0) {
+			scaleTime = 1f;
+			transform.localScale = targetZoom;
+		} else {
+			scaleTime = timeForScaling;
+		}
 	}
 }
 

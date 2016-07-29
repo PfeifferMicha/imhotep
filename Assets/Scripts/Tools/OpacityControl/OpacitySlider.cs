@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class OpacitySlider : MonoBehaviour
 {
-
-	public GameObject gameObjectToChangeOpacity { get; set; }
+	
+	public GameObject gameObjectToChangeOpacity;
 	public Shader meshShader, meshShaderTransparent;
 
     // Use this for initialization
@@ -19,7 +20,8 @@ public class OpacitySlider : MonoBehaviour
 
     public void changeOpacity(float f)
     {
-        //Debug.Log(f);
+		if (gameObjectToChangeOpacity == null)
+			return;
 
         if (f == 0.0f)
         {
@@ -52,4 +54,24 @@ public class OpacitySlider : MonoBehaviour
             }
         }
     }
+
+	void Update()
+	{
+		Debug.Log (1);
+		// Check if the game object changed opacity because of some external tool. If so, adjust slider.
+		if (gameObjectToChangeOpacity != null) {
+			Debug.Log (2);
+			float currentOpacity = 0f;
+			if (gameObjectToChangeOpacity.activeSelf) {
+				MeshRenderer mr = gameObjectToChangeOpacity.GetComponentInChildren<MeshRenderer> ();
+				currentOpacity = mr.material.color.a;
+			} else {
+				currentOpacity = 0f;
+			}
+			Debug.Log (currentOpacity + " "  + GetComponent<Slider> ().value);
+			if (GetComponent<Slider> ().value != currentOpacity) {
+				GetComponent<Slider> ().value = currentOpacity;
+			}
+		}
+	}
 }

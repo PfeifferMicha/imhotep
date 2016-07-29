@@ -40,11 +40,16 @@ public class ModelRotator : MonoBehaviour
 
 	}
 
-	public void setTargetOrientation( Quaternion orientation, float timeForRotation = 0.6f )
+	public void setTargetOrientation( Quaternion orientation, float timeForRotation = 0f )
 	{
 		targetRotation = orientation;
 		rotationStartTime = Time.time;
-		rotationTime = timeForRotation;
+		if (timeForRotation == 0f) {
+			transform.localRotation = orientation;
+			rotationTime = 1f;	// Avoid division by zero
+		} else {
+			rotationTime = timeForRotation;
+		}
 	}
 }
 

@@ -58,7 +58,7 @@ public class OpacityControl : MonoBehaviour
 
             //Save game object in slider
             GameObject slider = newLine.transform.Find("Slider").gameObject;
-            slider.GetComponent<OpacitySlider>().gameObjectToChangeOpacity = g;
+			slider.GetComponent<OpacitySlider> ().gameObjectToChangeOpacity = g;
 
             // Change button text to name of tool:
             GameObject textObject = newLine.transform.Find("Text").gameObject;
