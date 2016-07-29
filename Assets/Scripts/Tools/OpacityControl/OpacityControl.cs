@@ -63,7 +63,12 @@ public class OpacityControl : MonoBehaviour
             // Change button text to name of tool:
             GameObject textObject = newLine.transform.Find("Text").gameObject;
             Text buttonText = textObject.GetComponent<Text>();
-            buttonText.text = g.name;
+			if (g.name.Substring (0, 2) == "ME") {
+				buttonText.text = g.name.Substring (2, g.name.Length - 2);
+			} else {
+				buttonText.text = g.name;
+			}
+            
 
         }
     }
