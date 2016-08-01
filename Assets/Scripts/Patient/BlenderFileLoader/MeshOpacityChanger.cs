@@ -5,9 +5,16 @@ using System.Collections;
 // This script changes the opacity of all chrildren containing a mesh renderer
 public class MeshOpacityChanger : MonoBehaviour {
 
+	private Shader meshShader, meshShaderTransparent;
+	private Material materialOpaque, materialTransparent;
+
 	// Use this for initialization
 	void Start () {
-	
+		//meshShader = Shader.Find("Custom/MeshShader");
+		//meshShaderTransparent = Shader.Find("Custom/MeshShaderTransparent");
+		materialOpaque = Resources.Load("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
+		materialTransparent = Resources.Load("Materials/DefaultMaterialAfterLoadingTransparent", typeof(Material)) as Material;
+
 	}
 	
 	// Update is called once per frame
@@ -29,24 +36,23 @@ public class MeshOpacityChanger : MonoBehaviour {
 
 		foreach (MeshRenderer mr in this.gameObject.GetComponentsInChildren<MeshRenderer>())
 		{
-			//Material mat = mr.material;
+			Material mat;
 			if(f == 1.0f) //Use opaque material
 			{
 				//mat.shader = meshShader;
-				//mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, f);
-
-				Material mat = Resources.Load("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
-				mat.color = new Color(mr.material.color.r, mr.material.color.g, mr.material.color.b, f);
-				mr.material = new Material(mat);
+				mat = materialOpaque;
 			}
 			else
 			{
 				//mat.shader = meshShaderTransparent;
-				//mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, f);
-				Material mat = Resources.Load("Materials/DefaultMaterialAfterLoadingTransparent", typeof(Material)) as Material;
-				mat.color = new Color(mr.material.color.r, mr.material.color.g, mr.material.color.b, f);
-				mr.material = new Material(mat); 
+				mat = materialTransparent;
 			}
+			//Material mat = mr.material;
+			//mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, f);
+
+			mat.color = new Color(mr.material.color.r, mr.material.color.g, mr.material.color.b, f);
+			mr.material = new Material(mat); 
+
 		}
 	}
 

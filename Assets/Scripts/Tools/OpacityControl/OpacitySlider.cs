@@ -13,7 +13,7 @@ public class OpacitySlider : MonoBehaviour
 	{
 		meshShader = Shader.Find("Custom/MeshShader");
 		meshShaderTransparent = Shader.Find("Custom/MeshShaderTransparent");
-
+		updateSlider();
 		//mat = Resources.Load("Materials/DefaultMaterialAfterLoadingTransparent", typeof(Material)) as Material;
 		//meshShaderTransparent = mat.shader;
     }
@@ -48,9 +48,9 @@ public class OpacitySlider : MonoBehaviour
 			} else {
 				currentOpacity = 0f;
 			}
-			if (GetComponent<Slider> ().value != currentOpacity) {
-				GetComponent<Slider> ().value = currentOpacity;
-			}
+
+			GetComponent<Slider> ().value = currentOpacity;
+
 		}
 	}
 
