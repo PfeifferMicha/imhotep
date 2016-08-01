@@ -25,6 +25,7 @@ public class PatientEventSystem
 
 		MESH_LoadedSingle,		// Called whenever a new mesh has been loaded
 		MESH_LoadedAll,			// Called after all of the patient's meshes have been loaded
+		MESH_Opacity_Changed,   // Called if opacity of mesh is changed. (Don't called if slider changes opacity)
 
 		DICOM_NewList,
 		DICOM_NewLoaded,

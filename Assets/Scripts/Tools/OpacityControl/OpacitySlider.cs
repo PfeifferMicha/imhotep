@@ -18,6 +18,18 @@ public class OpacitySlider : MonoBehaviour
 		//meshShaderTransparent = mat.shader;
     }
 
+	void OnEnable()
+	{
+		// Register event callbacks:
+		PatientEventSystem.startListening(PatientEventSystem.Event.MESH_Opacity_Changed, updateSlider);
+	}
+
+	void OnDisable()
+	{
+		// Unregister myself:
+		PatientEventSystem.stopListening(PatientEventSystem.Event.MESH_Opacity_Changed, updateSlider);
+	}
+
     public void changeOpacity(float f)
     {
 		if (gameObjectToChangeOpacity == null)
@@ -56,10 +68,9 @@ public class OpacitySlider : MonoBehaviour
         }
     }
 
-	void Update()
-	{
-		// Check if the game object changed opacity because of some external tool. If so, adjust slider.
-		/*if (gameObjectToChangeOpacity != null) {
+	// Called if Silder value changed from external tool.
+	private void updateSlider(object obj = null){		
+		if (gameObjectToChangeOpacity != null) {
 			float currentOpacity = 0f;
 			if (gameObjectToChangeOpacity.activeSelf) {
 				MeshRenderer mr = gameObjectToChangeOpacity.GetComponentInChildren<MeshRenderer> ();
@@ -71,6 +82,11 @@ public class OpacitySlider : MonoBehaviour
 			if (GetComponent<Slider> ().value != currentOpacity) {
 				GetComponent<Slider> ().value = currentOpacity;
 			}
-		}*/
+		}
+	}
+
+	void Update()
+	{
+		
 	}
 }

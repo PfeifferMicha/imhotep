@@ -169,6 +169,8 @@ public class ViewControl : MonoBehaviour {
 				currentViewIndex = index;
 			}
 			viewNumberText.text = (currentViewIndex+1).ToString () + "/" + p.getViewCount ().ToString ();
+
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.MESH_Opacity_Changed);
 		}
 	}
 
