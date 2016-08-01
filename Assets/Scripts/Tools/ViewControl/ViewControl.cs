@@ -187,48 +187,9 @@ public class ViewControl : MonoBehaviour {
 
 		// If we found such a GameObject, then set the opacity for all it's children (the meshes):
 		if (gameObjectToChangeOpacity != null) {
-			if (opacity == 0.0f) {
-				gameObjectToChangeOpacity.SetActive (false);
-				return;
-			} else {
-				gameObjectToChangeOpacity.SetActive (true);
-			}
-
-			/*foreach (MeshRenderer mr in gameObjectToChangeOpacity.GetComponentsInChildren<MeshRenderer>()) {
-				Material mat = mr.material;
-				if(opacity == 1.0f) //Use opaque material
-				{
-					mat.shader = meshShader;
-					mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, opacity);
-				}
-				else
-				{
-					mat.shader = meshShaderTransparent;
-					mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, opacity);
-				}
-				mr.material = new Material (mat);
-			}*/
-
-			foreach (MeshRenderer mr in gameObjectToChangeOpacity.GetComponentsInChildren<MeshRenderer>())
-			{
-				//Material mat = mr.material;
-				if(opacity == 1.0f) //Use opaque material
-				{
-					//mat.shader = meshShader;
-					//mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, f);
-
-					Material mat = Resources.Load("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
-					mat.color = new Color(mr.material.color.r, mr.material.color.g, mr.material.color.b, opacity);
-					mr.material = new Material(mat);
-				}
-				else
-				{
-					//mat.shader = meshShaderTransparent;
-					//mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, f);
-					Material mat = Resources.Load("Materials/DefaultMaterialAfterLoadingTransparent", typeof(Material)) as Material;
-					mat.color = new Color(mr.material.color.r, mr.material.color.g, mr.material.color.b, opacity);
-					mr.material = new Material(mat); 
-				}
+			MeshOpacityChanger moc = gameObjectToChangeOpacity.GetComponent<MeshOpacityChanger> ();
+			if (moc != null) {
+				moc.changeOpactiyOfChildren (opacity);
 			}
 		}
 	}

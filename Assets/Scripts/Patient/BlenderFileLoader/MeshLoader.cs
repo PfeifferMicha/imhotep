@@ -27,6 +27,7 @@ public class MeshLoader : MonoBehaviour {
     public List<GameObject> MeshGameObjectContainers { get; set; }
 
 
+
 	void OnEnable()
 	{
 		// Register event callbacks:
@@ -148,6 +149,19 @@ public class MeshLoader : MonoBehaviour {
 	{
 		Bounds bounds = new Bounds(Vector3.zero, Vector3.zero);
 
+		//  meshNode
+		//	| - containerObject
+		//		| - actual mesh
+		//		| - actual mesh
+		//		| - actual mesh
+		//		| - ...
+		//	| - containerObject
+		//		| - actual mesh
+		//		| - actual mesh
+		//		| - actual mesh
+		//		| - ...
+		//	| ...
+
         foreach (List<UnityMesh> um in unityMeshes) {
 
             GameObject containerObject = new GameObject(um[0].Name);
@@ -155,6 +169,7 @@ public class MeshLoader : MonoBehaviour {
 			containerObject.transform.SetParent( meshNode.transform, false );
 			//containerObject.transform.localScale = new Vector3 (400.0f, 400.0f, 400.0f);
             containerObject.transform.localPosition = new Vector3(0, 0, 0);
+			containerObject.AddComponent<MeshOpacityChanger> ();
             MeshGameObjectContainers.Add(containerObject);
 
             foreach (UnityMesh unityMesh in um)
