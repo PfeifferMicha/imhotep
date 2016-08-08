@@ -10,6 +10,7 @@ using System.IO;
 // TODO: Move saving and loading to Patient? I think the Patient class should have all info...
 // That way any other widget/tool can access the annotations as well, if needed in the future.
 
+//This class represents the annotiation points in a JSON file. It can be stored and loaded with the JSON mapper.
 public class AnnotationPointJson
 {
     public string Text { get; set; }
@@ -46,7 +47,12 @@ public class AnnotationControl : MonoBehaviour {
 
     private static int annotationPointCounter = 0; //Used to create unique id for annoation point
 
-    private enum State
+    
+	//The states of the annotation control. 
+	// idle - The annotations are displayed. The user can press 'Add annoation' to create a new annotation.
+	// addAnnotationPressed - The user pressed 'Add annoation' and we are waiting for a click on the mesh to select a point for the annoation
+	// annotationPointSelected - The user selected a point on the mesh and we are waiting for the text of the annotation. If the user confirm the text we return to 'idle'.
+	private enum State
     {
         idle,
         addAnnotationPressed,
@@ -148,6 +154,7 @@ public class AnnotationControl : MonoBehaviour {
         return result;
     }
 
+	//Called if the user pressed 'Add annoation' button
     public void AddAnnotationPressed()
     {
         if (currentState == State.idle)
@@ -156,6 +163,7 @@ public class AnnotationControl : MonoBehaviour {
         }
     }
 
+	//Called if the user confirmed the text
     public void SaveAnnotationPoint()
     {
         if (currentState == State.annotationPointSelected && currentAnnotatinPoint != null)
@@ -199,6 +207,7 @@ public class AnnotationControl : MonoBehaviour {
         annotationPoint.GetComponent<LineRenderer>().SetPosition(1, newAnnotationLabel.transform.position);
     }
 
+	//Called if the user pressed 'Clear all'. Deletes all annotations.
     public void clearAllPressed()
     {
         foreach (GameObject g in annotationPoints)
@@ -305,6 +314,7 @@ public class AnnotationControl : MonoBehaviour {
         currentState = State.annotationPointSelected;
     }
 
+	//Saves all annotations in a file
     public void saveAnnotationInFile()
     {
         if (Patient.getLoadedPatient() == null)
@@ -393,6 +403,7 @@ public class AnnotationControl : MonoBehaviour {
 
     }
 
+	//Deletes a annotation given in self
     public void deleteOneAnnotation(GameObject self)
     {
         Transform buttonWithText = self.transform.parent;
@@ -442,6 +453,7 @@ public class AnnotationControl : MonoBehaviour {
         changeCurrentStateToIdle();
     }
 
+	//Called if the patient is closed
     public void closePatient(object obj = null)
     {
         clearAllPressed();

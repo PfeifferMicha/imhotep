@@ -5,7 +5,7 @@ using System.Collections;
 // This script changes the opacity of all chrildren containing a mesh renderer
 public class MeshOpacityChanger : MonoBehaviour {
 
-	private Shader meshShader, meshShaderTransparent;
+	//private Shader meshShader, meshShaderTransparent;
 	private Material materialOpaque, materialTransparent;
 
 	// Use this for initialization
