@@ -12,8 +12,8 @@ public class MeshOpacityChanger : MonoBehaviour {
 	void Start () {
 		//meshShader = Shader.Find("Custom/MeshShader");
 		//meshShaderTransparent = Shader.Find("Custom/MeshShaderTransparent");
-		materialOpaque = Resources.Load("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
-		materialTransparent = Resources.Load("Materials/DefaultMaterialAfterLoadingTransparent", typeof(Material)) as Material;
+		materialOpaque = Resources.Load("Materials/TemplateMaterial/DefaultOpaque", typeof(Material)) as Material;
+		materialTransparent = Resources.Load("Materials/TemplateMaterial/DefaultTransparent", typeof(Material)) as Material;
 
 	}
 	
