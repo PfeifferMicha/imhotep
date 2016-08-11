@@ -77,7 +77,7 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 						grandparent.localPosition = new Vector3 (
 							Mathf.Clamp (newPos.x, mMinPos.x, mMaxPos.x),
 							Mathf.Clamp (newPos.y, mMinPos.y, mMaxPos.y),
-							newPos.y );
+							grandparent.localPosition.z );
 					}
 				}
 			}
