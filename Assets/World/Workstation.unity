@@ -2744,6 +2744,7 @@ GameObject:
   - 135: {fileID: 1844044539}
   - 23: {fileID: 1844044538}
   - 114: {fileID: 1844044537}
+  - 114: {fileID: 1844044542}
   m_Layer: 0
   m_Name: Mouse3D
   m_TagString: Untagged
@@ -2825,6 +2826,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 26487849}
   m_RootOrder: 2
+--- !u!114 &1844044542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1844044536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dba36ee515c0da4cb0c964f00afb8ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mouseInfo: 2
 --- !u!1001 &1858756637
 Prefab:
   m_ObjectHideFlags: 0
