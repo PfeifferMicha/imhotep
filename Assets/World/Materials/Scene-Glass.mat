@@ -10,7 +10,7 @@ Material:
   m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: _ALPHAPREMULTIPLY_ON
   m_LightmapFlags: 5
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: 3000
   stringTagMap:
     RenderType: Transparent
   m_SavedProperties:
@@ -94,10 +94,6 @@ Material:
         second: 0.5
       data:
         first:
-          name: _Shininess
-        second: 0.326
-      data:
-        first:
           name: _Parallax
         second: 0.02
       data:
@@ -132,10 +128,6 @@ Material:
         first:
           name: _Metallic
         second: 0
-      data:
-        first:
-          name: _ShadowIntensity
-        second: 0.649
     m_Colors:
       data:
         first:
@@ -144,8 +136,4 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 0.46875, g: 0.5526489, b: 0.62499994, a: 0.209}
-      data:
-        first:
-          name: _SpecColor
-        second: {r: 0.75, g: 0.75, b: 0.75, a: 0.309}
+        second: {r: 0.4056, g: 0.4768, b: 0.5382, a: 0.100000024}

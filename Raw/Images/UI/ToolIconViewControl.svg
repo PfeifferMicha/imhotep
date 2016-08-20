@@ -15,7 +15,7 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="ToolIconViewControl.svg"
-   inkscape:export-filename="/home/micha/Projects/IMHOTEP/IMHOTEPUnity/raw/UI/ToolIcomAnnotation.png"
+   inkscape:export-filename="/home/micha/Projects/IMHOTEP/IMHOTEPUnity/IMHOTEP/Assets/UI/Images/ToolIcoViewControl.png"
    inkscape:export-xdpi="256"
    inkscape:export-ydpi="256">
   <defs
@@ -46,16 +46,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2"
-     inkscape:cx="45.560877"
-     inkscape:cy="-49.460469"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="49.709894"
+     inkscape:cy="63.625629"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:snap-global="false"
      inkscape:window-width="959"
-     inkscape:window-height="1022"
-     inkscape:window-x="960"
+     inkscape:window-height="1021"
+     inkscape:window-x="959"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
      borderlayer="false"
@@ -79,7 +79,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -199,50 +199,17 @@
        id="path5437"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccc" />
-    <rect
+    <path
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:8.60000038;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="rect5252"
-       width="61.956993"
-       height="36.64526"
-       x="14.355889"
-       y="990.40521"
-       ry="6.5786996" />
+       d="M 20.935547 28.042969 C 17.290947 28.042969 14.355469 30.976494 14.355469 34.621094 L 14.355469 58.109375 C 14.355469 61.753975 17.290947 64.6875 20.935547 64.6875 L 69.734375 64.6875 C 73.378974 64.6875 76.3125 61.753975 76.3125 58.109375 L 76.3125 34.621094 C 76.3125 30.976494 73.378974 28.042969 69.734375 28.042969 L 20.935547 28.042969 z M 44.957031 31.259766 C 53.441777 31.259766 60.363299 38.181316 60.363281 46.666016 C 60.363242 55.150716 53.441737 62.072266 44.957031 62.072266 C 36.472325 62.072266 29.55082 55.150716 29.550781 46.666016 C 29.550764 38.181316 36.472285 31.259766 44.957031 31.259766 z M 68.757812 31.820312 A 2.2667193 2.2667193 0 0 1 71.023438 34.087891 A 2.2667193 2.2667193 0 0 1 68.757812 36.353516 A 2.2667193 2.2667193 0 0 1 66.490234 34.087891 A 2.2667193 2.2667193 0 0 1 68.757812 31.820312 z M 44.957031 35.259766 C 38.634049 35.259766 33.550768 40.343116 33.550781 46.666016 C 33.55081 52.989016 38.634079 58.072266 44.957031 58.072266 C 51.279983 58.072266 56.363252 52.989016 56.363281 46.666016 C 56.363294 40.343116 51.280014 35.259766 44.957031 35.259766 z M 44.957031 36.068359 C 50.793545 36.068359 55.554706 40.829516 55.554688 46.666016 C 55.554648 52.502516 50.793506 57.263672 44.957031 57.263672 C 39.120557 57.263672 34.359412 52.502516 34.359375 46.666016 C 34.359355 40.829516 39.120517 36.068359 44.957031 36.068359 z M 44.957031 38.820312 C 40.607558 38.820312 37.111313 42.316616 37.111328 46.666016 C 37.111356 51.015516 40.607588 54.511719 44.957031 54.511719 C 49.306474 54.511719 52.802707 51.015516 52.802734 46.666016 C 52.802749 42.316616 49.306505 38.820312 44.957031 38.820312 z M 50.933594 45.759766 A 0.89391974 0.89391974 0 0 1 51.841797 46.666016 C 51.841787 48.495816 51.112398 50.251369 49.816406 51.542969 C 48.520402 52.834569 46.763313 53.560781 44.933594 53.550781 A 0.89391974 0.89391974 0 1 1 44.939453 51.763672 C 46.294705 51.768272 47.594752 51.234044 48.554688 50.277344 C 49.514613 49.320644 50.054679 48.021316 50.054688 46.666016 A 0.89391974 0.89391974 0 0 1 50.933594 45.759766 z "
+       transform="translate(0,962.3622)"
+       id="rect5252" />
     <path
        style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 27.694613,996.44978 7.828656,-13.55962 19.183083,0 8.41477,14.57482 z"
+       d="m 29.46238,992.73747 6.060889,-9.84731 19.183083,0 5.76312,10.33218 z"
        id="path5254"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccc" />
-    <circle
-       style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:8.60000038;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="path5256"
-       cx="68.757149"
-       cy="996.44977"
-       r="2.2667193" />
-    <circle
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="path5258"
-       cx="44.9566"
-       cy="1009.0278"
-       r="13.405862" />
-    <circle
-       r="9.2216587"
-       cy="1009.0278"
-       cx="44.9566"
-       id="circle5275"
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:2.75153041;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-    <path
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.78766072;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       id="circle5277"
-       sodipodi:type="arc"
-       sodipodi:cx="44.9566"
-       sodipodi:cy="1009.0278"
-       sodipodi:rx="5.9912829"
-       sodipodi:ry="5.9912829"
-       sodipodi:start="0"
-       sodipodi:end="1.5741771"
-       sodipodi:open="true"
-       d="m 50.947883,1009.0278 a 5.9912829,5.9912829 0 0 1 -1.761973,4.2436 5.9912829,5.9912829 0 0 1 -4.249565,1.7476" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
        d="m 20.5,988.1122 6,0"

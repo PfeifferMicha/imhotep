@@ -53,10 +53,10 @@
 				// sample the texture
 				fixed4 col = tex2D(_MainTex, i.uv);
 				//col.a = 0.5;
-				if( col.a == 0 )
-				{
-					discard;
-				}
+				//if( col.a == 0)
+				//{
+				//	discard;
+				//}
 				if( _isReflection )
 				{
 					float4 tint = _tint;

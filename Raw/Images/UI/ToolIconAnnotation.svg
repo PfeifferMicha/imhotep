@@ -15,7 +15,7 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="ToolIconAnnotation.svg"
-   inkscape:export-filename="/home/micha/Projects/IMHOTEP/IMHOTEPUnity/raw/UI/ToolIcomAnnotation.png"
+   inkscape:export-filename="/home/micha/Projects/IMHOTEP/IMHOTEPUnity/IMHOTEP/Assets/UI/Images/ToolIconAnnotation.png"
    inkscape:export-xdpi="256"
    inkscape:export-ydpi="256">
   <defs
@@ -46,17 +46,17 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2"
-     inkscape:cx="45.560877"
-     inkscape:cy="-49.460469"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="30.900911"
+     inkscape:cy="-10.913173"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:snap-global="false"
-     inkscape:window-width="959"
-     inkscape:window-height="1022"
-     inkscape:window-x="960"
-     inkscape:window-y="0"
+     inkscape:window-width="1385"
+     inkscape:window-height="1021"
+     inkscape:window-x="115"
+     inkscape:window-y="5"
      inkscape:window-maximized="0"
      borderlayer="false"
      inkscape:showpageshadow="true"
@@ -79,7 +79,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -200,7 +200,7 @@
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccc" />
     <circle
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path5515"
        cx="44.077343"
        cy="1012.0247"
