@@ -55,6 +55,10 @@ Material:
         second: 0.2
       data:
         first:
+          name: _isReflection
+        second: 0
+      data:
+        first:
           name: _Stencil
         second: 0
       data:
@@ -100,9 +104,9 @@ Material:
         second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
-          name: _Specular
-        second: {r: 0, g: 0, b: 0, a: 0}
+          name: _tint
+        second: {r: 1, g: 1, b: 1, a: 0.903}
       data:
         first:
-          name: _tint
-        second: {r: 1, g: 1, b: 1, a: 1}
+          name: _Specular
+        second: {r: 0, g: 0, b: 0, a: 0}

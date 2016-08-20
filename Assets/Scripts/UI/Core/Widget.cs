@@ -31,7 +31,7 @@ namespace UI
         // Use this for initialization
         void Start()
         {
-			Material mat = new Material(Shader.Find("Sprites/Default"));
+			Material mat = new Material(Shader.Find("UI/TextShader"));
 				
 			Component[] texts;
 			texts = GetComponentsInChildren( typeof(Text) );
