@@ -97,6 +97,8 @@ ModelImporter:
     100178: Upperarm_Left_0
     100180: Upperarm_Right
     100182: Upperarm_Right_0
+    100184: Icosphere_MeshPart0
+    100186: Icosphere_MeshPart1
     400000: Back
     400002: Back_0
     400004: BezierCurve_000
@@ -189,6 +191,8 @@ ModelImporter:
     400178: Upperarm_Left_0
     400180: Upperarm_Right
     400182: Upperarm_Right_0
+    400184: Icosphere_MeshPart0
+    400186: Icosphere_MeshPart1
     2300000: BezierCurve_000
     2300002: BezierCurve_001
     2300004: BezierCurve_002
@@ -211,6 +215,8 @@ ModelImporter:
     2300038: Plane_002
     2300040: Sphere
     2300042: Sphere_001
+    2300044: Icosphere_MeshPart0
+    2300046: Icosphere_MeshPart1
     3300000: BezierCurve_000
     3300002: BezierCurve_001
     3300004: BezierCurve_002
@@ -233,6 +239,8 @@ ModelImporter:
     3300038: Plane_002
     3300040: Sphere
     3300042: Sphere_001
+    3300044: Icosphere_MeshPart0
+    3300046: Icosphere_MeshPart1
     4300000: Circle_004
     4300002: HumanMale_001
     4300004: Chair_001_MeshPart0
@@ -256,6 +264,8 @@ ModelImporter:
     4300040: Cube_002
     4300042: Cube
     4300044: Circle_002
+    4300046: Icosphere_MeshPart0
+    4300048: Icosphere_MeshPart1
     7400000: Default Take
     7400002: Charge-Punch-M
     7400004: Idle-M

@@ -10,13 +10,6 @@ public class MoveCamera : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         cameraStartPosition = Camera.main.transform.position;
-
-		Debug.Log ("Shader graphicsShaderLevel: " + SystemInfo.graphicsShaderLevel);
-		Debug.Log ("Shader graphicsDeviceName: " + SystemInfo.graphicsDeviceName);
-		Debug.Log ("Shader graphicsDeviceType: " + SystemInfo.graphicsDeviceType);
-		Debug.Log ("Shader supportsComputeShaders: " + SystemInfo.supportsComputeShaders);
-		Debug.Log ("Shader graphicsDeviceVersion: " + SystemInfo.graphicsDeviceVersion);
-		Debug.Log ("Shader graphicsDeviceVendor: " + SystemInfo.graphicsDeviceVendor);
     }
 	
 	// Update is called once per frame

@@ -85,6 +85,13 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Noise
+        second:
+          m_Texture: {fileID: 2800000, guid: bb84478e073ac4dbab6e06b28d3c72b7, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
@@ -138,6 +145,14 @@ Material:
         first:
           name: _Metallic
         second: 0
+      data:
+        first:
+          name: _burnOffset
+        second: 0.1
+      data:
+        first:
+          name: _borderWidth
+        second: 0.1
     m_Colors:
       data:
         first:
@@ -150,8 +165,20 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 0.14057095, g: 0.14168955, b: 0.14705884, a: 1}
+        second: {r: 0.019607844, g: 0.019607844, b: 0.019607844, a: 1}
       data:
         first:
           name: _SpecColor
         second: {r: 0.24221452, g: 0.25247908, b: 0.29411763, a: 1}
+      data:
+        first:
+          name: _HighlightColor
+        second: {r: 0.1489891, g: 0.1528954, b: 0.16070803, a: 1}
+      data:
+        first:
+          name: _BorderColor
+        second: {r: 0.42917386, g: 0.46237123, b: 0.5955882, a: 1}
+      data:
+        first:
+          name: _NoiseColor
+        second: {r: 0.28625926, g: 0.28625926, b: 0.506096, a: 1}

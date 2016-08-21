@@ -1,237 +1,120 @@
-﻿Shader "Custom/TriangleEffectShader"
-{
-   Properties {
-      _Color ("Diffuse Material Color", Color) = (1,1,1,1) 
-      _SpecColor ("Specular Material Color", Color) = (1,1,1,1) 
-      _Shininess ("Shininess", Float) = 10
-   }
-   SubShader {
-      Pass {    
-         Tags { "LightMode" = "ForwardBase" } // pass for ambient light 
-            // and first directional light source without cookie
- 
-         CGPROGRAM
+﻿// Multi-Light shader. Original code from wiki:
+// See for example:
+// https://en.wikibooks.org/wiki/Cg_Programming/Unity/Cookies
+// https://en.wikibooks.org/wiki/Cg_Programming/Unity/Multiple_Lights
 
- 		 #pragma target 4.0
-         #pragma vertex vert
-         #pragma fragment frag
-         #pragma geometry geom
- 
-         #include "UnityCG.cginc"
-         uniform float4 _LightColor0; 
-            // color of light source (from "Lighting.cginc")
- 
-         // User-specified properties
-         uniform float4 _Color; 
-         uniform float4 _SpecColor; 
-         uniform float _Shininess;
- 
-         struct vertexInput {
-            float4 vertex : POSITION;
-            float3 normal : NORMAL;
-         };
-         struct vertexOutput {
-            float4 pos : SV_POSITION;
-            float4 posWorld : TEXCOORD0;
-            float3 normalDir : TEXCOORD1;
-         };
- 
-         vertexOutput vert(vertexInput input) 
-         {
-            vertexOutput output;
- 
-            float4x4 modelMatrix = _Object2World;
-            float4x4 modelMatrixInverse = _World2Object; 
- 
-            output.posWorld = mul(modelMatrix, input.vertex);
-            output.normalDir = normalize(
-               mul(float4(input.normal, 0.0), modelMatrixInverse).xyz);
-            output.pos = mul(UNITY_MATRIX_MVP, input.vertex);
-            return output;
-         }
 
-         [maxvertexcount(3)]
-        void geom(triangle vertexOutput input[3], inout TriangleStream<vertexOutput> OutputStream)
+Shader "Custom/TriangleEffectShader" {
+    Properties
+    {
+        _Color ("Diffuse Material Color", Color) = (1,1,1,1) 
+        _HighlightColor ("Highlight Color", Color) = (1,1,1,1) 
+        _BorderColor ("Border Color", Color) = (0.2,0.2,0.4,1) 
+        _NoiseColor ("Noise Color", Color) = (0.1,0.1,0.2,1) 
+		_Noise ("Noise", 2D) = "white" {}
+		_borderWidth ("Border Width", float) = 0.1
+    }
+    SubShader
+    {
+		Blend SrcAlpha OneMinusSrcAlpha
+
+        Pass
         {
-            vertexOutput test = (vertexOutput)0;
-            float3 normal = normalize(cross(input[1].posWorld.xyz - input[0].posWorld.xyz, input[2].posWorld.xyz - input[0].posWorld.xyz));
-            for(int i = 0; i < 3; i++)
-            {
-            	test = input[i];
-                test.normalDir = normal;
-                OutputStream.Append(test);
+            Tags {
+            	"LightMode"="ForwardBase"
+            	"Queue"="Transparent"
+            	"RenderType"="Transparent"
             }
+        
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "UnityCG.cginc"
+            #include "UnityLightingCommon.cginc"
+
+            const float pi = 3.14159;
+            float _borderWidth;
+
+            struct v2f
+            {
+                float4 vertex : SV_POSITION;
+                fixed4 col : COLOR;
+                float4 uv : TEXCOORD0;
+                float4 relPos : SV_TEXCOORD0;
+            };
+
+			sampler2D _Noise;
+            v2f vert (appdata_base v)
+            {
+                v2f o;
+                o.vertex = mul( UNITY_MATRIX_MVP, v.vertex);
+                o.relPos = v.vertex;
+                o.uv = v.texcoord;
+
+                //float4 worldPos = mul( _Object2World, v.vertex );
+
+                // Calculate a highlight for vertices which we're looking at directly:
+                float4 cameraSpacePos = normalize( mul( UNITY_MATRIX_MV, v.vertex) );
+                half nl = max(0, dot(cameraSpacePos, float4(0, 0, -1, 1 ) ));
+                half highlightGauss = exp( -pow( nl-1 ,2)/0.05);
+
+
+                float tmp = (pi + atan2( v.vertex.x, v.vertex.y )) / (2*pi);
+            	float noise = tex2D( _Noise, half2( 0, tmp ) ).r*0.5;
+
+                // Fade triangles which are above a certain point:
+                float clipping = 0;
+                float height = -3 + fmod( _Time[1], 5 );
+                //float height = -2 + _Time[1];
+                float border = 0;
+                if( v.vertex.z > (height + noise) )
+                {
+                	clipping = 1;
+                }
+                if( v.vertex.z > (height + noise - _borderWidth) )
+                {
+                	border = 1;
+                }
+
+
+                o.col = float4( clipping, highlightGauss, border, noise );
+
+                return o;
+            }
+            
+            fixed4 _Color;
+            fixed4 _HighlightColor;
+            fixed4 _BorderColor;
+            fixed4 _NoiseColor;
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+            	float clipping = i.col.x;
+            	if( i.col.x > .99 ) discard;
+
+            	float highlightGauss = i.col.y;
+            	float border = i.col.z;
+            	float noise = i.col.w;
+
+            	fixed4 col = _Color + 0.5*_HighlightColor*highlightGauss;
+
+            	// Calculate distance from triangle border (see UV mapping):
+            	float triangleBorder = max( max( i.uv.x, 1-i.uv.y ), 1 - (i.uv.x - i.uv.y) );
+
+            	if( triangleBorder > 0.9 )
+            	{
+            		//col += fixed4( 0.01, 0.01, 0.02,0 )*(5*triangleBorder-5);	// COOL! Keeping as reference...
+
+            		col += fixed4( 0.01, 0.01, 0.01,0 )*(5*triangleBorder-5) * (-i.relPos.z + 1.5);
+            	}
+
+            	//col = i.uv;
+
+            	col.a = 1;
+            	return col;
+                //return col;
+            }
+            ENDCG
         }
-
- 
-         float4 frag(vertexOutput input) : COLOR
-         {
-            float3 normalDirection = normalize(input.normalDir);
- 
-            float3 viewDirection = normalize(
-               _WorldSpaceCameraPos - input.posWorld.xyz);
-            float3 lightDirection = 
-               normalize(_WorldSpaceLightPos0.xyz);
- 
-            float3 ambientLighting = 
-               UNITY_LIGHTMODEL_AMBIENT.rgb * _Color.rgb;
- 
-            float3 diffuseReflection = 
-               _LightColor0.rgb * _Color.rgb
-               * max(0.0, dot(normalDirection, lightDirection));
- 
-            float3 specularReflection;
-            if (dot(normalDirection, lightDirection) < 0.0) 
-               // light source on the wrong side?
-            {
-               specularReflection = float3(0.0, 0.0, 0.0); 
-                  // no specular reflection
-            }
-            else // light source on the right side
-            {
-               specularReflection = _LightColor0.rgb 
-                  * _SpecColor.rgb * pow(max(0.0, dot(
-                  reflect(-lightDirection, normalDirection), 
-                  viewDirection)), _Shininess);
-            }
- 
-            return float4(ambientLighting + diffuseReflection 
-               + specularReflection, 1.0);
-         }
- 
-         ENDCG
-      }
-
-      Pass {    
-         Tags { "LightMode" = "ForwardAdd" } 
-            // pass for additional light sources
-         Blend One One // additive blending 
- 
-         CGPROGRAM
-
- 		 #pragma target 4.0
-         #pragma vertex vert  
-         #pragma fragment frag 
-         #pragma geometry geom
- 
-         #include "UnityCG.cginc"
-         uniform float4 _LightColor0; 
-            // color of light source (from "Lighting.cginc")
-         uniform float4x4 _LightMatrix0; // transformation 
-            // from world to light space (from Autolight.cginc)
-         uniform sampler2D _LightTexture0; 
-            // cookie alpha texture map (from Autolight.cginc)
- 
-         // User-specified properties
-         uniform float4 _Color; 
-         uniform float4 _SpecColor; 
-         uniform float _Shininess;
- 
-         struct vertexInput {
-            float4 vertex : POSITION;
-            float3 normal : NORMAL;
-         };
-         struct vertexOutput {
-            float4 pos : SV_POSITION;
-            float4 posWorld : TEXCOORD0;
-               // position of the vertex (and fragment) in world space 
-            float4 posLight : TEXCOORD1;
-               // position of the vertex (and fragment) in light space
-            float3 normalDir : TEXCOORD2;
-               // surface normal vector in world space
-         };
- 
-         vertexOutput vert(vertexInput input) 
-         {
-            vertexOutput output;
- 
-            float4x4 modelMatrix = _Object2World;
-            float4x4 modelMatrixInverse = _World2Object;
-
-            output.posWorld = mul(modelMatrix, input.vertex);
-            output.posLight = mul(_LightMatrix0, output.posWorld);
-            output.normalDir = normalize(
-               mul(float4(input.normal, 0.0), modelMatrixInverse).xyz);
-            output.pos = mul(UNITY_MATRIX_MVP, input.vertex);
-            return output;
-         }
-
-         [maxvertexcount(3)]
-        void geom(triangle vertexOutput input[3], inout TriangleStream<vertexOutput> OutputStream)
-        {
-            vertexOutput test = (vertexOutput)0;
-            float3 normal = normalize(cross(input[1].posWorld.xyz - input[0].posWorld.xyz, input[2].posWorld.xyz - input[0].posWorld.xyz));
-            for(int i = 0; i < 3; i++)
-            {
-            	test = input[i];
-                test.normalDir = normal;
-                OutputStream.Append(test);
-            }
-        }
-
- 
-         float4 frag(vertexOutput input) : COLOR
-         {
-            float3 normalDirection = normalize(input.normalDir);
- 
-            float3 viewDirection = normalize(
-               _WorldSpaceCameraPos - input.posWorld.xyz);
-            float3 lightDirection;
-            float attenuation;
- 
-            if (0.0 == _WorldSpaceLightPos0.w) // directional light?
-            {
-               attenuation = 1.0; // no attenuation
-               lightDirection = normalize(_WorldSpaceLightPos0.xyz);
-            } 
-            else // point or spot light
-            {
-               float3 vertexToLightSource = 
-                  _WorldSpaceLightPos0.xyz - input.posWorld.xyz;
-               float distance = length(vertexToLightSource);
-               attenuation = 1.0 / distance; // linear attenuation 
-               lightDirection = normalize(vertexToLightSource);
-            }
- 
-            float3 diffuseReflection = 
-               attenuation * _LightColor0.rgb * _Color.rgb
-               * max(0.0, dot(normalDirection, lightDirection));
- 
-            float3 specularReflection;
-            if (dot(normalDirection, lightDirection) < 0.0) 
-               // light source on the wrong side?
-            {
-               specularReflection = float3(0.0, 0.0, 0.0); 
-                  // no specular reflection
-            }
-            else // light source on the right side
-            {
-               specularReflection = attenuation * _LightColor0.rgb 
-                  * _SpecColor.rgb * pow(max(0.0, dot(
-                  reflect(-lightDirection, normalDirection), 
-                  viewDirection)), _Shininess);
-            }
- 
-            float cookieAttenuation = 1.0;
-            if (0.0 == _WorldSpaceLightPos0.w) // directional light?
-            {
-               cookieAttenuation = tex2D(_LightTexture0, 
-                  input.posLight.xy).a;
-            }
-            else if (1.0 != _LightMatrix0[3][3]) 
-               // spotlight (i.e. not a point light)?
-            {
-               cookieAttenuation = tex2D(_LightTexture0, 
-                  input.posLight.xy / input.posLight.w 
-                  + float2(0.5, 0.5)).a;
-            }
-
-            return float4(cookieAttenuation 
-               * (diffuseReflection + specularReflection), 1.0);
-         }
- 
-         ENDCG
-      }
-   }
-   Fallback "Specular"
+    }
 }
