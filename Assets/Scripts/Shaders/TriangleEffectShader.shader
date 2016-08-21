@@ -11,9 +11,11 @@
             // and first directional light source without cookie
  
          CGPROGRAM
- 
-         #pragma vertex vert  
-         #pragma fragment frag 
+
+ 		 #pragma target 4.0
+         #pragma vertex vert
+         #pragma fragment frag
+         #pragma geometry geom
  
          #include "UnityCG.cginc"
          uniform float4 _LightColor0; 
@@ -47,6 +49,20 @@
             output.pos = mul(UNITY_MATRIX_MVP, input.vertex);
             return output;
          }
+
+         [maxvertexcount(3)]
+        void geom(triangle vertexOutput input[3], inout TriangleStream<vertexOutput> OutputStream)
+        {
+            vertexOutput test = (vertexOutput)0;
+            float3 normal = normalize(cross(input[1].posWorld.xyz - input[0].posWorld.xyz, input[2].posWorld.xyz - input[0].posWorld.xyz));
+            for(int i = 0; i < 3; i++)
+            {
+            	test = input[i];
+                test.normalDir = normal;
+                OutputStream.Append(test);
+            }
+        }
+
  
          float4 frag(vertexOutput input) : COLOR
          {
@@ -92,9 +108,11 @@
          Blend One One // additive blending 
  
          CGPROGRAM
- 
+
+ 		 #pragma target 4.0
          #pragma vertex vert  
          #pragma fragment frag 
+         #pragma geometry geom
  
          #include "UnityCG.cginc"
          uniform float4 _LightColor0; 
@@ -137,6 +155,20 @@
             output.pos = mul(UNITY_MATRIX_MVP, input.vertex);
             return output;
          }
+
+         [maxvertexcount(3)]
+        void geom(triangle vertexOutput input[3], inout TriangleStream<vertexOutput> OutputStream)
+        {
+            vertexOutput test = (vertexOutput)0;
+            float3 normal = normalize(cross(input[1].posWorld.xyz - input[0].posWorld.xyz, input[2].posWorld.xyz - input[0].posWorld.xyz));
+            for(int i = 0; i < 3; i++)
+            {
+            	test = input[i];
+                test.normalDir = normal;
+                OutputStream.Append(test);
+            }
+        }
+
  
          float4 frag(vertexOutput input) : COLOR
          {
