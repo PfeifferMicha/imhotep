@@ -9,10 +9,10 @@ Shader "Custom/TriangleEffectShader" {
     {
         _Color ("Diffuse Material Color", Color) = (1,1,1,1) 
         _HighlightColor ("Highlight Color", Color) = (1,1,1,1) 
-        _BorderColor ("Border Color", Color) = (0.2,0.2,0.4,1) 
-        _NoiseColor ("Noise Color", Color) = (0.1,0.1,0.2,1) 
+        _EdgeColor ("Edge Color", Color) = (0.2,0.2,0.4,1)
+        _EdgeColorInner ("Edge Color Inner", Color) = (1,1,1,1)
+		_EdgeEffectHeight ("Edge Effect Height", float) = 0.1
 		_Noise ("Noise", 2D) = "white" {}
-		_borderWidth ("Border Width", float) = 0.1
     }
     SubShader
     {
@@ -33,7 +33,7 @@ Shader "Custom/TriangleEffectShader" {
             #include "UnityLightingCommon.cginc"
 
             const float pi = 3.14159;
-            float _borderWidth;
+            float _EdgeEffectHeight;
 
             struct v2f
             {
@@ -64,36 +64,37 @@ Shader "Custom/TriangleEffectShader" {
 
                 // Fade triangles which are above a certain point:
                 float clipping = 0;
-                float height = -3 + fmod( _Time[1], 5 );
+                float height = -3 + fmod( _Time[1]*0.5, 5 );
                 //float height = -2 + _Time[1];
-                float border = 0;
+                float edgeEffect = 0;
                 if( v.vertex.z > (height + noise) )
                 {
                 	clipping = 1;
                 }
-                if( v.vertex.z > (height + noise - _borderWidth) )
-                {
-                	border = 1;
-                }
+                //if( v.vertex.z > (height + noise - _EdgeEffectHeight) )
+                //{
+                	edgeEffect = max( 1 - (height - v.vertex.z + noise)/_EdgeEffectHeight, 0 );
+                //}
 
 
-                o.col = float4( clipping, highlightGauss, border, noise );
+                o.col = float4( clipping, highlightGauss, edgeEffect, noise );
 
                 return o;
             }
             
             fixed4 _Color;
             fixed4 _HighlightColor;
-            fixed4 _BorderColor;
-            fixed4 _NoiseColor;
+            fixed4 _EdgeColor;
+            fixed4 _EdgeColorInner;
 
             fixed4 frag (v2f i) : SV_Target
             {
+            	// Clip, if any of the triangle's vertices was set to clip:
             	float clipping = i.col.x;
-            	if( i.col.x > .99 ) discard;
+            	if( clipping > .99 ) discard;
 
             	float highlightGauss = i.col.y;
-            	float border = i.col.z;
+            	float edgeEffect = i.col.z;
             	float noise = i.col.w;
 
             	fixed4 col = _Color + 0.5*_HighlightColor*highlightGauss;
@@ -105,11 +106,19 @@ Shader "Custom/TriangleEffectShader" {
             	{
             		//col += fixed4( 0.01, 0.01, 0.02,0 )*(5*triangleBorder-5);	// COOL! Keeping as reference...
 
-            		col += fixed4( 0.01, 0.01, 0.01,0 )*(5*triangleBorder-5) * (-i.relPos.z + 1.5);
+            		col -= fixed4( 0.01, 0.01, 0.01,0 )*(1-triangleBorder)*5 * (-i.relPos.z + 1.5);
+
+            		// Glow:
+            		//col += _EdgeColor*(edgeEffect)*max(triangleBorder-0.94,0)*10 * (-i.relPos.z + 1.5);
+            		//col += 0.5*_EdgeColorInner*(edgeEffect)*max(triangleBorder-0.99,0)*40 * (-i.relPos.z + 1.5);
+            	} else {
+
+	            	col += _EdgeColor*(edgeEffect)*max(triangleBorder-0.5,0);
             	}
 
             	//col = i.uv;
 
+            	//col = abs(edgeEffect);
             	col.a = 1;
             	return col;
                 //return col;
