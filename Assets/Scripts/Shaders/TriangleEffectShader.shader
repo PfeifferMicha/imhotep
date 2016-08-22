@@ -10,7 +10,7 @@ Shader "Custom/TriangleEffectShader" {
         _Color ("Diffuse Material Color", Color) = (1,1,1,1) 
         _HighlightColor ("Highlight Color", Color) = (1,1,1,1) 
         _EdgeColor ("Edge Color", Color) = (0.2,0.2,0.4,1)
-        _EdgeColorInner ("Edge Color Inner", Color) = (1,1,1,1)
+        _TriangleBorderColor ("Triangle Border Color", Color) = (0.01, 0.01, 0.01, 0)
 		_EdgeEffectHeight ("Edge Effect Height", float) = 0.1
 		_Noise ("Noise", 2D) = "white" {}
     }
@@ -85,7 +85,7 @@ Shader "Custom/TriangleEffectShader" {
             fixed4 _Color;
             fixed4 _HighlightColor;
             fixed4 _EdgeColor;
-            fixed4 _EdgeColorInner;
+            fixed4 _TriangleBorderColor;
 
             fixed4 frag (v2f i) : SV_Target
             {
@@ -106,13 +106,13 @@ Shader "Custom/TriangleEffectShader" {
             	{
             		//col += fixed4( 0.01, 0.01, 0.02,0 )*(5*triangleBorder-5);	// COOL! Keeping as reference...
 
-            		col -= fixed4( 0.01, 0.01, 0.01,0 )*(1-triangleBorder)*5 * (-i.relPos.z + 1.5);
+            		//col -= fixed4( 0.01, 0.01, 0.01, 0 )*(1-triangleBorder)*5 * (-i.relPos.z + 1.5);
+            		col -= _TriangleBorderColor*(1-triangleBorder)*5 * (-i.relPos.z + 1.5);
 
             		// Glow:
             		//col += _EdgeColor*(edgeEffect)*max(triangleBorder-0.94,0)*10 * (-i.relPos.z + 1.5);
             		//col += 0.5*_EdgeColorInner*(edgeEffect)*max(triangleBorder-0.99,0)*40 * (-i.relPos.z + 1.5);
             	} else {
-
 	            	col += _EdgeColor*(edgeEffect)*max(triangleBorder-0.5,0);
             	}
 

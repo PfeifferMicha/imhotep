@@ -177,7 +177,7 @@ Material:
       data:
         first:
           name: _HighlightColor
-        second: {r: 0.1489891, g: 0.1528954, b: 0.16070803, a: 1}
+        second: {r: 0.14901961, g: 0.15294118, b: 0.16078432, a: 1}
       data:
         first:
           name: _BorderColor
@@ -194,3 +194,7 @@ Material:
         first:
           name: _EdgeColorInner
         second: {r: 0.20058392, g: 0.53989685, b: 0.7794118, a: 1}
+      data:
+        first:
+          name: _TriangleBorderColor
+        second: {r: 0.09803922, g: 0.09803922, b: 0.09803922, a: 1}
