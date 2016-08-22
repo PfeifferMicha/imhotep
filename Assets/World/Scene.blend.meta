@@ -103,6 +103,17 @@ ModelImporter:
     100190: PlatformRounded
     100192: Icosphere_001
     100194: Plane_001
+    100196: HumanMale_000
+    100198: MaleArm_000
+    100200: Platform_Base
+    100202: PlatformRounded_001
+    100204: Plaform_Rect_Front
+    100206: Platform_Rect_FrontLeft
+    100208: Platform_Rect_FrontRight
+    100210: Platform_Rect_Left
+    100212: Platform_Rect_Right
+    100214: Platform_Rounded
+    100216: UIPlaneStraight
     400000: Back
     400002: Back_0
     400004: BezierCurve_000
@@ -201,6 +212,17 @@ ModelImporter:
     400190: PlatformRounded
     400192: Icosphere_001
     400194: Plane_001
+    400196: HumanMale_000
+    400198: MaleArm_000
+    400200: Platform_Base
+    400202: PlatformRounded_001
+    400204: Plaform_Rect_Front
+    400206: Platform_Rect_FrontLeft
+    400208: Platform_Rect_FrontRight
+    400210: Platform_Rect_Left
+    400212: Platform_Rect_Right
+    400214: Platform_Rounded
+    400216: UIPlaneStraight
     2300000: BezierCurve_000
     2300002: BezierCurve_001
     2300004: BezierCurve_002
@@ -229,6 +251,15 @@ ModelImporter:
     2300050: PlatformRounded
     2300052: Icosphere_001
     2300054: Plane_001
+    2300056: Platform_Base
+    2300058: PlatformRounded_001
+    2300060: Plaform_Rect_Front
+    2300062: Platform_Rect_FrontLeft
+    2300064: Platform_Rect_FrontRight
+    2300066: Platform_Rect_Left
+    2300068: Platform_Rect_Right
+    2300070: Platform_Rounded
+    2300072: UIPlaneStraight
     3300000: BezierCurve_000
     3300002: BezierCurve_001
     3300004: BezierCurve_002
@@ -257,6 +288,15 @@ ModelImporter:
     3300050: PlatformRounded
     3300052: Icosphere_001
     3300054: Plane_001
+    3300056: Platform_Base
+    3300058: PlatformRounded_001
+    3300060: Plaform_Rect_Front
+    3300062: Platform_Rect_FrontLeft
+    3300064: Platform_Rect_FrontRight
+    3300066: Platform_Rect_Left
+    3300068: Platform_Rect_Right
+    3300070: Platform_Rounded
+    3300072: UIPlaneStraight
     4300000: Circle_004
     4300002: HumanMale_001
     4300004: Chair_001_MeshPart0
@@ -286,6 +326,16 @@ ModelImporter:
     4300052: PlatformRounded
     4300054: Icosphere_001
     4300056: Plane_001
+    4300058: HumanMale_000
+    4300060: PlatformRounded_001
+    4300062: Platform_Base
+    4300064: UIPlaneStraight
+    4300066: Platform_Rect_Left
+    4300068: Platform_Rect_FrontLeft
+    4300070: Plaform_Rect_Front
+    4300072: Platform_Rect_FrontRight
+    4300074: Platform_Rect_Right
+    4300076: Platform_Rounded
     7400000: Default Take
     7400002: Charge-Punch-M
     7400004: Idle-M
@@ -297,8 +347,10 @@ ModelImporter:
     7400016: Sit
     7400018: T-pose
     7400020: Walk
+    7400022: Sit_001
     9500000: //RootNode
     13700000: HumanMale_001
+    13700002: HumanMale_000
   materials:
     importMaterials: 1
     materialName: 2
