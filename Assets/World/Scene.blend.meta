@@ -99,6 +99,10 @@ ModelImporter:
     100182: Upperarm_Right_0
     100184: Icosphere_MeshPart0
     100186: Icosphere_MeshPart1
+    100188: UIPlaneCircular
+    100190: PlatformRounded
+    100192: Icosphere_001
+    100194: Plane_001
     400000: Back
     400002: Back_0
     400004: BezierCurve_000
@@ -193,6 +197,10 @@ ModelImporter:
     400182: Upperarm_Right_0
     400184: Icosphere_MeshPart0
     400186: Icosphere_MeshPart1
+    400188: UIPlaneCircular
+    400190: PlatformRounded
+    400192: Icosphere_001
+    400194: Plane_001
     2300000: BezierCurve_000
     2300002: BezierCurve_001
     2300004: BezierCurve_002
@@ -217,6 +225,10 @@ ModelImporter:
     2300042: Sphere_001
     2300044: Icosphere_MeshPart0
     2300046: Icosphere_MeshPart1
+    2300048: UIPlaneCircular
+    2300050: PlatformRounded
+    2300052: Icosphere_001
+    2300054: Plane_001
     3300000: BezierCurve_000
     3300002: BezierCurve_001
     3300004: BezierCurve_002
@@ -241,6 +253,10 @@ ModelImporter:
     3300042: Sphere_001
     3300044: Icosphere_MeshPart0
     3300046: Icosphere_MeshPart1
+    3300048: UIPlaneCircular
+    3300050: PlatformRounded
+    3300052: Icosphere_001
+    3300054: Plane_001
     4300000: Circle_004
     4300002: HumanMale_001
     4300004: Chair_001_MeshPart0
@@ -266,6 +282,10 @@ ModelImporter:
     4300044: Circle_002
     4300046: Icosphere_MeshPart0
     4300048: Icosphere_MeshPart1
+    4300050: UIPlaneCircular
+    4300052: PlatformRounded
+    4300054: Icosphere_001
+    4300056: Plane_001
     7400000: Default Take
     7400002: Charge-Punch-M
     7400004: Idle-M
