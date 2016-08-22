@@ -32,7 +32,7 @@ Shader "Custom/TriangleEffectShader" {
             #include "UnityCG.cginc"
             #include "UnityLightingCommon.cginc"
 
-            const float pi = 3.14159;
+            static float pi = 3.14159;
             float _EdgeEffectHeight;
 
             struct v2f
@@ -40,7 +40,7 @@ Shader "Custom/TriangleEffectShader" {
                 float4 vertex : SV_POSITION;
                 fixed4 col : COLOR;
                 float4 uv : TEXCOORD0;
-                float4 relPos : SV_TEXCOORD0;
+                float4 relPos : TEXCOORD1;
             };
 
 			sampler2D _Noise;
@@ -50,7 +50,6 @@ Shader "Custom/TriangleEffectShader" {
                 o.vertex = mul( UNITY_MATRIX_MVP, v.vertex);
                 o.relPos = v.vertex;
                 o.uv = v.texcoord;
-
                 //float4 worldPos = mul( _Object2World, v.vertex );
 
                 // Calculate a highlight for vertices which we're looking at directly:
@@ -60,7 +59,7 @@ Shader "Custom/TriangleEffectShader" {
 
 
                 float tmp = (pi + atan2( v.vertex.x, v.vertex.y )) / (2*pi);
-            	float noise = tex2D( _Noise, half2( 0, tmp ) ).r*0.5;
+            	float noise = (tex2Dlod( _Noise, half4( 0, tmp, 0, 0 ) )).r*0.5;
 
                 // Fade triangles which are above a certain point:
                 float clipping = 0;
