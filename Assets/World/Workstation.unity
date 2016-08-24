@@ -1510,7 +1510,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 8400000, guid: 93900262b167f4e3fa3d9f9e3cb291b7, type: 2}
+  m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 0
@@ -1902,9 +1902,10 @@ MonoBehaviour:
   rounded: {fileID: 57530193}
   chair: {fileID: 1248240312}
   camera: {fileID: 304307825}
+  UIcamera: {fileID: 470118317}
   UiMeshMaterial: {fileID: 2100000, guid: 4654fc3d0834c4e06bc8962e5f83ea5f, type: 2}
   UIMeshRoundedRadius: 1.2
-  UIMeshRoundedAngle: 160
+  UIMeshRoundedAngle: 260
   UIMeshRoundedBottom: 0.3
   UIMeshRoundedHeight: 2
   UIMeshRectangularBottom: 0.5
@@ -5502,7 +5503,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4975a6e437fc3b149a8cd508ce5bdd69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  threshold: 0.25
+  threshold: 0.5
   intensity: 0.75
   blurSize: 1
   blurIterations: 2

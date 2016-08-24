@@ -14,6 +14,7 @@ public class Platform : MonoBehaviour {
 	public GameObject chair;
 
 	public GameObject camera;
+	public GameObject UIcamera;
 
 	public Material UiMeshMaterial;
 
@@ -141,7 +142,7 @@ public class Platform : MonoBehaviour {
 		List<int> newTriangles = new List<int> ();
 
 		// Fill the lists with vertices and triangles:
-		int numSegments = 20;
+		int numSegments = 50;
 		float fullAngle = UIMeshRoundedAngle * Mathf.PI / 180f;
 		for (int i = 0; i <= numSegments; i++) {
 			float currentAmount = (float)i / (float)numSegments;
@@ -168,6 +169,7 @@ public class Platform : MonoBehaviour {
 		mesh.vertices = newVertices.ToArray();
 		mesh.uv = newUV.ToArray();
 		mesh.triangles = newTriangles.ToArray();
+		mesh.RecalculateNormals ();
 
 
 		// Generate a new game object:
@@ -179,9 +181,21 @@ public class Platform : MonoBehaviour {
 		go.GetComponent<MeshFilter>().mesh = mesh;
 		go.GetComponent<MeshCollider> ().sharedMesh = mesh;
 
+
+		// Set up the render texture:
+		float meshWidth = 2f*Mathf.PI * UIMeshRoundedRadius * ( UIMeshRoundedAngle / 360f);		// 2*pi*r
+		float meshHeight = UIMeshRoundedHeight;
+		float pixelsPerMeter = 1000;
+		int textureWidth = (int)(meshWidth * pixelsPerMeter);
+		int textureHeight = (int)(meshHeight * pixelsPerMeter);
+		RenderTexture tex = new RenderTexture (textureWidth, textureHeight, 16);
+		UIcamera.GetComponent<Camera>().targetTexture = tex;
+
+
 		// Set up rendering:
 		MeshRenderer renderer = go.AddComponent<MeshRenderer> ();
 		renderer.material = UiMeshMaterial;
+		renderer.material.mainTexture = tex;
 
 		// Move forward until it reaches the edge of the platform:
 		float yPos = rounded.GetComponent<MeshRenderer>().bounds.size.z - UIMeshRoundedRadius;
