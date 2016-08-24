@@ -74,10 +74,48 @@
 				//col = col * (0.9 + displace*0.1);
 
 				// Figure out into which noise pixel this point should fall:
+				float2 uv_unnormalized = i.uv * _MainTex_TexelSize.zw;
+
+				float pixelScale = 0.04;
+				int2 noise_pixel_pos = uv_unnormalized * pixelScale + 0.5;
+				float2 noise_continuous_pos = uv_unnormalized * pixelScale;
+				float2 uv_noise = noise_pixel_pos * _NoiseTex_TexelSize.xy;
+				float2 normalized_pixel_pos = noise_pixel_pos * _MainTex_TexelSize.xy / pixelScale;
+				//return float4( uv_noise, 0, 1);
+
+				float2 distToPixelCenter = abs( noise_pixel_pos - noise_continuous_pos );
+				//return float4(distToPixelCenter,0,1);
+
+				fixed4 noise = tex2D( _NoiseTex, uv_noise );
+				float pixelBorder = 0.40 + 0.05/length(noise);
+				if( distToPixelCenter.x > pixelBorder || distToPixelCenter.y > pixelBorder )
+					noise *= 0.7;// * (1+sin(_Time[2]));
 
 
+					//return noise;
 
+				float2 displacement = noise*(noise_pixel_pos - noise_continuous_pos);
+
+				//return float4(displacement, 0, 1);
+
+				displacement *= _MainTex_TexelSize.xy;
+				//return fixed4( displacement , 0, 1);
+
+				//return float4( fmod( uv_noise, 1 ), 0, 1 );
+				//return noise;
+
+				fixed4 colPixel = tex2D(_MainTex, normalized_pixel_pos);
+				colPixel = colPixel*noise;
 				fixed4 col = tex2D(_MainTex, i.uv);
+				//col = col *  (1 + 1*colPixel );
+				col = col + (colPixel)*col.a;
+
+				//col = col* distToPixelCenter;
+
+				//float dist_from_center = length( i.uv - float2( 0.5, 0.5 ) );
+				//dist_from_center = dist_from_center*dist_from_center;
+				//if( distToPixelCenter.x > 0.5-dist_from_center || distToPixelCenter.y > 0.5-dist_from_center )
+				//	col = col*0.1;
 
 
 				if( _isReflection )
