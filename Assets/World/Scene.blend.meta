@@ -114,6 +114,10 @@ ModelImporter:
     100212: Platform_Rect_Right
     100214: Platform_Rounded
     100216: UIPlaneStraight
+    100218: Spotlight1
+    100220: Spotlight2
+    100222: Spotlight3
+    100224: Spotlight4
     400000: Back
     400002: Back_0
     400004: BezierCurve_000
@@ -223,6 +227,10 @@ ModelImporter:
     400212: Platform_Rect_Right
     400214: Platform_Rounded
     400216: UIPlaneStraight
+    400218: Spotlight1
+    400220: Spotlight2
+    400222: Spotlight3
+    400224: Spotlight4
     2300000: BezierCurve_000
     2300002: BezierCurve_001
     2300004: BezierCurve_002
@@ -260,6 +268,10 @@ ModelImporter:
     2300068: Platform_Rect_Right
     2300070: Platform_Rounded
     2300072: UIPlaneStraight
+    2300074: Spotlight1
+    2300076: Spotlight2
+    2300078: Spotlight3
+    2300080: Spotlight4
     3300000: BezierCurve_000
     3300002: BezierCurve_001
     3300004: BezierCurve_002
@@ -297,6 +309,10 @@ ModelImporter:
     3300068: Platform_Rect_Right
     3300070: Platform_Rounded
     3300072: UIPlaneStraight
+    3300074: Spotlight1
+    3300076: Spotlight2
+    3300078: Spotlight3
+    3300080: Spotlight4
     4300000: Circle_004
     4300002: HumanMale_001
     4300004: Chair_001_MeshPart0
@@ -336,6 +352,10 @@ ModelImporter:
     4300072: Platform_Rect_FrontRight
     4300074: Platform_Rect_Right
     4300076: Platform_Rounded
+    4300078: Spotlight4
+    4300080: Spotlight3
+    4300082: Spotlight2
+    4300084: Spotlight1
     7400000: Default Take
     7400002: Charge-Punch-M
     7400004: Idle-M
