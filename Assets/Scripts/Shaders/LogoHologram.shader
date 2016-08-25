@@ -128,7 +128,7 @@ SubShader {
 					result.a = result.a*_EaseInAmount;
 
 					float m = min(min( result.r, result.g), result.b);
-					fixed3 gray = fixed3(m);
+					fixed3 gray = fixed3(m,m,m);
 					result.rgb = easeOutCubic( gray, result - gray, _EaseInAmount, 1 );
 				}
 
