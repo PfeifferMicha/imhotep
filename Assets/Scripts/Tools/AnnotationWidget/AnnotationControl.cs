@@ -43,7 +43,7 @@ public class AnnotationControl : MonoBehaviour {
     private GameObject currentAnnotatinPoint = null;
     private List<GameObject> annotationPoints = new List<GameObject>();
 
-	private MouseInputModule mouseInputModul;
+    private InputDeviceManager idm;
 
     private static int annotationPointCounter = 0; //Used to create unique id for annoation point
 
@@ -84,7 +84,7 @@ public class AnnotationControl : MonoBehaviour {
     void Start () {
         changeCurrentStateToIdle();
 
-		mouseInputModul = GameObject.Find ("GlobalScript").GetComponent<MouseInputModule>();
+        idm = GameObject.Find("GlobalScript").GetComponent<InputDeviceManager>();
 
         mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> (); //TODO error if name of Mouse3D is changed
 		meshNode = GameObject.Find("MeshViewer").transform; //TODO error if name of MeshViewer is changed
@@ -109,17 +109,12 @@ public class AnnotationControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //If user pressed "Add Annotation" and clicked 
-		//if (Input.GetMouseButtonDown(0) && currentState == State.addAnnotationPressed)
-		if (mouseInputModul.framePressStateLeft == PointerEventData.FramePressState.Pressed && currentState == State.addAnnotationPressed)
-			
+        //if (Input.GetMouseButtonDown(0) && currentState == State.addAnnotationPressed)
+        InputDeviceInterface inputDevice=  idm.currentInputDevice.GetComponent<InputDeviceInterface>();
+        if (inputDevice.getLeftButtonState() == PointerEventData.FramePressState.Pressed && currentState == State.addAnnotationPressed)
         {			
             RaycastHit hit;
-			Ray ray;
-			if(mouseInputModul.mMouse.owner.name == "mouse"){ //TODO !!! Use interface 
-				ray= new Ray(Camera.main.transform.position, mMouse.transform.position - Camera.main.transform.position);
-			}else{				
-				ray= new Ray(mouseInputModul.mMouse.owner.transform.position, mouseInputModul.mMouse.owner.transform.forward);
-			}
+            Ray ray = inputDevice.createRay();
             LayerMask onlyMeshViewLayer = 1000000000; // hit only the mesh view layer
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMeshViewLayer))

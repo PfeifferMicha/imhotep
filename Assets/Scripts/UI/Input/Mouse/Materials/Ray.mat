@@ -6,11 +6,11 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: DefaultOpaque
-  m_Shader: {fileID: 4800000, guid: fa5db193484894dcd95062bb4e69e542, type: 3}
+  m_Name: Ray
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   m_SavedProperties:
     serializedVersion: 2
@@ -127,18 +127,6 @@ Material:
         first:
           name: _Metallic
         second: 0
-      data:
-        first:
-          name: _min
-        second: -200
-      data:
-        first:
-          name: _max
-        second: 300
-      data:
-        first:
-          name: _amount
-        second: 1
     m_Colors:
       data:
         first:
@@ -147,12 +135,4 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 0.945098, g: 0.17254743, b: 0.17254743, a: 1}
-      data:
-        first:
-          name: _cuttingPlanePosition
-        second: {r: 9999, g: 0, b: 0, a: 1}
-      data:
-        first:
-          name: _cuttingPlaneNormal
-        second: {r: -1, g: 0, b: 0, a: 1}
+        second: {r: 1, g: 1, b: 1, a: 1}
