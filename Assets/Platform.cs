@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 public class Platform : MonoBehaviour {
 
@@ -185,10 +186,11 @@ public class Platform : MonoBehaviour {
 		// Set up the render texture:
 		float meshWidth = 2f*Mathf.PI * UIMeshRoundedRadius * ( UIMeshRoundedAngle / 360f);		// 2*pi*r
 		float meshHeight = UIMeshRoundedHeight;
-		float pixelsPerMeter = 1000;
+		float pixelsPerMeter = 500;
 		int textureWidth = (int)(meshWidth * pixelsPerMeter);
 		int textureHeight = (int)(meshHeight * pixelsPerMeter);
-		RenderTexture tex = new RenderTexture (textureWidth, textureHeight, 16);
+		RenderTexture tex = new RenderTexture (textureWidth, textureHeight, 24, RenderTextureFormat.ARGB32 );
+		tex.name = "UI Render Texture";
 		UIcamera.GetComponent<Camera>().targetTexture = tex;
 
 
@@ -200,6 +202,19 @@ public class Platform : MonoBehaviour {
 		// Move forward until it reaches the edge of the platform:
 		float yPos = rounded.GetComponent<MeshRenderer>().bounds.size.z - UIMeshRoundedRadius;
 		go.transform.localPosition = new Vector3 (0f, UIMeshRoundedBottom, yPos);
+
+		// Debug write image to file:
+		/* cUIcamera.GetComponent<Camera> ().Render ();
+		RenderTexture.active = tex;
+		Texture2D virtualPhoto =
+			new Texture2D(textureWidth,textureHeight, TextureFormat.ARGB32, false);
+		virtualPhoto.ReadPixels ( new Rect( 0,0, textureWidth, textureHeight ), 0, 0 );
+		virtualPhoto.Apply ();
+		RenderTexture.active = null;
+
+		byte[] bytes;
+		bytes = virtualPhoto.EncodeToPNG ();
+		System.IO.File.WriteAllBytes("/home/micha/tmp.png", bytes );*/
 	}
 
 	/*! Remove UI Mesh, if present. */

@@ -7,10 +7,10 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: UITargetTexture
-  m_Shader: {fileID: 4800000, guid: a2cc3f6bc59184c739d67606fd55a18d, type: 3}
+  m_Shader: {fileID: 10753, guid: 0000000000000000e000000000000000, type: 0}
   m_ShaderKeywords: _ALPHABLEND_ON _EMISSION _SUNDISK_HIGH_QUALITY
   m_LightmapFlags: 2
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: -1
   stringTagMap:
     RenderType: Transparent
   m_SavedProperties:
@@ -60,6 +60,10 @@ Material:
         first:
           name: _Shininess
         second: 0.2
+      data:
+        first:
+          name: PixelSnap
+        second: 0
       data:
         first:
           name: _isReflection

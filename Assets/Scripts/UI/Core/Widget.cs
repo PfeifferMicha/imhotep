@@ -19,6 +19,28 @@ namespace UI
 
         public void OnEnable()
         {
+			// Set material for all texts:
+			Material mat = new Material(Shader.Find("Custom/TextShader"));
+			Component[] texts;
+			texts = GetComponentsInChildren( typeof(Text), true );
+
+			if( texts != null )
+			{
+				foreach (Text t in texts)
+					t.material = mat;
+			}
+
+			// Set material for all images:
+			Component[] images;
+			Material matImage = Resources.Load ("Materials/UI") as Material;
+			images = GetComponentsInChildren( typeof(Image) );
+			if( images != null )
+			{
+				foreach (Image im in images) {
+					if( im.transform.GetComponent<Mask>() == null )		// Mask images should keep default material.
+						im.material = matImage;
+				}
+			}
         }
 
 		public void initialize( string name )
@@ -31,16 +53,7 @@ namespace UI
         // Use this for initialization
         void Start()
         {
-			Material mat = new Material(Shader.Find("UI/TextShader"));
-				
-			Component[] texts;
-			texts = GetComponentsInChildren( typeof(Text) );
 
-			if( texts != null )
-			{
-				foreach (Text t in texts)
-					t.material = mat;
-			}
         }
 
         // Update is called once per frame
