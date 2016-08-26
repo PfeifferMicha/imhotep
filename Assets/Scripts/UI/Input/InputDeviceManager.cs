@@ -58,10 +58,19 @@ public class InputDeviceManager : MonoBehaviour {
         {
             return false;
         }
-
+		deactivateAllVisualizer();
         deviceList.Add(g);
         currentInputDevice = g; //TODO how to change currentInputDevice in game?
 
         return true;
     }
+
+	private void deactivateAllVisualizer(){
+		foreach (GameObject g in deviceList) {
+			InputDeviceInterface i = g.GetComponent<InputDeviceInterface> ();
+			if (i != null) {
+				i.deactivateVisualization();
+			}
+		}
+	}
 }

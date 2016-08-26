@@ -14,7 +14,7 @@ public class MouseInputModule : StandaloneInputModule {
     private InputDeviceManager idm;
 	private Vector2 mTextureSize;
 
-	public PointerEventData.FramePressState framePressStateLeft { get; set; } //Other scripts can get the current state of the left mouse button TODO entfernen, veraltet
+	//public PointerEventData.FramePressState framePressStateLeft { get; set; } //Other scripts can get the current state of the left mouse button TODO entfernen, veraltet
 
 
 	public new void Start()
@@ -24,7 +24,7 @@ public class MouseInputModule : StandaloneInputModule {
         UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
 		mTextureSize.x = UICamera.targetTexture.width;
 		mTextureSize.y = UICamera.targetTexture.height;
-		framePressStateLeft = PointerEventData.FramePressState.NotChanged;
+		//framePressStateLeft = PointerEventData.FramePressState.NotChanged;
 	}
 
 	// This is the real function we want, the two commented out lines (Input.mousePosition)
@@ -77,7 +77,7 @@ public class MouseInputModule : StandaloneInputModule {
 		middleData.button = PointerEventData.InputButton.Middle;
 
         
-        framePressStateLeft = inputDevice.getLeftButtonState(); //TODO entfernen
+        //framePressStateLeft = inputDevice.getLeftButtonState(); //TODO entfernen
         m_MouseState.SetButtonState (PointerEventData.InputButton.Left, inputDevice.getLeftButtonState(), leftData);
         m_MouseState.SetButtonState (PointerEventData.InputButton.Right, inputDevice.getRightButtonState(), rightData);
 		m_MouseState.SetButtonState (PointerEventData.InputButton.Middle, inputDevice.getMiddleButtonState(), middleData);

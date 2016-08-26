@@ -20,6 +20,9 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
     public void deactivateVisualization()
     {
         visualizeMouseRay = false;
+		Vector3 zero = new Vector3(0, 0, 0);
+		lineRenderer.SetPosition(0, zero);
+		lineRenderer.SetPosition(1, zero);
     }
 
     public Ray createRay()
@@ -83,7 +86,7 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
         if (idm != null)
         {
             idm.registerInputDevice(this.gameObject);
-            Debug.LogWarning("Mouse registered");
+            Debug.Log("Mouse registered");
         }
 
     }

@@ -39,7 +39,6 @@ public class AnnotationControl : MonoBehaviour {
     private State currentState = State.idle;
     private Transform meshNode;
 	private Transform meshPositionNode;
-    private Mouse3DMovement mMouse;
     private GameObject currentAnnotatinPoint = null;
     private List<GameObject> annotationPoints = new List<GameObject>();
 
@@ -85,18 +84,12 @@ public class AnnotationControl : MonoBehaviour {
         changeCurrentStateToIdle();
 
         idm = GameObject.Find("GlobalScript").GetComponent<InputDeviceManager>();
-
-        mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> (); //TODO error if name of Mouse3D is changed
 		meshNode = GameObject.Find("MeshViewer").transform; //TODO error if name of MeshViewer is changed
 		meshPositionNode = GameObject.Find("MeshViewer/MeshRotationNode/MeshPositionNode").transform;
 
         if(annotationPointObj == null)
         {
             Debug.LogError("No Annotation Point Object is set in Annotation.cs");
-        }
-        if (mMouse == null)
-        {
-            Debug.LogError("No Mouse3D found in Annotation.cs");
         }
         if (meshNode == null)
         {
