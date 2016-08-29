@@ -166,6 +166,10 @@ Material:
         first:
           name: _Metallic
         second: 0
+      data:
+        first:
+          name: _FadeInAmount
+        second: 1.0033019
     m_Colors:
       data:
         first:

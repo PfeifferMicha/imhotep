@@ -103,6 +103,7 @@
 			}
 
 			float4 _ClipRect;
+			float _FadeInAmount;
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
@@ -127,7 +128,6 @@
 				fixed4 noise = tex2D( _NoiseTex, noise_uv );
 				noise = noise*0.5 + 0.5*abs( sin( _Time[1]*(noise.r + 0.1) ) );
 
-
 				float pixelBorder = 0.25 + 0.2*noise.r;
 				if( distToPixelCenter.x > pixelBorder || distToPixelCenter.y > pixelBorder )
 					noise *= 0.7;// * (1+sin(_Time[2]));
@@ -146,6 +146,7 @@
 				//col = col *  (1 + 1*colPixel );
 				//col = col + (colPixel)*col.a;
 				col = col + fixed4( noise.rgb*0.05*col.a, 0 );
+
 
 				//col = col* distToPixelCenter;
 
