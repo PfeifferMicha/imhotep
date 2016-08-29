@@ -7,7 +7,7 @@
 	}
 	SubShader
 	{
-		Blend SrcAlpha One, SrcAlpha OneMinusSrcAlpha
+		Blend SrcAlpha OneMinusSrcAlpha
 		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
 		ZWrite OFF
 		LOD 100
@@ -49,19 +49,20 @@
 			fixed4 frag (v2f i) : SV_Target
 			{
 				// Calculate a "rough" (i.e. low-res) pixel position:
-				float2 noisePixelsRate = _MainTex_TexelSize.zw*0.05;
+				float2 noisePixelsRate = _MainTex_TexelSize.zw*0.03;
 				int2 noise_pixel = floor( i.uv * noisePixelsRate + 0.5 );
 				float2 noise_continuous_pos = noise_pixel / noisePixelsRate;
 
 				// Sample the texture at the calculated rough position:
-				fixed n = tex2D( _MainTex, noise_continuous_pos );
-				n = n*0.5 + n*( 0.5 + 0.5*sin( _Time[2] ));
-				fixed4 noise = float4( n, n, 2*n, 1 );
-				//return noise;
+				fixed n = tex2D( _MainTex, noise_continuous_pos ).r;
+				n *= 0.5 + 0.5*sin(_Time[1] + i.uv.x*20);
+				fixed4 noise = float4( n, n, 1.5*n, n*0.5 );
 
 				// sample the texture
 				fixed4 col = tex2D(_MainTex, i.uv);
-				col.rgb += noise.rgb*0.2;
+				//col.rgb += noise.rgb*0.3;
+				//col *= (0.7 + noise*0.3);
+				col.rgb *= (1 + noise.rgb*5);
 				return col;
 			}
 			ENDCG

@@ -17,6 +17,7 @@ namespace UI
 		public UICore()
 		{
 			instance = this;
+			new LayoutSystem ();
 		}
 
 		public void OnPointerEnter(PointerEventData dataName)

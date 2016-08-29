@@ -45,10 +45,9 @@ public class Platform : MonoBehaviour {
 		initialBaseWidth = rectBase.GetComponent<Renderer>().bounds.size.x;
 		initialBaseDepth = rectBase.GetComponent<Renderer>().bounds.size.z;
 
-		setRectangular ();
-		setDimensions (2f, 1.5f);
+		setRectangular (2f, 1.5f);
 
-		setRounded ();
+		//setRounded ();
 	}
 
 	/*! Set the size of the rectangular platform
@@ -107,12 +106,12 @@ public class Platform : MonoBehaviour {
 		rounded.SetActive (true);
 		chair.SetActive (true);
 
-		resetDimensions ();
+		resetDimensions ();		// make sure base platform has the correct size
 		generateUIMeshRounded ();
 	}
 
 	//! Enable the rectangular platform:
-	void setRectangular()
+	void setRectangular( float width, float depth )
 	{
 		// Activate all parts of the rectangular platform:
 		front.SetActive (true);
@@ -124,13 +123,11 @@ public class Platform : MonoBehaviour {
 		// Deactivate the rounded platform:
 		rounded.SetActive (false);
 		chair.SetActive (false);
+
+		setDimensions (width, depth);
+		generateUIMeshRectangular (width, depth);
 	}
 
-	/*! Generate a UI screen mesh for the rectangular platform. */
-	void generateUIMeshRectangular( float width, float depth )
-	{
-		removeUIMesh ();
-	}
 
 	/*! Generate a UI screen mesh for the rounded platform. */
 	void generateUIMeshRounded()
@@ -215,6 +212,98 @@ public class Platform : MonoBehaviour {
 		byte[] bytes;
 		bytes = virtualPhoto.EncodeToPNG ();
 		System.IO.File.WriteAllBytes("/home/micha/tmp.png", bytes );*/
+	}
+
+	/*! Generate a UI screen mesh for the rectangular platform. */
+	void generateUIMeshRectangular( float width, float depth )
+	{
+		removeUIMesh ();
+
+		// First, initialize lists:
+		List<Vector3> newVertices = new List<Vector3> ();
+		List<Vector2> newUV = new List<Vector2> ();
+		List<int> newTriangles = new List<int> ();
+
+		float radius = 0.4f;
+		float centerSize = width - 2*left.GetComponent<Renderer> ().bounds.size.x;
+		float roundedSize = 2f * Mathf.PI * radius * 0.5f;
+		float fullSize = centerSize + roundedSize;
+
+		// what percentage of the whole mesh is rounded (as opposed to straight:)
+		float amountRounded = roundedSize/fullSize;
+
+		// Fill the lists with vertices and triangles:
+		int numSegments = 50;
+		float fullAngle = Mathf.PI;
+		for (int i = 0; i <= numSegments / 2; i++) {
+			float currentAmount = (float)i / (float)numSegments;
+			float angle = fullAngle * currentAmount - fullAngle * 0.5f;
+			float x = radius * Mathf.Sin (angle) - centerSize*0.5f;
+			float y = radius * Mathf.Cos (angle);
+			newVertices.Add (new Vector3 (x, 0, y));
+			newUV.Add (new Vector2 (currentAmount*amountRounded, 0));
+			newVertices.Add (new Vector3 (x, UIMeshRectangularHeight, y));
+			newUV.Add (new Vector2 (currentAmount*amountRounded, 1));
+		}
+		for (int i = numSegments / 2; i <= numSegments; i++) {
+			float currentAmount = (float)i / (float)numSegments;
+			float angle = fullAngle * currentAmount - fullAngle * 0.5f;
+			float x = radius * Mathf.Sin (angle) + centerSize*0.5f;
+			float y = radius * Mathf.Cos (angle);
+			newVertices.Add (new Vector3 (x, 0, y));
+			newUV.Add (new Vector2 (currentAmount*amountRounded + centerSize/fullSize, 0));
+			newVertices.Add (new Vector3 (x, UIMeshRectangularHeight, y));
+			newUV.Add (new Vector2 (currentAmount*amountRounded + centerSize/fullSize, 1));
+		}
+		for (int i = 0; i <= numSegments; i++) {
+			newTriangles.Add (i * 2 + 0);
+			newTriangles.Add (i * 2 + 1);
+			newTriangles.Add (i * 2 + 2);
+			newTriangles.Add (i * 2 + 1);
+			newTriangles.Add (i * 2 + 3);
+			newTriangles.Add (i * 2 + 2);
+		}
+
+		// Generate a mesh from the lists:
+		Mesh mesh = new Mesh();
+		mesh.name = "UIMesh";
+		mesh.vertices = newVertices.ToArray();
+		mesh.uv = newUV.ToArray();
+		mesh.triangles = newTriangles.ToArray();
+		mesh.RecalculateNormals ();
+
+
+		// Generate a new game object:
+		GameObject go = new GameObject("UIMesh");
+		go.transform.SetParent( transform, false );
+		go.layer = LayerMask.NameToLayer ("MousePlane");
+		go.AddComponent<MeshFilter> ();
+		go.AddComponent<MeshCollider> ();
+		go.GetComponent<MeshFilter>().mesh = mesh;
+		go.GetComponent<MeshCollider> ().sharedMesh = mesh;
+
+
+		// Set up the render texture:
+		float meshWidth = 2f*Mathf.PI * radius * 0.5f + centerSize;		// 2*pi*r
+		float meshHeight = UIMeshRectangularHeight;
+		float pixelsPerMeter = 500;
+		int textureWidth = (int)(meshWidth * pixelsPerMeter);
+		int textureHeight = (int)(meshHeight * pixelsPerMeter);
+		RenderTexture tex = new RenderTexture (textureWidth, textureHeight, 24, RenderTextureFormat.ARGB32 );
+		tex.name = "UI Render Texture";
+		UIcamera.GetComponent<Camera>().targetTexture = tex;
+		UIcamera.GetComponent<Camera> ().orthographicSize = 1.4f;
+
+
+		// Set up rendering:
+		MeshRenderer renderer = go.AddComponent<MeshRenderer> ();
+		renderer.material = UiMeshMaterial;
+		renderer.material.mainTexture = tex;
+
+
+		// Move forward until it reaches the edge of the platform:
+		float yPos = depth - front.GetComponent<Renderer>().bounds.size.z;
+		go.transform.localPosition = new Vector3 (0f, UIMeshRectangularBottom, yPos);
 	}
 
 	/*! Remove UI Mesh, if present. */

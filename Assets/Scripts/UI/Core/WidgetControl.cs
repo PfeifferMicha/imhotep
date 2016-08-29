@@ -50,11 +50,11 @@ namespace UI
 				Debug.Log ("Unique widget already exists. Aborting widget creation!");
 				return;
 			}
-            GameObject newWidget = Instantiate(widget);
+			GameObject newWidget = Instantiate(widget);
+			newWidget.GetComponent<Widget> ().targetScale = transform.localScale;
             newWidget.SetActive(true);
 			newWidget.transform.SetParent (transform.parent, false);
 			//newWidget.transform.localPosition = new Vector3 (0, 0, 0);
-			newWidget.transform.localScale = transform.localScale;
 			Canvas cv = newWidget.transform.FindChild("Canvas").GetComponent<Canvas> ();
 			cv.worldCamera = UICamera;
 

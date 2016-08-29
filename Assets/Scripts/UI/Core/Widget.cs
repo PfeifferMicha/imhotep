@@ -13,13 +13,11 @@ namespace UI
 		public string uniqueWidgetName = "";
 		public bool unique = false;
 
-		public Widget()
-		{
-		}
+		float startup;
 
-		public void Start()
-		{
-		}
+		Vector2 targetPos;
+		Vector2 appearPos;
+		public Vector3 targetScale = new Vector3(0.0025f, 0.0025f, 0.0025f);
 
         public void OnEnable()
         {
@@ -45,6 +43,13 @@ namespace UI
 						im.material = matImage;
 				}
 			}
+
+			targetPos = LayoutSystem.instance.getStartupPosForWidget ( this );
+			startup = 0f;
+			appearPos = new Vector2 (0, -1);
+			transform.localScale = startup * targetScale;
+			transform.localPosition = Vector3.Lerp (appearPos, targetPos, startup);
+			Debug.Log ("start: " + transform.localScale.x);
         }
 
 		public void initialize( string name )
@@ -63,6 +68,20 @@ namespace UI
 		{
 			WidgetEventSystem.triggerEvent (WidgetEventSystem.Event.WIDGET_Closed,
 				gameObject.GetComponent<Widget> ());
+		}
+
+		public void Update()
+		{
+			if (startup < 1f) {
+				startup += Time.deltaTime;
+				if (startup > 1f) {
+					startup = 1;
+				}
+				float scale1 = Mathf.Clamp( startup*2, 0f, 1f );
+				float scale2 = Mathf.Clamp ( 3*(-0.33f + startup*1.33f), 0f, 1f);;// Update which lags behind
+				transform.localScale = new Vector3 ( scale2*targetScale.x, scale1*targetScale.y, scale1*targetScale.z);
+				transform.localPosition = Vector3.Lerp (appearPos, targetPos, scale1);
+			}
 		}
 
     }

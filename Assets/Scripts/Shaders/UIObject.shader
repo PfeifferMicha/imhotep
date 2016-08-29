@@ -62,7 +62,7 @@
 				float2 uv : TEXCOORD0;
 				float4 vertex : SV_POSITION;
 				float2 uvWorld : TEXCOORD1;
-                float2 worldPosition : TEXCOORD2;
+                //float4 worldSize : TEXCOORD2;
                 //float2 uvEdgeDist : TEXCOORD2;
                 //float4 viewDir : TEXCOORD3;
                 float4 normal : NORMAL;
@@ -89,8 +89,6 @@
             	float4 currentPos = mul ( _Object2World, v.vertex );
             	o.uvWorld = (currentPos - centerPos);
 
-            	o.worldPosition = v.vertex;
-
 				// Calculate a highlight for vertices which we're looking at directly:
                 //float4 cameraSpacePos = normalize( mul( UNITY_MATRIX_MV, v.vertex) );
                 //o.viewDir = float4( normalize( WorldSpaceViewDir( v.vertex ) ), 1 );
@@ -109,14 +107,13 @@
 			{
 
 				// Figure out into which noise pixel this point should fall:
-				float noisePixelsPerMeter = 25;
+				float2 noisePixelsPerMeter = 30;
 				int2 noise_pixel = i.uvWorld * noisePixelsPerMeter + sign( i.uvWorld )*0.5;
 				half2 noise_pixel_pos = noise_pixel/noisePixelsPerMeter;
 
 				//return float4( uv_noise, 0, 1);
 				float2 noise_continuous_pos = i.uvWorld;
 				//return fixed4( noise_continuous_pos, 0, 1 );
-				//return float4( noise_continuous_pos, 0, 1 );
 
 				float2 distToPixelCenter = abs( noise_pixel_pos - noise_continuous_pos )*noisePixelsPerMeter;
 				//return float4(distToPixelCenter,0,1);
@@ -126,11 +123,9 @@
 				//return float4(noise_uv, 0, 1);
 
 				fixed4 noise = tex2D( _NoiseTex, noise_uv );
-				noise = noise*0.5 + 0.5*abs( sin( _Time[1]*(noise.r + 0.1) ) );
+				noise = noise*0.8 + 0.2*abs( sin( _Time[1]*(noise.r + 0.1) ) );
 
 				float pixelBorder = 0.25 + 0.2*noise.r;
-				if( distToPixelCenter.x > pixelBorder || distToPixelCenter.y > pixelBorder )
-					noise *= 0.7;// * (1+sin(_Time[2]));
 
 				//return float4(displacement, 0, 1);
 
@@ -145,7 +140,11 @@
 
 				//col = col *  (1 + 1*colPixel );
 				//col = col + (colPixel)*col.a;
-				col = col + fixed4( noise.rgb*0.05*col.a, 0 );
+				//col = col + fixed4( noise.r, noise.r, 2*noise.r, col.a )*0.5*col.a;
+				col = col + fixed4( noise.r, 0.7*noise.r, 0.6*noise.r, col.a )*0.25*col.a;
+
+				if( distToPixelCenter.x > pixelBorder || distToPixelCenter.y > pixelBorder )
+					col.rgb *= 0.8;// * (1+sin(_Time[2]));
 
 
 				//col = col* distToPixelCenter;
