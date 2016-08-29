@@ -47,8 +47,8 @@ namespace UI
 
 			targetPos = LayoutSystem.instance.getStartupPosForWidget ( this );
 			startup = 0f;
-			appearPos = new Vector2 (0, 0);
-			transform.localScale = startup * targetScale;
+			appearPos = new Vector2 (0, -1);
+			transform.localScale = new Vector3 (0, 0, 0);
 			transform.localPosition = Vector3.Lerp (appearPos, targetPos, startup);
 
 			startupOverlay = transform.Find("Canvas").gameObject.AddComponent<Image> ();
@@ -77,7 +77,7 @@ namespace UI
 			if (startup < 1f) {
 				startup += Time.deltaTime;
 				float scale1 = Mathf.Clamp( startup*2, 0f, 1f );
-				float scale2 = Mathf.Clamp ( 3*(-0.33f + startup*1.33f), 0f, 1f);;// Update which lags behind
+				float scale2 = 0.2f + 0.8f*Mathf.Clamp ( 3*(-0.33f + startup*1.33f), 0f, 1f);// Update which lags behind
 				startupOverlay.color = new Color (1, 1, 1, 1-scale2);
 				if (startup > 1f) {
 					startup = 1;
