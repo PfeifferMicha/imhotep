@@ -92,12 +92,7 @@ SubShader {
 
 				if( _EaseInAmount < 1 )
 				{
-					if( noise < 0.1 )
-					{
-						goalWorldPos.y += (1-_EaseInAmount)*0.2;
-					} else {
-						goalWorldPos.y -= (1-_EaseInAmount)*noise2;
-					}
+					goalWorldPos.y -= (1-_EaseInAmount)*3*noise;
 				}
 
 				o.vertex = mul(UNITY_MATRIX_VP, goalWorldPos);

@@ -14,7 +14,7 @@ namespace UI
 
 		public Vector2 getStartupPosForWidget( Widget widget )
 		{
-			return new Vector2 (0, 0);
+			return new Vector2 (-1, 0);
 		}
 	}
 }

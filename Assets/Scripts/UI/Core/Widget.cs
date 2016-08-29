@@ -14,6 +14,7 @@ namespace UI
 		public bool unique = false;
 
 		float startup;
+		Image startupOverlay = null;
 
 		Vector2 targetPos;
 		Vector2 appearPos;
@@ -46,10 +47,11 @@ namespace UI
 
 			targetPos = LayoutSystem.instance.getStartupPosForWidget ( this );
 			startup = 0f;
-			appearPos = new Vector2 (0, -1);
+			appearPos = new Vector2 (0, 0);
 			transform.localScale = startup * targetScale;
 			transform.localPosition = Vector3.Lerp (appearPos, targetPos, startup);
-			Debug.Log ("start: " + transform.localScale.x);
+
+			startupOverlay = transform.Find("Canvas").gameObject.AddComponent<Image> ();
         }
 
 		public void initialize( string name )
@@ -74,11 +76,13 @@ namespace UI
 		{
 			if (startup < 1f) {
 				startup += Time.deltaTime;
-				if (startup > 1f) {
-					startup = 1;
-				}
 				float scale1 = Mathf.Clamp( startup*2, 0f, 1f );
 				float scale2 = Mathf.Clamp ( 3*(-0.33f + startup*1.33f), 0f, 1f);;// Update which lags behind
+				startupOverlay.color = new Color (1, 1, 1, 1-scale2);
+				if (startup > 1f) {
+					startup = 1;
+					Object.Destroy (startupOverlay);
+				}
 				transform.localScale = new Vector3 ( scale2*targetScale.x, scale1*targetScale.y, scale1*targetScale.z);
 				transform.localPosition = Vector3.Lerp (appearPos, targetPos, scale1);
 			}
