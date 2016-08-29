@@ -12,7 +12,7 @@ public class RotateCamera : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetMouseButton(1))
+        if (Input.GetMouseButton(2))
         {
             transform.localRotation = transform.localRotation * Quaternion.Euler(-Input.GetAxis("Mouse Y") * speed, Input.GetAxis("Mouse X") * speed, 0);
 			//transform.RotateAround( Vector3.zero, Vector3.up, -Input.GetAxis("Mouse X") * speed );
