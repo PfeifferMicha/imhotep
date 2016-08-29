@@ -118,6 +118,9 @@ ModelImporter:
     100220: Spotlight2
     100222: Spotlight3
     100224: Spotlight4
+    100226: Circle
+    100228: SphereEmitters
+    100230: CenterEmitters
     400000: Back
     400002: Back_0
     400004: BezierCurve_000
@@ -231,6 +234,9 @@ ModelImporter:
     400220: Spotlight2
     400222: Spotlight3
     400224: Spotlight4
+    400226: Circle
+    400228: SphereEmitters
+    400230: CenterEmitters
     2300000: BezierCurve_000
     2300002: BezierCurve_001
     2300004: BezierCurve_002
@@ -272,6 +278,8 @@ ModelImporter:
     2300076: Spotlight2
     2300078: Spotlight3
     2300080: Spotlight4
+    2300082: Circle
+    2300084: SphereEmitters
     3300000: BezierCurve_000
     3300002: BezierCurve_001
     3300004: BezierCurve_002
@@ -313,6 +321,8 @@ ModelImporter:
     3300076: Spotlight2
     3300078: Spotlight3
     3300080: Spotlight4
+    3300082: Circle
+    3300084: SphereEmitters
     4300000: Circle_004
     4300002: HumanMale_001
     4300004: Chair_001_MeshPart0
@@ -356,6 +366,8 @@ ModelImporter:
     4300080: Spotlight3
     4300082: Spotlight2
     4300084: Spotlight1
+    4300086: Circle
+    4300088: SphereEmitters
     7400000: Default Take
     7400002: Charge-Punch-M
     7400004: Idle-M
