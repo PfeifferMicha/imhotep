@@ -21,8 +21,8 @@ AnimationClip:
       m_Curve:
       - time: 0
         value: 0.352741
-        inSlope: 0
-        outSlope: 0
+        inSlope: 0.29175687
+        outSlope: 0.29175687
         tangentMode: 0
       - time: 6
         value: 1
@@ -77,8 +77,8 @@ AnimationClip:
       m_Curve:
       - time: 0
         value: 0.352741
-        inSlope: 0
-        outSlope: 0
+        inSlope: 0.29175687
+        outSlope: 0.29175687
         tangentMode: 0
       - time: 6
         value: 1
@@ -97,7 +97,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_GenerateMotionCurves: 0
   m_Events:
-  - time: 6
+  - time: 1.5
     functionName: activateLogo
     data: 
     objectReferenceParameter: {fileID: 0}

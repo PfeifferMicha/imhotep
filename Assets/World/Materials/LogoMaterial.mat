@@ -97,7 +97,7 @@ Material:
         first:
           name: _Noise2
         second:
-          m_Texture: {fileID: 2800000, guid: e9a9781cad112c75d0008dfa8d76c639, type: 3}
+          m_Texture: {fileID: 2800000, guid: 724d4df17f7954eda8bd8ef31f88fda5, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
     m_Floats:

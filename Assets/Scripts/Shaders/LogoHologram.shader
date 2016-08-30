@@ -86,13 +86,14 @@ SubShader {
 				float4 goalWorldPos = mul(_Object2World, v.vertex);
 
             	float noise = (tex2Dlod( _Noise, half4( o.texcoord1, 0, 0 ) )).r;
-            	float noise2 = (tex2Dlod( _Noise2, half4( o.texcoord1, 0, 0 ) )).r;
+            	float noise2 = (tex2Dlod( _Noise2, half4( o.texcoord, 0, 0 ) )).r;
 
 				goalWorldPos.z -= 0.1*noise*( 0.5 + 0.5*sin( _Time[0] + noise*_Time[1] ));
 
 				if( _EaseInAmount < 1 )
 				{
-					goalWorldPos.y -= (1-_EaseInAmount)*3*noise;
+					goalWorldPos.y -= (1-(0.5 + 0.5*_EaseInAmount))*(noise + noise2*0.2)*30;
+					goalWorldPos.x *= _EaseInAmount*2 - 1;
 				}
 
 				o.vertex = mul(UNITY_MATRIX_VP, goalWorldPos);
@@ -120,10 +121,13 @@ SubShader {
 
 				if( _EaseInAmount < 1 )
 				{
-					result.a = result.a*_EaseInAmount;
+					float holdBackAlpha = tint.r;//max( tint.r, 0.5 );
+					float m = 1/holdBackAlpha;
+					float b = 1 - m;
+					result.a = result.a * ( m*_EaseInAmount + b );
 
-					float m = min(min( result.r, result.g), result.b);
-					fixed3 gray = fixed3(m,m,m);
+					float val = min(min( result.r, result.g), result.b);
+					fixed3 gray = fixed3(val,val,val);
 					result.rgb = easeOutCubic( gray, result - gray, _EaseInAmount, 1 );
 				}
 
