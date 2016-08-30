@@ -67,7 +67,7 @@
 				float m = 1/0.02;
 				float border = m*(1-i.uv.y) + 1 - m;		// y = m*x + b
 				border = max( border, 0 );
-				col += fixed4( 0.5*border, 0.5*border, border, 0.5*border*border );
+				col += fixed4( 0.5*border, 0.7*border, border, 0.5*border*border );
 				return col;
 			}
 			ENDCG
