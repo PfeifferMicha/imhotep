@@ -12,6 +12,10 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
 
     private LineRenderer lineRenderer;
 
+	public bool developmentMode = true;
+	private float mouseSpeed = 0.04f;
+	private Vector3 lastPos = new Vector3(0,0,0);
+
     public void activateVisualization()
     {
         visualizeMouseRay = true;
@@ -28,7 +32,13 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
     public Ray createRay()
     {
         Ray ray;
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		if(developmentMode){
+        	ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		}
+		else{ //TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			Vector3 dir = lastPos - Camera.main.transform.position + new Vector3(Input.GetAxis("Mouse X") * mouseSpeed, Input.GetAxis("Mouse Y") * mouseSpeed, 0);
+			ray = new Ray(Camera.main.transform.position, dir); 
+		}
         return ray;
     }
 
@@ -60,11 +70,17 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
         //LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
         if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
-            return hit;
+			if (hit.collider.gameObject.layer == 8) {//TODO
+				lastPos = hit.point;//TODO
+			}
+			return hit;
         }
         else
         {
             Debug.LogError("No hit found. Can not return currect UV Coordiantes");
+			if (hit.collider.gameObject.layer == 8) {//TODO
+				lastPos = hit.point; //TODO
+			}
             return hit;
         }
     }
@@ -89,6 +105,17 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
             Debug.Log("Mouse registered");
         }
 
+
+		//TODO -----------------------------------
+		RaycastHit hit;
+		Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);       
+		//LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
+		Physics.Raycast(ray, out hit, Mathf.Infinity);
+		lastPos = hit.point;
+
+
+		//----------------------------------------
+
     }
 	
 	// Update is called once per frame
@@ -100,7 +127,7 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
             //LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
             if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
-                Vector3 offset = new Vector3(0.1f, -0.1f, 0);
+                Vector3 offset = new Vector3(0.4f, -0.4f, 0);
                 lineRenderer.SetPosition(0, Camera.main.transform.position + offset);
                 lineRenderer.SetPosition(1, hit.point);
             }
