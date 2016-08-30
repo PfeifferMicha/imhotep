@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Scene-Emitter
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_Shader: {fileID: 4800000, guid: a2e13425b9939404d80a53707a09236a, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 1
   m_CustomRenderQueue: -1
@@ -127,6 +127,10 @@ Material:
         first:
           name: _Metallic
         second: 0
+      data:
+        first:
+          name: _LightAmount
+        second: 0.945
     m_Colors:
       data:
         first:
@@ -135,4 +139,4 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 0.2459, g: 0.4853, b: 0.8, a: 1}
+        second: {r: 0.6989619, g: 0.80361116, b: 0.9411765, a: 1}
