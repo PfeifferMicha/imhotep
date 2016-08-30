@@ -51,7 +51,7 @@ namespace UI
 				return;
 			}
 			GameObject newWidget = Instantiate(widget);
-			newWidget.GetComponent<Widget> ().targetScale = transform.localScale;
+			//newWidget.GetComponent<Widget> ().targetScale = transform.localScale;
             newWidget.SetActive(true);
 			newWidget.transform.SetParent (transform.parent, false);
 			//newWidget.transform.localPosition = new Vector3 (0, 0, 0);

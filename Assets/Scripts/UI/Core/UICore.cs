@@ -14,9 +14,15 @@ namespace UI
 
 		public static UICore instance { private set; get; }
 
+		public Camera UICamera;
+
 		public UICore()
 		{
 			instance = this;
+		}
+
+		public void OnEnable()
+		{
 			new LayoutSystem ();
 		}
 

@@ -454,8 +454,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 130178}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.546, y: 0.488, z: 0}
-  m_LocalScale: {x: 0.0025, y: 0.0025, z: 0.0025}
+  m_LocalPosition: {x: -618.4, y: 195.19997, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 22404084}
@@ -770,7 +770,6 @@ MonoBehaviour:
   ToolIcon: {fileID: 21300000, guid: 07ea02c4cd09f48e59c48bde907843a6, type: 3}
   uniqueWidgetName: Annotations
   unique: 1
-  targetScale: {x: 0.0025, y: 0.0025, z: 0.0025}
 --- !u!114 &11415592
 MonoBehaviour:
   m_ObjectHideFlags: 1

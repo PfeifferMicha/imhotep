@@ -15,7 +15,7 @@ public class Platform : MonoBehaviour {
 	public GameObject chair;
 
 	public GameObject camera;
-	public GameObject UIcamera;
+	public Camera UIcamera;
 
 	public Material UiMeshMaterial;
 
@@ -36,6 +36,8 @@ public class Platform : MonoBehaviour {
 	public float UIMeshRectangularBottom = 0.5f;
 	[Tooltip("Height of the UI")]
 	public float UIMeshRectangularHeight = 2.0f;
+	[Tooltip("Radius of corners of rectangular mesh")]
+	public float UIMeshRectangularRadius = 0.425f;
 
 	// Use this for initialization
 	void Start () {
@@ -45,7 +47,7 @@ public class Platform : MonoBehaviour {
 		initialBaseWidth = rectBase.GetComponent<Renderer>().bounds.size.x;
 		initialBaseDepth = rectBase.GetComponent<Renderer>().bounds.size.z;
 
-		setRectangular (2f, 1.5f);
+		setRectangular (3f, 2f);
 
 		//setRounded ();
 	}
@@ -188,7 +190,7 @@ public class Platform : MonoBehaviour {
 		int textureHeight = (int)(meshHeight * pixelsPerMeter);
 		RenderTexture tex = new RenderTexture (textureWidth, textureHeight, 24, RenderTextureFormat.ARGB32 );
 		tex.name = "UI Render Texture";
-		UIcamera.GetComponent<Camera>().targetTexture = tex;
+		UIcamera.targetTexture = tex;
 
 
 		// Set up rendering:
@@ -199,6 +201,9 @@ public class Platform : MonoBehaviour {
 		// Move forward until it reaches the edge of the platform:
 		float yPos = rounded.GetComponent<MeshRenderer>().bounds.size.z - UIMeshRoundedRadius;
 		go.transform.localPosition = new Vector3 (0f, UIMeshRoundedBottom, yPos);
+
+		// Let the layout system know about the new aspect ratio:
+		UI.LayoutSystem.instance.setCamera( UIcamera, 0.0025f );
 
 		// Debug write image to file:
 		/* cUIcamera.GetComponent<Camera> ().Render ();
@@ -224,7 +229,7 @@ public class Platform : MonoBehaviour {
 		List<Vector2> newUV = new List<Vector2> ();
 		List<int> newTriangles = new List<int> ();
 
-		float radius = 0.4f;
+		float radius = UIMeshRectangularRadius;
 		float centerSize = width - 2*left.GetComponent<Renderer> ().bounds.size.x;
 		float roundedSize = 2f * Mathf.PI * radius * 0.5f;
 		float fullSize = centerSize + roundedSize;
@@ -291,8 +296,8 @@ public class Platform : MonoBehaviour {
 		int textureHeight = (int)(meshHeight * pixelsPerMeter);
 		RenderTexture tex = new RenderTexture (textureWidth, textureHeight, 24, RenderTextureFormat.ARGB32 );
 		tex.name = "UI Render Texture";
-		UIcamera.GetComponent<Camera>().targetTexture = tex;
-		UIcamera.GetComponent<Camera> ().orthographicSize = 1.4f;
+		UIcamera.targetTexture = tex;
+		UIcamera.orthographicSize = 1f;
 
 
 		// Set up rendering:
@@ -304,6 +309,9 @@ public class Platform : MonoBehaviour {
 		// Move forward until it reaches the edge of the platform:
 		float yPos = depth - front.GetComponent<Renderer>().bounds.size.z;
 		go.transform.localPosition = new Vector3 (0f, UIMeshRectangularBottom, yPos);
+
+		// Let the layout system know about the new aspect ratio:
+		UI.LayoutSystem.instance.setCamera( UIcamera, 0.0025f );
 	}
 
 	/*! Remove UI Mesh, if present. */

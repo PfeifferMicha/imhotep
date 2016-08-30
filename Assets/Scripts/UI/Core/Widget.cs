@@ -18,10 +18,16 @@ namespace UI
 
 		Vector2 targetPos;
 		Vector2 appearPos;
-		public Vector3 targetScale = new Vector3(0.0025f, 0.0025f, 0.0025f);
+		//public Vector3 targetScale = new Vector3(0.0025f, 0.0025f, 0.0025f);
 
         public void OnEnable()
-        {
+		{
+			// Make sure my canvas is centered:
+			Canvas cv = GetComponentInChildren( typeof( Canvas ), true ) as Canvas;
+			if (cv != null) {
+				cv.transform.localPosition = Vector3.zero;
+			}
+
 			// Set material for all texts:
 			Material mat = new Material(Shader.Find("Custom/TextShader"));
 			Component[] texts;
@@ -45,7 +51,8 @@ namespace UI
 				}
 			}
 
-			targetPos = LayoutSystem.instance.getStartupPosForWidget ( this );
+			targetPos = LayoutSystem.instance.getStartupPosForWidget ( gameObject );
+			Debug.Log ("Target pos: " + targetPos);
 			startup = 0f;
 			appearPos = new Vector2 (0, -1);
 			transform.localScale = new Vector3 (0, 0, 0);
@@ -83,7 +90,7 @@ namespace UI
 					startup = 1;
 					Object.Destroy (startupOverlay);
 				}
-				transform.localScale = new Vector3 ( scale2*targetScale.x, scale1*targetScale.y, scale1*targetScale.z);
+				transform.localScale = new Vector3 ( scale2, scale1, scale1);
 				transform.localPosition = Vector3.Lerp (appearPos, targetPos, scale1);
 			}
 		}
