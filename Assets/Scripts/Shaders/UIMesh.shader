@@ -63,6 +63,11 @@
 				//col.rgb += noise.rgb*0.3;
 				//col *= (0.7 + noise*0.3);
 				col.rgb *= (1 + noise.rgb*5);
+
+				float m = 1/0.02;
+				float border = m*(1-i.uv.y) + 1 - m;		// y = m*x + b
+				border = max( border, 0 );
+				col += fixed4( 0.5*border, 0.5*border, border, 0.5*border*border );
 				return col;
 			}
 			ENDCG
