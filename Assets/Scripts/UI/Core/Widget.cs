@@ -52,7 +52,7 @@ namespace UI
 			}
 
 			targetPos = LayoutSystem.instance.getStartupPosForWidget ( gameObject );
-			Debug.Log ("Target pos: " + targetPos);
+			Debug.Log ("Opening Widget " + name + " at " + targetPos);
 			startup = 0f;
 			appearPos = new Vector2 (0, -1);
 			transform.localScale = new Vector3 (0, 0, 0);

@@ -1,22 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &108818
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 224: {fileID: 22413168}
-  - 222: {fileID: 22255034}
-  - 114: {fileID: 11491626}
-  m_Layer: 0
-  m_Name: TextLoadingProcess
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &131106
 GameObject:
   m_ObjectHideFlags: 1
@@ -84,7 +67,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &182660
 GameObject:
   m_ObjectHideFlags: 1
@@ -141,7 +124,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 131106}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 64, z: -10}
+  m_LocalPosition: {x: 113, y: 83, z: -10}
   m_LocalScale: {x: 59.718037, y: 59.718037, z: 59.718037}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -319,45 +302,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
---- !u!114 &11491626
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 108818}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 2
-    m_MaxSize: 40
-    m_Alignment: 0
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: 'Parsing DICOM Directory
-
-    Loading Meshes
-
-    Done Loading Meshes
-
-    Test'
 --- !u!212 &21272088
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -394,12 +338,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 182660}
---- !u!222 &22255034
-CanvasRenderer:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 108818}
 --- !u!222 &22263580
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -431,24 +369,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!224 &22413168
-RectTransform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 108818}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children: []
-  m_Father: {fileID: 22498488}
-  m_RootOrder: 3
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 248, y: -1.9}
-  m_SizeDelta: {x: 333.6, y: 94.2}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22425196
 RectTransform:
   m_ObjectHideFlags: 1
@@ -464,7 +384,7 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -165, y: 22.000076}
+  m_AnchoredPosition: {x: -62, y: 19.6}
   m_SizeDelta: {x: 185.35, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22451086
@@ -483,8 +403,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 800, y: 256}
+  m_AnchoredPosition: {x: 0, y: -47.999992}
+  m_SizeDelta: {x: 398, y: 161}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22489414
 RectTransform:
@@ -501,7 +421,7 @@ RectTransform:
   m_RootOrder: 2
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -187.3, y: -10.400116}
+  m_AnchoredPosition: {x: -83.2, y: -10.399925}
   m_SizeDelta: {x: 231.6, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &22498488
@@ -518,7 +438,6 @@ RectTransform:
   - {fileID: 492272}
   - {fileID: 22425196}
   - {fileID: 22489414}
-  - {fileID: 22413168}
   m_Father: {fileID: 22451086}
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}

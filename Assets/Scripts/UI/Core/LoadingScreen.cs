@@ -17,15 +17,15 @@ public class LoadingScreen : MonoBehaviour {
 
 	public GameObject LoadingScreenWidget;
 	public GameObject TextPatientName;
-	public GameObject TextLoadingProcess;
+	//public GameObject TextLoadingProcess;
 	private Text mTextPatientName;
-	private Text mTextLoadingProcess;
+	//private Text mTextLoadingProcess;
 	private List<string> activeJobs = new List<string>();
 
 	// Use this for initialization
 	void Start () {
 		// Get the text components to be modified later:
-		mTextLoadingProcess = TextLoadingProcess.GetComponent<Text> ();
+		//mTextLoadingProcess = TextLoadingProcess.GetComponent<Text> ();
 		mTextPatientName = TextPatientName.GetComponent<Text> ();
 
 		// Start listening to events which are called during the loading process:
@@ -46,7 +46,7 @@ public class LoadingScreen : MonoBehaviour {
 			mTextPatientName.text = patientEntry.name;
 		}
 
-		mTextLoadingProcess.text = "Started Loading\n";
+		//mTextLoadingProcess.text = "Started Loading\n";
 		LoadingScreenWidget.SetActive (true);
 	}
 
@@ -91,7 +91,7 @@ public class LoadingScreen : MonoBehaviour {
 		{
 			info += s + ": Loading\n";
 		}
-		mTextLoadingProcess.text = info;
+		//mTextLoadingProcess.text = info;
 	}
 
 }
