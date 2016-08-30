@@ -51,6 +51,10 @@
 				{
 					col *= 0;
 				}
+				if( i.uv.x < 0.99 )
+				{
+					col *= (1.5+sin( -i.uv.x*15 + _Time[2]*2 ));
+				}
 				return col;
 			}
 			ENDCG
