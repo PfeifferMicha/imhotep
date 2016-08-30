@@ -13,6 +13,7 @@ Shader "Custom/TriangleEffectShader" {
         _TriangleBorderColor ("Triangle Border Color", Color) = (0.01, 0.01, 0.01, 0)
 		_EdgeEffectHeight ("Edge Effect Height", float) = 0.1
 		_Noise ("Noise", 2D) = "white" {}
+		_AppearAmount( "Appear Amount", Range( 0, 1 ) ) = 0
     }
     SubShader
     {
@@ -34,6 +35,7 @@ Shader "Custom/TriangleEffectShader" {
 
             static float pi = 3.14159;
             float _EdgeEffectHeight;
+            float _AppearAmount;
 
             struct v2f
             {
@@ -64,7 +66,7 @@ Shader "Custom/TriangleEffectShader" {
                 // Fade triangles which are above a certain point:
                 float clipping = 0;
                 //float height = -3 + fmod( _Time[1]*0.5, 5 );
-                float height = -3 +  _Time[1]*0.5;
+                float height = _AppearAmount*5 - 3;
                 //float height = -2 + _Time[1];
                 float edgeEffect = 0;
                 if( v.vertex.z > (height + noise) )
