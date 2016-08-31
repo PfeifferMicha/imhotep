@@ -1033,6 +1033,8 @@ MonoBehaviour:
   buttoPrev: {fileID: 11426250}
   buttonNext: {fileID: 11485266}
   viewNumberText: {fileID: 11401202}
+  meshViewerScaleNode: {fileID: 0}
+  meshViewerRotationNode: {fileID: 0}
 --- !u!114 &11435874
 MonoBehaviour:
   m_ObjectHideFlags: 1

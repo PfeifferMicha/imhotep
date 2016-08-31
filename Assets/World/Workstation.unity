@@ -686,6 +686,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 11435506, guid: 4c507fcbe3d9f4e1689b5a5c42e11a21, type: 2}
+      propertyPath: meshViewerScaleNode
+      value: 
+      objectReference: {fileID: 2105285539}
+    - target: {fileID: 11435506, guid: 4c507fcbe3d9f4e1689b5a5c42e11a21, type: 2}
+      propertyPath: meshViewerRotationNode
+      value: 
+      objectReference: {fileID: 1416113408}
     - target: {fileID: 22348292, guid: 4c507fcbe3d9f4e1689b5a5c42e11a21, type: 2}
       propertyPath: m_Camera
       value: 
@@ -2382,7 +2390,7 @@ MonoBehaviour:
   UIcamera: {fileID: 470118322}
   UiMeshMaterial: {fileID: 2100000, guid: 4654fc3d0834c4e06bc8962e5f83ea5f, type: 2}
   UIMeshRoundedRadius: 1.2
-  UIMeshRoundedAngle: 260
+  UIMeshRoundedAngle: 200
   UIMeshRoundedBottom: 0.3
   UIMeshRoundedHeight: 2
   UIMeshRectangularBottom: 0.55

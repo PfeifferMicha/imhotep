@@ -16,7 +16,7 @@ public class ViewControl : MonoBehaviour {
 	public Text viewNumberText;
 
 	private Shader meshShader, meshShaderTransparent;
-	private GameObject meshViewerScaleNode, meshViewerRotationNode;
+	public GameObject meshViewerScaleNode, meshViewerRotationNode;
 
 	private int currentViewIndex = 0;
 
@@ -30,8 +30,8 @@ public class ViewControl : MonoBehaviour {
 		meshShader = Shader.Find("Custom/MeshShader");
 		meshShaderTransparent = Shader.Find("Custom/MeshShaderTransparent");
 
-		meshViewerScaleNode = GameObject.Find ("MeshViewer");
-		meshViewerRotationNode = GameObject.Find ("MeshViewer/MeshRotationNode");
+		//meshViewerScaleNode = GameObject.Find ("MeshViewerBase/MeshViewerScale");
+		//meshViewerRotationNode = GameObject.Find ("MeshViewerBase/MeshViewerScale/MeshRotationNode");
 
 		patientClosed ();
 		showMainPane ();

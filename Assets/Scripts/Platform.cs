@@ -47,9 +47,9 @@ public class Platform : MonoBehaviour {
 		initialBaseWidth = rectBase.GetComponent<Renderer>().bounds.size.x;
 		initialBaseDepth = rectBase.GetComponent<Renderer>().bounds.size.z;
 
-		setRectangular (3f, 2f);
+		//setRectangular (3f, 2f);
 
-		//setRounded ();
+		setRounded ();
 	}
 
 	/*! Set the size of the rectangular platform
