@@ -29,7 +29,7 @@ public class Platform : MonoBehaviour {
 	[Tooltip("Opening angle in degrees")]
 	public float UIMeshRoundedAngle = 160f;
 	[Tooltip("Distance from platform to bottom of the UI")]
-	public float UIMeshRoundedBottom = 0.3f;
+	public float UIMeshRoundedBottom = 0.35f;
 	[Tooltip("Height of the UI")]
 	public float UIMeshRoundedHeight = 2.0f;
 	[Tooltip("Distance from platform to bottom of the UI")]
@@ -107,6 +107,8 @@ public class Platform : MonoBehaviour {
 		// Activate the rounded platform:
 		rounded.SetActive (true);
 		chair.SetActive (true);
+		chair.transform.localPosition = new Vector3 (0f, 0f, initialBaseDepth * 0.75f);
+		camera.transform.localPosition = new Vector3 (0f, 0f, initialBaseDepth * 0.75f);
 
 		resetDimensions ();		// make sure base platform has the correct size
 		generateUIMeshRounded ();
