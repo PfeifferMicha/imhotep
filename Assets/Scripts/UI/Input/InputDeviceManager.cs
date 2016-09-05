@@ -19,13 +19,24 @@ public class InputDeviceManager : MonoBehaviour {
     private List<GameObject> deviceList = new List<GameObject>(); //List of registered input devices (e.g. mouse, vive contoller ...) 
 
     // Use this for initialization
-    void Start () {
-        
+    void Start () {        
         
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+    void OnEnable()
+    {
+        // Register event callbacks:
+        InputEventSystem.startListening(InputEventSystem.Event.INPUTDEVICE_LeftButtonPressed, 8, leftButtonPressed);
+    }
+
+    void OnDisable()
+    {
+        // Unregister myself:
+        InputEventSystem.stopListening(InputEventSystem.Event.INPUTDEVICE_LeftButtonPressed, 8, leftButtonPressed);
+    }
+
+    // Update is called once per frame
+    void Update () {
         //Update rayInfo
         if (UI.UICore.instance.mouseIsOverUIObject)
         {
@@ -73,4 +84,11 @@ public class InputDeviceManager : MonoBehaviour {
 			}
 		}
 	}
+
+
+    private void leftButtonPressed(object o)
+    {
+        Debug.Log("Left button pressed on layer 8");
+    }
 }
+

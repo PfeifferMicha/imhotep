@@ -33,7 +33,7 @@ public class PatientEventSystem
 
 		LOADING_AddLoadingJob,
 		LOADING_RemoveLoadingJob
-	}
+    }
 
 	/*! Returns the singleton instance: */
 	public static PatientEventSystem instance

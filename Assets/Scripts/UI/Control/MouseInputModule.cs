@@ -82,7 +82,17 @@ public class MouseInputModule : StandaloneInputModule {
         m_MouseState.SetButtonState (PointerEventData.InputButton.Right, inputDevice.getRightButtonState(), rightData);
 		m_MouseState.SetButtonState (PointerEventData.InputButton.Middle, inputDevice.getMiddleButtonState(), middleData);
 
-		return m_MouseState;
+        //trigger event
+        if(inputDevice.getLeftButtonState() == PointerEventData.FramePressState.Pressed)
+        {
+            InputEventSystem.triggerEventForLayer(InputEventSystem.Event.INPUTDEVICE_LeftButtonPressed, inputDevice.getRaycastHit().transform.gameObject.layer);
+        }
+        if (inputDevice.getLeftButtonState() == PointerEventData.FramePressState.Released)
+        {
+            InputEventSystem.triggerEventForLayer(InputEventSystem.Event.INPUTDEVICE_LeftButtonReleased, inputDevice.getRaycastHit().transform.gameObject.layer);
+        }
+
+        return m_MouseState;
 	}
 
 }
