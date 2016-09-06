@@ -34,6 +34,8 @@ public class InputEventSystem
             return mInstance;
         }
     }
+
+    //if you want to listen to all layers, set layer = 32
     public static void startListening(Event eventType, int layer, UnityAction<object> listener)
     {
         bool foundEvent = false;
@@ -76,11 +78,11 @@ public class InputEventSystem
 
         Debug.Log("Removed input event listener for input event: " + eventType);
     }
-    public static void triggerEventForLayer(Event eventType, int layer, object obj = null)
+    public static void triggerEventOnLayer(Event eventType, int layer, object obj = null)
     {
         foreach (ObjectInputEvent oie in instance.mEventList)
         {
-            if (oie.mLayer == layer && oie.mEvent == eventType)
+            if ((oie.mLayer == layer || oie.mLayer == 32) && oie.mEvent == eventType)
             {
                 oie.Invoke(obj);
                 //Debug.Log("Triggering Event: " + eventType);

@@ -88,7 +88,8 @@ public class InputDeviceManager : MonoBehaviour {
 
     private void leftButtonPressed(object o)
     {
-        Debug.Log("Left button pressed on layer 8");
+        RaycastHit rh = (RaycastHit)o;
+        Debug.Log("Left button pressed on layer 8, point: "+ rh.point);
     }
 }
 
