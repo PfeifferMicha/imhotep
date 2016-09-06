@@ -36,9 +36,17 @@ public class MouseInputModule : StandaloneInputModule {
         InputDeviceInterface inputDevice = idm.currentInputDevice.GetComponent<InputDeviceInterface>();
 
         // convert to a Screen space position:
-        Vector2 cursorPos = inputDevice.getRaycastHit().textureCoord2;
-		cursorPos.x *= mTextureSize.x;
-		cursorPos.y *= mTextureSize.y;
+        Vector2 cursorPos;
+        if (inputDevice.getRaycastHit().transform.gameObject.layer == 8) //Ray hits UI Plane
+        {
+            cursorPos = inputDevice.getRaycastHit().textureCoord2;
+            cursorPos.x *= mTextureSize.x;
+		    cursorPos.y *= mTextureSize.y;
+        }
+        else
+        {
+            cursorPos = Camera.main.WorldToScreenPoint(inputDevice.getRaycastHit().point);
+        }
 
 		//MouseState m = new MouseState();
 
