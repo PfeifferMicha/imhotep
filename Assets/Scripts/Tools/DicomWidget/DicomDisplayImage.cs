@@ -35,7 +35,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler {
 		Texture3D tex = (Texture3D)mMaterial.mainTexture;
 		int numLayers = tex.depth;
 
-		mLayer = mLayer + Mathf.Ceil( 2.0f*eventData.scrollDelta.y )/ numLayers;
+		mLayer = Mathf.Clamp (mLayer + Mathf.Ceil (2.0f * eventData.scrollDelta.y) / numLayers, 0, 1);
 
 		mLayerSlider.value = mLayer;
 	}
