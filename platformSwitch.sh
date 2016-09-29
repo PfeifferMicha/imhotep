@@ -29,15 +29,16 @@ if [[ ${PLATFORM} == "UNKNOWN" ]]; then
 fi
 
 # Remove platform-specific files:
-rm -r Assets/ThirdParty/PlatformSpecific/Windows/ 2> /dev/null
-rm Assets/ThirdParty/PlatformSpecific/Windows.meta 2> /dev/null
-rm -r Assets/ThirdParty/PlatformSpecific/Linux 2> /dev/null
-rm Assets/ThirdParty/PlatformSpecific/Linux.meta 2> /dev/null
-rm -r Assets/ThirdParty/PlatformSpecific/MaxOS 2> /dev/null
-rm Assets/ThirdParty/PlatformSpecific/MaxOS.meta 2> /dev/null
+git rm -r Assets/ThirdParty/PlatformSpecific/Windows/ 2> /dev/null
+git rm Assets/ThirdParty/PlatformSpecific/Windows.meta 2> /dev/null
+git rm -r Assets/ThirdParty/PlatformSpecific/Linux 2> /dev/null
+git rm Assets/ThirdParty/PlatformSpecific/Linux.meta 2> /dev/null
+git rm -r Assets/ThirdParty/PlatformSpecific/MaxOS 2> /dev/null
+git rm Assets/ThirdParty/PlatformSpecific/MaxOS.meta 2> /dev/null
 
 # Copy the platform-specific folders to the Assets directory,
 # depending on the OS you're on:
+mkdir -p Assets/ThirdParty/PlatformSpecific/
 if [[ ${PLATFORM} == "LINUX" ]]; then
 	echo "Setting up files for: Linux"
 	echo "	Copying Linux libraries to Asset folder."
@@ -53,3 +54,4 @@ else
 fi
 
 git add Assets/ThirdParty/PlatformSpecific/*
+git commit -m "Swapped platform specific DLLs to ${PLATFORM}"
