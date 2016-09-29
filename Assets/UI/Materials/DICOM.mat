@@ -34,11 +34,11 @@ Material:
       data:
         first:
           name: layer
-        second: 0.7304635
+        second: 0.5
       data:
         first:
           name: globalMaximum
-        second: 35269
+        second: 34523
       data:
         first:
           name: globalMinimum

@@ -133,6 +133,9 @@ public class PatientDICOMLoader : MonoBehaviour
 			// Lock:
 			isLoading = true;
 
+			// Let everyone know we're starting to load a new DICOM:
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_StartLoading );
+
             DicomIDForThread = id;
 
             ThreadUtil t = new ThreadUtil(loadDicomWorker, loadDicomCallback);
