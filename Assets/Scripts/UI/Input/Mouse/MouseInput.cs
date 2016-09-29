@@ -16,6 +16,12 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
 	private float mouseSpeed = 0.04f;
 	private Vector3 lastPos = new Vector3(0,0,0);
 
+	private bool previousRayHitSomething;
+	private Vector2 texCoordPrevious;
+	private Vector2 texCoordDelta;
+	private Vector3 positionPrevious;
+	private Vector3 positionDelta;
+
     public void activateVisualization()
     {
         visualizeMouseRay = true;
@@ -62,6 +68,15 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
     {
         return Input.mouseScrollDelta;
     }
+
+	public Vector2 getTexCoordMovement()
+	{
+		return texCoordDelta;
+	}
+	public Vector3 getMovement()
+	{
+		return positionDelta;
+	}
 
     public RaycastHit getRaycastHit()
     {
@@ -120,18 +135,33 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
 	
 	// Update is called once per frame
 	void Update () {
-        if (visualizeMouseRay)
-        {
-            RaycastHit hit;
-            Ray ray = createRay();
-            //LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-            {
-                Vector3 offset = new Vector3(0.4f, -0.4f, 0);
-                lineRenderer.SetPosition(0, Camera.main.transform.position + offset);
-                lineRenderer.SetPosition(1, hit.point);
-            }
-        }
+		RaycastHit result = new RaycastHit();
+		bool hit = false;
+		if (visualizeMouseRay) {
+			Ray ray = createRay ();
+			//LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
+			if (Physics.Raycast (ray, out result, Mathf.Infinity)) {
+				Vector3 offset = new Vector3 (0.4f, -0.4f, 0);
+				lineRenderer.SetPosition (0, Camera.main.transform.position + offset);
+				lineRenderer.SetPosition (1, result.point);
+				hit = true;
+			}
+		}
+
+		// If we hit something, update the delta movement vector:
+		if( hit ) {
+			if (previousRayHitSomething) {
+				// Update 2D position:
+				texCoordDelta = result.textureCoord - texCoordPrevious;
+				// Update 3D position:
+				positionDelta = result.point - positionPrevious;
+			}
+			previousRayHitSomething = true;
+			texCoordPrevious = result.textureCoord;
+			positionPrevious = result.point;
+		} else {
+			previousRayHitSomething = false;
+		}
     }
 
     private PointerEventData.FramePressState mouseButtonStateHandler(PointerEventData.FramePressState s, int buttonID)

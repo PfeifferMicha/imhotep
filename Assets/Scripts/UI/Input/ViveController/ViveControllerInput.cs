@@ -22,6 +22,12 @@ public class ViveControllerInput : MonoBehaviour, InputDeviceInterface {
 
 	private LineRenderer lineRenderer;
 
+	private bool previousRayHitSomething;
+	private Vector2 texCoordPrevious;
+	private Vector2 texCoordDelta;
+	private Vector3 positionPrevious;
+	private Vector3 positionDelta;
+
 	public void activateVisualization()
 	{
 		visualizeRay = true;
@@ -61,6 +67,15 @@ public class ViveControllerInput : MonoBehaviour, InputDeviceInterface {
 	public Vector2 getScrollDelta()
 	{
 		return new Vector2(0,0); //TODO?
+	}
+
+	public Vector2 getTexCoordMovement()
+	{
+		return texCoordDelta;
+	}
+	public Vector3 getMovement()
+	{
+		return positionDelta;
 	}
 
 	public RaycastHit getRaycastHit()
@@ -109,17 +124,35 @@ public class ViveControllerInput : MonoBehaviour, InputDeviceInterface {
 	
 	// Update is called once per frame
 	void Update () {
+		RaycastHit result = new RaycastHit();
+		bool hit = false;
 		if (visualizeRay)
 		{
-			RaycastHit hit;
 			Ray ray = createRay();
 			//LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
-			if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+			if (Physics.Raycast(ray, out result, Mathf.Infinity))
 			{
 				lineRenderer.SetPosition(0, this.gameObject.transform.position);
-				lineRenderer.SetPosition(1, hit.point);
+				lineRenderer.SetPosition(1, result.point);
+				hit = true;
 			}
 		}
+
+		// If we hit something, update the delta movement vector:
+		if( hit ) {
+			if (previousRayHitSomething) {
+				// Update 2D position:
+				texCoordDelta = result.textureCoord - texCoordPrevious;
+				// Update 3D position:
+				positionDelta = result.point - positionPrevious;
+			}
+			previousRayHitSomething = true;
+			texCoordPrevious = result.textureCoord;
+			positionPrevious = result.point;
+		} else {
+			previousRayHitSomething = false;
+		}
+
 
 		if (controller == null) {
 			return;
