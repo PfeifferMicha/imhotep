@@ -140,7 +140,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	public void clear()
 	{
-		Texture3D tex = new Texture3D (4,4,4, TextureFormat.RGBA32, false);
+		/*Texture3D tex = new Texture3D (4,4,4, TextureFormat.RGBA32, false);
 		// Fill with black:
 		Color32[] colors = new Color32[4*4*4];
 		for( int i = 0; i < 4*4*4; i ++ )
@@ -150,7 +150,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		tex.SetPixels32 (colors);
 		tex.Apply();
 
-		mMaterial.mainTexture = tex;
+		mMaterial.mainTexture = tex;*/
 
 		// Set up sliders:
 		mMinSlider = transform.parent.FindChild("SliderMin").GetComponent<Slider>();
