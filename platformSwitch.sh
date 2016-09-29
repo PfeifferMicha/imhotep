@@ -44,9 +44,8 @@ if [[ ${PLATFORM} == "LINUX" ]]; then
 	echo "	Copying Linux libraries to Asset folder."
 	cp -r PlatformSpecificPlugins/Linux* Assets/ThirdParty/PlatformSpecific/
 elif [[ ${PLATFORM} == "MAC" ]]; then
-	echo "Setting up files for: MaxOS"
-	echo "\tCopying Mac libraries to Asset folder."
-	echo "	TODO!"
+	echo "Setting up files for: MacOS"
+	echo " WARNING: MacOS is currently not supported!"
 else
 	echo "Setting up files for: Windows"
 	echo "	Copying Windows libraries to Asset folder."
