@@ -9,6 +9,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	private float mMinValue;
 	private float mMaxValue;
 	private float mLayer;
+	private uint mNumberOfLayers;
+	private float mFilledPartOfTexture;
 	private float initialWidth = 512;
 	private float initialHeight = 512;
 	private Slider mMinSlider;
@@ -98,7 +100,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	{
 		mLayer = newVal;
 		mLayer = Mathf.Clamp (mLayer, 0.0f, 1.0f);
-		mMaterial.SetFloat ("layer", mLayer);
+		mMaterial.SetFloat ("layer", mLayer*mFilledPartOfTexture);
 	}
 
 	public void SetDicom( DICOM dicom )
@@ -129,6 +131,10 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		mMinSlider.value = 0.0f;
 		mMaxSlider.value = 1.0f;
 		mLayerSlider.value = 0.5f;
+
+		mNumberOfLayers = dicom.getHeader ().numberOfImages;
+		// Calculate how much of the texture is actually filled and only display that part:
+		mFilledPartOfTexture = (float)mNumberOfLayers/(float)tex.depth;
 		LayerChanged( 0.5f );
 	}
 
