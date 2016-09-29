@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class DicomDisplayImage : MonoBehaviour, IScrollHandler {
+public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHandler, IPointerUpHandler {
 
 	private Material mMaterial;
 	private float mMinValue;
@@ -15,11 +15,15 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler {
 	private Slider mMaxSlider;
 	private Slider mLayerSlider;
 
+	// When mDragging is true, moving the mouse will modify the windowing:
+	private bool mDragging = false;
+
 	// Use this for initialization
 	void Awake () {
 		mMinValue = 0.0f;
 		mMaxValue = 1.0f;
 		mLayer = 0.0f;
+		mDragging = false;
 
 		mMaterial = GetComponent<RawImage>().material;
 
@@ -39,11 +43,38 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler {
 
 		mLayerSlider.value = mLayer;
 	}
+	public void OnPointerDown( PointerEventData eventData )
+	{
+		mDragging = true;
+	}
+	public void OnPointerUp( PointerEventData eventData )
+	{
+		mDragging = false;
+	}
+	public void Update()
+	{
+		if (mDragging) {
+			InputDeviceManager idm = GameObject.Find ("GlobalScript").GetComponent<InputDeviceManager> ();
+			InputDeviceInterface inputDevice = idm.currentInputDevice.GetComponent<InputDeviceInterface>();
+
+			float contrastChange = inputDevice.getTexCoordMovement ().x*0.5f;
+			float intensityChange = - inputDevice.getTexCoordMovement ().y*0.5f;
+			Debug.Log ("Contrast: " + contrastChange + " Intensity: " + intensityChange);
+
+			float newMin = Mathf.Clamp (mMinValue + intensityChange - contrastChange, 0f, 1f);
+			float newMax = Mathf.Clamp (mMaxValue + intensityChange + contrastChange, 0f, 1f);
+			Debug.Log ("New Intensity: " + newMin + " .. " + newMax );
+			MinChanged (newMin);
+			MaxChanged (newMax);
+		}
+	}
+
 
 	public void MinChanged( float newVal )
 	{
 		mMinValue = newVal;
 		mMaterial.SetFloat ("minValue", mMinValue);
+		mMinSlider.value = mMinValue;
 		if (mMinValue > mMaxValue) {
 			mMaxValue = mMinValue;
 			mMaterial.SetFloat ("maxValue", mMaxValue);
@@ -55,6 +86,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler {
 	{
 		mMaxValue = newVal;
 		mMaterial.SetFloat ("maxValue", mMaxValue);
+		mMaxSlider.value = mMaxValue;
 		if (mMaxValue < mMinValue) {
 			mMinValue = mMaxValue;
 			mMaterial.SetFloat ("minValue", mMinValue);
