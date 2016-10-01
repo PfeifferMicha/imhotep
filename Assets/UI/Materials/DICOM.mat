@@ -26,7 +26,7 @@ Material:
       data:
         first:
           name: minValue
-        second: 0
+        second: 0.5022546
       data:
         first:
           name: maxValue
@@ -34,7 +34,7 @@ Material:
       data:
         first:
           name: layer
-        second: 0.7304635
+        second: 0
       data:
         first:
           name: globalMaximum

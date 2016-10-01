@@ -121,6 +121,8 @@ ModelImporter:
     100226: Circle
     100228: SphereEmitters
     100230: CenterEmitters
+    100232: Cube_004
+    100234: ToolStand
     400000: Back
     400002: Back_0
     400004: BezierCurve_000
@@ -237,6 +239,8 @@ ModelImporter:
     400226: Circle
     400228: SphereEmitters
     400230: CenterEmitters
+    400232: Cube_004
+    400234: ToolStand
     2300000: BezierCurve_000
     2300002: BezierCurve_001
     2300004: BezierCurve_002
@@ -280,6 +284,8 @@ ModelImporter:
     2300080: Spotlight4
     2300082: Circle
     2300084: SphereEmitters
+    2300086: Cube_004
+    2300088: ToolStand
     3300000: BezierCurve_000
     3300002: BezierCurve_001
     3300004: BezierCurve_002
@@ -323,6 +329,8 @@ ModelImporter:
     3300080: Spotlight4
     3300082: Circle
     3300084: SphereEmitters
+    3300086: Cube_004
+    3300088: ToolStand
     4300000: Circle_004
     4300002: HumanMale_001
     4300004: Chair_001_MeshPart0
@@ -368,6 +376,8 @@ ModelImporter:
     4300084: Spotlight1
     4300086: Circle
     4300088: SphereEmitters
+    4300090: ToolStand
+    4300092: Cube_004
     7400000: Default Take
     7400002: Charge-Punch-M
     7400004: Idle-M
