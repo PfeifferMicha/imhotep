@@ -35,7 +35,9 @@ public class PatientBriefing : MonoBehaviour {
 	{
 		Patient patient = obj as Patient;
 		if (patient != null) {
-			
+
+			clearTabs ();
+
 			// Create Tabs according to the loaded tab names:
 			List<string> tabNames = patient.getAdditionalInfoTabs();
 			for (int i = 0; i < tabNames.Count; i++) {
@@ -64,7 +66,16 @@ public class PatientBriefing : MonoBehaviour {
 		text.text = loadedPatient.getAdditionalInfo (tabName);
 	}
 
-
+	private void clearTabs()
+	{
+		foreach( Transform child in tabButton.transform.parent )
+		{
+			if( child.gameObject != tabButton )
+			{
+				Object.Destroy( child.gameObject );
+			}
+		}
+	}
 
 	void eventPatientClosed( object obj = null )
 	{

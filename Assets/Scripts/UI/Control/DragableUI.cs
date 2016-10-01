@@ -16,10 +16,9 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 	private Vector2 mMaxPos;
 	private Vector3 mOffset;
 
-	private MouseInputModule mouseInputModul;
-	private bool leftButtonPressed = false; //True if left mouse button or trigger is pressed
+    private InputDeviceManager idm;
+    private bool leftButtonPressed = false; //True if left mouse button or trigger is pressed
 
-	private Mouse3DMovement mMouse;
 
 	// Use this for initialization
 	void Start () {
@@ -29,9 +28,7 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 		mViewSize.y = UICamera.orthographicSize * 2;
 		mViewSize.x = mViewSize.y * UICamera.aspect;
 
-
-		mouseInputModul = GameObject.Find ("GlobalScript").GetComponent<MouseInputModule>();
-		mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> ();
+        idm = GameObject.Find("GlobalScript").GetComponent<InputDeviceManager>();
 
 		// Ensure the canvas is placed around the origin of the widget:
 		RectTransform rt = transform.parent.GetComponent<RectTransform> ();
@@ -47,15 +44,16 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 			{
 				if (transform.parent != null && transform.parent.transform.parent != null)
 				{
-					Transform grandparent = transform.parent.transform.parent;
+                    InputDeviceInterface inputDevice = idm.currentInputDevice.GetComponent<InputDeviceInterface>();
 
+                    Transform grandparent = transform.parent.transform.parent;
 
 					RaycastHit hit;
 					//Ray ray = new Ray(Camera.main.transform.position, mouse.transform.localPosition - Camera.main.transform.position);
 					//Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
-					Ray ray = new Ray(Camera.main.transform.position, mMouse.transform.localPosition - Camera.main.transform.position);
+					Ray ray = new Ray(Camera.main.transform.position, inputDevice.getRaycastHit().point - Camera.main.transform.position); //mMouse.transform.localPosition
 
-					LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
+                    LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
 
 					if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMousePlane))
 					{
@@ -89,9 +87,10 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 	}
 
 	private void updateLeftButtonPressed(){
-		if (mouseInputModul.framePressStateLeft == PointerEventData.FramePressState.Pressed) {
+        InputDeviceInterface inputDevice = idm.currentInputDevice.GetComponent<InputDeviceInterface>();
+        if (inputDevice.getLeftButtonState() == PointerEventData.FramePressState.Pressed) {
 			leftButtonPressed = true;
-		}else if (mouseInputModul.framePressStateLeft == PointerEventData.FramePressState.Released) {
+		}else if (inputDevice.getLeftButtonState() == PointerEventData.FramePressState.Released) {
 			leftButtonPressed = false;
 		}
 	}
@@ -99,10 +98,12 @@ public class DragableUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler 
 	// Event which is called when the mouse clicks on this panel:
 	public void OnPointerDown(PointerEventData dt) {
 		if (mDragged == false) {
-			mOffset = new Vector3 (0, 0, 0);
+            InputDeviceInterface inputDevice = idm.currentInputDevice.GetComponent<InputDeviceInterface>();
+
+            mOffset = new Vector3 (0, 0, 0);
 			RaycastHit hit;
 			//Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
-			Ray ray = new Ray(Camera.main.transform.position, mMouse.transform.localPosition - Camera.main.transform.position);
+			Ray ray = new Ray(Camera.main.transform.position, inputDevice.getRaycastHit().point - Camera.main.transform.position);
 			LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
 			Transform grandparent = transform.parent.transform.parent;
 

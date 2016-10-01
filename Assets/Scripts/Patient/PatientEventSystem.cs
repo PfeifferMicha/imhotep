@@ -28,12 +28,13 @@ public class PatientEventSystem
 		MESH_Opacity_Changed,   // Called if opacity of mesh is changed. (Don't called if slider changes opacity)
 
 		DICOM_NewList,
+		DICOM_StartLoading,
 		DICOM_NewLoaded,
 		DICOM_AllCleared,
 
 		LOADING_AddLoadingJob,
 		LOADING_RemoveLoadingJob
-	}
+    }
 
 	/*! Returns the singleton instance: */
 	public static PatientEventSystem instance

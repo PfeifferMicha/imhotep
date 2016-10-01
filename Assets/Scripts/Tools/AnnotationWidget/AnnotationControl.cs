@@ -39,11 +39,10 @@ public class AnnotationControl : MonoBehaviour {
     private State currentState = State.idle;
     private Transform meshNode;
 	private Transform meshPositionNode;
-    private Mouse3DMovement mMouse;
     private GameObject currentAnnotatinPoint = null;
     private List<GameObject> annotationPoints = new List<GameObject>();
 
-	private MouseInputModule mouseInputModul;
+    private InputDeviceManager idm;
 
     private static int annotationPointCounter = 0; //Used to create unique id for annoation point
 
@@ -84,19 +83,13 @@ public class AnnotationControl : MonoBehaviour {
     void Start () {
         changeCurrentStateToIdle();
 
-		mouseInputModul = GameObject.Find ("GlobalScript").GetComponent<MouseInputModule>();
-
-        mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> (); //TODO error if name of Mouse3D is changed
+        idm = GameObject.Find("GlobalScript").GetComponent<InputDeviceManager>();
 		meshNode = GameObject.Find("MeshViewer").transform; //TODO error if name of MeshViewer is changed
 		meshPositionNode = GameObject.Find("MeshViewer/MeshRotationNode/MeshPositionNode").transform;
 
         if(annotationPointObj == null)
         {
             Debug.LogError("No Annotation Point Object is set in Annotation.cs");
-        }
-        if (mMouse == null)
-        {
-            Debug.LogError("No Mouse3D found in Annotation.cs");
         }
         if (meshNode == null)
         {
@@ -109,17 +102,12 @@ public class AnnotationControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //If user pressed "Add Annotation" and clicked 
-		//if (Input.GetMouseButtonDown(0) && currentState == State.addAnnotationPressed)
-		if (mouseInputModul.framePressStateLeft == PointerEventData.FramePressState.Pressed && currentState == State.addAnnotationPressed)
-			
+        //if (Input.GetMouseButtonDown(0) && currentState == State.addAnnotationPressed)
+        InputDeviceInterface inputDevice=  idm.currentInputDevice.GetComponent<InputDeviceInterface>();
+        if (inputDevice.getLeftButtonState() == PointerEventData.FramePressState.Pressed && currentState == State.addAnnotationPressed)
         {			
             RaycastHit hit;
-			Ray ray;
-			if(mouseInputModul.mMouse.owner.name == "mouse"){ //TODO !!! Use interface 
-				ray= new Ray(Camera.main.transform.position, mMouse.transform.position - Camera.main.transform.position);
-			}else{				
-				ray= new Ray(mouseInputModul.mMouse.owner.transform.position, mouseInputModul.mMouse.owner.transform.forward);
-			}
+            Ray ray = inputDevice.createRay();
             LayerMask onlyMeshViewLayer = 1000000000; // hit only the mesh view layer
 
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyMeshViewLayer))

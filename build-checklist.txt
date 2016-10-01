@@ -1,0 +1,7 @@
+Build checklist DK2, Oculus Runtime 0.8 und Unity 5.3.4
+- Rift anschließen?
+- GlobalScript: RecenterVR aktivieren
+- MainScene/Camera: MoveCamera und RoatateCamera deaktivieren
+- MainScene/Camera: MainCamera aktivieren, CameraRig deaktivieren
+- MainScene/Mouse3D: Mouse3DMovement: Developmentmodus deaktivieren oder MainScene/Mouse: MouseInput: Developmentmodus deaktivieren
+- Edit > Project Settings > Player > Other Settings: Virtual Reality Supported aktivieren 

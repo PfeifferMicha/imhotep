@@ -78,14 +78,8 @@ public class DicomLoaderITK
 		Debug.Log ("\tImage number of pixels: " + numberOfPixels);
 
 		Image metaDataImage = SimpleITK.ReadImage( fileNames[0] );
-		/*VectorString keys = metaDataImage.GetMetaDataKeys();
-		str = "";
-		for (int i = 0; i < keys.Count; i++)
-			str += "\n\t" + keys [i];
-		Debug.Log ("\tMetadata:\n" + str);*/
-
-
 		DICOMHeader header = new DICOMHeader (metaDataImage);
+		header.numberOfImages = image.GetDepth ();
 
 		// Some of the following tags may not be in the DICOM Header, so catch and ignore "not found" exceptions:
 		try {

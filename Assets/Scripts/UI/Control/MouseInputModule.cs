@@ -10,19 +10,21 @@ using UnityEngine.EventSystems;
 public class MouseInputModule : StandaloneInputModule {
 
 	private Camera UICamera;
-	public Mouse3DMovement mMouse { get; set; }
+
+    private InputDeviceManager idm;
 	private Vector2 mTextureSize;
 
-	public PointerEventData.FramePressState framePressStateLeft { get; set; } //Other scripts can get the current state of the left mouse button
+	//public PointerEventData.FramePressState framePressStateLeft { get; set; } //Other scripts can get the current state of the left mouse button TODO entfernen, veraltet
 
 
 	public new void Start()
 	{
-		mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> ();
-		UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
+        //mMouse = GameObject.Find ("Mouse3D").GetComponent<Mouse3DMovement> ();
+        idm = GameObject.Find ("GlobalScript").GetComponent<InputDeviceManager> ();
+        UICamera = GameObject.Find ("UICamera").GetComponent<Camera>();
 		mTextureSize.x = UICamera.targetTexture.width;
 		mTextureSize.y = UICamera.targetTexture.height;
-		framePressStateLeft = PointerEventData.FramePressState.NotChanged;
+		//framePressStateLeft = PointerEventData.FramePressState.NotChanged;
 	}
 
 	// This is the real function we want, the two commented out lines (Input.mousePosition)
@@ -31,10 +33,20 @@ public class MouseInputModule : StandaloneInputModule {
 	private readonly MouseState m_MouseState = new MouseState();
 	protected override MouseState GetMousePointerEventData( int id = 0 )
 	{
-		// convert to a Screen space position:
-		Vector2 cursorPos = mMouse.getUVCoordinates();
-		cursorPos.x *= mTextureSize.x;
-		cursorPos.y *= mTextureSize.y;
+        InputDeviceInterface inputDevice = idm.currentInputDevice.GetComponent<InputDeviceInterface>();
+
+        // convert to a Screen space position:
+        Vector2 cursorPos;
+        if (inputDevice.getRaycastHit().transform.gameObject.layer == 8) //Ray hits UI Plane
+        {
+            cursorPos = inputDevice.getRaycastHit().textureCoord2;
+            cursorPos.x *= mTextureSize.x;
+		    cursorPos.y *= mTextureSize.y;
+        }
+        else
+        {
+            cursorPos = Camera.main.WorldToScreenPoint(inputDevice.getRaycastHit().point);
+        }
 
 		//MouseState m = new MouseState();
 
@@ -45,14 +57,16 @@ public class MouseInputModule : StandaloneInputModule {
 		leftData.Reset();
 
 		if (created)
+        {
 			leftData.position = cursorPos;
+        }
 		//leftData.position = Input.mousePosition;
 
 		//Vector2 pos = Input.mousePosition;
 		Vector2 pos = cursorPos;
 		leftData.delta = pos - leftData.position;
 		leftData.position = pos;
-		leftData.scrollDelta = Input.mouseScrollDelta;
+		leftData.scrollDelta = inputDevice.getScrollDelta();
 		leftData.button = PointerEventData.InputButton.Left;
 		eventSystem.RaycastAll(leftData, m_RaycastResultCache);
 		var raycast = FindFirstRaycast(m_RaycastResultCache);
@@ -70,23 +84,23 @@ public class MouseInputModule : StandaloneInputModule {
 		CopyFromTo(leftData, middleData);
 		middleData.button = PointerEventData.InputButton.Middle;
 
-		if (mMouse.owner.name == "mouse") {
-			m_MouseState.SetButtonState (PointerEventData.InputButton.Left, StateForMouseButton (0), leftData);
-			framePressStateLeft = StateForMouseButton (0);
-		} else {
-			PointerEventData.FramePressState triggerState = mMouse.owner.GetComponent<LeftButtonState> ().getLeftButtonState ();
-			//Debug.Log (triggerState);
-			framePressStateLeft = triggerState;
-			m_MouseState.SetButtonState(PointerEventData.InputButton.Left, triggerState, leftData);
-		}
+        
+        //framePressStateLeft = inputDevice.getLeftButtonState(); //TODO entfernen
+        m_MouseState.SetButtonState (PointerEventData.InputButton.Left, inputDevice.getLeftButtonState(), leftData);
+        m_MouseState.SetButtonState (PointerEventData.InputButton.Right, inputDevice.getRightButtonState(), rightData);
+		m_MouseState.SetButtonState (PointerEventData.InputButton.Middle, inputDevice.getMiddleButtonState(), middleData);
 
+        //trigger event
+        if(inputDevice.getLeftButtonState() == PointerEventData.FramePressState.Pressed)
+        {
+            InputEventSystem.triggerEventOnLayer(InputEventSystem.Event.INPUTDEVICE_LeftButtonPressed, inputDevice.getRaycastHit().transform.gameObject.layer, inputDevice.getRaycastHit());
+        }
+        if (inputDevice.getLeftButtonState() == PointerEventData.FramePressState.Released)
+        {
+            InputEventSystem.triggerEventOnLayer(InputEventSystem.Event.INPUTDEVICE_LeftButtonReleased, inputDevice.getRaycastHit().transform.gameObject.layer, inputDevice.getRaycastHit());
+        }
 
-		m_MouseState.SetButtonState (PointerEventData.InputButton.Right, StateForMouseButton (1), rightData);
-		m_MouseState.SetButtonState (PointerEventData.InputButton.Middle, StateForMouseButton (2), middleData);
-		//Debug.Log( m_MouseState.GetButtonState (PointerEventData.InputButton.Left) );
-
-		//Debug.Log (triggerState);
-		return m_MouseState;
+        return m_MouseState;
 	}
 
 }

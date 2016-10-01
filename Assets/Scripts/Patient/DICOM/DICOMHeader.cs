@@ -84,6 +84,7 @@ public class DICOMHeader
 	public VectorDouble mOrigin{ get; private set; }
 	public VectorDouble mSpacing{ get; private set; }
 	public VectorDouble mDirection{ get; private set; }
+	public uint numberOfImages{ get; set; }
 
 	public override string ToString ()
 	{
