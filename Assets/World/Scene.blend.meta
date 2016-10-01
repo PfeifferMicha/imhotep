@@ -123,6 +123,11 @@ ModelImporter:
     100230: CenterEmitters
     100232: Cube_004
     100234: ToolStand
+    100236: FootPrints
+    100238: Armature
+    100240: BoneArm
+    100242: BoneRotate
+    100244: BoneSlide
     400000: Back
     400002: Back_0
     400004: BezierCurve_000
@@ -241,6 +246,11 @@ ModelImporter:
     400230: CenterEmitters
     400232: Cube_004
     400234: ToolStand
+    400236: FootPrints
+    400238: Armature
+    400240: BoneArm
+    400242: BoneRotate
+    400244: BoneSlide
     2300000: BezierCurve_000
     2300002: BezierCurve_001
     2300004: BezierCurve_002
@@ -286,6 +296,7 @@ ModelImporter:
     2300084: SphereEmitters
     2300086: Cube_004
     2300088: ToolStand
+    2300090: FootPrints
     3300000: BezierCurve_000
     3300002: BezierCurve_001
     3300004: BezierCurve_002
@@ -331,6 +342,7 @@ ModelImporter:
     3300084: SphereEmitters
     3300086: Cube_004
     3300088: ToolStand
+    3300090: FootPrints
     4300000: Circle_004
     4300002: HumanMale_001
     4300004: Chair_001_MeshPart0
@@ -378,6 +390,7 @@ ModelImporter:
     4300088: SphereEmitters
     4300090: ToolStand
     4300092: Cube_004
+    4300094: FootPrints
     7400000: Default Take
     7400002: Charge-Punch-M
     7400004: Idle-M
@@ -393,6 +406,7 @@ ModelImporter:
     9500000: //RootNode
     13700000: HumanMale_001
     13700002: HumanMale_000
+    13700004: ToolStand
   materials:
     importMaterials: 1
     materialName: 2
