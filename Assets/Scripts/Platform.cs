@@ -324,4 +324,31 @@ public class Platform : MonoBehaviour {
 			Destroy( UIMesh );
 		}
 	}
+
+
+	/*! Return a new GameObject into which a new toolstand can be placed.
+	 * numberOfToolStands is the total number of toolstands that will be used.
+	 * number is the toolstand to generate, which must be between
+	 * 0 and numberOfToolStands. */
+	public GameObject toolStandPosition( uint number, uint numberOfToolStands )
+	{
+		GameObject go = new GameObject ("ToolStand Anchor");
+
+		// If the rounded platform is active...
+		if (rounded.activeSelf) {
+			float radius = 1f;
+			float angleStep = 12;
+			float startAngle = (numberOfToolStands-1) * angleStep * 0.5f;
+			float angle = number * angleStep - startAngle;
+			Vector3 center = new Vector3 (0f, 0f, 1.4f);
+			Vector3 offset = Quaternion.AngleAxis( angle, Vector3.up) * new Vector3 (0f, 0f, radius );
+
+			go.transform.localPosition = offset + center;
+			go.transform.localRotation = Quaternion.AngleAxis ( angle, Vector3.up);
+		} else {	// Rectangular platform is active
+
+		}
+		go.transform.SetParent (transform, false);
+		return go;
+	}
 }

@@ -128,6 +128,16 @@ ModelImporter:
     100240: BoneArm
     100242: BoneRotate
     100244: BoneSlide
+    100246: Armature_001
+    100248: Armature_002
+    100250: BoneArm_0
+    100252: BoneArm_1
+    100254: BoneRotate_0
+    100256: BoneRotate_1
+    100258: BoneSlide_0
+    100260: BoneSlide_1
+    100262: ToolStand_001
+    100264: ToolStand_002
     400000: Back
     400002: Back_0
     400004: BezierCurve_000
@@ -251,6 +261,16 @@ ModelImporter:
     400240: BoneArm
     400242: BoneRotate
     400244: BoneSlide
+    400246: Armature_001
+    400248: Armature_002
+    400250: BoneArm_0
+    400252: BoneArm_1
+    400254: BoneRotate_0
+    400256: BoneRotate_1
+    400258: BoneSlide_0
+    400260: BoneSlide_1
+    400262: ToolStand_001
+    400264: ToolStand_002
     2300000: BezierCurve_000
     2300002: BezierCurve_001
     2300004: BezierCurve_002
@@ -391,6 +411,8 @@ ModelImporter:
     4300090: ToolStand
     4300092: Cube_004
     4300094: FootPrints
+    4300096: ToolStand_002
+    4300098: ToolStand_001
     7400000: Default Take
     7400002: Charge-Punch-M
     7400004: Idle-M
@@ -403,10 +425,15 @@ ModelImporter:
     7400018: T-pose
     7400020: Walk
     7400022: Sit_001
+    7400024: ArmatureAction
+    7400026: ArmatureAction_002
+    7400028: ArmatureAction_003
     9500000: //RootNode
     13700000: HumanMale_001
     13700002: HumanMale_000
     13700004: ToolStand
+    13700006: ToolStand_001
+    13700008: ToolStand_002
   materials:
     importMaterials: 1
     materialName: 2
