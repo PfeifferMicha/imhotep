@@ -93,6 +93,18 @@ Material:
         second: 0.5
       data:
         first:
+          name: _min
+        second: -205.71375
+      data:
+        first:
+          name: _max
+        second: 331.75943
+      data:
+        first:
+          name: _amount
+        second: 0
+      data:
+        first:
           name: _Parallax
         second: 0.02
       data:
@@ -126,18 +138,6 @@ Material:
       data:
         first:
           name: _Metallic
-        second: 0
-      data:
-        first:
-          name: _min
-        second: -205.71375
-      data:
-        first:
-          name: _max
-        second: 331.75943
-      data:
-        first:
-          name: _amount
         second: 0
     m_Colors:
       data:
