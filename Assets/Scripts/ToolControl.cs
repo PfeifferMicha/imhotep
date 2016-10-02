@@ -14,14 +14,15 @@ public class ToolControl : MonoBehaviour {
 		ToolStandPrefab.SetActive (false);
 
 		// Register event callbacks for all Patient events:
-		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Loaded, patientLoaded );
+		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Loaded, generateAvailableTools );
 		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, patientClosed );
 
 		clearAllToolStands ();
 
+		generateAvailableTools (null);
 	}
 
-	public void patientLoaded( object obj )
+	public void generateAvailableTools( object obj )
 	{
 		Patient p = obj as Patient;
 		List<string> availableTools = new List<string> ();

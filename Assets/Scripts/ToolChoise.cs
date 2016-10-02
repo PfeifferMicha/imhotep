@@ -16,6 +16,7 @@ public class ToolChoise : MonoBehaviour, IPointerEnterHandler {
 	
 	}
 
+	// TODO! This is not called yet:
 	public void OnPointerEnter( PointerEventData eventData)
 	{
 		Debug.Log ("Entered: " + toolName);
