@@ -61,7 +61,7 @@ ModelImporter:
     9500000: //RootNode
   materials:
     importMaterials: 1
-    materialName: 0
+    materialName: 2
     materialSearch: 1
   animations:
     legacyGenerateAnimations: 4
