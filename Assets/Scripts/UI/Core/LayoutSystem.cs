@@ -9,9 +9,13 @@ namespace UI
 		right,
 		center
 	}
-	public enum Alignment {
+	public enum AlignmentH {
 		left,
 		right,
+		center,
+		stretch
+	}
+	public enum AlignmentV {
 		top,
 		bottom,
 		center,
@@ -21,13 +25,13 @@ namespace UI
 	public class LayoutPosition
 	{
 		public Screen screen;
-		public Alignment alignHorizontal;
-		public Alignment alignVertical;
+		public AlignmentH alignHorizontal;
+		public AlignmentV alignVertical;
 		public LayoutPosition()
 		{
 			screen = Screen.center;
-			alignHorizontal = Alignment.stretch;
-			alignVertical = Alignment.stretch;
+			alignHorizontal = AlignmentH.stretch;
+			alignVertical = AlignmentV.stretch;
 		}
 	}
 
@@ -108,26 +112,26 @@ namespace UI
 
 			Vector2 newPos = new Vector2();
 			Vector2 newSize = new Vector2 ();
-			if (newPosition.alignHorizontal == Alignment.stretch) {
+			if (newPosition.alignHorizontal == AlignmentH.stretch) {
 				newPos.x = parentRect.center.x;
 				newSize.x = parentRect.width;
-			} else if (newPosition.alignHorizontal == Alignment.left) {
+			} else if (newPosition.alignHorizontal == AlignmentH.left) {
 				newPos.x = parentRect.min.x + widgetRect.rect.width * 0.5f;
 				newSize.x = widgetRect.rect.width;
-			} else if (newPosition.alignHorizontal == Alignment.right) {
+			} else if (newPosition.alignHorizontal == AlignmentH.right) {
 				newPos.x = parentRect.max.x - widgetRect.rect.width * 0.5f;
 				newSize.x = widgetRect.rect.width;
 			} else {
 				newPos.x = parentRect.center.x - widgetRect.rect.width * 0.5f;
 				newSize.x = widgetRect.rect.width;
 			}
-			if (newPosition.alignVertical == Alignment.stretch) {
+			if (newPosition.alignVertical == AlignmentV.stretch) {
 				newPos.y = parentRect.center.y;
 				newSize.y = parentRect.height;
-			} else if (newPosition.alignVertical == Alignment.bottom) {
+			} else if (newPosition.alignVertical == AlignmentV.bottom) {
 				newPos.y = parentRect.min.y + widgetRect.rect.height * 0.5f;
 				newSize.y = widgetRect.rect.height;
-			} else if (newPosition.alignVertical == Alignment.top) {
+			} else if (newPosition.alignVertical == AlignmentV.top) {
 				newPos.y = parentRect.max.y - widgetRect.rect.height * 0.5f;
 				newSize.y = widgetRect.rect.height;
 			} else {

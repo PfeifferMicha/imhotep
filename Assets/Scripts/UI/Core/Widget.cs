@@ -9,8 +9,11 @@ namespace UI
     public class Widget : MonoBehaviour
     {
 		public LayoutPosition layoutPosition{ private set; get; }
+		public Screen layoutScreen = Screen.center;
+		public AlignmentH layoutAlignHorizontal = AlignmentH.stretch;
+		public AlignmentV layoutAlignVertical = AlignmentV.stretch;
 
-        public void OnEnable()
+		public void Start()
 		{
 			// Make sure my canvas is centered:
 			Canvas cv = GetComponentInChildren( typeof( Canvas ), true ) as Canvas;
@@ -28,14 +31,13 @@ namespace UI
 				foreach (Text t in texts)
 					t.material = mat;
 			}
-        }
 
-		public void Start()
-		{
-			layoutPosition = new LayoutPosition ();
-			layoutPosition.screen = Screen.left;
-			layoutPosition.alignVertical = Alignment.bottom;
-			layoutPosition.alignHorizontal = Alignment.left;
+
+			layoutPosition = new LayoutPosition();
+			layoutPosition.screen = layoutScreen;
+			layoutPosition.alignHorizontal = layoutAlignHorizontal;
+			layoutPosition.alignVertical = layoutAlignVertical;
+
 			UI.Core.instance.layoutSystem.addWidget( this );
 		}
 

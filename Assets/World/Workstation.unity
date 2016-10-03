@@ -949,7 +949,7 @@ GameObject:
   - 114: {fileID: 338870671}
   - 114: {fileID: 338870674}
   m_Layer: 0
-  m_Name: WidgetTestRight
+  m_Name: WidgetTest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1041,6 +1041,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00ae918a45b8d5e44bec6b6a6d8a8c89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  layoutScreen: 2
+  layoutAlignHorizontal: 2
+  layoutAlignVertical: 1
 --- !u!1001 &353876826
 Prefab:
   m_ObjectHideFlags: 0
@@ -5448,7 +5451,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.909}
+  m_Color: {r: 1, g: 0, b: 0, a: 0.909}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -5540,6 +5543,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00ae918a45b8d5e44bec6b6a6d8a8c89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  layoutScreen: 0
+  layoutAlignHorizontal: 0
+  layoutAlignVertical: 0
 --- !u!1 &1281073631
 GameObject:
   m_ObjectHideFlags: 0
