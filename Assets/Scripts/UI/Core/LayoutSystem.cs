@@ -122,7 +122,7 @@ namespace UI
 				newPos.x = parentRect.max.x - widgetRect.rect.width * 0.5f;
 				newSize.x = widgetRect.rect.width;
 			} else {
-				newPos.x = parentRect.center.x - widgetRect.rect.width * 0.5f;
+				newPos.x = parentRect.center.x;
 				newSize.x = widgetRect.rect.width;
 			}
 			if (newPosition.alignVertical == AlignmentV.stretch) {
@@ -135,7 +135,7 @@ namespace UI
 				newPos.y = parentRect.max.y - widgetRect.rect.height * 0.5f;
 				newSize.y = widgetRect.rect.height;
 			} else {
-				newPos.y = parentRect.center.y - widgetRect.rect.height * 0.5f;
+				newPos.y = parentRect.center.y;
 				newSize.y = widgetRect.rect.height;
 			}
 
