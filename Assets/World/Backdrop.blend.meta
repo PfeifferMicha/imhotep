@@ -115,6 +115,16 @@ ModelImporter:
     100214: Icosphere_002
     100216: DomeGlass
     100218: DomeWire
+    100220: RingOuter
+    100222: RingInner
+    100224: RingOuter_001
+    100226: Empty30
+    100228: Pillar
+    100230: Pillar_001
+    100232: RingOuter_002
+    100234: Empty90
+    100236: RingOuter_002_MeshPart0
+    100238: RingOuter_002_MeshPart1
     400000: Back
     400002: Back_0
     400004: //RootNode
@@ -225,6 +235,16 @@ ModelImporter:
     400214: Icosphere_002
     400216: DomeGlass
     400218: DomeWire
+    400220: RingOuter
+    400222: RingInner
+    400224: RingOuter_001
+    400226: Empty30
+    400228: Pillar
+    400230: Pillar_001
+    400232: RingOuter_002
+    400234: Empty90
+    400236: RingOuter_002_MeshPart0
+    400238: RingOuter_002_MeshPart1
     2300000: BezierCurve_000
     2300002: BezierCurve_001
     2300004: BezierCurve_002
@@ -264,6 +284,14 @@ ModelImporter:
     2300072: Icosphere_002
     2300074: DomeGlass
     2300076: DomeWire
+    2300078: RingOuter
+    2300080: RingInner
+    2300082: RingOuter_001
+    2300084: Pillar
+    2300086: Pillar_001
+    2300088: RingOuter_002
+    2300090: RingOuter_002_MeshPart0
+    2300092: RingOuter_002_MeshPart1
     3300000: BezierCurve_000
     3300002: BezierCurve_001
     3300004: BezierCurve_002
@@ -303,6 +331,14 @@ ModelImporter:
     3300072: Icosphere_002
     3300074: DomeGlass
     3300076: DomeWire
+    3300078: RingOuter
+    3300080: RingInner
+    3300082: RingOuter_001
+    3300084: Pillar
+    3300086: Pillar_001
+    3300088: RingOuter_002
+    3300090: RingOuter_002_MeshPart0
+    3300092: RingOuter_002_MeshPart1
     4300000: Circle
     4300002: Spotlight4
     4300004: Spotlight3
@@ -343,6 +379,14 @@ ModelImporter:
     4300074: Icosphere_000
     4300076: DomeWire
     4300078: DomeGlass
+    4300080: RingOuter
+    4300082: RingInner
+    4300084: RingOuter_001
+    4300086: Pillar
+    4300088: Pillar_001
+    4300090: RingOuter_002
+    4300092: RingOuter_002_MeshPart0
+    4300094: RingOuter_002_MeshPart1
     7400000: Default Take
     7400002: Charge-Punch-M
     7400004: Idle-M
@@ -360,7 +404,7 @@ ModelImporter:
     13700002: HumanMale_001
   materials:
     importMaterials: 1
-    materialName: 0
+    materialName: 2
     materialSearch: 1
   animations:
     legacyGenerateAnimations: 4
