@@ -38,7 +38,7 @@ public class InputDeviceManager : MonoBehaviour {
     // Update is called once per frame
     void Update () {
         //Update rayInfo
-        if (UI.UICore.instance.mouseIsOverUIObject)
+        if (UI.Core.instance.mouseIsOverUIObject)
         {
             rayInfo = RayInfoStates.rayHitsUI;
         }

@@ -4,56 +4,70 @@ using System.Collections.Generic;
 
 namespace UI
 {
+	public enum Screen {
+		left,
+		right,
+		center
+	}
+	public enum Alignment {
+		left,
+		right,
+		top,
+		bottom,
+		center,
+		stretch
+	}
+
+	public class LayoutPosition
+	{
+		public Screen screen;
+		public Alignment alignHorizontal;
+		public Alignment alignVertical;
+		public LayoutPosition()
+		{
+			screen = Screen.center;
+			alignHorizontal = Alignment.stretch;
+			alignVertical = Alignment.stretch;
+		}
+	}
+
+
 	public class LayoutSystem
 	{
-		public static LayoutSystem instance { private set; get; }
-
 		Camera UICamera;
-		float UIScale = 0.0025f;
-		float aspectRatio = 1f;
-		Dictionary<string, Vector2> startupPositions = new Dictionary<string, Vector2>();
 
 		// Maximal dimensions of UI:
-		Vector2 max = new Vector2( 1, 1) / 0.0025f;
-		Vector2 min = - (new Vector2( 1, 1) / 0.0025f);
+		public Rect fullScreenSize { private set; get; }
 
-		public LayoutSystem ()
-		{
-			instance = this;
+		Rect leftScreen;
+		Rect centerScreen;
+		Rect rightScreen;
 
-			startupPositions.Add ("Initiate", new Vector2( 0, -0.9f ) );
-			startupPositions.Add ("DicomViewer", new Vector2( -1, 0f ) );
-			startupPositions.Add ("PatientBriefing", new Vector2( 1, 0f ) );
-			startupPositions.Add ("LoadingScreenWidget", new Vector2( 0,0 ) );
-			startupPositions.Add ("ViewControl", new Vector2( 0, -0.8f ) );
-			startupPositions.Add ("PatientSelector", new Vector2( 0, -0.7f ) );
-		}
+		private List<Widget> widgets = new List<Widget>();
 
-		public void setCamera( Camera cam, float scale )
+		public void setCamera( Camera cam )
 		{
 			UICamera = cam;
-			UIScale = scale;
-			aspectRatio = (float)UICamera.targetTexture.width / (float)UICamera.targetTexture.height;
-			Debug.Log ("width " + UICamera.targetTexture.width);
-			Debug.Log ("height " + UICamera.targetTexture.height);
 
-			max = new Vector2( 1*aspectRatio, 1) / UIScale;
-			min = -max;
+			Vector2 max = new Vector2 (1 * UI.Core.instance.aspectRatio, 1) / UI.Core.instance.UIScale;
+			Vector2 min = -max;
+			fullScreenSize = new Rect (min, max - min);
+
+			leftScreen = Platform.instance.getScreenDimensions ( Screen.left );
+			rightScreen = Platform.instance.getScreenDimensions ( Screen.right );
+			centerScreen = Platform.instance.getScreenDimensions ( Screen.center );
 		}
 
-		public Vector2 getStartupPosForWidget( GameObject widget )
+		/*public Vector2 getStartupPosForWidget( GameObject widget )
 		{
 			Vector2 relPos = new Vector2 (0, -1);
-			if (startupPositions.ContainsKey (widget.GetComponent<Widget>().uniqueWidgetName)) {
-				relPos = startupPositions [widget.GetComponent<Widget> ().uniqueWidgetName];
-			}
 			Vector2 absPos = rel2Abs (relPos);
 			return clampToScreenSize( absPos, widget ); 
 		}
 
 		public Vector2 rel2Abs( Vector2 relPos )
 		{
-			return new Vector2( relPos.x*aspectRatio, relPos.y) / UIScale;
+			return new Vector2( relPos.x*UI., relPos.y) / UIScale;
 			//UICamera.targetTexture
 		}
 
@@ -67,6 +81,63 @@ namespace UI
 								Mathf.Clamp (pos.y, min.y - widgetMin.y, max.y - widgetMax.y)
 			                  );
 			return clamped;
+		}*/
+
+		public void addWidget( Widget newWidget )
+		{
+			if (!widgets.Contains (newWidget)) {
+				widgets.Add (newWidget);
+			}
+			setWidgetPosition (newWidget, newWidget.layoutPosition);
+		}
+
+		public void setWidgetPosition( Widget widget, LayoutPosition newPosition )
+		{
+			if (!widgets.Contains (widget)) {
+				return;
+			}
+			RectTransform widgetRect = widget.GetComponent<RectTransform> ();
+
+			Rect parentRect;
+			if (newPosition.screen == Screen.left)
+				parentRect = leftScreen;
+			else if (newPosition.screen == Screen.right)
+				parentRect = rightScreen;
+			else
+				parentRect = centerScreen;
+
+			Vector2 newPos = new Vector2();
+			Vector2 newSize = new Vector2 ();
+			if (newPosition.alignHorizontal == Alignment.stretch) {
+				newPos.x = parentRect.center.x;
+				newSize.x = parentRect.width;
+			} else if (newPosition.alignHorizontal == Alignment.left) {
+				newPos.x = parentRect.min.x + widgetRect.rect.width * 0.5f;
+				newSize.x = widgetRect.rect.width;
+			} else if (newPosition.alignHorizontal == Alignment.right) {
+				newPos.x = parentRect.max.x - widgetRect.rect.width * 0.5f;
+				newSize.x = widgetRect.rect.width;
+			} else {
+				newPos.x = parentRect.center.x - widgetRect.rect.width * 0.5f;
+				newSize.x = widgetRect.rect.width;
+			}
+			if (newPosition.alignVertical == Alignment.stretch) {
+				newPos.y = parentRect.center.y;
+				newSize.y = parentRect.height;
+			} else if (newPosition.alignVertical == Alignment.bottom) {
+				newPos.y = parentRect.min.y + widgetRect.rect.height * 0.5f;
+				newSize.y = widgetRect.rect.height;
+			} else if (newPosition.alignVertical == Alignment.top) {
+				newPos.y = parentRect.max.y - widgetRect.rect.height * 0.5f;
+				newSize.y = widgetRect.rect.height;
+			} else {
+				newPos.y = parentRect.center.y - widgetRect.rect.height * 0.5f;
+				newSize.y = widgetRect.rect.height;
+			}
+
+			//widgetRect.rect = new Rect (newPos, newSize);
+			widgetRect.anchoredPosition = newPos;
+			widgetRect.sizeDelta = newSize;
 		}
 	}
 }

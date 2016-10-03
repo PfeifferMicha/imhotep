@@ -14,10 +14,12 @@ public class Platform : MonoBehaviour {
 	public GameObject rounded;
 	public GameObject chair;
 
-	public GameObject camera;
-	public Camera UIcamera;
+	public GameObject mainCamera;
+	public Camera UICamera;
 
 	public Material UiMeshMaterial;
+
+	public static Platform instance { private set; get; }
 
 	GameObject UIMesh = null;
 
@@ -39,8 +41,12 @@ public class Platform : MonoBehaviour {
 	[Tooltip("Radius of corners of rectangular mesh")]
 	public float UIMeshRectangularRadius = 0.425f;
 
-	// Use this for initialization
-	void Start () {
+	public Platform()
+	{
+		instance = this;
+	}
+
+	void Awake () {
 		resetDimensions ();
 
 		// Remember the dimensions of the base:
@@ -81,7 +87,7 @@ public class Platform : MonoBehaviour {
 		frontLeft.transform.localPosition = new Vector3 (-pos.x, 0, depth - frontDepth - initialBaseDepth);
 		frontRight.transform.localPosition = new Vector3 (pos.x, 0, depth - frontDepth - initialBaseDepth);
 
-		camera.transform.localPosition = new Vector3 (0f, 0f, depth * 0.5f);
+		mainCamera.transform.localPosition = new Vector3 (0f, 0f, depth * 0.5f);
 	}
 	void resetDimensions()
 	{
@@ -108,7 +114,7 @@ public class Platform : MonoBehaviour {
 		rounded.SetActive (true);
 		chair.SetActive (true);
 		chair.transform.localPosition = new Vector3 (0f, 0f, initialBaseDepth * 0.75f);
-		camera.transform.localPosition = new Vector3 (0f, 0f, initialBaseDepth * 0.75f);
+		mainCamera.transform.localPosition = new Vector3 (0f, 0f, initialBaseDepth * 0.75f);
 
 		resetDimensions ();		// make sure base platform has the correct size
 		generateUIMeshRounded ();
@@ -192,7 +198,7 @@ public class Platform : MonoBehaviour {
 		int textureHeight = (int)(meshHeight * pixelsPerMeter);
 		RenderTexture tex = new RenderTexture (textureWidth, textureHeight, 24, RenderTextureFormat.ARGB32 );
 		tex.name = "UI Render Texture";
-		UIcamera.targetTexture = tex;
+		UICamera.targetTexture = tex;
 
 
 		// Set up rendering:
@@ -205,7 +211,7 @@ public class Platform : MonoBehaviour {
 		go.transform.localPosition = new Vector3 (0f, UIMeshRoundedBottom, yPos);
 
 		// Let the layout system know about the new aspect ratio:
-		UI.LayoutSystem.instance.setCamera( UIcamera, 0.0025f );
+		UI.Core.instance.setCamera( UICamera );
 
 		// Debug write image to file:
 		/* cUIcamera.GetComponent<Camera> ().Render ();
@@ -298,8 +304,8 @@ public class Platform : MonoBehaviour {
 		int textureHeight = (int)(meshHeight * pixelsPerMeter);
 		RenderTexture tex = new RenderTexture (textureWidth, textureHeight, 24, RenderTextureFormat.ARGB32 );
 		tex.name = "UI Render Texture";
-		UIcamera.targetTexture = tex;
-		UIcamera.orthographicSize = 1f;
+		UICamera.targetTexture = tex;
+		UICamera.orthographicSize = 1f;
 
 
 		// Set up rendering:
@@ -313,7 +319,7 @@ public class Platform : MonoBehaviour {
 		go.transform.localPosition = new Vector3 (0f, UIMeshRectangularBottom, yPos);
 
 		// Let the layout system know about the new aspect ratio:
-		UI.LayoutSystem.instance.setCamera( UIcamera, 0.0025f );
+		UI.Core.instance.setCamera( UICamera );
 	}
 
 	/*! Remove UI Mesh, if present. */
@@ -350,5 +356,38 @@ public class Platform : MonoBehaviour {
 		}
 		go.transform.SetParent (transform, false);
 		return go;
+	}
+
+	public bool getIsRounded()
+	{
+		if (rounded.activeSelf) {
+			return true;
+		}
+		return false;
+	}
+
+	public bool getIsRectangular()
+	{
+		return !getIsRounded ();
+	}
+
+	public Rect getScreenDimensions( UI.Screen screen )
+	{
+		Rect rect = new Rect ();
+		Rect fullScreen = UI.Core.instance.layoutSystem.fullScreenSize;
+		if( rounded.activeSelf )
+		{
+			if (screen == UI.Screen.left) {
+				rect.min = fullScreen.min;
+				rect.max = new Vector2 ( fullScreen.min.x + fullScreen.width * 0.25f, fullScreen.max.y );
+			} else if (screen == UI.Screen.right) {
+				rect.max = fullScreen.max;
+				rect.min = new Vector2 ( fullScreen.max.x - fullScreen.width * 0.25f, fullScreen.min.y );
+			} else {
+				rect.min = new Vector2( fullScreen.center.x - fullScreen.width * 0.25f, fullScreen.min.y );
+				rect.max = new Vector2 ( fullScreen.center.x + fullScreen.width * 0.25f, fullScreen.max.y );
+			}
+		}
+		return rect;
 	}
 }

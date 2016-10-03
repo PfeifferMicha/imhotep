@@ -25,7 +25,7 @@ public class MouseInfo : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (UI.UICore.instance.mouseIsOverUIObject)
+        if (UI.Core.instance.mouseIsOverUIObject)
         {
             mouseInfo = MouseInfoStates.mouseOverUI;
         }
