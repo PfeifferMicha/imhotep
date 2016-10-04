@@ -21,7 +21,7 @@ public class Platform : MonoBehaviour {
 
 	public static Platform instance { private set; get; }
 
-	GameObject UIMesh = null;
+	public GameObject UIMesh { private set; get; }
 
 	float initialBaseWidth;
 	float initialBaseDepth;
@@ -183,7 +183,7 @@ public class Platform : MonoBehaviour {
 		// Generate a new game object:
 		GameObject go = new GameObject("UIMesh");
 		go.transform.SetParent( transform, false );
-		go.layer = LayerMask.NameToLayer ("MousePlane");
+		go.layer = LayerMask.NameToLayer ("UIMesh");
 		go.AddComponent<MeshFilter> ();
 		go.AddComponent<MeshCollider> ();
 		go.GetComponent<MeshFilter>().mesh = mesh;
@@ -209,6 +209,8 @@ public class Platform : MonoBehaviour {
 		// Move forward until it reaches the edge of the platform:
 		float yPos = rounded.GetComponent<MeshRenderer>().bounds.size.z - UIMeshRoundedRadius;
 		go.transform.localPosition = new Vector3 (0f, UIMeshRoundedBottom, yPos);
+
+		UIMesh = go;
 
 		// Let the layout system know about the new aspect ratio:
 		UI.Core.instance.setCamera( UICamera );
@@ -289,7 +291,7 @@ public class Platform : MonoBehaviour {
 		// Generate a new game object:
 		GameObject go = new GameObject("UIMesh");
 		go.transform.SetParent( transform, false );
-		go.layer = LayerMask.NameToLayer ("MousePlane");
+		go.layer = LayerMask.NameToLayer ("UIMesh");
 		go.AddComponent<MeshFilter> ();
 		go.AddComponent<MeshCollider> ();
 		go.GetComponent<MeshFilter>().mesh = mesh;
@@ -317,6 +319,8 @@ public class Platform : MonoBehaviour {
 		// Move forward until it reaches the edge of the platform:
 		float yPos = depth - front.GetComponent<Renderer>().bounds.size.z;
 		go.transform.localPosition = new Vector3 (0f, UIMeshRectangularBottom, yPos);
+
+		UIMesh = go;
 
 		// Let the layout system know about the new aspect ratio:
 		UI.Core.instance.setCamera( UICamera );

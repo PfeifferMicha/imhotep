@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class ViveControllerInput : MonoBehaviour, InputDeviceInterface {
+public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 
 	//--------------- controller stuff---------------------
 	private SteamVR_Controller.Device controller { get{ return SteamVR_Controller.Input ((int)trackedObj.index);}}
@@ -78,22 +78,6 @@ public class ViveControllerInput : MonoBehaviour, InputDeviceInterface {
 		return positionDelta;
 	}
 
-	public RaycastHit getRaycastHit()
-	{
-		RaycastHit hit;
-		Ray ray = createRay();       
-		//LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
-		if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-		{
-			return hit;
-		}
-		else
-		{
-			//Debug.LogError("No hit found. Can not return currect UV Coordiantes"); //TODO?
-			return hit;
-		}
-	}
-
 	public bool isVisualizerActive()
 	{
 		return visualizeRay;
@@ -108,7 +92,7 @@ public class ViveControllerInput : MonoBehaviour, InputDeviceInterface {
 
 		if (InputDeviceManager.instance != null)
 		{
-			InputDeviceManager.instance.registerInputDevice(this.gameObject);
+			InputDeviceManager.instance.registerInputDevice(this);
 			Debug.LogWarning("Vive controller registered");
 		}
 

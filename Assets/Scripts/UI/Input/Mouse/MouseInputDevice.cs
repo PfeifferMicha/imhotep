@@ -2,8 +2,13 @@
 using System.Collections;
 using System;
 using UnityEngine.EventSystems;
+using UnityEditor;
 
-public class MouseInput : MonoBehaviour, InputDeviceInterface {
+public class MouseInputDevice : MonoBehaviour, InputDevice {
+
+
+	public bool developmentMode = true;
+	public Vector3 rayOriginOffset;
 
     private PointerEventData.FramePressState leftButtonState = PointerEventData.FramePressState.NotChanged;
     private PointerEventData.FramePressState middleButtonState = PointerEventData.FramePressState.NotChanged;
@@ -12,8 +17,7 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
 
     private LineRenderer lineRenderer;
 
-	public bool developmentMode = true;
-	private float mouseSpeed = 0.04f;
+	private float mouseSpeed = 0.4f;
 	private Vector3 lastPos = new Vector3(0,0,0);
 
 	private bool previousRayHitSomething;
@@ -21,6 +25,8 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
 	private Vector2 texCoordDelta;
 	private Vector3 positionPrevious;
 	private Vector3 positionDelta;
+
+	private Vector3 rayDir = new Vector3( 0, 0, 1 );
 
     public void activateVisualization()
     {
@@ -42,8 +48,10 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
         	ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		}
 		else{ //TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			Vector3 dir = lastPos - Camera.main.transform.position + new Vector3(Input.GetAxis("Mouse X") * mouseSpeed, Input.GetAxis("Mouse Y") * mouseSpeed, 0);
-			ray = new Ray(Camera.main.transform.position, dir); 
+			rayDir = Quaternion.AngleAxis( Input.GetAxis("Mouse X") * mouseSpeed, Vector3.up ) * rayDir;
+			rayDir = Quaternion.AngleAxis ( -Input.GetAxis ("Mouse Y") * mouseSpeed, Vector3.right) * rayDir;
+
+			ray = new Ray(Camera.main.transform.position + rayOriginOffset, rayDir); 
 		}
         return ray;
     }
@@ -78,28 +86,6 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
 		return positionDelta;
 	}
 
-    public RaycastHit getRaycastHit()
-    {
-        RaycastHit hit;
-        Ray ray = createRay();       
-        //LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
-        {
-			if (hit.collider.gameObject.layer == 8) {//TODO
-				lastPos = hit.point;//TODO
-			}
-			return hit;
-        }
-        else
-        {
-            Debug.LogError("No hit found. Can not return currect UV Coordiantes");
-			if (hit.collider.gameObject.layer == 8) {//TODO
-				lastPos = hit.point; //TODO
-			}
-            return hit;
-        }
-    }
-
     public bool isVisualizerActive()
     {
         return visualizeMouseRay;
@@ -115,7 +101,7 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
 
 		if (InputDeviceManager.instance != null)
         {
-			InputDeviceManager.instance.registerInputDevice(this.gameObject);
+			InputDeviceManager.instance.registerInputDevice(this);
             Debug.Log("Mouse registered");
         }
 
@@ -133,7 +119,7 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
     }
 	
 	// Update is called once per frame
-	void Update () {
+	/*void Update () {
 		RaycastHit result = new RaycastHit();
 		bool hit = false;
 		if (visualizeMouseRay) {
@@ -164,7 +150,7 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
 		} else {
 			previousRayHitSomething = false;
 		}
-    }
+    }*/
 
     private PointerEventData.FramePressState mouseButtonStateHandler(PointerEventData.FramePressState s, int buttonID)
     {
@@ -207,4 +193,21 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
         return result;
     }
 
+}
+
+//! Show/Hide 
+[CustomEditor(typeof(MouseInputDevice))]
+public class MouseInputDeviceEditor : Editor
+{
+	public override void OnInspectorGUI()
+	{
+		MouseInputDevice mid = target as MouseInputDevice;
+
+		mid.developmentMode = GUILayout.Toggle(mid.developmentMode, "Development Mode");
+
+		if ( ! mid.developmentMode )
+			mid.rayOriginOffset = EditorGUILayout.Vector3Field ("Ray Origin Offset", new Vector3( 0.2f, -0.3f,  0f ));
+		else
+			mid.rayOriginOffset = Vector3.zero;
+	}
 }

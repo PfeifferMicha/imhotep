@@ -2,15 +2,11 @@
 using UnityEngine;
 using System.Collections;
 
-interface InputDeviceInterface {
-    RaycastHit getRaycastHit();
-
-
+public interface InputDevice {
 
     void activateVisualization();
     void deactivateVisualization();
     bool isVisualizerActive();
-
 
     PointerEventData.FramePressState getLeftButtonState();
 

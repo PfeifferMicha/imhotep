@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
 
 namespace UI
 {
-    public class Widget : MonoBehaviour
+	public class Widget : MonoBehaviour, IPointerEnterHandler
     {
 		public LayoutPosition layoutPosition{ private set; get; }
 		public Screen layoutScreen = Screen.center;
@@ -50,6 +51,11 @@ namespace UI
 		{
 			layoutPosition = newPosition;
 			UI.Core.instance.layoutSystem.setWidgetPosition( this, newPosition );
+		}
+
+		public void OnPointerEnter( PointerEventData eventData )
+		{
+			Debug.Log ("Entered Widget: " + name);
 		}
     }
 }

@@ -33,11 +33,11 @@ public class MouseInputModule : StandaloneInputModule {
 	private readonly MouseState m_MouseState = new MouseState();
 	protected override MouseState GetMousePointerEventData( int id = 0 )
 	{
-        InputDeviceInterface inputDevice = idm.currentInputDevice.GetComponent<InputDeviceInterface>();
+		InputDevice inputDevice = idm.currentInputDevice;
 
         // convert to a Screen space position:
-        Vector2 cursorPos;
-        if (inputDevice.getRaycastHit().transform.gameObject.layer == 8) //Ray hits UI Plane
+		Vector2 cursorPos = Vector2.zero;
+        /*if (inputDevice.getRaycastHit().transform.gameObject.layer == 8) //Ray hits UI Plane
         {
             cursorPos = inputDevice.getRaycastHit().textureCoord2;
             cursorPos.x *= mTextureSize.x;
@@ -46,7 +46,7 @@ public class MouseInputModule : StandaloneInputModule {
         else
         {
             cursorPos = Camera.main.WorldToScreenPoint(inputDevice.getRaycastHit().point);
-        }
+        }*/
 
 		//MouseState m = new MouseState();
 
@@ -93,11 +93,11 @@ public class MouseInputModule : StandaloneInputModule {
         //trigger event
         if(inputDevice.getLeftButtonState() == PointerEventData.FramePressState.Pressed)
         {
-            InputEventSystem.triggerEventOnLayer(InputEventSystem.Event.INPUTDEVICE_LeftButtonPressed, inputDevice.getRaycastHit().transform.gameObject.layer, inputDevice.getRaycastHit());
+            //InputEventSystem.triggerEventOnLayer(InputEventSystem.Event.INPUTDEVICE_LeftButtonPressed, inputDevice.getRaycastHit().transform.gameObject.layer, inputDevice.getRaycastHit());
         }
         if (inputDevice.getLeftButtonState() == PointerEventData.FramePressState.Released)
         {
-            InputEventSystem.triggerEventOnLayer(InputEventSystem.Event.INPUTDEVICE_LeftButtonReleased, inputDevice.getRaycastHit().transform.gameObject.layer, inputDevice.getRaycastHit());
+            //InputEventSystem.triggerEventOnLayer(InputEventSystem.Event.INPUTDEVICE_LeftButtonReleased, inputDevice.getRaycastHit().transform.gameObject.layer, inputDevice.getRaycastHit());
         }
 
         return m_MouseState;
