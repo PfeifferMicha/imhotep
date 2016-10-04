@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 
 public class InputDeviceManager : MonoBehaviour {
+	
 
     public enum RayInfoStates
     {
@@ -17,6 +18,13 @@ public class InputDeviceManager : MonoBehaviour {
     public GameObject currentInputDevice { get; set; } //Defines with game object controlls the input
 
     private List<GameObject> deviceList = new List<GameObject>(); //List of registered input devices (e.g. mouse, vive contoller ...) 
+
+	public static InputDeviceManager instance { private set; get; }
+
+	public InputDeviceManager()
+	{
+		instance = this;
+	}
 
     // Use this for initialization
     void Start () {        

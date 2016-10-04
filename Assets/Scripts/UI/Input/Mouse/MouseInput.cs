@@ -113,10 +113,9 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
             Debug.LogError("[MouseInput.cs] Line renderer not set");
         }
 
-        InputDeviceManager idm = GameObject.Find("GlobalScript").GetComponent<InputDeviceManager>();
-        if (idm != null)
+		if (InputDeviceManager.instance != null)
         {
-            idm.registerInputDevice(this.gameObject);
+			InputDeviceManager.instance.registerInputDevice(this.gameObject);
             Debug.Log("Mouse registered");
         }
 
@@ -145,6 +144,9 @@ public class MouseInput : MonoBehaviour, InputDeviceInterface {
 				lineRenderer.SetPosition (0, Camera.main.transform.position + offset);
 				lineRenderer.SetPosition (1, result.point);
 				hit = true;
+				Debug.Log ("hit: " + result.transform.name);
+				PointerEventData data = new PointerEventData (EventSystem.current);
+				ExecuteEvents.Execute (result.transform.gameObject, data, ExecuteEvents.pointerEnterHandler);
 			}
 		}
 

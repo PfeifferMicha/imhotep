@@ -105,10 +105,10 @@ public class ViveControllerInput : MonoBehaviour, InputDeviceInterface {
 		trackedObj = this.GetComponent<SteamVR_TrackedObject> ();
 
 		//register device
-		InputDeviceManager idm = GameObject.Find("GlobalScript").GetComponent<InputDeviceManager>();
-		if (idm != null)
+
+		if (InputDeviceManager.instance != null)
 		{
-			idm.registerInputDevice(this.gameObject);
+			InputDeviceManager.instance.registerInputDevice(this.gameObject);
 			Debug.LogWarning("Vive controller registered");
 		}
 
