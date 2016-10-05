@@ -15,14 +15,28 @@ public class HierarchicalInputModule : BaseInputModule {
 
 	private CustomEventData eventData;
 
+	CustomEventData leftData;
+	CustomEventData rightData;
+	CustomEventData middleData;
+	CustomEventData triggerData;
+
 	private Vector2 lastTextureCoord;
 	private Vector3 lastHitWorldPos;
+	//! Position on UI camera (in pixels!):
+	private Vector2 fakeUIScreenPosition;
+
+	private RaycastHit raycastHit;
+	private RaycastResult raycastResult;
 
 	public void Start()
 	{
 		lineRenderer = this.GetComponent<LineRenderer>();
 
 		eventData = new CustomEventData (eventSystem);
+		leftData = new CustomEventData (eventSystem);
+		rightData = new CustomEventData (eventSystem);
+		middleData = new CustomEventData (eventSystem);
+		triggerData = new CustomEventData (eventSystem);
 	}
 
 	//! Called every frame by the event system
@@ -43,30 +57,29 @@ public class HierarchicalInputModule : BaseInputModule {
 
 
 			// 1. First, cast this ray into the scene:
-			RaycastHit result;
 			int layerMask = ~ LayerMask.NameToLayer( "UI" ); // Everything but UI Elements (but UIMesh could be hit!)
-			if (Physics.Raycast (ray, out result, Mathf.Infinity, layerMask)) {
+			if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity, layerMask)) {
 
-				activeGameObject = result.transform.gameObject;
-				hitTextureCoord = result.textureCoord;
-				hitWorldPos = result.point;
+				activeGameObject = raycastHit.transform.gameObject;
+				hitTextureCoord = raycastHit.textureCoord;
+				hitWorldPos = raycastHit.point;
 
 				// 2. If the UI Mesh was hit, check if the mouse is actually over a UI element:
-				if (result.transform.gameObject == Platform.instance.UIMesh) {
-					RaycastResult resultUI;
-					if (ProcessUIRaycast (result.textureCoord, out resultUI)) {
-						activeGameObject = resultUI.gameObject;
-						lineRenderer.SetPosition (1, result.point);
-						hitWorldPos = resultUI.worldPosition;
+				if (raycastHit.transform.gameObject == Platform.instance.UIMesh) {
+					
+					if (ProcessUIRaycast (raycastHit.textureCoord, out raycastResult)) {
+						activeGameObject = raycastResult.gameObject;
+						lineRenderer.SetPosition (1, raycastHit.point);
+						hitWorldPos = raycastResult.worldPosition;
 					} else {
 						// 3. If no UI element was hit, raycast again but ignore the UIMesh:
 						layerMask = ~ LayerMask.NameToLayer( "UIMesh" );
-						if (Physics.Raycast (ray, out result, Mathf.Infinity, layerMask)) {
-							activeGameObject = result.transform.gameObject;
-							lineRenderer.SetPosition (1, result.point);
+						if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity, layerMask)) {
+							activeGameObject = raycastHit.transform.gameObject;
+							lineRenderer.SetPosition (1, raycastHit.point);
 
-							hitTextureCoord = result.textureCoord;
-							hitWorldPos = result.point;
+							hitTextureCoord = raycastHit.textureCoord;
+							hitWorldPos = raycastHit.point;
 						}
 					}
 				}
@@ -94,9 +107,12 @@ public class HierarchicalInputModule : BaseInputModule {
 	private bool ProcessUIRaycast( Vector2 screenPoint, out RaycastResult result )
 	{
 		Camera uiCamera = UI.Core.instance.UICamera;
-		Vector3 rayOrigin = new Vector3 (
+		fakeUIScreenPosition = new Vector2 (
 			screenPoint.x * uiCamera.targetTexture.width,
-			screenPoint.y * uiCamera.targetTexture.height,
+			screenPoint.y * uiCamera.targetTexture.height);
+		Vector3 rayOrigin = new Vector3 (
+			fakeUIScreenPosition.x,
+			fakeUIScreenPosition.y,
 			0 );
 		Ray uiRay = UI.Core.instance.UICamera.ScreenPointToRay ( rayOrigin );
 
@@ -129,43 +145,80 @@ public class HierarchicalInputModule : BaseInputModule {
 		}
 
 		if (previousActiveGameObject != activeGameObject) {
-			if( previousActiveGameObject != null )
+			if (previousActiveGameObject != null) {
 				ExecuteEvents.ExecuteHierarchy (previousActiveGameObject, eventData, ExecuteEvents.pointerExitHandler);
+				eventData.pointerEnter = null;
+			}
 			
-			if( activeGameObject != null )
+			if (activeGameObject != null) {
+				eventData.pointerEnter = activeGameObject;
 				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerEnterHandler);
+			}
 		}
 
 		// ----------------------------------
 		// Fill the EventData with current information from the last hit:
 		eventData.scrollDelta = idm.currentInputDevice.getScrollDelta();
-		//eventData.delta = 
+		eventData.position = fakeUIScreenPosition;
+		eventData.pointerCurrentRaycast = raycastResult;
+
+
+		CopyFromTo (eventData, leftData);
+		CopyFromTo (eventData, rightData);
+		CopyFromTo (eventData, middleData);
+		CopyFromTo (eventData, triggerData);
+		leftData.button = PointerEventData.InputButton.Left;
+		rightData.button = PointerEventData.InputButton.Right;
+		middleData.button = PointerEventData.InputButton.Middle;
+		triggerData.button = PointerEventData.InputButton.Left;
+
+
+		// Stop any selection if anything was pressed:
+		if( AnyPressed( buttonInfo ) )
+		{
+			EventSystem.current.SetSelectedGameObject( null );
+		}
 
 		// ----------------------------------
 		// Handle left click:
-
-		// If we just pressed the button, remember on which object we pressed it (activeGameObject could be null!)
-		// so that we can send a click event when releaseing the button over the same object:
-		if(buttonInfo.buttonStates [ButtonType.Left] == PointerEventData.FramePressState.Pressed)
-		{
-			eventData.pointerPress = activeGameObject;
-			// Also stop any selection:
-			EventSystem.current.SetSelectedGameObject( null );
-		}
-		
 		if (activeGameObject) {
-			eventData.button = PointerEventData.InputButton.Left;
+			
 			if (buttonInfo.buttonStates [ButtonType.Left] == PointerEventData.FramePressState.PressedAndReleased) {
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
+				leftData.pointerPress = activeGameObject;
+				leftData.pressPosition = eventData.position;
+				leftData.pointerPressRaycast = raycastResult;
+				ExecuteEvents.ExecuteHierarchy (activeGameObject, leftData, ExecuteEvents.pointerClickHandler);
+				leftData.pointerPress = null;
+				if (leftData.pointerDrag != null) {
+					ExecuteEvents.ExecuteHierarchy (leftData.pointerDrag, leftData, ExecuteEvents.endDragHandler);
+					leftData.dragging = false;
+					leftData.pointerDrag = null;
+				}
 			} else if (buttonInfo.buttonStates [ButtonType.Left] == PointerEventData.FramePressState.Pressed) {
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerDownHandler);
-				eventData.pointerPress = activeGameObject;
+				leftData.pointerPressRaycast = raycastResult;
+				leftData.pointerPress = activeGameObject;
+				leftData.pressPosition = eventData.position;
+				ExecuteEvents.ExecuteHierarchy (activeGameObject, leftData, ExecuteEvents.pointerDownHandler);
 			} else if (buttonInfo.buttonStates [ButtonType.Left] == PointerEventData.FramePressState.Released) {
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerUpHandler);
+				ExecuteEvents.ExecuteHierarchy (activeGameObject, leftData, ExecuteEvents.pointerUpHandler);
 				// If the current object receiving the pointerUp event is also the one which received the
 				// pointer down event, this results in a click!
-				if (eventData.pointerPress == activeGameObject) {
-					ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
+				if (leftData.pointerPress == activeGameObject) {
+					ExecuteEvents.ExecuteHierarchy (activeGameObject, leftData, ExecuteEvents.pointerClickHandler);
+				}
+				if (leftData.pointerDrag != null) {
+					ExecuteEvents.ExecuteHierarchy (leftData.pointerDrag, leftData, ExecuteEvents.endDragHandler);
+					leftData.dragging = false;
+					leftData.pointerDrag = null;
+				}
+				leftData.pointerPress = null;
+			} else if (buttonInfo.buttonStates [ButtonType.Left] == PointerEventData.FramePressState.NotChanged) {
+				if (leftData.pointerPress != null )
+				{
+					Debug.Log("Dragging");
+					ExecuteEvents.ExecuteHierarchy (activeGameObject, leftData, ExecuteEvents.dragHandler);
+					leftData.dragging = true;
+					leftData.pointerDrag = activeGameObject;
 				}
 			}
 		}
@@ -173,41 +226,7 @@ public class HierarchicalInputModule : BaseInputModule {
 
 		// ----------------------------------
 		// Handle right click:
-		if (activeGameObject) {
-			eventData.button = PointerEventData.InputButton.Right;
-			if (buttonInfo.buttonStates [ButtonType.Right] == PointerEventData.FramePressState.PressedAndReleased) {
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
-			} else if (buttonInfo.buttonStates [ButtonType.Right] == PointerEventData.FramePressState.Pressed) {
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerDownHandler);
-				eventData.pointerPress = activeGameObject;
-			} else if (buttonInfo.buttonStates [ButtonType.Right] == PointerEventData.FramePressState.Released) {
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerUpHandler);
-				// If the current object receiving the pointerUp event is also the one which received the
-				// pointer down event, this results in a click!
-				if (eventData.pointerPress == activeGameObject) {
-					ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
-				}
-			}
-		}
 
-		// ----------------------------------
-		// Handle middle click:
-		if (activeGameObject) {
-			eventData.button = PointerEventData.InputButton.Middle;
-			if (buttonInfo.buttonStates [ButtonType.Middle] == PointerEventData.FramePressState.PressedAndReleased) {
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
-			} else if (buttonInfo.buttonStates [ButtonType.Middle] == PointerEventData.FramePressState.Pressed) {
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerDownHandler);
-				eventData.pointerPress = activeGameObject;
-			} else if (buttonInfo.buttonStates [ButtonType.Middle] == PointerEventData.FramePressState.Released) {
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerUpHandler);
-				// If the current object receiving the pointerUp event is also the one which received the
-				// pointer down event, this results in a click!
-				if (eventData.pointerPress == activeGameObject) {
-					ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
-				}
-			}
-		}
 
 
 		// ----------------------------------
@@ -217,8 +236,22 @@ public class HierarchicalInputModule : BaseInputModule {
 			ExecuteEvents.ExecuteHierarchy(activeGameObject, eventData, ExecuteEvents.scrollHandler);
 			//ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.scrollHandler);
 		}
+
+
+		// ----------------------------------
+		// Handle drag:
+
 	}
 
+	private bool AnyPressed( ButtonInfo buttonInfo )
+	{
+		foreach (KeyValuePair<ButtonType, PointerEventData.FramePressState> entry in buttonInfo.buttonStates) {
+			if (entry.Value == PointerEventData.FramePressState.Pressed || entry.Value == PointerEventData.FramePressState.PressedAndReleased) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	//! Called when this module is activated
 	public override void ActivateModule()
@@ -245,5 +278,14 @@ public class HierarchicalInputModule : BaseInputModule {
 	{
 		// sure!
 		return true;
+	}
+
+	protected void CopyFromTo(CustomEventData @from, CustomEventData @to)
+	{
+		@to.position = @from.position;
+		@to.delta = @from.delta;
+		@to.scrollDelta = @from.scrollDelta;
+		@to.pointerCurrentRaycast = @from.pointerCurrentRaycast;
+		@to.pointerEnter = @from.pointerEnter;
 	}
 }
