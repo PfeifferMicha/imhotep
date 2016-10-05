@@ -7,6 +7,8 @@ public class ToolChoise : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
 	public string toolName = "Default Tool Name";
 
+	public ToolControl toolControl;
+
 	public Text ToolNameText;
 
 	// Use this for initialization
@@ -27,6 +29,6 @@ public class ToolChoise : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
 	public void OnPointerClick( PointerEventData eventData )
 	{
-		Debug.Log ("Choosing Tool: " + toolName);
+		toolControl.chooseTool (this);
 	}
 }

@@ -91,7 +91,7 @@ public class HierarchicalInputModule : BaseInputModule {
 				lineRenderer.SetPosition (1, ray.origin + ray.direction*300f);
 			}
 
-			if (previousActiveGameObject == previousActiveGameObject) {
+			if (activeGameObject == previousActiveGameObject) {
 				eventData.delta = hitTextureCoord - lastTextureCoord;
 				eventData.delta3D = hitWorldPos - lastHitWorldPos;
 			} else {

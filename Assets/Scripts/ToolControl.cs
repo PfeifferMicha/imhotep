@@ -45,6 +45,7 @@ public class ToolControl : MonoBehaviour {
 			controllerChoise.transform.localPosition = new Vector3 ( 0.2f, 0f, 0.13f );
 			ToolChoise tc = controllerChoise.GetComponent<ToolChoise> ();
 			tc.toolName = s;
+			tc.toolControl = this;
 			Transform tableBone = newToolStand.transform.Find ("ToolStandArmature/BoneArm/BoneRotate/BoneSlide");
 			Debug.Log ("Found: " + tableBone);
 			controllerChoise.transform.SetParent( tableBone, false );
@@ -72,5 +73,10 @@ public class ToolControl : MonoBehaviour {
 		{
 			GameObject.Destroy (toolStand);
 		}
+	}
+
+	public void chooseTool( ToolChoise tool )
+	{
+		Debug.Log ("Chose tool: " + tool.toolName);
 	}
 }
