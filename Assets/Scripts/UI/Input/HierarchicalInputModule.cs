@@ -58,12 +58,13 @@ public class HierarchicalInputModule : BaseInputModule {
 
 
 			// 1. First, cast this ray into the scene:
-			int layerMask = ~ LayerMask.NameToLayer( "UI" ); // Everything but UI Elements (but UIMesh could be hit!)
-			if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity, layerMask)) {
+			//int layerMask = ~ LayerMask.NameToLayer( "UI" ); // Everything but UI Elements (but UIMesh could be hit!)
+			if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity)) {
 
 				activeGameObject = raycastHit.transform.gameObject;
 				hitTextureCoord = raycastHit.textureCoord;
 				hitWorldPos = raycastHit.point;
+				lineRenderer.SetPosition (1, raycastHit.point);
 
 				// 2. If the UI Mesh was hit, check if the mouse is actually over a UI element:
 				if (raycastHit.transform.gameObject == Platform.instance.UIMesh) {
@@ -74,7 +75,7 @@ public class HierarchicalInputModule : BaseInputModule {
 						hitWorldPos = raycastResult.worldPosition;
 					} else {
 						// 3. If no UI element was hit, raycast again but ignore the UIMesh:
-						layerMask = ~ LayerMask.NameToLayer( "UIMesh" );
+						int layerMask = ~ LayerMask.NameToLayer( "UIMesh" );
 						if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity, layerMask)) {
 							activeGameObject = raycastHit.transform.gameObject;
 							lineRenderer.SetPosition (1, raycastHit.point);
@@ -86,8 +87,11 @@ public class HierarchicalInputModule : BaseInputModule {
 				}
 			}
 
-			// If nothing was hit at all, just show a very long ray:
-			if (activeGameObject == null) {
+			// Send end point of line:
+			if (activeGameObject != null) {
+				lineRenderer.SetPosition (1, raycastHit.point);
+			} else {
+				// If nothing was hit at all, just show a very long ray:
 				lineRenderer.SetPosition (1, ray.origin + ray.direction*300f);
 			}
 
