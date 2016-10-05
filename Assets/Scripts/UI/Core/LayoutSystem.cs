@@ -43,9 +43,14 @@ namespace UI
 		// Maximal dimensions of UI:
 		public Rect fullScreenSize { private set; get; }
 
+		public Vector3 activeScale = new Vector3 (1.05f, 1.05f, 1.05f);
+		public Vector3 inactiveScale = new Vector3 (1f, 1f, 1f);
+
 		Rect leftScreen;
 		Rect centerScreen;
 		Rect rightScreen;
+
+		Screen activeScreen = Screen.center;
 
 		private List<Widget> widgets = new List<Widget>();
 
@@ -143,5 +148,56 @@ namespace UI
 			widgetRect.anchoredPosition = newPos;
 			widgetRect.sizeDelta = newSize;
 		}
+
+
+		/*! Set the position which the camera's center is currently facing */
+		public void setLookAtPosition( Vector2 pos )
+		{
+			Vector2 pixelPos = fullScreenSize.min + new Vector2 (pos.x * fullScreenSize.width, pos.y * fullScreenSize.height);
+
+			bool isInLeftScreen = false;
+			bool isInCenterScreen = false;
+			bool isInRightScreen = false;
+
+			// Check into which screens the targeted point falls:
+			if (pixelPos.x >= leftScreen.min.x && pixelPos.x <= leftScreen.max.x) {
+				isInLeftScreen = true;
+			}
+			if (pixelPos.x >= centerScreen.min.x && pixelPos.x <= centerScreen.max.x) {
+				isInCenterScreen = true;
+			}
+			if (pixelPos.x >= rightScreen.min.x && pixelPos.x <= rightScreen.max.x) {
+				isInRightScreen = true;
+			}
+
+			// If the point only falls into one single screen, activate that screen:
+			if (isInLeftScreen && ! isInCenterScreen && ! isInRightScreen) {
+				setActiveScreen ( Screen.left );
+			} else if (isInCenterScreen && ! isInLeftScreen && ! isInRightScreen) {
+				setActiveScreen (Screen.center);
+			} else if (isInRightScreen && ! isInLeftScreen && ! isInCenterScreen) {
+				setActiveScreen( Screen.right );
+			}
+		}
+
+		public void setActiveScreen( Screen s )
+		{
+			activeScreen = s;
+			foreach( Widget w in widgets )
+			{
+				if (w.layoutScreen == s) {
+					w.GetComponent<RectTransform> ().localScale = activeScale;
+					Vector3 pos = w.transform.localPosition;
+					pos.z = 0;
+					w.transform.localPosition = pos;
+				} else {
+					w.GetComponent<RectTransform> ().localScale = inactiveScale;
+					Vector3 pos = w.transform.localPosition;
+					pos.z = 100;	// Move backwards
+					w.transform.localPosition = pos;
+				}
+			}
+		}
 	}
+
 }

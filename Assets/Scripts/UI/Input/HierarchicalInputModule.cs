@@ -100,6 +100,8 @@ public class HierarchicalInputModule : BaseInputModule {
 			}
 		}
 
+		Debug.Log ("Active: " + activeGameObject + " previous: " + previousActiveGameObject);
+
 		lastTextureCoord = hitTextureCoord;
 		lastHitWorldPos = hitWorldPos;
 	}

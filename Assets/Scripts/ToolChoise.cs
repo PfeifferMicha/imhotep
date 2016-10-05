@@ -19,6 +19,7 @@ public class ToolChoise : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
 	public void OnPointerEnter( PointerEventData eventData )
 	{
+		Debug.Log ("Entered:");
 		ToolNameText.gameObject.SetActive (true);
 	}
 

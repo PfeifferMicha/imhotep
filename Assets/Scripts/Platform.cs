@@ -379,14 +379,15 @@ public class Platform : MonoBehaviour {
 	{
 		Rect rect = new Rect ();
 		Rect fullScreen = UI.Core.instance.layoutSystem.fullScreenSize;
+
 		if( rounded.activeSelf )
 		{
 			if (screen == UI.Screen.left) {
 				rect.min = fullScreen.min;
-				rect.max = new Vector2 ( fullScreen.min.x + fullScreen.width * 0.25f, fullScreen.max.y );
+				rect.max = new Vector2 ( fullScreen.min.x + fullScreen.width * 0.33f, fullScreen.max.y );
 			} else if (screen == UI.Screen.right) {
 				rect.max = fullScreen.max;
-				rect.min = new Vector2 ( fullScreen.max.x - fullScreen.width * 0.25f, fullScreen.min.y );
+				rect.min = new Vector2 ( fullScreen.max.x - fullScreen.width * 0.33f, fullScreen.min.y );
 			} else {
 				rect.min = new Vector2( fullScreen.center.x - fullScreen.width * 0.25f, fullScreen.min.y );
 				rect.max = new Vector2 ( fullScreen.center.x + fullScreen.width * 0.25f, fullScreen.max.y );
