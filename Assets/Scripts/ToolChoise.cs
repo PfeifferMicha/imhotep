@@ -1,24 +1,32 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
 
-public class ToolChoise : MonoBehaviour, IPointerEnterHandler {
+public class ToolChoise : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
 
 	public string toolName = "Default Tool Name";
 
+	public Text ToolNameText;
+
 	// Use this for initialization
 	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+		ToolNameText.text = toolName;
+		ToolNameText.gameObject.SetActive (false);
 	}
 
-	// TODO! This is not called yet:
 	public void OnPointerEnter( PointerEventData eventData )
 	{
-		Debug.Log ("Entered: " + toolName);
+		ToolNameText.gameObject.SetActive (true);
+	}
+
+	public void OnPointerExit( PointerEventData eventData )
+	{
+		ToolNameText.gameObject.SetActive (false);
+	}
+
+	public void OnPointerClick( PointerEventData eventData )
+	{
+		Debug.Log ("Choosing Tool: " + toolName);
 	}
 }

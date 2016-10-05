@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections;
+using UI;
 
 public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 
@@ -27,6 +28,8 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 	private Vector2 texCoordDelta;
 	private Vector3 positionPrevious;
 	private Vector3 positionDelta;
+
+	private ButtonInfo buttonInfo = new ButtonInfo();
 
 	public void activateVisualization()
 	{
@@ -194,5 +197,11 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 			//Debug.Log ("Trigger compelete pressed");
 		}
 		return false;
+	}
+
+
+	public ButtonInfo updateButtonInfo ()
+	{
+		return buttonInfo;
 	}
 }

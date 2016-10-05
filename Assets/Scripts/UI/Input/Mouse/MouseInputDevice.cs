@@ -3,6 +3,7 @@ using System.Collections;
 using System;
 using UnityEngine.EventSystems;
 using UnityEditor;
+using UI;
 
 public class MouseInputDevice : MonoBehaviour, InputDevice {
 
@@ -27,6 +28,8 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
 	private Vector3 positionDelta;
 
 	private Vector3 rayDir = new Vector3( 0, 0, 1 );
+
+	private ButtonInfo buttonInfo = new ButtonInfo();
 
     public void activateVisualization()
     {
@@ -56,35 +59,10 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
         return ray;
     }
 
-    public PointerEventData.FramePressState getLeftButtonState()
-    {
-        return mouseButtonStateHandler(leftButtonState, 0);
-    }
-
-
-    public PointerEventData.FramePressState getMiddleButtonState()
-    {
-        return mouseButtonStateHandler(middleButtonState, 2);
-    }
-
-    public PointerEventData.FramePressState getRightButtonState()
-    {
-        return mouseButtonStateHandler(rightButtonState, 1);
-    }
-
     public Vector2 getScrollDelta()
     {
         return Input.mouseScrollDelta;
     }
-
-	public Vector2 getTexCoordMovement()
-	{
-		return texCoordDelta;
-	}
-	public Vector3 getMovement()
-	{
-		return positionDelta;
-	}
 
     public bool isVisualizerActive()
     {
@@ -104,95 +82,43 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
 			InputDeviceManager.instance.registerInputDevice(this);
             Debug.Log("Mouse registered");
         }
-
-
-		//TODO -----------------------------------
-		RaycastHit hit;
-		Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);       
-		//LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
-		Physics.Raycast(ray, out hit, Mathf.Infinity);
-		lastPos = hit.point;
-
-
-		//----------------------------------------
-
     }
-	
-	// Update is called once per frame
-	/*void Update () {
-		RaycastHit result = new RaycastHit();
-		bool hit = false;
-		if (visualizeMouseRay) {
-			Ray ray = createRay ();
-			//LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
-			if (Physics.Raycast (ray, out result, Mathf.Infinity)) {
-				Vector3 offset = new Vector3 (0.4f, -0.4f, 0);
-				lineRenderer.SetPosition (0, Camera.main.transform.position + offset);
-				lineRenderer.SetPosition (1, result.point);
-				hit = true;
-				Debug.Log ("hit: " + result.transform.name);
-				PointerEventData data = new PointerEventData (EventSystem.current);
-				ExecuteEvents.Execute (result.transform.gameObject, data, ExecuteEvents.pointerEnterHandler);
-			}
-		}
 
-		// If we hit something, update the delta movement vector:
-		if( hit ) {
-			if (previousRayHitSomething) {
-				// Update 2D position:
-				texCoordDelta = result.textureCoord - texCoordPrevious;
-				// Update 3D position:
-				positionDelta = result.point - positionPrevious;
-			}
-			previousRayHitSomething = true;
-			texCoordPrevious = result.textureCoord;
-			positionPrevious = result.point;
+	public ButtonInfo updateButtonInfo ()
+	{
+
+		if (Input.GetMouseButtonDown (0) && Input.GetMouseButtonUp (0)) {
+			buttonInfo.buttonStates [ButtonType.Left] = PointerEventData.FramePressState.PressedAndReleased;
+		} else if (Input.GetMouseButtonDown (0)) {
+			buttonInfo.buttonStates [ButtonType.Left] = PointerEventData.FramePressState.Pressed;
+		} else if (Input.GetMouseButtonUp (0)) {
+			buttonInfo.buttonStates [ButtonType.Left] = PointerEventData.FramePressState.Released;
 		} else {
-			previousRayHitSomething = false;
+			buttonInfo.buttonStates [ButtonType.Left] = PointerEventData.FramePressState.NotChanged;
 		}
-    }*/
 
-    private PointerEventData.FramePressState mouseButtonStateHandler(PointerEventData.FramePressState s, int buttonID)
-    {
-        PointerEventData.FramePressState result = PointerEventData.FramePressState.NotChanged;
-        switch (s)
-        {
-            case PointerEventData.FramePressState.NotChanged:
-                if (Input.GetMouseButtonDown(buttonID))
-                {
-                    result = PointerEventData.FramePressState.Pressed;
-                }
-                if (Input.GetMouseButtonUp(buttonID))
-                {
-                    result = PointerEventData.FramePressState.Released;
-                }
-                break;
-            case PointerEventData.FramePressState.Pressed:
-                if (Input.GetMouseButtonUp(buttonID))
-                {
-                    result = PointerEventData.FramePressState.Released;
-                }
-                else
-                {
-                    result = PointerEventData.FramePressState.NotChanged;
-                }
-                break;
-            case PointerEventData.FramePressState.Released:
-                if (Input.GetMouseButtonDown(buttonID))
-                {
-                    result = PointerEventData.FramePressState.Pressed;
-                }
-                else
-                {
-                    result = PointerEventData.FramePressState.NotChanged;
-                }
-                break;
-            default:
-                break;
-        }
-        return result;
-    }
+		if (Input.GetMouseButtonDown (1) && Input.GetMouseButtonUp (1)) {
+			buttonInfo.buttonStates [ButtonType.Right] = PointerEventData.FramePressState.PressedAndReleased;
+		} else if (Input.GetMouseButtonDown (1)) {
+			buttonInfo.buttonStates [ButtonType.Right] = PointerEventData.FramePressState.Pressed;
+		} else if (Input.GetMouseButtonUp (1)) {
+			buttonInfo.buttonStates [ButtonType.Right] = PointerEventData.FramePressState.Released;
+		} else {
+			buttonInfo.buttonStates [ButtonType.Right] = PointerEventData.FramePressState.NotChanged;
+		}
 
+		if (Input.GetMouseButtonDown (2) && Input.GetMouseButtonUp (2)) {
+			buttonInfo.buttonStates [ButtonType.Middle] = PointerEventData.FramePressState.PressedAndReleased;
+		} else if (Input.GetMouseButtonDown (2)) {
+			buttonInfo.buttonStates [ButtonType.Middle] = PointerEventData.FramePressState.Pressed;
+		} else if (Input.GetMouseButtonUp (2)) {
+			buttonInfo.buttonStates [ButtonType.Middle] = PointerEventData.FramePressState.Released;
+		} else {
+			buttonInfo.buttonStates [ButtonType.Middle] = PointerEventData.FramePressState.NotChanged;
+		}
+
+		return buttonInfo;
+	}
 }
 
 //! Show/Hide 

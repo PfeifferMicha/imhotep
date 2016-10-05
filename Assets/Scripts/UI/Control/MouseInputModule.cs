@@ -86,19 +86,19 @@ public class MouseInputModule : StandaloneInputModule {
 
         
         //framePressStateLeft = inputDevice.getLeftButtonState(); //TODO entfernen
-        m_MouseState.SetButtonState (PointerEventData.InputButton.Left, inputDevice.getLeftButtonState(), leftData);
-        m_MouseState.SetButtonState (PointerEventData.InputButton.Right, inputDevice.getRightButtonState(), rightData);
-		m_MouseState.SetButtonState (PointerEventData.InputButton.Middle, inputDevice.getMiddleButtonState(), middleData);
+        //m_MouseState.SetButtonState (PointerEventData.InputButton.Left, inputDevice.getLeftButtonState(), leftData);
+        //m_MouseState.SetButtonState (PointerEventData.InputButton.Right, inputDevice.getRightButtonState(), rightData);
+		//m_MouseState.SetButtonState (PointerEventData.InputButton.Middle, inputDevice.getMiddleButtonState(), middleData);
 
         //trigger event
-        if(inputDevice.getLeftButtonState() == PointerEventData.FramePressState.Pressed)
+        /*if(inputDevice.getLeftButtonState() == PointerEventData.FramePressState.Pressed)
         {
             //InputEventSystem.triggerEventOnLayer(InputEventSystem.Event.INPUTDEVICE_LeftButtonPressed, inputDevice.getRaycastHit().transform.gameObject.layer, inputDevice.getRaycastHit());
         }
         if (inputDevice.getLeftButtonState() == PointerEventData.FramePressState.Released)
         {
             //InputEventSystem.triggerEventOnLayer(InputEventSystem.Event.INPUTDEVICE_LeftButtonReleased, inputDevice.getRaycastHit().transform.gameObject.layer, inputDevice.getRaycastHit());
-        }
+        }*/
 
         return m_MouseState;
 	}

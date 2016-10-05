@@ -103,7 +103,10 @@ public class AnnotationControl : MonoBehaviour {
 	void Update () {
         //If user pressed "Add Annotation" and clicked 
         //if (Input.GetMouseButtonDown(0) && currentState == State.addAnnotationPressed)
-		InputDevice inputDevice=  idm.currentInputDevice;
+
+
+		// TODO: Update this to the new input event system:
+		/*InputDevice inputDevice=  idm.currentInputDevice;
         if (inputDevice.getLeftButtonState() == PointerEventData.FramePressState.Pressed && currentState == State.addAnnotationPressed)
         {			
             RaycastHit hit;
@@ -117,7 +120,7 @@ public class AnnotationControl : MonoBehaviour {
                 currentAnnotatinPoint = newAnnotationPoint;
                 changeCurrentStateToAnnotationPointSelected();
             }
-        }
+        }*/
 
     }
 

@@ -59,8 +59,9 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			InputDeviceManager idm = GameObject.Find ("GlobalScript").GetComponent<InputDeviceManager> ();
 			InputDevice inputDevice = idm.currentInputDevice;
 
-			float contrastChange = inputDevice.getTexCoordMovement ().x*0.5f;
-			float intensityChange = - inputDevice.getTexCoordMovement ().y*0.5f;
+			// TODO: Update to new input event system:
+			float contrastChange = 0f; //= inputDevice.getTexCoordMovement ().x*0.5f;
+			float intensityChange = 0f; // = - inputDevice.getTexCoordMovement ().y*0.5f;
 			Debug.Log ("Contrast: " + contrastChange + " Intensity: " + intensityChange);
 
 			float newMin = Mathf.Clamp (mMinValue + intensityChange - contrastChange, 0f, 1f);

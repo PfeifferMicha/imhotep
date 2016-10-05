@@ -28,10 +28,6 @@ public class ToolControl : MonoBehaviour {
 		List<string> availableTools = new List<string> ();
 		availableTools.Add ("Opacity Control");
 		availableTools.Add ("Annotations");
-		availableTools.Add ("Annotations");
-		availableTools.Add ("Annotations");
-		availableTools.Add ("Annotations");
-		availableTools.Add ("Annotations");
 
 		Platform platform = GetComponent<Platform> ();
 
