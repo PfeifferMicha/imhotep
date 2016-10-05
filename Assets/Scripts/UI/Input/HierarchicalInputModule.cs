@@ -5,7 +5,8 @@ using UI;
 
 /*! Handles input using the controllers or mouse.
  * This module sends raycasts into the main scene. If the UI Mesh is hit, it also sends raycasts into the UI scene.
- * Once done, it will raise any necessary events (mouse enter, mouse exit, pointer click etc.) */
+ * Once done, it will raise any necessary events (mouse enter, mouse exit, pointer click etc.)
+ * Note: This system treats the Vive Controller's trigger just like a left-click! */
 public class HierarchicalInputModule : BaseInputModule {
 
 	private GameObject activeGameObject = null;
@@ -170,7 +171,7 @@ public class HierarchicalInputModule : BaseInputModule {
 		leftData.button = PointerEventData.InputButton.Left;
 		rightData.button = PointerEventData.InputButton.Right;
 		middleData.button = PointerEventData.InputButton.Middle;
-		triggerData.button = PointerEventData.InputButton.Left;
+		triggerData.button = PointerEventData.InputButton.Left;		// Treat trigger like a left click!
 
 
 		// Stop any selection if anything was pressed:
@@ -182,52 +183,28 @@ public class HierarchicalInputModule : BaseInputModule {
 		// ----------------------------------
 		// Handle left click:
 		if (activeGameObject) {
-			
-			if (buttonInfo.buttonStates [ButtonType.Left] == PointerEventData.FramePressState.PressedAndReleased) {
-				leftData.pointerPress = activeGameObject;
-				leftData.pressPosition = eventData.position;
-				leftData.pointerPressRaycast = raycastResult;
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, leftData, ExecuteEvents.pointerClickHandler);
-				leftData.pointerPress = null;
-				if (leftData.pointerDrag != null) {
-					ExecuteEvents.ExecuteHierarchy (leftData.pointerDrag, leftData, ExecuteEvents.endDragHandler);
-					leftData.dragging = false;
-					leftData.pointerDrag = null;
-				}
-			} else if (buttonInfo.buttonStates [ButtonType.Left] == PointerEventData.FramePressState.Pressed) {
-				leftData.pointerPressRaycast = raycastResult;
-				leftData.pointerPress = activeGameObject;
-				leftData.pressPosition = eventData.position;
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, leftData, ExecuteEvents.pointerDownHandler);
-			} else if (buttonInfo.buttonStates [ButtonType.Left] == PointerEventData.FramePressState.Released) {
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, leftData, ExecuteEvents.pointerUpHandler);
-				// If the current object receiving the pointerUp event is also the one which received the
-				// pointer down event, this results in a click!
-				if (leftData.pointerPress == activeGameObject) {
-					ExecuteEvents.ExecuteHierarchy (activeGameObject, leftData, ExecuteEvents.pointerClickHandler);
-				}
-				if (leftData.pointerDrag != null) {
-					ExecuteEvents.ExecuteHierarchy (leftData.pointerDrag, leftData, ExecuteEvents.endDragHandler);
-					leftData.dragging = false;
-					leftData.pointerDrag = null;
-				}
-				leftData.pointerPress = null;
-			} else if (buttonInfo.buttonStates [ButtonType.Left] == PointerEventData.FramePressState.NotChanged) {
-				if (leftData.pointerPress != null )
-				{
-					Debug.Log("Dragging");
-					ExecuteEvents.ExecuteHierarchy (activeGameObject, leftData, ExecuteEvents.dragHandler);
-					leftData.dragging = true;
-					leftData.pointerDrag = activeGameObject;
-				}
-			}
+			HandleButton (ButtonType.Left, buttonInfo.buttonStates [ButtonType.Left], leftData, true);
 		}
 
 
 		// ----------------------------------
 		// Handle right click:
+		if (activeGameObject) {
+			HandleButton (ButtonType.Right, buttonInfo.buttonStates [ButtonType.Right], rightData, false);
+		}
+
+		// ----------------------------------
+		// Handle middle click:
+		if (activeGameObject) {
+			HandleButton (ButtonType.Middle, buttonInfo.buttonStates [ButtonType.Middle], middleData, false);
+		}
 
 
+		// ----------------------------------
+		// Handle trigger:
+		if (activeGameObject) {
+			HandleButton (ButtonType.Trigger, buttonInfo.buttonStates [ButtonType.Trigger], triggerData, true);
+		}
 
 		// ----------------------------------
 		// Handle scroll:
@@ -238,9 +215,48 @@ public class HierarchicalInputModule : BaseInputModule {
 		}
 
 
-		// ----------------------------------
-		// Handle drag:
 
+	}
+
+	private void HandleButton( ButtonType buttonType, PointerEventData.FramePressState buttonState, CustomEventData eventData, bool allowDragging )
+	{
+		if (buttonState == PointerEventData.FramePressState.PressedAndReleased) {
+			eventData.pointerPress = activeGameObject;
+			eventData.pressPosition = eventData.position;
+			eventData.pointerPressRaycast = raycastResult;
+			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
+			eventData.pointerPress = null;
+			if (allowDragging && eventData.pointerDrag != null) {
+				ExecuteEvents.ExecuteHierarchy (eventData.pointerDrag, eventData, ExecuteEvents.endDragHandler);
+				eventData.dragging = false;
+				eventData.pointerDrag = null;
+			}
+		} else if (buttonState == PointerEventData.FramePressState.Pressed) {
+			eventData.pointerPressRaycast = raycastResult;
+			eventData.pointerPress = activeGameObject;
+			eventData.pressPosition = eventData.position;
+			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerDownHandler);
+		} else if (buttonState == PointerEventData.FramePressState.Released) {
+			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerUpHandler);
+			// If the current object receiving the pointerUp event is also the one which received the
+			// pointer down event, this results in a click!
+			if (eventData.pointerPress == activeGameObject) {
+				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
+			}
+			if (allowDragging && eventData.pointerDrag != null) {
+				ExecuteEvents.ExecuteHierarchy (eventData.pointerDrag, eventData, ExecuteEvents.endDragHandler);
+				eventData.dragging = false;
+				eventData.pointerDrag = null;
+			}
+			eventData.pointerPress = null;
+		} else if (buttonState == PointerEventData.FramePressState.NotChanged) {
+			if (allowDragging && eventData.pointerPress != null )
+			{
+				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.dragHandler);
+				eventData.dragging = true;
+				eventData.pointerDrag = activeGameObject;
+			}
+		}
 	}
 
 	private bool AnyPressed( ButtonInfo buttonInfo )

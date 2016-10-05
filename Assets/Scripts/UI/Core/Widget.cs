@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace UI
 {
-	public class Widget : MonoBehaviour, IPointerEnterHandler, IScrollHandler
+	public class Widget : MonoBehaviour, IPointerEnterHandler, IScrollHandler, IPointerClickHandler
     {
 		public LayoutPosition layoutPosition{ private set; get; }
 		public Screen layoutScreen = Screen.center;
@@ -61,6 +61,11 @@ namespace UI
 		public void OnScroll( PointerEventData eventData )
 		{
 			Debug.Log ("\tscrolled: " + eventData.scrollDelta);
+		}
+
+		public void OnPointerClick( PointerEventData eventData )
+		{
+			Debug.Log ("\tclicked: " + eventData.button);
 		}
     }
 }
