@@ -191,6 +191,7 @@ GameObject:
   - 114: {fileID: 26487851}
   - 111: {fileID: 26487850}
   - 95: {fileID: 26487852}
+  - 114: {fileID: 26487853}
   m_Layer: 0
   m_Name: MainScene
   m_TagString: Untagged
@@ -270,6 +271,20 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &26487853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 26487848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58944a5bf2e7d48f393778607413706c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skipStartupAnimation: 1
+  sphereEmitters: {fileID: 1656483050}
+  sphere: {fileID: 1936587625}
 --- !u!1001 &38880809
 Prefab:
   m_ObjectHideFlags: 0
@@ -4038,19 +4053,17 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 795904941}
+  - 114: {fileID: 795904947}
+  - 114: {fileID: 795904950}
+  - 114: {fileID: 795904953}
   - 114: {fileID: 795904942}
   - 114: {fileID: 795904944}
-  - 114: {fileID: 795904947}
-  - 114: {fileID: 795904946}
   - 114: {fileID: 795904940}
   - 114: {fileID: 795904943}
   - 114: {fileID: 795904945}
   - 114: {fileID: 795904948}
   - 114: {fileID: 795904949}
-  - 114: {fileID: 795904950}
   - 120: {fileID: 795904951}
-  - 114: {fileID: 795904952}
-  - 114: {fileID: 795904953}
   m_Layer: 0
   m_Name: GlobalScript
   m_TagString: Untagged
@@ -4088,7 +4101,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 795904939}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cd765a36412e1f042a873bb359af47f5, type: 3}
   m_Name: 
@@ -4130,24 +4143,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a5500ba31f8b954bb6f99f1bff9ed05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &795904946
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 795904939}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06fb07a7e143542a688a75e65d51463f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Cancel
-  m_InputActionsPerSecond: 10
-  m_RepeatDelay: 0.5
-  m_ForceModuleActive: 0
 --- !u!114 &795904947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4235,17 +4230,6 @@ LineRenderer:
       serializedVersion: 2
       rgba: 4294967295
   m_UseWorldSpace: 1
---- !u!114 &795904952
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 795904939}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c588e0660a00462d98a5bfad1bb09cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &795904953
 MonoBehaviour:
   m_ObjectHideFlags: 0
