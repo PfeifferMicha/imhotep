@@ -69,7 +69,7 @@ public class HierarchicalInputModule : BaseInputModule {
 				// 2. If the UI Mesh was hit, check if the mouse is actually over a UI element:
 				if (raycastHit.transform.gameObject == Platform.instance.UIMesh) {
 					
-					if (ProcessUIRaycast (raycastHit.textureCoord, out raycastResult)) {
+					if (UIRaycast (raycastHit.textureCoord, out raycastResult)) {
 						activeGameObject = raycastResult.gameObject;
 						lineRenderer.SetPosition (1, raycastHit.point);
 						hitWorldPos = raycastResult.worldPosition;
@@ -104,14 +104,14 @@ public class HierarchicalInputModule : BaseInputModule {
 			}
 		}
 
-		Debug.Log ("Active: " + activeGameObject + " previous: " + previousActiveGameObject);
+		//Debug.Log ("Active: " + activeGameObject + " previous: " + previousActiveGameObject);
 
 		lastTextureCoord = hitTextureCoord;
 		lastHitWorldPos = hitWorldPos;
 	}
 
 	//! Check into UI scene to see if the ray at rayOrigin would hit anything:
-	private bool ProcessUIRaycast( Vector2 screenPoint, out RaycastResult result )
+	private bool UIRaycast( Vector2 screenPoint, out RaycastResult result )
 	{
 		Camera uiCamera = UI.Core.instance.UICamera;
 		fakeUIScreenPosition = new Vector2 (
@@ -141,6 +141,8 @@ public class HierarchicalInputModule : BaseInputModule {
 	//! Called every frame after UpdateModule (but only if this module is active!)
 	public override void Process()
 	{
+		SendUpdateEventToSelectedObject();
+
 		InputDeviceManager idm = InputDeviceManager.instance;
 
 		// Get a list of buttons from the input module, which tells me if buttons are pressed, released or not changed:
@@ -183,7 +185,8 @@ public class HierarchicalInputModule : BaseInputModule {
 		// Stop any selection if anything was pressed:
 		if( AnyPressed( buttonInfo ) )
 		{
-			EventSystem.current.SetSelectedGameObject( null );
+			Debug.Log ("Any pressed");
+			EventSystem.current.SetSelectedGameObject( null, eventData );
 		}
 
 		// ----------------------------------
@@ -273,6 +276,16 @@ public class HierarchicalInputModule : BaseInputModule {
 			}
 		}
 		return false;
+	}
+
+	protected bool SendUpdateEventToSelectedObject()
+	{
+		if (eventSystem.currentSelectedGameObject == null)
+			return false;
+
+		var data = GetBaseEventData();
+		ExecuteEvents.Execute(eventSystem.currentSelectedGameObject, data, ExecuteEvents.updateSelectedHandler);
+		return data.used;
 	}
 
 	//! Called when this module is activated
