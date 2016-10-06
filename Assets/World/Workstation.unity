@@ -1930,6 +1930,7 @@ MonoBehaviour:
   layoutScreen: 2
   layoutAlignHorizontal: 2
   layoutAlignVertical: 2
+  layoutLayer: 10
   material: {fileID: 0}
 --- !u!114 &583585063
 MonoBehaviour:
@@ -2971,6 +2972,7 @@ MonoBehaviour:
   layoutScreen: 1
   layoutAlignHorizontal: 3
   layoutAlignVertical: 3
+  layoutLayer: 0
   material: {fileID: 0}
 --- !u!114 &748166435
 MonoBehaviour:
@@ -5814,6 +5816,7 @@ MonoBehaviour:
   layoutScreen: 2
   layoutAlignHorizontal: 2
   layoutAlignVertical: 1
+  layoutLayer: 99
   material: {fileID: 0}
 --- !u!114 &1141902290
 MonoBehaviour:
@@ -6093,6 +6096,7 @@ MonoBehaviour:
   layoutScreen: 2
   layoutAlignHorizontal: 2
   layoutAlignVertical: 2
+  layoutLayer: 0
   material: {fileID: 0}
 --- !u!114 &1225650618
 MonoBehaviour:
@@ -10183,6 +10187,7 @@ MonoBehaviour:
   layoutScreen: 2
   layoutAlignHorizontal: 3
   layoutAlignVertical: 3
+  layoutLayer: 0
   material: {fileID: 0}
 --- !u!114 &2065549889
 MonoBehaviour:

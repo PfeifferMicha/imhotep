@@ -257,7 +257,7 @@ public class Platform : MonoBehaviour {
 		float radius = UIMeshRectangularRadius;
 		float centerSize = width - 2*left.GetComponent<Renderer> ().bounds.size.x;
 		float roundedSize = 2f * Mathf.PI * radius * 0.5f;
-		float depthSize = depth - front.GetComponent<Renderer> ().bounds.size.y;
+		float depthSize = depth - front.GetComponent<Renderer> ().bounds.size.z;
 		float fullSize = centerSize + roundedSize + 2f * depthSize;
 
 		// what percentage of the whole mesh is rounded (as opposed to straight):
@@ -389,7 +389,7 @@ public class Platform : MonoBehaviour {
 			go.transform.localPosition = offset + center;
 			go.transform.localRotation = Quaternion.AngleAxis ( angle, Vector3.up);
 		} else {	// Rectangular platform is active
-			float z = rectBase.transform.localScale.y;
+			float z = front.GetComponent<Renderer>().bounds.min.z - front.transform.position.z;
 			float distBetweenStands = 0.3f;
 			float startX = (numberOfToolStands-1) * distBetweenStands * 0.5f;
 			float x = number * distBetweenStands - startX;
@@ -431,7 +431,6 @@ public class Platform : MonoBehaviour {
 			}
 		} else {
 			if (screen == UI.Screen.left) {
-				float screenWidthInPixels = rectBase.transform.localScale.x * UI.Core.instance.pixelsPerMeter;
 				rect.min = fullScreen.min;
 				rect.max = new Vector2 (fullScreen.min.x + fullScreen.width * ratioSide, fullScreen.max.y);
 			} else if (screen == UI.Screen.right) {

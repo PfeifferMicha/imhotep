@@ -13,11 +13,13 @@ namespace UI
 		public Screen layoutScreen = Screen.center;
 		public AlignmentH layoutAlignHorizontal = AlignmentH.stretch;
 		public AlignmentV layoutAlignVertical = AlignmentV.stretch;
+		[Range(0, 99)] public int layoutLayer = 0;
 
 		public Material material;
 
 		private Vector3 activeScale = new Vector3( 1f, 1f, 1f );
 		private Vector3 inactiveScale = new Vector3( 0.95f, 0.95f, 0.95f );
+
 
 		public void Awake()
 		{
@@ -86,7 +88,7 @@ namespace UI
 
 			//GetComponent<RectTransform> ().localScale = activeScale;
 			Vector3 pos = transform.localPosition;
-			pos.z = 0;
+			pos.z = 100 - layoutLayer;
 			transform.localPosition = pos;
 		}
 
@@ -96,7 +98,7 @@ namespace UI
 
 			//GetComponent<RectTransform> ().localScale = inactiveScale;
 			Vector3 pos = transform.localPosition;
-			pos.z = 100;
+			pos.z = 200 - layoutLayer;
 			transform.localPosition = pos;
 		}
     }
