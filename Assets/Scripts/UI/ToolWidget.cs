@@ -10,6 +10,7 @@ public class ToolWidget : MonoBehaviour {
 
 		// Set material for all texts:
 		Material mat = new Material(Shader.Find("Custom/TextShader"));
+		mat.renderQueue += 1;	// overlay!
 		Component[] texts;
 		texts = GetComponentsInChildren( typeof(Text), true );
 
@@ -29,10 +30,5 @@ public class ToolWidget : MonoBehaviour {
 			foreach (Image i in images)
 				i.material = material;
 		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 }
