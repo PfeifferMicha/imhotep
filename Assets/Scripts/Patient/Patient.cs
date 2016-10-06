@@ -7,6 +7,7 @@ using System.Text;
 using System.IO;
 using itk.simple;
 using LitJson;
+using UI;
 
 public class Patient : PatientMeta
 {
@@ -26,6 +27,9 @@ public class Patient : PatientMeta
 
 	public Patient( PatientMeta meta ) : base(meta)
     {
+
+		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_FinishedLoading, finishedLoading);
+
 		string metaFile = Path.Combine( base.path, "meta.json" );
 		string raw = File.ReadAllText(metaFile);
 		JsonData data;
@@ -86,6 +90,12 @@ public class Patient : PatientMeta
 
 		loadedPatient = this;
     }
+
+	~Patient()
+	{
+		PatientEventSystem.stopListening (PatientEventSystem.Event.PATIENT_FinishedLoading, finishedLoading);
+	}
+
 
 	public static Patient getLoadedPatient()
 	{
@@ -243,5 +253,34 @@ public class Patient : PatientMeta
 			}
 		}
 		return customName;	// if no series UID was found
+	}
+
+
+	///////////////////////////////////////////////////////
+	// UI:
+
+	public void setupDefaultWidgets()
+	{
+		// TODO: Get info about default UI widgets from patient's json:
+		Widget w = UI.Core.instance.getWidgetByName ("PatientBriefing");
+		if (w)
+			w.gameObject.SetActive (true);
+		
+		w = UI.Core.instance.getWidgetByName ("DICOMViewer");
+		if (w)
+			w.gameObject.SetActive (true);
+
+		w = UI.Core.instance.getWidgetByName ("ViewControl");
+		if (w)
+			w.gameObject.SetActive (true);
+	}
+
+
+	///////////////////////////////////////////////////////
+	// Misc:
+
+	public void finishedLoading( object obj = null )
+	{
+		setupDefaultWidgets ();
 	}
 }

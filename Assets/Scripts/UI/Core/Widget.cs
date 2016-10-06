@@ -20,36 +20,32 @@ namespace UI
 		private Vector3 activeScale = new Vector3( 1f, 1f, 1f );
 		private Vector3 inactiveScale = new Vector3( 0.95f, 0.95f, 0.95f );
 
-
 		public void Awake()
 		{
 			// Make sure my canvas is centered:
-			Canvas cv = GetComponentInChildren( typeof( Canvas ), true ) as Canvas;
+			Canvas cv = GetComponentInChildren (typeof(Canvas), true) as Canvas;
 			if (cv != null) {
 				cv.transform.localPosition = Vector3.zero;
 			}
 
 			// Set material for all texts:
-			Material mat = new Material(Shader.Find("Custom/TextShader"));
+			Material mat = new Material (Shader.Find ("Custom/TextShader"));
 			Component[] texts;
-			texts = GetComponentsInChildren( typeof(Text), true );
+			texts = GetComponentsInChildren (typeof(Text), true);
 
-			if( texts != null )
-			{
+			if (texts != null) {
 				foreach (Text t in texts)
 					t.material = mat;
 			}
 
-			material = new Material(Shader.Find("Custom/UIObject"));
+			material = new Material (Shader.Find ("Custom/UIObject"));
 			Component[] images;
-			images = GetComponentsInChildren( typeof(Image), true );
+			images = GetComponentsInChildren (typeof(Image), true);
 
-			if( images != null )
-			{
+			if (images != null) {
 				foreach (Image i in images)
 					i.material = material;
 			}
-
 		}
 
 		public void OnEnable()

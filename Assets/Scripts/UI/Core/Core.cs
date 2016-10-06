@@ -53,5 +53,17 @@ namespace UI
 			aspectRatio = (float)UICamera.targetTexture.width / (float)UICamera.targetTexture.height;
 			layoutSystem.setCamera (cam);
 		}
+
+		public Widget getWidgetByName( string name )
+		{
+			foreach (Transform child in transform) {
+				if (child.name == name) {
+					if (child.GetComponent<Widget> () != null) {
+						return child.GetComponent<Widget> ();
+					}
+				}
+			}
+			return null;
+		}
     }
 }
