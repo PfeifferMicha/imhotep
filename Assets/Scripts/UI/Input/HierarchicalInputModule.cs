@@ -220,6 +220,7 @@ public class HierarchicalInputModule : BaseInputModule {
 		// Handle scroll:
 
 		if (eventData.scrollDelta != Vector2.zero) {
+			Debug.Log ("Scrolling: " + eventData.scrollDelta);
 			ExecuteEvents.ExecuteHierarchy(activeGameObject, eventData, ExecuteEvents.scrollHandler);
 			//ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.scrollHandler);
 		}

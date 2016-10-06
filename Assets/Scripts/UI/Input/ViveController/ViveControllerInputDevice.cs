@@ -28,6 +28,9 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 	private Vector2 texCoordDelta;
 	private Vector3 positionPrevious;
 	private Vector3 positionDelta;
+	private Vector2 previousTouchpad = Vector2.zero;
+	private Vector2 touchpadValue = Vector2.zero;
+	private Vector2 touchpadDelta = Vector2.zero;
 
 	private ButtonInfo buttonInfo = new ButtonInfo();
 
@@ -63,7 +66,7 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 
 	public Vector2 getScrollDelta()
 	{
-		return new Vector2(0,0); //TODO?
+		return touchpadDelta*100;
 	}
 
 	public Vector2 getTexCoordMovement()
@@ -119,6 +122,10 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 		if (controller == null) {
 			return buttonInfo;
 		}
+
+		touchpadValue = controller.GetAxis (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad);
+		touchpadDelta = touchpadValue - previousTouchpad;
+		previousTouchpad = touchpadValue;
 
 		switch (buttonInfo.buttonStates[ButtonType.Trigger]) {
 		case PointerEventData.FramePressState.NotChanged:
