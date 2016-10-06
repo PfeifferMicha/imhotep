@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using System.Collections.Generic;
 using UI;
 
@@ -86,6 +87,23 @@ public class HierarchicalInputModule : BaseInputModule {
 							activeGameObject = null;
 						}
 					}
+				} else if ( raycastHit.transform.gameObject.layer == LayerMask.NameToLayer( "UIMesh" ) ) {
+					Debug.Log ("Hit: " + raycastHit.transform.gameObject);
+					if (raycastHit.transform.GetComponent<GraphicRaycaster> () != null) {
+						RectTransform tf = raycastHit.transform.GetComponent<RectTransform> ();
+						Debug.Log ("Pos: " + tf.InverseTransformPoint (raycastHit.point));
+						PointerEventData data = new PointerEventData (EventSystem.current);
+						data.position = new Vector2 (tf.InverseTransformPoint (raycastHit.point).x, tf.InverseTransformPoint (raycastHit.point).y);
+						Debug.Log ("position: " + data.position);
+						List<RaycastResult> raycastResults = new List<RaycastResult> ();
+						raycastHit.transform.GetComponent<GraphicRaycaster> ().Raycast (data, raycastResults);
+						if (raycastResults.Count > 0) {
+							Debug.Log ("\tHit!");
+							activeGameObject = raycastResult.gameObject;
+							lineRenderer.SetPosition (1, raycastHit.point);
+							hitWorldPos = raycastResult.worldPosition;
+						}
+					}
 				}
 			}
 
@@ -123,9 +141,9 @@ public class HierarchicalInputModule : BaseInputModule {
 			fakeUIScreenPosition.x,
 			fakeUIScreenPosition.y,
 			0 );
-		Ray uiRay = UI.Core.instance.UICamera.ScreenPointToRay ( rayOrigin );
+		//Ray uiRay = UI.Core.instance.UICamera.ScreenPointToRay ( rayOrigin );
 
-		int uiLayer = LayerMask.NameToLayer ("UI");
+		//int uiLayer = LayerMask.NameToLayer ("UI");
 
 		PointerEventData data = new PointerEventData (EventSystem.current);
 		data.position = new Vector2 (rayOrigin.x, rayOrigin.y);
