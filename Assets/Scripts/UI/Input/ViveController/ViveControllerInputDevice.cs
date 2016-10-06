@@ -12,12 +12,12 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 	private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
 
 	//private PointerEventData.FramePressState leftButtonState;
-	private bool triggerPressedDown = false; //True of the trigger is pressed down
+	private bool triggerPressedDown = false; //True if the trigger is pressed down
 
 	private bool helpState = false; //Before releasing the button press it again to avoid scrolling in lists
 	//-----------------------------------------------------
 
-	private PointerEventData.FramePressState leftButtonState = PointerEventData.FramePressState.NotChanged;
+	//private PointerEventData.FramePressState leftButtonState = PointerEventData.FramePressState.NotChanged;
 
 	private bool visualizeRay = true;
 
@@ -47,15 +47,9 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 	public Ray createRay()
 	{
 		Ray ray;
-		ray= new Ray(this.gameObject.transform.position, this.gameObject.transform.forward);
+		ray = new Ray(this.gameObject.transform.position, this.gameObject.transform.forward);
 		return ray;
 	}
-
-	public PointerEventData.FramePressState getLeftButtonState()
-	{
-		return leftButtonState;
-	}
-
 
 	public PointerEventData.FramePressState getMiddleButtonState()
 	{
@@ -96,96 +90,16 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 		if (InputDeviceManager.instance != null)
 		{
 			InputDeviceManager.instance.registerInputDevice(this);
-			Debug.LogWarning("Vive controller registered");
+			Debug.Log("Vive controller registered");
 		}
 
 		//find line renderer
-		lineRenderer = this.GetComponent<LineRenderer>();
+		/*lineRenderer = this.GetComponent<LineRenderer>();
 		if (lineRenderer == null)
 		{
 			Debug.LogError("[MouseInput.cs] Line renderer not set");
-		}
+		}*/
 
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		RaycastHit result = new RaycastHit();
-		bool hit = false;
-		if (visualizeRay)
-		{
-			Ray ray = createRay();
-			//LayerMask onlyMousePlane = 1 << 8; // hit only the mouse plane layer
-			if (Physics.Raycast(ray, out result, Mathf.Infinity))
-			{
-				lineRenderer.SetPosition(0, this.gameObject.transform.position);
-				lineRenderer.SetPosition(1, result.point);
-				hit = true;
-			}
-		}
-
-		// If we hit something, update the delta movement vector:
-		if( hit ) {
-			if (previousRayHitSomething) {
-				// Update 2D position:
-				texCoordDelta = result.textureCoord - texCoordPrevious;
-				// Update 3D position:
-				positionDelta = result.point - positionPrevious;
-			}
-			previousRayHitSomething = true;
-			texCoordPrevious = result.textureCoord;
-			positionPrevious = result.point;
-		} else {
-			previousRayHitSomething = false;
-		}
-
-
-		if (controller == null) {
-			return;
-		}
-
-		switch (leftButtonState) {
-		case PointerEventData.FramePressState.NotChanged:
-			if (triggerPressed () && !triggerPressedDown) {
-				leftButtonState = PointerEventData.FramePressState.Pressed;
-			}
-			if (!triggerPressed () && triggerPressedDown) {
-				if (helpState == false) {
-					leftButtonState = PointerEventData.FramePressState.Pressed;
-					helpState = true;
-				} else {
-					leftButtonState = PointerEventData.FramePressState.Released;
-				}
-			}
-			break;
-
-		case PointerEventData.FramePressState.Pressed:
-			if (helpState) {
-				helpState = false;
-				leftButtonState = PointerEventData.FramePressState.Released;
-			} else {
-				triggerPressedDown = true;
-				if (triggerPressed () && triggerPressedDown) {
-					leftButtonState = PointerEventData.FramePressState.NotChanged;
-				} else if (!triggerPressed () && triggerPressedDown) {
-					leftButtonState = PointerEventData.FramePressState.Released;
-				}
-			}
-			break;
-
-			//case PointerEventData.FramePressState.PressedAndReleased:
-			//break;
-
-		case PointerEventData.FramePressState.Released:
-			if (!triggerPressed ()) {
-				leftButtonState = PointerEventData.FramePressState.NotChanged;
-			} else {
-				leftButtonState = PointerEventData.FramePressState.Pressed;
-			}
-			triggerPressedDown = false;
-			break;			
-		}
 
 	}
 
@@ -202,6 +116,54 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 
 	public ButtonInfo updateButtonInfo ()
 	{
+		if (controller == null) {
+			return buttonInfo;
+		}
+
+		switch (buttonInfo.buttonStates[ButtonType.Trigger]) {
+		case PointerEventData.FramePressState.NotChanged:
+			if (triggerPressed () && !triggerPressedDown) {
+				buttonInfo.buttonStates[ButtonType.Trigger] = PointerEventData.FramePressState.Pressed;
+			}
+			if (!triggerPressed () && triggerPressedDown) {
+				if (helpState == false) {
+					buttonInfo.buttonStates[ButtonType.Trigger] = PointerEventData.FramePressState.Pressed;
+					helpState = true;
+				} else {
+					buttonInfo.buttonStates[ButtonType.Trigger] = PointerEventData.FramePressState.Released;
+				}
+			}
+			break;
+
+		case PointerEventData.FramePressState.Pressed:
+			if (helpState) {
+				helpState = false;
+				buttonInfo.buttonStates[ButtonType.Trigger] = PointerEventData.FramePressState.Released;
+			} else {
+				triggerPressedDown = true;
+				if (triggerPressed () && triggerPressedDown) {
+					buttonInfo.buttonStates[ButtonType.Trigger] = PointerEventData.FramePressState.NotChanged;
+				} else if (!triggerPressed () && triggerPressedDown) {
+					buttonInfo.buttonStates[ButtonType.Trigger] = PointerEventData.FramePressState.Released;
+				}
+			}
+			break;
+
+			//case PointerEventData.FramePressState.PressedAndReleased:
+			//break;
+
+		case PointerEventData.FramePressState.Released:
+			if (!triggerPressed ()) {
+				buttonInfo.buttonStates[ButtonType.Trigger] = PointerEventData.FramePressState.NotChanged;
+			} else {
+				buttonInfo.buttonStates[ButtonType.Trigger] = PointerEventData.FramePressState.Pressed;
+			}
+			triggerPressedDown = false;
+			break;			
+		}
+
+
+
 		return buttonInfo;
 	}
 }

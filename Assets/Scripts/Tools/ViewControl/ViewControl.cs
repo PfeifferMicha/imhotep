@@ -175,9 +175,6 @@ public class ViewControl : MonoBehaviour {
 	{
 		// First, find the GameObject which holds the mesh given by "name"
 		GameObject gameObjectToChangeOpacity = null;
-		Debug.Log ("Name: " + name + " op: " + opacity);
-		Debug.Log (mMeshLoader);
-		Debug.Log(mMeshLoader.MeshGameObjectContainers);
 		foreach (GameObject g in mMeshLoader.MeshGameObjectContainers) {
 			if (g.name == name) {
 				gameObjectToChangeOpacity = g;

@@ -147,7 +147,7 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 0.21568415, g: 0.7176471, b: 0.21960574, a: 0.9997344}
+        second: {r: 0.945098, g: 0.17254883, b: 0.17254883, a: 0.22538266}
       data:
         first:
           name: _cuttingPlanePosition

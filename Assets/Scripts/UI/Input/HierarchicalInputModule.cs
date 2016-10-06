@@ -58,7 +58,7 @@ public class HierarchicalInputModule : BaseInputModule {
 
 
 			// 1. First, cast this ray into the scene:
-			//int layerMask = ~ LayerMask.NameToLayer( "UI" ); // Everything but UI Elements (but UIMesh could be hit!)
+			int layerMask = ~ (1 << LayerMask.NameToLayer( "UI" )); // Everything but UI Elements (but UIMesh could be hit!)
 			if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity)) {
 
 				activeGameObject = raycastHit.transform.gameObject;
@@ -75,13 +75,15 @@ public class HierarchicalInputModule : BaseInputModule {
 						hitWorldPos = raycastResult.worldPosition;
 					} else {
 						// 3. If no UI element was hit, raycast again but ignore the UIMesh:
-						int layerMask = ~ LayerMask.NameToLayer( "UIMesh" );
+						layerMask = ~ ( 1 << LayerMask.NameToLayer( "UIMesh" ) );
 						if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity, layerMask)) {
 							activeGameObject = raycastHit.transform.gameObject;
 							lineRenderer.SetPosition (1, raycastHit.point);
 
 							hitTextureCoord = raycastHit.textureCoord;
 							hitWorldPos = raycastHit.point;
+						} else {
+							activeGameObject = null;
 						}
 					}
 				}
