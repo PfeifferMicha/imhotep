@@ -88,22 +88,17 @@ public class HierarchicalInputModule : BaseInputModule {
 						}
 					}
 				} else if ( raycastHit.transform.gameObject.layer == LayerMask.NameToLayer( "UIMesh" ) ) {
-					Debug.Log ("Hit: " + raycastHit.transform.gameObject);
 					if (raycastHit.transform.GetComponent<CanvasRaycaster> () != null) {
 						RectTransform tf = raycastHit.transform.GetComponent<RectTransform> ();
-						Debug.Log ("Pos: " + tf.InverseTransformPoint (raycastHit.point));
 						PointerEventData data = new PointerEventData (EventSystem.current);
 						data.position = new Vector2 (tf.InverseTransformPoint (raycastHit.point).x, tf.InverseTransformPoint (raycastHit.point).y);
-						Debug.Log ("position: " + data.position);
 						List<RaycastResult> raycastResults = new List<RaycastResult> ();
 						raycastHit.transform.GetComponent<CanvasRaycaster> ().Raycast (data, raycastResults);
-						Debug.Log ("Found: " + raycastResults.Count);
 						if (raycastResults.Count > 0) {
 							raycastResult = raycastResults [0];
 							activeGameObject = raycastResult.gameObject;
 							lineRenderer.SetPosition (1, raycastHit.point);
 							hitWorldPos = raycastResult.worldPosition;
-							Debug.Log ("\tHit: " + activeGameObject);
 						}
 					}
 				}

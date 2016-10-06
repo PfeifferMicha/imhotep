@@ -17,10 +17,10 @@ public class CameraDirectionTracker : MonoBehaviour {
 		Ray ray = new Ray (transform.position, transform.forward);
 
 		// Shoot the ray only at the UIMesh, ignore everything else:
-		LayerMask mask = LayerMask.NameToLayer ("UIMesh");
+		LayerMask mask = (1 << LayerMask.NameToLayer ("UIMesh"));
 
 		RaycastHit result;
-		if (Physics.Raycast (ray, out result, Mathf.Infinity)) {
+		if (Physics.Raycast (ray, out result, Mathf.Infinity, mask)) {
 			// Let the Layout System know at what position we're looking (so it can decide which screen to activate):
 			UI.Core.instance.layoutSystem.setLookAtPosition (result.textureCoord);
 		}

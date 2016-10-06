@@ -56,7 +56,6 @@ public class CanvasRaycaster : BaseRaycaster {
 
 		for (int i = 0; i < sortedGraphics.Count; ++i) {
 			Graphic graphic = sortedGraphics [i];
-			Debug.Log ("Graphic: " + graphic.name + " + " + graphic.gameObject + " d " + graphic.depth);
 			var castResult = new RaycastResult {
 				gameObject = graphic.gameObject,
 				module = this,

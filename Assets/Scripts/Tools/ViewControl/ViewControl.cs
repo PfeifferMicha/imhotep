@@ -10,7 +10,7 @@ public class ViewControl : MonoBehaviour {
 	public GameObject viewNameInputField;
 
 	private MeshLoader mMeshLoader;
-	public Button saveButton, newButton;
+	public Button newButton, deleteButton;
 	public Text viewNameText;
 	public Button buttoPrev, buttonNext;
 	public Text viewNumberText;
@@ -58,14 +58,14 @@ public class ViewControl : MonoBehaviour {
 		currentViewIndex = 0;
 		setView (currentViewIndex);
 
-		saveButton.interactable = true;
+		deleteButton.interactable = true;
 		newButton.interactable = true;
 
 		setView (currentViewIndex);
 	}
 	public void patientClosed( object obj = null )
 	{
-		saveButton.interactable = false;
+		deleteButton.interactable = false;
 		newButton.interactable = false;
 		viewNameText.text = "No patient loaded.";
 		viewNumberText.text = "";
