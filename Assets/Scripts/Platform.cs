@@ -66,7 +66,7 @@ public class Platform : MonoBehaviour {
 
 		//setRectangular (3f, 2f);
 
-		if (! viveCamera.activeInHierarchy) {
+		if (viveCamera.activeInHierarchy) {
 			setRectangular ( 3f, 2f );
 		} else {
 			setRounded ();

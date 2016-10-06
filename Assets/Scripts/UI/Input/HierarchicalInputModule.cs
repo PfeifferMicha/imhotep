@@ -243,6 +243,7 @@ public class HierarchicalInputModule : BaseInputModule {
 			eventData.pointerPressRaycast = raycastResult;
 			eventData.pointerPress = activeGameObject;
 			eventData.pressPosition = eventData.position;
+			eventData.dragging = false;
 			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerDownHandler);
 		} else if (buttonState == PointerEventData.FramePressState.Released) {
 			// If the current object receiving the pointerUp event is also the one which received the
@@ -260,9 +261,18 @@ public class HierarchicalInputModule : BaseInputModule {
 		} else if (buttonState == PointerEventData.FramePressState.NotChanged) {
 			if (allowDragging && eventData.pointerPress != null )
 			{
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.dragHandler);
-				eventData.dragging = true;
-				eventData.pointerDrag = activeGameObject;
+				eventData.pointerDrag =  ExecuteEvents.GetEventHandler<IDragHandler>(eventData.pointerPress );
+				//ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.dragHandler);
+
+				if (eventData.pointerDrag != null) {
+					ExecuteEvents.Execute (eventData.pointerDrag, eventData, ExecuteEvents.initializePotentialDrag);
+					if (!eventData.dragging) {
+						ExecuteEvents.Execute(eventData.pointerDrag, eventData, ExecuteEvents.beginDragHandler);
+						eventData.dragging = true;
+					} else {
+						ExecuteEvents.Execute(eventData.pointerDrag, eventData, ExecuteEvents.dragHandler);
+					}
+				}
 			}
 		}
 	}
