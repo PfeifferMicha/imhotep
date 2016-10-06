@@ -41,8 +41,7 @@ public class Platform : MonoBehaviour {
 	[Tooltip("Radius of corners of rectangular mesh")]
 	public float UIMeshRectangularRadius = 0.425f;
 
-	public GameObject riftCamera;
-	public GameObject viveCamera;
+	public GameObject viveRig;
 
 
 	// Portion of the screen which is rounded (for rectangular setup):
@@ -64,10 +63,16 @@ public class Platform : MonoBehaviour {
 		initialBaseWidth = rectBase.GetComponent<Renderer>().bounds.size.x;
 		initialBaseDepth = rectBase.GetComponent<Renderer>().bounds.size.z;
 
-		//setRectangular (3f, 2f);
-
-		if (viveCamera.activeInHierarchy) {
-			setRectangular ( 3f, 2f );
+		if (viveRig.activeInHierarchy) {
+			Mesh roomMesh = viveRig.GetComponent<MeshFilter>().mesh;
+			float width = 3f;
+			float depth = 2f;
+			if (roomMesh != null) {
+				width = roomMesh.bounds.size.x;
+				depth = roomMesh.bounds.size.z;
+				Debug.Log ("Room mesh found. Setting room size to " + width + "x" + depth + "m.");
+			}
+			setRectangular (width, depth);
 		} else {
 			setRounded ();
 		}
