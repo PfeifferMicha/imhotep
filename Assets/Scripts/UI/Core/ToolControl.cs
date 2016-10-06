@@ -19,10 +19,10 @@ public class ToolControl : MonoBehaviour {
 
 		clearAllToolStands ();
 
-		generateAvailableTools (null);
+		//generateAvailableTools (null);
 	}
 
-	public void generateAvailableTools( object obj )
+	public void generateAvailableTools( object obj = null )
 	{
 		Patient p = obj as Patient;
 		List<string> availableTools = new List<string> ();
