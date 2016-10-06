@@ -41,7 +41,7 @@ namespace UI
 		Camera UICamera;
 
 		// Maximal dimensions of UI:
-		public Rect fullScreenSize { private set; get; }
+		public Rect sizeOfUIScene { private set; get; }
 
 		public Vector3 activeScale = new Vector3 (1.05f, 1.05f, 1.05f);
 		public Vector3 inactiveScale = new Vector3 (1f, 1f, 1f);
@@ -60,7 +60,8 @@ namespace UI
 
 			Vector2 max = new Vector2 (1 * UI.Core.instance.aspectRatio, 1) / UI.Core.instance.UIScale;
 			Vector2 min = -max;
-			fullScreenSize = new Rect (min, max - min);
+			sizeOfUIScene = new Rect (min, max - min);
+			Debug.Log ("Full Screen Size: " + sizeOfUIScene);
 
 			leftScreen = Platform.instance.getScreenDimensions ( Screen.left );
 			rightScreen = Platform.instance.getScreenDimensions ( Screen.right );
@@ -166,7 +167,7 @@ namespace UI
 		/*! Set the position which the camera's center is currently facing */
 		public void setLookAtPosition( Vector2 pos )
 		{
-			Vector2 pixelPos = fullScreenSize.min + new Vector2 (pos.x * fullScreenSize.width, pos.y * fullScreenSize.height);
+			Vector2 pixelPos = sizeOfUIScene.min + new Vector2 (pos.x * sizeOfUIScene.width, pos.y * sizeOfUIScene.height);
 
 			bool isInLeftScreen = false;
 			bool isInCenterScreen = false;

@@ -17,6 +17,7 @@ namespace UI
 
 		//! The scale with which all the UI elements are scaled (i.e. pixels to meters)
 		public float UIScale = 0.0025f;
+		public float pixelsPerMeter = 500f;
 		public float aspectRatio = 1f;
 
 		public Core()

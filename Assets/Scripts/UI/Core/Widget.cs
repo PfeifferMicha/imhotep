@@ -19,7 +19,7 @@ namespace UI
 		private Vector3 activeScale = new Vector3( 1f, 1f, 1f );
 		private Vector3 inactiveScale = new Vector3( 0.95f, 0.95f, 0.95f );
 
-		public void Start()
+		public void Awake()
 		{
 			// Make sure my canvas is centered:
 			Canvas cv = GetComponentInChildren( typeof( Canvas ), true ) as Canvas;
@@ -48,13 +48,20 @@ namespace UI
 					i.material = material;
 			}
 
+		}
 
+		public void OnEnable()
+		{
 			layoutPosition = new LayoutPosition();
 			layoutPosition.screen = layoutScreen;
 			layoutPosition.alignHorizontal = layoutAlignHorizontal;
 			layoutPosition.alignVertical = layoutAlignVertical;
+			UI.Core.instance.layoutSystem.addWidget (this);
+		}
 
-			UI.Core.instance.layoutSystem.addWidget( this );
+		public void OnDisable()
+		{
+			UI.Core.instance.layoutSystem.removeWidget (this);
 		}
 
         public void Close()

@@ -41,6 +41,17 @@ public class Platform : MonoBehaviour {
 	[Tooltip("Radius of corners of rectangular mesh")]
 	public float UIMeshRectangularRadius = 0.425f;
 
+	public GameObject riftCamera;
+	public GameObject viveCamera;
+
+
+	// Portion of the screen which is rounded (for rectangular setup):
+	private float ratioRounded;
+	// Portion of the screen which makes up a side (for rectangular setup):
+	private float ratioSide;
+	// Portion of the screen which makes up front (for rectangular setup):
+	private float ratioFront;
+
 	public Platform()
 	{
 		instance = this;
@@ -55,7 +66,11 @@ public class Platform : MonoBehaviour {
 
 		//setRectangular (3f, 2f);
 
-		setRounded ();
+		if (! viveCamera.activeInHierarchy) {
+			setRectangular ( 3f, 2f );
+		} else {
+			setRounded ();
+		}
 	}
 
 	/*! Set the size of the rectangular platform
@@ -193,7 +208,7 @@ public class Platform : MonoBehaviour {
 		// Set up the render texture:
 		float meshWidth = 2f*Mathf.PI * UIMeshRoundedRadius * ( UIMeshRoundedAngle / 360f);		// 2*pi*r
 		float meshHeight = UIMeshRoundedHeight;
-		float pixelsPerMeter = 500;
+		float pixelsPerMeter = UI.Core.instance.pixelsPerMeter;
 		int textureWidth = (int)(meshWidth * pixelsPerMeter);
 		int textureHeight = (int)(meshHeight * pixelsPerMeter);
 		RenderTexture tex = new RenderTexture (textureWidth, textureHeight, 24, RenderTextureFormat.ARGB32 );
@@ -242,35 +257,53 @@ public class Platform : MonoBehaviour {
 		float radius = UIMeshRectangularRadius;
 		float centerSize = width - 2*left.GetComponent<Renderer> ().bounds.size.x;
 		float roundedSize = 2f * Mathf.PI * radius * 0.5f;
-		float fullSize = centerSize + roundedSize;
+		float depthSize = depth - front.GetComponent<Renderer> ().bounds.size.y;
+		float fullSize = centerSize + roundedSize + 2f * depthSize;
 
-		// what percentage of the whole mesh is rounded (as opposed to straight:)
-		float amountRounded = roundedSize/fullSize;
+		// what percentage of the whole mesh is rounded (as opposed to straight):
+		ratioRounded = roundedSize / fullSize;
+		ratioSide = depthSize / fullSize;
+		ratioFront = centerSize / fullSize;
 
 		// Fill the lists with vertices and triangles:
-		int numSegments = 50;
+		int numRoundedSegments = 50;
 		float fullAngle = Mathf.PI;
-		for (int i = 0; i <= numSegments / 2; i++) {
-			float currentAmount = (float)i / (float)numSegments;
+		// Add left side mesh:
+
+		newVertices.Add (new Vector3 (-width*0.5f, 0, -depthSize));
+		newUV.Add (new Vector2 (0, 0));
+		newVertices.Add (new Vector3 (-width*0.5f, UIMeshRectangularHeight, -depthSize));
+		newUV.Add (new Vector2 (0, 1));
+
+		// Add first rounded corner:
+		for (int i = 0; i <= numRoundedSegments / 2; i++) {
+			float currentAmount = (float)i / (float)numRoundedSegments;
 			float angle = fullAngle * currentAmount - fullAngle * 0.5f;
 			float x = radius * Mathf.Sin (angle) - centerSize*0.5f;
 			float y = radius * Mathf.Cos (angle);
 			newVertices.Add (new Vector3 (x, 0, y));
-			newUV.Add (new Vector2 (currentAmount*amountRounded, 0));
+			newUV.Add (new Vector2 (currentAmount*ratioRounded + ratioSide, 0));
 			newVertices.Add (new Vector3 (x, UIMeshRectangularHeight, y));
-			newUV.Add (new Vector2 (currentAmount*amountRounded, 1));
+			newUV.Add (new Vector2 (currentAmount*ratioRounded + ratioSide, 1));
 		}
-		for (int i = numSegments / 2; i <= numSegments; i++) {
-			float currentAmount = (float)i / (float)numSegments;
+		// Add second rounded corner (and automatically add center piece):
+		for (int i = numRoundedSegments / 2; i <= numRoundedSegments; i++) {
+			float currentAmount = (float)i / (float)numRoundedSegments;
 			float angle = fullAngle * currentAmount - fullAngle * 0.5f;
 			float x = radius * Mathf.Sin (angle) + centerSize*0.5f;
 			float y = radius * Mathf.Cos (angle);
 			newVertices.Add (new Vector3 (x, 0, y));
-			newUV.Add (new Vector2 (currentAmount*amountRounded + centerSize/fullSize, 0));
+			newUV.Add (new Vector2 (currentAmount*ratioRounded + ratioSide + ratioFront, 0));
 			newVertices.Add (new Vector3 (x, UIMeshRectangularHeight, y));
-			newUV.Add (new Vector2 (currentAmount*amountRounded + centerSize/fullSize, 1));
+			newUV.Add (new Vector2 (currentAmount*ratioRounded + ratioSide + ratioFront, 1));
 		}
-		for (int i = 0; i <= numSegments; i++) {
+		// Add right side mesh:
+		newVertices.Add (new Vector3 (width*0.5f, 0, -depthSize));
+		newUV.Add (new Vector2 (1, 0));
+		newVertices.Add (new Vector3 (width*0.5f, UIMeshRectangularHeight, -depthSize));
+		newUV.Add (new Vector2 (1, 1));
+
+		for (int i = 0; i <= numRoundedSegments + 2; i++) {
 			newTriangles.Add (i * 2 + 0);
 			newTriangles.Add (i * 2 + 1);
 			newTriangles.Add (i * 2 + 2);
@@ -299,9 +332,9 @@ public class Platform : MonoBehaviour {
 
 
 		// Set up the render texture:
-		float meshWidth = 2f*Mathf.PI * radius * 0.5f + centerSize;		// 2*pi*r
+		float meshWidth = fullSize;		// 2*pi*r
 		float meshHeight = UIMeshRectangularHeight;
-		float pixelsPerMeter = 500;
+		float pixelsPerMeter = UI.Core.instance.pixelsPerMeter;
 		int textureWidth = (int)(meshWidth * pixelsPerMeter);
 		int textureHeight = (int)(meshHeight * pixelsPerMeter);
 		RenderTexture tex = new RenderTexture (textureWidth, textureHeight, 24, RenderTextureFormat.ARGB32 );
@@ -356,7 +389,12 @@ public class Platform : MonoBehaviour {
 			go.transform.localPosition = offset + center;
 			go.transform.localRotation = Quaternion.AngleAxis ( angle, Vector3.up);
 		} else {	// Rectangular platform is active
+			float z = rectBase.transform.localScale.y;
+			float distBetweenStands = 0.3f;
+			float startX = (numberOfToolStands-1) * distBetweenStands * 0.5f;
+			float x = number * distBetweenStands - startX;
 
+			go.transform.localPosition = new Vector3 (x, 0f, z);
 		}
 		go.transform.SetParent (transform, false);
 		return go;
@@ -378,19 +416,30 @@ public class Platform : MonoBehaviour {
 	public Rect getScreenDimensions( UI.Screen screen )
 	{
 		Rect rect = new Rect ();
-		Rect fullScreen = UI.Core.instance.layoutSystem.fullScreenSize;
+		Rect fullScreen = UI.Core.instance.layoutSystem.sizeOfUIScene;
 
-		if( rounded.activeSelf )
-		{
+		if (rounded.activeSelf) {
 			if (screen == UI.Screen.left) {
 				rect.min = fullScreen.min;
-				rect.max = new Vector2 ( fullScreen.min.x + fullScreen.width * 0.33f, fullScreen.max.y );
+				rect.max = new Vector2 (fullScreen.min.x + fullScreen.width * 0.33f, fullScreen.max.y);
 			} else if (screen == UI.Screen.right) {
 				rect.max = fullScreen.max;
-				rect.min = new Vector2 ( fullScreen.max.x - fullScreen.width * 0.33f, fullScreen.min.y );
+				rect.min = new Vector2 (fullScreen.max.x - fullScreen.width * 0.33f, fullScreen.min.y);
 			} else {
-				rect.min = new Vector2( fullScreen.center.x - fullScreen.width * 0.25f, fullScreen.min.y );
-				rect.max = new Vector2 ( fullScreen.center.x + fullScreen.width * 0.25f, fullScreen.max.y );
+				rect.min = new Vector2 (fullScreen.center.x - fullScreen.width * 0.25f, fullScreen.min.y);
+				rect.max = new Vector2 (fullScreen.center.x + fullScreen.width * 0.25f, fullScreen.max.y);
+			}
+		} else {
+			if (screen == UI.Screen.left) {
+				float screenWidthInPixels = rectBase.transform.localScale.x * UI.Core.instance.pixelsPerMeter;
+				rect.min = fullScreen.min;
+				rect.max = new Vector2 (fullScreen.min.x + fullScreen.width * ratioSide, fullScreen.max.y);
+			} else if (screen == UI.Screen.right) {
+				rect.max = fullScreen.max;
+				rect.min = new Vector2 (fullScreen.max.x - fullScreen.width * ratioSide, fullScreen.min.y);
+			} else {
+				rect.min = new Vector2 (fullScreen.center.x - fullScreen.width * ratioFront*0.5f, fullScreen.min.y);
+				rect.max = new Vector2 (fullScreen.center.x + fullScreen.width * ratioFront*0.5f, fullScreen.max.y);
 			}
 		}
 		return rect;
