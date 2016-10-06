@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class ViewControl : MonoBehaviour {
 
-	private GameObject mainPane;
-	private GameObject editPane;
+	public GameObject mainPane;
+	public GameObject editPane;
 	public GameObject viewNameInputField;
 
 	private MeshLoader mMeshLoader;
@@ -22,9 +22,6 @@ public class ViewControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		mainPane = transform.FindChild ("Canvas/MainPane").gameObject;
-		editPane = transform.FindChild ("Canvas/EditPane").gameObject;
-
 		mMeshLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
 
 		meshShader = Shader.Find("Custom/MeshShader");
@@ -178,6 +175,9 @@ public class ViewControl : MonoBehaviour {
 	{
 		// First, find the GameObject which holds the mesh given by "name"
 		GameObject gameObjectToChangeOpacity = null;
+		Debug.Log ("Name: " + name + " op: " + opacity);
+		Debug.Log (mMeshLoader);
+		Debug.Log(mMeshLoader.MeshGameObjectContainers);
 		foreach (GameObject g in mMeshLoader.MeshGameObjectContainers) {
 			if (g.name == name) {
 				gameObjectToChangeOpacity = g;

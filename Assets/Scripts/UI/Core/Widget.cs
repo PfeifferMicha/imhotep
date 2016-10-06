@@ -14,6 +14,11 @@ namespace UI
 		public AlignmentH layoutAlignHorizontal = AlignmentH.stretch;
 		public AlignmentV layoutAlignVertical = AlignmentV.stretch;
 
+		public Material material;
+
+		private Vector3 activeScale = new Vector3( 1f, 1f, 1f );
+		private Vector3 inactiveScale = new Vector3( 0.95f, 0.95f, 0.95f );
+
 		public void Start()
 		{
 			// Make sure my canvas is centered:
@@ -33,6 +38,16 @@ namespace UI
 					t.material = mat;
 			}
 
+			material = new Material(Shader.Find("Custom/UIObject"));
+			Component[] images;
+			images = GetComponentsInChildren( typeof(Image), true );
+
+			if( images != null )
+			{
+				foreach (Image i in images)
+					i.material = material;
+			}
+
 
 			layoutPosition = new LayoutPosition();
 			layoutPosition.screen = layoutScreen;
@@ -47,10 +62,35 @@ namespace UI
             Destroy(gameObject);
         }
 
+		public void OnDestroy()
+		{
+			UI.Core.instance.layoutSystem.removeWidget (this);
+		}
+
 		public void setPosition( LayoutPosition newPosition )
 		{
 			layoutPosition = newPosition;
 			UI.Core.instance.layoutSystem.setWidgetPosition( this, newPosition );
+		}
+
+		public void highlight()
+		{
+			material.SetInt ("_highlight", 1);
+
+			//GetComponent<RectTransform> ().localScale = activeScale;
+			Vector3 pos = transform.localPosition;
+			pos.z = 0;
+			transform.localPosition = pos;
+		}
+
+		public void unHighlight()
+		{
+			material.SetInt ("_highlight", 0);
+
+			//GetComponent<RectTransform> ().localScale = inactiveScale;
+			Vector3 pos = transform.localPosition;
+			pos.z = 100;
+			transform.localPosition = pos;
 		}
     }
 }

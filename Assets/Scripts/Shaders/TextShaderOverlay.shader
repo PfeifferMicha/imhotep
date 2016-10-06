@@ -1,7 +1,4 @@
-﻿
-// Based on Unity's UI/Default shader. Added custom widget-effects.
-
-Shader "Custom/UIObject"
+﻿Shader "Custom/TextShaderOverlay"
 {
 	Properties
 	{
@@ -17,16 +14,13 @@ Shader "Custom/UIObject"
 		_ColorMask ("Color Mask", Float) = 15
 
 		[Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
-
-		_fadeIn ("Fade In", Range( 0, 1) ) = 1
-		_highlight ("Highlight", Int ) = 0
 	}
 
 	SubShader
 	{
 		Tags
 		{ 
-			"Queue"="Transparent" 
+			"Queue"="Overlay" 
 			"IgnoreProjector"="True" 
 			"RenderType"="Transparent" 
 			"PreviewType"="Plane"
@@ -42,10 +36,10 @@ Shader "Custom/UIObject"
 			WriteMask [_StencilWriteMask]
 		}
 
-		//Cull Off
-		//Lighting Off
+		Cull Off
+		Lighting Off
 		ZWrite Off
-		//ZTest [unity_GUIZTestMode]
+		ZTest [unity_GUIZTestMode]
 		Blend SrcAlpha OneMinusSrcAlpha
 		ColorMask [_ColorMask]
 
@@ -96,36 +90,16 @@ Shader "Custom/UIObject"
 			}
 
 			sampler2D _MainTex;
-			float4 _MainTex_TexelSize;
-
-			float _fadeIn;
-			int _highlight;
 
 			fixed4 frag(v2f IN) : SV_Target
 			{
 				half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd) * IN.color;
-
-				//half4 color2 = (tex2D(_MainTex, IN.texcoord + _MainTex_TexelSize.xy) + _TextureSampleAdd) * IN.color;
-				//half4 color3 = (tex2D(_MainTex, IN.texcoord - _MainTex_TexelSize.xy) + _TextureSampleAdd) * IN.color;
-
-				//fixed diff = distance( color, color2 ) + distance( color, color3 );
-				//float dist = distance( IN.texcoord, float2( 0.5, 0.5 ) );
-				//fixed4 outline = fixed4( diff, diff, diff, diff );
-				//outline.a *= _fadeIn*IN.texcoord.x;
-
-				//ccolor = color*(1-outline.a)*color.a + outline*outline.a;
-
-				if( !_highlight )
-				{
-					color.a *= 0.6;
-				}
-
+				
 				color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
 				
 				#ifdef UNITY_UI_ALPHACLIP
 				clip (color.a - 0.001);
 				#endif
-
 
 				return color;
 			}

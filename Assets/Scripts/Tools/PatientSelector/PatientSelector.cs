@@ -11,7 +11,7 @@ public class PatientSelector : MonoBehaviour {
     void Start () {
 
         // Get the scroll view defined for the widget:
-        mScrollView = transform.Find("Canvas/Background/Scroll View").gameObject;
+        mScrollView = transform.Find("Background/Scroll View").gameObject;
         // Disable the default button:
         defaultPatientButton = mScrollView.transform.Find("Viewport/Content/ButtonPatient").gameObject;
         defaultPatientButton.SetActive(false);

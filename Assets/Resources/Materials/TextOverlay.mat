@@ -6,12 +6,13 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: DefaultOpaque
-  m_Shader: {fileID: 4800000, guid: fa5db193484894dcd95062bb4e69e542, type: 3}
-  m_ShaderKeywords: 
+  m_Name: TextOverlay
+  m_Shader: {fileID: 4800000, guid: 670869f872a2a4c249f1dbba43ba79aa, type: 3}
+  m_ShaderKeywords: _ALPHAPREMULTIPLY_ON
   m_LightmapFlags: 5
-  m_CustomRenderQueue: 2000
-  stringTagMap: {}
+  m_CustomRenderQueue: -1
+  stringTagMap:
+    RenderType: Transparent
   m_SavedProperties:
     serializedVersion: 2
     m_TexEnvs:
@@ -78,6 +79,27 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _SpecGlossMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Noise
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Noise2
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
@@ -86,11 +108,51 @@ Material:
       data:
         first:
           name: _DstBlend
-        second: 0
+        second: 10
       data:
         first:
           name: _Cutoff
         second: 0.5
+      data:
+        first:
+          name: _Shininess
+        second: 0.078125
+      data:
+        first:
+          name: _WindQuality
+        second: 0
+      data:
+        first:
+          name: PixelSnap
+        second: 0
+      data:
+        first:
+          name: _Stencil
+        second: 0
+      data:
+        first:
+          name: _StencilComp
+        second: 8
+      data:
+        first:
+          name: _StencilOp
+        second: 0
+      data:
+        first:
+          name: _StencilReadMask
+        second: 255
+      data:
+        first:
+          name: _StencilWriteMask
+        second: 255
+      data:
+        first:
+          name: _ColorMask
+        second: 15
+      data:
+        first:
+          name: _UseUIAlphaClip
+        second: 0
       data:
         first:
           name: _Parallax
@@ -98,7 +160,7 @@ Material:
       data:
         first:
           name: _ZWrite
-        second: 1
+        second: 0
       data:
         first:
           name: _Glossiness
@@ -122,23 +184,27 @@ Material:
       data:
         first:
           name: _Mode
-        second: 0
+        second: 3
       data:
         first:
           name: _Metallic
         second: 0
       data:
         first:
-          name: _min
-        second: -200
-      data:
-        first:
-          name: _max
-        second: 300
-      data:
-        first:
-          name: _amount
+          name: _InvFade
         second: 1
+      data:
+        first:
+          name: _EaseInAmount
+        second: 0
+      data:
+        first:
+          name: _fadeIn
+        second: 1
+      data:
+        first:
+          name: _highlight
+        second: 0
     m_Colors:
       data:
         first:
@@ -147,12 +213,16 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 0.34509784, g: 0.3490194, b: 0.827451, a: 1}
+        second: {r: 1, g: 1, b: 1, a: 1}
       data:
         first:
-          name: _cuttingPlanePosition
-        second: {r: 9999, g: 0, b: 0, a: 1}
+          name: _SpecColor
+        second: {r: 0.5, g: 0.5, b: 0.5, a: 0}
       data:
         first:
-          name: _cuttingPlaneNormal
-        second: {r: -1, g: 0, b: 0, a: 1}
+          name: _TintColor
+        second: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
+      data:
+        first:
+          name: _HueVariation
+        second: {r: 1, g: 0.5, b: 0, a: 0.1}

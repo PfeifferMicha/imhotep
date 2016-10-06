@@ -99,6 +99,12 @@ namespace UI
 			}
 			setWidgetPosition (newWidget, newWidget.layoutPosition);
 		}
+		public void removeWidget( Widget widget )
+		{
+			if (widgets.Contains (widget)) {
+				widgets.Remove (widget);
+			}
+		}
 
 		public void setWidgetPosition( Widget widget, LayoutPosition newPosition )
 		{
@@ -147,6 +153,13 @@ namespace UI
 			//widgetRect.rect = new Rect (newPos, newSize);
 			widgetRect.anchoredPosition = newPos;
 			widgetRect.sizeDelta = newSize;
+
+			// Handle highlighting if the widget was placed onto the active screen:
+			if (newPosition.screen == activeScreen) {
+				widget.highlight ();
+			} else {
+				widget.unHighlight ();
+			}
 		}
 
 
@@ -186,15 +199,9 @@ namespace UI
 			foreach( Widget w in widgets )
 			{
 				if (w.layoutScreen == s) {
-					w.GetComponent<RectTransform> ().localScale = activeScale;
-					Vector3 pos = w.transform.localPosition;
-					pos.z = 0;
-					w.transform.localPosition = pos;
+					w.highlight ();
 				} else {
-					w.GetComponent<RectTransform> ().localScale = inactiveScale;
-					Vector3 pos = w.transform.localPosition;
-					pos.z = 100;	// Move backwards
-					w.transform.localPosition = pos;
+					w.unHighlight ();
 				}
 			}
 		}

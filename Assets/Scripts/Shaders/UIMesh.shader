@@ -3,7 +3,6 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_NoiseTex ("Texture", 2D) = "white" {}
 	}
 	SubShader
 	{
@@ -35,7 +34,6 @@
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
 			float4 _MainTex_TexelSize;
-			sampler2D _NoiseTex;
 			
 			v2f vert (appdata v)
 			{
@@ -48,26 +46,7 @@
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				// Calculate a "rough" (i.e. low-res) pixel position:
-				float2 noisePixelsRate = _MainTex_TexelSize.zw*0.03;
-				int2 noise_pixel = floor( i.uv * noisePixelsRate + 0.5 );
-				float2 noise_continuous_pos = noise_pixel / noisePixelsRate;
-
-				// Sample the texture at the calculated rough position:
-				fixed n = tex2D( _MainTex, noise_continuous_pos ).r;
-				n *= 0.5 + 0.5*sin(_Time[1] + i.uv.x*20);
-				fixed4 noise = float4( n, n, 1.5*n, n*0.5 );
-
-				// sample the texture
 				fixed4 col = tex2D(_MainTex, i.uv);
-				//col.rgb += noise.rgb*0.3;
-				//col *= (0.7 + noise*0.3);
-				col.rgb *= (1 + noise.rgb*5);
-
-				float m = 1/0.02;
-				float border = m*(1-i.uv.y) + 1 - m;		// y = m*x + b
-				border = max( border, 0 );
-				col += fixed4( 0.5*border, 0.7*border, border, 0.5*border*border )*(1-col.a*0.9);
 				return col;
 			}
 			ENDCG

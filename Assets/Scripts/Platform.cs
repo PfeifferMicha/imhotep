@@ -347,7 +347,7 @@ public class Platform : MonoBehaviour {
 		// If the rounded platform is active...
 		if (rounded.activeSelf) {
 			float radius = 0.6f;//1f;
-			float angleStep = 12;
+			float angleStep = 19;
 			float startAngle = (numberOfToolStands-1) * angleStep * 0.5f;
 			float angle = number * angleStep - startAngle;
 			Vector3 center = new Vector3 (0f, 0f, 1.4f);

@@ -185,7 +185,6 @@ public class HierarchicalInputModule : BaseInputModule {
 		// Stop any selection if anything was pressed:
 		if( AnyPressed( buttonInfo ) )
 		{
-			Debug.Log ("Any pressed");
 			EventSystem.current.SetSelectedGameObject( null, eventData );
 		}
 
@@ -246,7 +245,6 @@ public class HierarchicalInputModule : BaseInputModule {
 			eventData.pressPosition = eventData.position;
 			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerDownHandler);
 		} else if (buttonState == PointerEventData.FramePressState.Released) {
-			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerUpHandler);
 			// If the current object receiving the pointerUp event is also the one which received the
 			// pointer down event, this results in a click!
 			if (eventData.pointerPress == activeGameObject) {
@@ -257,6 +255,7 @@ public class HierarchicalInputModule : BaseInputModule {
 				eventData.dragging = false;
 				eventData.pointerDrag = null;
 			}
+			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerUpHandler);
 			eventData.pointerPress = null;
 		} else if (buttonState == PointerEventData.FramePressState.NotChanged) {
 			if (allowDragging && eventData.pointerPress != null )
