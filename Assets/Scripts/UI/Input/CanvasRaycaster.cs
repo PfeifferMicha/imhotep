@@ -46,7 +46,8 @@ public class CanvasRaycaster : BaseRaycaster {
 			if (graphic.depth == -1 || !graphic.raycastTarget)
 				continue;
 
-			if (!graphic.rectTransform.rect.Contains (data.position))
+			Vector2 localPos = positionFromCanvasSpaceToGraphicSpace (graphic, data.position);
+			if (!graphic.rectTransform.rect.Contains (localPos))
 				continue;
 
 			sortedGraphics.Add (graphic);
@@ -68,5 +69,15 @@ public class CanvasRaycaster : BaseRaycaster {
 			};
 			resultAppendList.Add( castResult );
 		}
+	}
+
+	public Vector2 positionFromCanvasSpaceToGraphicSpace( Graphic graphic, Vector2 pos )
+	{
+		// First, convert the position to world space:
+		Vector3 worldPos = GetComponent<RectTransform> ().TransformPoint (pos.x, pos.y, 0);
+
+		// Then inverse-transform it back to local space:
+		Vector3 result = graphic.rectTransform.InverseTransformPoint( worldPos );
+		return new Vector2 (result.x, result.y);
 	}
 }

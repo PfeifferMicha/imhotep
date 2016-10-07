@@ -88,21 +88,17 @@ public class HierarchicalInputModule : BaseInputModule {
 						}
 					}
 				} else if ( raycastHit.transform.gameObject.layer == LayerMask.NameToLayer( "UITool" ) ) {
-					Debug.Log ("On Tool");
 					if (raycastHit.transform.GetComponent<CanvasRaycaster> () != null) {
 						RectTransform tf = raycastHit.transform.GetComponent<RectTransform> ();
 						PointerEventData data = new PointerEventData (EventSystem.current);
 						data.position = new Vector2 (tf.InverseTransformPoint (raycastHit.point).x, tf.InverseTransformPoint (raycastHit.point).y);
-						Debug.Log ("\tposition: " + data.position);
 						List<RaycastResult> raycastResults = new List<RaycastResult> ();
 						raycastHit.transform.GetComponent<CanvasRaycaster> ().Raycast (data, raycastResults);
-						Debug.Log ("\thit: " + raycastResults.Count);
 						if (raycastResults.Count > 0) {
 							raycastResult = raycastResults [0];
 							activeGameObject = raycastResult.gameObject;
 							lineRenderer.SetPosition (1, raycastHit.point);
 							hitWorldPos = raycastResult.worldPosition;
-							Debug.Log ("\t\t" + activeGameObject);
 						}
 					}
 				}
@@ -238,9 +234,13 @@ public class HierarchicalInputModule : BaseInputModule {
 		// ----------------------------------
 		// Handle scroll:
 
-		if (eventData.scrollDelta != Vector2.zero) {
-			Debug.Log ("Scrolling: " + eventData.scrollDelta);
-			ExecuteEvents.ExecuteHierarchy(activeGameObject, eventData, ExecuteEvents.scrollHandler);
+		if (!Mathf.Approximately(eventData.scrollDelta.sqrMagnitude, 0.0f)) {
+			//Debug.Log ("Scrolling: " + eventData.scrollDelta + " " + activeGameObject.name);
+			//ExecuteEvents.ExecuteHierarchy(activeGameObject, eventData, ExecuteEvents.scrollHandler);
+
+			var scrollHandler = ExecuteEvents.GetEventHandler<IScrollHandler> (activeGameObject);
+			Debug.Log ("Scroll: " + scrollHandler);
+			ExecuteEvents.ExecuteHierarchy(scrollHandler, eventData, ExecuteEvents.scrollHandler);
 			//ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.scrollHandler);
 		}
 
@@ -283,17 +283,20 @@ public class HierarchicalInputModule : BaseInputModule {
 		} else if (buttonState == PointerEventData.FramePressState.NotChanged) {
 			if (allowDragging && eventData.pointerPress != null )
 			{
-				eventData.pointerDrag =  ExecuteEvents.GetEventHandler<IDragHandler>(eventData.pointerPress );
-				//ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.dragHandler);
+				if (eventData.pointerDrag == null) {
+					eventData.pointerDrag = ExecuteEvents.GetEventHandler<IDragHandler> (eventData.pointerPress);
+					//ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.dragHandler);
 
-				if (eventData.pointerDrag != null) {
-					ExecuteEvents.Execute (eventData.pointerDrag, eventData, ExecuteEvents.initializePotentialDrag);
-					if (!eventData.dragging) {
-						ExecuteEvents.Execute(eventData.pointerDrag, eventData, ExecuteEvents.beginDragHandler);
-						eventData.dragging = true;
-					} else {
-						ExecuteEvents.Execute(eventData.pointerDrag, eventData, ExecuteEvents.dragHandler);
+					if (eventData.pointerDrag != null) {
+						ExecuteEvents.Execute (eventData.pointerDrag, eventData, ExecuteEvents.initializePotentialDrag);
+
+						if (!eventData.dragging) {
+							ExecuteEvents.Execute(eventData.pointerDrag, eventData, ExecuteEvents.beginDragHandler);
+							eventData.dragging = true;
+						}
 					}
+				} else {
+					ExecuteEvents.Execute(eventData.pointerDrag, eventData, ExecuteEvents.dragHandler);
 				}
 			}
 		}
