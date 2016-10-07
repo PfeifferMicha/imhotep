@@ -6,7 +6,6 @@ public class ToolWidget : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		transform.SetParent (ToolUIAnchor.instance.transform, false);
 
 		// Set material for all texts:
 		Material mat = new Material(Shader.Find("Custom/TextShader"));
@@ -30,5 +29,26 @@ public class ToolWidget : MonoBehaviour {
 			foreach (Image i in images)
 				i.material = material;
 		}
+	}
+
+	public void OnEnable()
+	{
+		// Move the object to the current anchor (to "helmet" or to controller)
+		Invoke ("MoveToUIAnchor",0.0001f);
+	}
+
+	public void OnDisable()
+	{
+		// Move the object back to the toolControl:
+		Invoke ("MoveBackToToolControl",0.0001f);
+	}
+
+	private void MoveToUIAnchor()
+	{
+		transform.SetParent (ToolUIAnchor.instance.transform, false);
+	}
+	private void MoveBackToToolControl()
+	{
+		transform.SetParent (ToolControl.instance.transform, false);
 	}
 }

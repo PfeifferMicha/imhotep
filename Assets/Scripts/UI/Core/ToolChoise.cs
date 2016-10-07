@@ -11,15 +11,13 @@ public class ToolChoise : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
 	public Text ToolNameText;
 
-	// Use this for initialization
-	void Start () {
+	void OnEnable () {
 		ToolNameText.text = toolName;
 		ToolNameText.gameObject.SetActive (false);
 	}
 
 	public void OnPointerEnter( PointerEventData eventData )
 	{
-		Debug.Log ("Entered:");
 		ToolNameText.gameObject.SetActive (true);
 	}
 

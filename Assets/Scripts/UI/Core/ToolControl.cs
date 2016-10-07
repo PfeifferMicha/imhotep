@@ -6,8 +6,18 @@ public class ToolControl : MonoBehaviour {
 
 	public GameObject ToolStandPrefab;
 	public GameObject ControllerPrefab;
+	public Platform platform;
 
 	List<GameObject> toolStands = new List<GameObject>();
+
+	private GameObject activeTool = null;
+	private GameObject activeToolChoise = null;
+
+	public static ToolControl instance { private set; get; }
+
+	public ToolControl() {
+		instance = this;
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -25,29 +35,26 @@ public class ToolControl : MonoBehaviour {
 	public void generateAvailableTools( object obj = null )
 	{
 		Patient p = obj as Patient;
-		List<string> availableTools = new List<string> ();
-		availableTools.Add ("Opacity Control");
-		availableTools.Add ("Annotations");
-
-		Platform platform = GetComponent<Platform> ();
 
 		uint i = 0;
-		foreach (string s in availableTools) {
-			Debug.Log ("Generating tool stand for: " + s);
-			GameObject go = platform.toolStandPosition (i, (uint)availableTools.Count);
+		foreach (Transform child in transform) {
+			string toolName = child.name;
+
+
+			Debug.Log ("Generating tool stand for: " + toolName);
+			GameObject go = platform.toolStandPosition (i, (uint)transform.childCount);
 			GameObject newToolStand = Object.Instantiate( ToolStandPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-			newToolStand.name = "ToolStand (" + s + ")";
+			newToolStand.name = "ToolStand (" + toolName + ")";
 			newToolStand.transform.SetParent (go.transform, false);
-			StartCoroutine (activateToolStand (newToolStand, Random.value*0.25f + 0.3f*Mathf.Abs(availableTools.Count*0.5f - i)));
+			StartCoroutine (activateToolStand (newToolStand, Random.value*0.25f + 0.3f*Mathf.Abs(transform.childCount*0.5f - i)));
 
 			GameObject controllerChoise = Object.Instantiate (ControllerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 			controllerChoise.transform.localRotation = Quaternion.Euler (new Vector3 (0f, 270f, 270f));
 			controllerChoise.transform.localPosition = new Vector3 ( 0.2f, 0f, 0.13f );
 			ToolChoise tc = controllerChoise.GetComponent<ToolChoise> ();
-			tc.toolName = s;
+			tc.toolName = toolName;
 			tc.toolControl = this;
 			Transform tableBone = newToolStand.transform.Find ("ToolStandArmature/BoneArm/BoneRotate/BoneSlide");
-			Debug.Log ("Found: " + tableBone);
 			controllerChoise.transform.SetParent( tableBone, false );
 			controllerChoise.SetActive (true);
 
@@ -75,8 +82,33 @@ public class ToolControl : MonoBehaviour {
 		}
 	}
 
+	public void closeActiveTool()
+	{
+		if (activeTool != null) {
+			Debug.Log ("Closing tool: " + activeTool.name);
+			activeTool.SetActive (false);
+			activeTool = null;
+			activeToolChoise.SetActive (true);		// make choosable again
+			activeToolChoise = null;
+		}
+	}
+
 	public void chooseTool( ToolChoise tool )
 	{
-		Debug.Log ("Chose tool: " + tool.toolName);
+		closeActiveTool ();
+
+		Debug.Log ("Activating tool: " + tool.toolName);
+		foreach (Transform child in transform) {
+			if (child.name == tool.toolName) {
+				activeTool = child.gameObject;
+				// Move the active tool to the tool anchor:
+				activeTool.SetActive (true);
+				activeToolChoise = tool.gameObject;
+				activeToolChoise.SetActive (false);		// Hide toolchoise
+				return;
+			}
+		}
+
+		Debug.LogWarning ("\tTool '" + tool.toolName + "' not found!");
 	}
 }
