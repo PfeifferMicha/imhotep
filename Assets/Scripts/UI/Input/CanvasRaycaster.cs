@@ -35,9 +35,8 @@ public class CanvasRaycaster : BaseRaycaster {
 
 		Camera cam = Camera.main;
 		Vector3 worldPos = canvas.transform.TransformPoint (new Vector3(data.position.x, data.position.y, 0 ));
-		Debug.Log ("worldPos: " + worldPos);
+
 		Vector3 screenPosition = cam.WorldToScreenPoint (worldPos);
-		Debug.Log ("Pos: " + screenPosition);
 
 		Rect fullCanvas = GetComponent<RectTransform> ().rect;
 

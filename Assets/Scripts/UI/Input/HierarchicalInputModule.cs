@@ -285,12 +285,9 @@ public class HierarchicalInputModule : BaseInputModule {
 		} else if (buttonState == PointerEventData.FramePressState.NotChanged) {
 			if (allowDragging && eventData.pointerPress != null )
 			{
-				Debug.Log ("Not changed.");
 				if (eventData.pointerDrag == null) {
 
-					Debug.Log ("\tNothing dragged.");
 					eventData.pointerDrag = ExecuteEvents.GetEventHandler<IDragHandler> (eventData.pointerPress);
-					Debug.Log ("\tDraggable: " + eventData.pointerDrag);
 
 					if (eventData.pointerDrag != null) {
 						ExecuteEvents.Execute (eventData.pointerDrag, eventData, ExecuteEvents.initializePotentialDrag);

@@ -9,7 +9,7 @@ public class ViewControl : MonoBehaviour {
 	public GameObject editPane;
 	public GameObject viewNameInputField;
 
-	private MeshLoader mMeshLoader;
+	public MeshLoader mMeshLoader;
 	public Button newButton, deleteButton;
 	public Text viewNameText;
 	public Button buttoPrev, buttonNext;
@@ -22,7 +22,6 @@ public class ViewControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		mMeshLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
 
 		meshShader = Shader.Find("Custom/MeshShader");
 		meshShaderTransparent = Shader.Find("Custom/MeshShaderTransparent");
@@ -43,7 +42,9 @@ public class ViewControl : MonoBehaviour {
 	{
 		// Register event callbacks for MESH events:
 		PatientEventSystem.startListening(PatientEventSystem.Event.MESH_LoadedAll, meshLoaded);
-		PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Closed, patientClosed); 
+		PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Closed, patientClosed);
+
+		mMeshLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
 	}
 
 	void OnDisable()

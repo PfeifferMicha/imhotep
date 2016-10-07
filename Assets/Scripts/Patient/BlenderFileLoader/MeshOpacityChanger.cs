@@ -16,14 +16,9 @@ public class MeshOpacityChanger : MonoBehaviour {
 		materialTransparent = Resources.Load("Materials/TemplateMaterial/DefaultTransparent", typeof(Material)) as Material;
 
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	public void changeOpactiyOfChildren(float f){
-		
+		Debug.Log( name + " " + f );
 		if (f == 0.0f)
 		{
 			this.gameObject.SetActive(false);

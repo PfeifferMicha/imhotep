@@ -26,7 +26,9 @@ public class MeshLoader : MonoBehaviour {
     //Contains a list of game objects. This game objects are parents of actual meshs. 
     public List<GameObject> MeshGameObjectContainers { get; set; }
 
-
+	public MeshLoader () {
+		MeshGameObjectContainers = new List<GameObject>();
+	}
 
 	void OnEnable()
 	{
@@ -41,10 +43,7 @@ public class MeshLoader : MonoBehaviour {
 	}
 
 
-    // Use this for initialization
-    void Start () {
-        MeshGameObjectContainers = new List<GameObject>();
-    }
+    
 	
 	// Update is called once per frame
 	void Update () {
