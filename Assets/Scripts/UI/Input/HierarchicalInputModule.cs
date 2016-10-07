@@ -256,6 +256,7 @@ public class HierarchicalInputModule : BaseInputModule {
 			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
 			eventData.pointerPress = null;
 			if (allowDragging && eventData.pointerDrag != null) {
+				Debug.Log ("Dragging!");
 				ExecuteEvents.ExecuteHierarchy (eventData.pointerDrag, eventData, ExecuteEvents.endDragHandler);
 				eventData.dragging = false;
 				eventData.pointerDrag = null;
