@@ -39,6 +39,7 @@ public class HierarchicalInputModule : BaseInputModule {
 		rightData = new CustomEventData (eventSystem);
 		middleData = new CustomEventData (eventSystem);
 		triggerData = new CustomEventData (eventSystem);
+
 	}
 
 	//! Called every frame by the event system
@@ -99,6 +100,7 @@ public class HierarchicalInputModule : BaseInputModule {
 							activeGameObject = raycastResult.gameObject;
 							lineRenderer.SetPosition (1, raycastHit.point);
 							hitWorldPos = raycastResult.worldPosition;
+							data.pointerCurrentRaycast = raycastResult;
 						}
 					}
 				}
@@ -185,8 +187,9 @@ public class HierarchicalInputModule : BaseInputModule {
 		// ----------------------------------
 		// Fill the EventData with current information from the last hit:
 		eventData.scrollDelta = idm.currentInputDevice.getScrollDelta();
-		eventData.position = fakeUIScreenPosition;
+		//eventData.position = fakeUIScreenPosition;
 		eventData.pointerCurrentRaycast = raycastResult;
+		eventData.position = raycastResult.screenPosition;
 
 
 		CopyFromTo (eventData, leftData);
@@ -256,7 +259,6 @@ public class HierarchicalInputModule : BaseInputModule {
 			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
 			eventData.pointerPress = null;
 			if (allowDragging && eventData.pointerDrag != null) {
-				Debug.Log ("Dragging!");
 				ExecuteEvents.ExecuteHierarchy (eventData.pointerDrag, eventData, ExecuteEvents.endDragHandler);
 				eventData.dragging = false;
 				eventData.pointerDrag = null;
@@ -283,9 +285,12 @@ public class HierarchicalInputModule : BaseInputModule {
 		} else if (buttonState == PointerEventData.FramePressState.NotChanged) {
 			if (allowDragging && eventData.pointerPress != null )
 			{
+				Debug.Log ("Not changed.");
 				if (eventData.pointerDrag == null) {
+
+					Debug.Log ("\tNothing dragged.");
 					eventData.pointerDrag = ExecuteEvents.GetEventHandler<IDragHandler> (eventData.pointerPress);
-					//ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.dragHandler);
+					Debug.Log ("\tDraggable: " + eventData.pointerDrag);
 
 					if (eventData.pointerDrag != null) {
 						ExecuteEvents.Execute (eventData.pointerDrag, eventData, ExecuteEvents.initializePotentialDrag);

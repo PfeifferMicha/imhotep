@@ -23,7 +23,7 @@ public class CanvasRaycaster : BaseRaycaster {
 
 	public override Camera eventCamera {
 		get {
-			return null;
+			return Camera.main;
 		}
 	}
 
@@ -31,6 +31,13 @@ public class CanvasRaycaster : BaseRaycaster {
 	{
 		if (canvas == null)
 			return;
+
+
+		Camera cam = Camera.main;
+		Vector3 worldPos = canvas.transform.TransformPoint (new Vector3(data.position.x, data.position.y, 0 ));
+		Debug.Log ("worldPos: " + worldPos);
+		Vector3 screenPosition = cam.WorldToScreenPoint (worldPos);
+		Debug.Log ("Pos: " + screenPosition);
 
 		Rect fullCanvas = GetComponent<RectTransform> ().rect;
 
@@ -55,13 +62,14 @@ public class CanvasRaycaster : BaseRaycaster {
 
 		sortedGraphics.Sort ((g1, g2) => g2.depth.CompareTo (g1.depth));
 
+
 		for (int i = 0; i < sortedGraphics.Count; ++i) {
 			Graphic graphic = sortedGraphics [i];
 			var castResult = new RaycastResult {
 				gameObject = graphic.gameObject,
 				module = this,
 				distance = i,
-				screenPosition = data.position,
+				screenPosition = new Vector2( screenPosition.x, screenPosition.y ),//positionFromCanvasSpaceToGraphicSpace (graphic, data.position),
 				index = resultAppendList.Count,
 				depth = graphic.depth,
 				sortingLayer = canvas.sortingLayerID,
