@@ -239,7 +239,6 @@ public class HierarchicalInputModule : BaseInputModule {
 			//ExecuteEvents.ExecuteHierarchy(activeGameObject, eventData, ExecuteEvents.scrollHandler);
 
 			var scrollHandler = ExecuteEvents.GetEventHandler<IScrollHandler> (activeGameObject);
-			Debug.Log ("Scroll: " + scrollHandler);
 			ExecuteEvents.ExecuteHierarchy(scrollHandler, eventData, ExecuteEvents.scrollHandler);
 			//ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.scrollHandler);
 		}
