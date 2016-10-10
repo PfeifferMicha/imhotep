@@ -9,6 +9,7 @@ public class ToolUIAnchor : MonoBehaviour {
 
 	public void OnEnable()
 	{
+		Debug.Log ("ENABLED TOOL UI ANCHOR: " + gameObject.name);
 		if (instance != null) {
 			throw(new System.Exception ("Error: Cannot create more than one ToolUIAnchor's!"));
 		}

@@ -23,7 +23,7 @@ public class CanvasRaycaster : BaseRaycaster {
 
 	public override Camera eventCamera {
 		get {
-			return Camera.main;
+			return InputDeviceManager.instance.currentInputDevice.getEventCamera();
 		}
 	}
 

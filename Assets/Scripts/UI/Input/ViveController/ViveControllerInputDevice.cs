@@ -98,6 +98,7 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 		}
 
 		fakeCamera = gameObject.AddComponent<Camera> () as Camera;
+		fakeCamera.enabled = false;
 		//find line renderer
 		/*lineRenderer = this.GetComponent<LineRenderer>();
 		if (lineRenderer == null)
