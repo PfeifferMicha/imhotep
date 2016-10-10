@@ -15,4 +15,6 @@ public interface InputDevice {
     Ray createRay();
 
 	ButtonInfo updateButtonInfo ();
+
+	Camera getEventCamera ();
 }

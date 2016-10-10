@@ -33,6 +33,7 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 	private Vector2 touchpadDelta = Vector2.zero;
 
 	private ButtonInfo buttonInfo = new ButtonInfo();
+	private Camera fakeCamera;
 
 	public void activateVisualization()
 	{
@@ -96,6 +97,7 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 			Debug.Log("Vive controller registered");
 		}
 
+		fakeCamera = gameObject.AddComponent<Camera> () as Camera;
 		//find line renderer
 		/*lineRenderer = this.GetComponent<LineRenderer>();
 		if (lineRenderer == null)
@@ -172,5 +174,9 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 
 
 		return buttonInfo;
+	}
+
+	public Camera getEventCamera() {
+		return fakeCamera;
 	}
 }

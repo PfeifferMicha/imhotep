@@ -119,6 +119,12 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
 
 		return buttonInfo;
 	}
+
+	public Camera getEventCamera()
+	{
+		// TODO: Test if this alwasy works on Rift. Might need to create a fake camera instead.
+		return Camera.main;
+	}
 }
 
 //! Show/Hide 

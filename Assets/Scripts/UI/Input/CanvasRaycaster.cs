@@ -33,7 +33,7 @@ public class CanvasRaycaster : BaseRaycaster {
 			return;
 
 
-		Camera cam = Camera.main;
+		Camera cam = InputDeviceManager.instance.currentInputDevice.getEventCamera();
 		Vector3 worldPos = canvas.transform.TransformPoint (new Vector3(data.position.x, data.position.y, 0 ));
 
 		Vector3 screenPosition = cam.WorldToScreenPoint (worldPos);
