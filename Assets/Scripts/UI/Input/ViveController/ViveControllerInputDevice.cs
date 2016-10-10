@@ -171,8 +171,6 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 			break;			
 		}
 
-
-
 		return buttonInfo;
 	}
 
