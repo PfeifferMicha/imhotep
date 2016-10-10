@@ -29,7 +29,7 @@ GameObject:
   - 4: {fileID: 471206}
   - 114: {fileID: 11473240}
   m_Layer: 11
-  m_Name: ToolExample
+  m_Name: Tool Example
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
