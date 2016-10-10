@@ -35,7 +35,7 @@ public class Platform : MonoBehaviour {
 	[Tooltip("Height of the UI")]
 	public float UIMeshRoundedHeight = 2.0f;
 	[Tooltip("Distance from platform to bottom of the UI")]
-	public float UIMeshRectangularBottom = 0.5f;
+	public float UIMeshRectangularBottom = 0.75f;
 	[Tooltip("Height of the UI")]
 	public float UIMeshRectangularHeight = 2.0f;
 	[Tooltip("Radius of corners of rectangular mesh")]
