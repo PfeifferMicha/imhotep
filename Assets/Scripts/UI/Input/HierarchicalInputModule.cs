@@ -30,7 +30,7 @@ public class HierarchicalInputModule : BaseInputModule {
 	private RaycastHit raycastHit;
 	private RaycastResult raycastResult;
 
-	public void Start()
+	protected override void Start()
 	{
 		lineRenderer = this.GetComponent<LineRenderer>();
 
@@ -188,6 +188,9 @@ public class HierarchicalInputModule : BaseInputModule {
 		// Fill the EventData with current information from the last hit:
 		eventData.scrollDelta = idm.currentInputDevice.getScrollDelta();
 		//eventData.position = fakeUIScreenPosition;
+		// Because we're interested in the 3D positions only, copy it over to the 2D UI hit result:
+		raycastResult.worldPosition = raycastHit.point;
+		raycastResult.worldNormal = raycastHit.normal;
 		eventData.pointerCurrentRaycast = raycastResult;
 		eventData.position = raycastResult.screenPosition;
 
