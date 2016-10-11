@@ -24,3 +24,5 @@ Thumbs.db
 *.blend1.meta
 
 .directory
+*.swp
+Documentation/html
