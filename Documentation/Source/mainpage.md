@@ -34,3 +34,12 @@ To run the project using the *HTC Vive*:
 	4. Connect the HTC Vive and start SteamVR.
 	5. Run the project from within Unity.
 
+Getting Started:
+----------------------------------------------
+
+[Input](Documentation/Source/input.md) Describes how the IMHOTEP Input system differs from Unitys default system.
+
+[UI](Documentation/Source/userinterface.md) Describes how UI elements are set up in IMHOTEP.
+
+[Patient Event System](Documentation/Source/patientEventSystem.md) How to make your tools react to Patient load/close events.
+

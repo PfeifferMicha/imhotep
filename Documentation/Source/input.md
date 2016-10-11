@@ -1,0 +1,59 @@
+Input
+=================================
+
+The IMHOTEP input system contains an abstract interface to the input devices, so that - for the most part - the developer does not need to worry about whether a mouse or controller is active.
+
+It also tries to stay as close as possible to the standard Unity input system, which means that events are raised in a similar manner. However, there are places where the system is slightly different to the standard Unity input system, for example because we need additional buttons for the controllers.
+
+Note: To simplify things, the trigger of the right controller is handled in the same way as a click with the left mouse button.
+
+Generally, any GameObject can receive input events when it is being clicked, pointed at etc.
+To receive these events, you need to:
+
+1. Make sure that an active collider is attached to the GameObject
+2. Attach a script to the GameObject which implements the specific event-interface (see below)
+
+
+
+Implementing an interface
+---------------------------------
+
+To be able to receive events, the specific interface needs to be implemented. For example, the ToolChoise class listenes to the click event. This is done by "inheriting" the interface IPointerClickHandler and implementing its method "OnPointerClick":
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cs}
+	public class ToolChoise : MonoBehaviour, IPointerClickHandler {
+		// ...
+
+		public void OnPointerClick( PointerEventData eventData )
+		{
+			toolControl.chooseTool (this);
+		}	
+
+		// ...
+	}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Note: You'll need to include the Unity EventSystem at the top of your file:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cs}
+	using UnityEngine.EventSystems;
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The PointerEventData can be used to check where the object was clicked, which button was clicked (right, middle, left), what the texture-coordinates at that position are etc. See the Unity documentation on 'PointerEventData' for more details.
+
+A lot of the Unity event interfaces are also implemented in IMHOTEP. The most commonly used events are probably:
+
+- IPointerClickHandler - void OnPointerClick( PointerEventData data )
+	Called when the mouse (or controller trigger) is clicked *and* released over the object.
+- IPointerEnterHandler - void OnPointerEnter( PointerEventData data )
+	Called when the mouse/controller pointer moves onto the object.
+- IPointerExitHandler - void OnPointerExit( PointerEventData data )
+	Called when the mouse/controller pointer moves off the object.
+- IPointerDownHandler - void OnPointerDown( PointerEventData data )
+	Called when the mouse/controller is pressed while on the object.
+- IPointerUpHandler - void OnPointerUp( PointerEventData data )
+	Called when the mouse/controller is released while on the object.
+- IScrollHandler - void OnScroll( PointerEventData data )
+	Called when the mouse wheel was used while hovering over the object.
+	Note: This is also called when using the controller's touchpad.
+
