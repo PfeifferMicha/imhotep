@@ -26,21 +26,21 @@ Material:
       data:
         first:
           name: globalMaximum
-        second: 0
+        second: 35269
       data:
         first:
           name: globalMinimum
-        second: 0
+        second: 31744
       data:
         first:
           name: layer
-        second: 0.207
+        second: 0.34375
       data:
         first:
           name: minValue
-        second: 0
+        second: 0.1017457
       data:
         first:
           name: maxValue
-        second: 1
+        second: 0.935441
     m_Colors: {}

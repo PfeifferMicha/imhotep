@@ -47,11 +47,13 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	}
 	public void OnPointerDown( PointerEventData eventData )
 	{
-		mDragging = true;
+		if( eventData.button == PointerEventData.InputButton.Left )
+			mDragging = true;
 	}
 	public void OnPointerUp( PointerEventData eventData )
 	{
-		mDragging = false;
+		if( eventData.button == PointerEventData.InputButton.Left )
+			mDragging = false;
 	}
 	public void Update()
 	{

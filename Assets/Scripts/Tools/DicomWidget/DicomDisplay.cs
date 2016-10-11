@@ -32,9 +32,9 @@ public class DicomDisplay : MonoBehaviour {
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewLoaded, eventDisplayCurrentDicom );
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_AllCleared, eventClear );
 		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, eventClear );
-		eventDisplayCurrentDicom ();
-		//eventNewDicomList ();
 		eventClear ();
+		eventNewDicomList ();
+		eventDisplayCurrentDicom ();
 	}
 
 	void OnDisable()
@@ -56,8 +56,10 @@ public class DicomDisplay : MonoBehaviour {
 		{
 			DicomImage.gameObject.SetActive (true);
 			DicomImage.SetDicom (dicom);
+			StatusText.gameObject.SetActive (false);
+			ImageScreen.SetActive (true);
+			ListScreen.SetActive (false);
 		}
-		StatusText.gameObject.SetActive (false);
 	}
 
 	void eventNewDicomList( object obj = null )
@@ -95,7 +97,6 @@ public class DicomDisplay : MonoBehaviour {
 		}
 
 		DicomImage.gameObject.SetActive (false);
-		backToList ();
 	}
 	void eventClear( object obj = null )
 	{
