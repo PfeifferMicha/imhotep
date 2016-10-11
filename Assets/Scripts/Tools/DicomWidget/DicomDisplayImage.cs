@@ -13,9 +13,9 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	private float mFilledPartOfTexture;
 	private float initialWidth = 512;
 	private float initialHeight = 512;
-	private Slider mMinSlider;
+	/*private Slider mMinSlider;
 	private Slider mMaxSlider;
-	private Slider mLayerSlider;
+	private Slider mLayerSlider;*/
 
 	// When mDragging is true, moving the mouse will modify the windowing:
 	private bool mDragging = false;
@@ -33,7 +33,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		initialWidth = GetComponent<RectTransform> ().rect.width;
 		initialHeight = GetComponent<RectTransform> ().rect.height;
 
-		clear ();
+		//clear ();
 	}
 
 	public void OnScroll(PointerEventData eventData)
@@ -43,7 +43,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 		mLayer = Mathf.Clamp (mLayer + Mathf.Ceil (2.0f * eventData.scrollDelta.y) / numLayers, 0, 1);
 
-		mLayerSlider.value = mLayer;
+		//mLayerSlider.value = mLayer;
 	}
 	public void OnPointerDown( PointerEventData eventData )
 	{
@@ -60,8 +60,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			InputDevice inputDevice = idm.currentInputDevice;
 
 			// TODO: Update to new input event system:
-			float contrastChange = 0f; //= inputDevice.getTexCoordMovement ().x*0.5f;
-			float intensityChange = 0f; // = - inputDevice.getTexCoordMovement ().y*0.5f;
+			float contrastChange = inputDevice.getTexCoordDelta().x*0.5f;
+			float intensityChange = - inputDevice.getTexCoordDelta ().y*0.5f;
 			Debug.Log ("Contrast: " + contrastChange + " Intensity: " + intensityChange);
 
 			float newMin = Mathf.Clamp (mMinValue + intensityChange - contrastChange, 0f, 1f);
@@ -77,24 +77,24 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	{
 		mMinValue = newVal;
 		mMaterial.SetFloat ("minValue", mMinValue);
-		mMinSlider.value = mMinValue;
+		/*mMinSlider.value = mMinValue;
 		if (mMinValue > mMaxValue) {
 			mMaxValue = mMinValue;
 			mMaterial.SetFloat ("maxValue", mMaxValue);
 			mMaxSlider.value = mMaxValue;
-		}
+		}*/
 	}
 
 	public void MaxChanged( float newVal )
 	{
 		mMaxValue = newVal;
 		mMaterial.SetFloat ("maxValue", mMaxValue);
-		mMaxSlider.value = mMaxValue;
+		/*mMaxSlider.value = mMaxValue;
 		if (mMaxValue < mMinValue) {
 			mMinValue = mMaxValue;
 			mMaterial.SetFloat ("minValue", mMinValue);
 			mMinSlider.value = mMinValue;
-		}
+		}*/
 	}
 
 	public void LayerChanged( float newVal )
@@ -129,34 +129,14 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 		//mMaterial.SetFloat ("minValue", mMinValue);
 		//mMaterial.SetFloat ("maxValue", mMaxValue);
-		mMinSlider.value = 0.0f;
+		/*mMinSlider.value = 0.0f;
 		mMaxSlider.value = 1.0f;
-		mLayerSlider.value = 0.5f;
+		mLayerSlider.value = 0.5f;*/
 
 		mNumberOfLayers = dicom.getHeader ().numberOfImages;
 		// Calculate how much of the texture is actually filled and only display that part:
 		mFilledPartOfTexture = (float)mNumberOfLayers/(float)tex.depth;
 		LayerChanged( 0.5f );
-	}
-
-	public void clear()
-	{
-		/*Texture3D tex = new Texture3D (4,4,4, TextureFormat.RGBA32, false);
-		// Fill with black:
-		Color32[] colors = new Color32[4*4*4];
-		for( int i = 0; i < 4*4*4; i ++ )
-		{
-			colors [i] = Color.black;
-		}
-		tex.SetPixels32 (colors);
-		tex.Apply();
-
-		mMaterial.mainTexture = tex;*/
-
-		// Set up sliders:
-		mMinSlider = transform.parent.FindChild("SliderMin").GetComponent<Slider>();
-		mMaxSlider = transform.parent.FindChild("SliderMax").GetComponent<Slider>();
-		mLayerSlider = transform.parent.FindChild("SliderLayer").GetComponent<Slider>();
 	}
 
 	public void FlipHorizontal()

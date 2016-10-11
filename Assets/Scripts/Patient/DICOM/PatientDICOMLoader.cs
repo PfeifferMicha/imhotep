@@ -78,7 +78,7 @@ public class PatientDICOMLoader : MonoBehaviour
             // Unlock:
             isLoading = false;
 
-            loadDicom(0);
+            //loadDicom(0);
         }
 
     }

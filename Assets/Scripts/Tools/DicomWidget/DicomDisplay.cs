@@ -6,24 +6,25 @@ using System.Collections.Generic;
 
 public class DicomDisplay : MonoBehaviour {
 
-	private DicomDisplayImage mDicomImage;
-	private Dropdown mDicomList;
+	public GameObject ListScreen;
+	public GameObject ImageScreen;
+	public GameObject ListEntryButton;
 
-	private Text mStatusText;
+	public DicomDisplayImage DicomImage;
+	//private Dropdown mDicomList;
+
+	public Text StatusText;
 
 	void Awake()
 	{
-		mDicomList = transform.Find ("Canvas/DicomList").GetComponent<Dropdown>();
-		mDicomImage = transform.Find ("Canvas/DicomImage").gameObject.GetComponent<DicomDisplayImage>();
+		//mDicomList = transform.Find ("Canvas/DicomList").GetComponent<Dropdown>();
+		//DicomImage = transform.Find ("Canvas/DicomImage").gameObject.GetComponent<DicomDisplayImage>();
 
-		GameObject go = GameObject.Find ("StatusText");
-		if (go != null) {
-			mStatusText = go.GetComponent<Text> ();
-			mStatusText.text = "Searching for DICOMs ...";
-		}
+		StatusText.text = "Searching for DICOMs ...";
+		eventClear ();
 	}
 
-	void Start()
+	void OnEnable()
 	{
 		// Register event callbacks for all DICOM events:
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewList, eventNewDicomList );
@@ -32,7 +33,8 @@ public class DicomDisplay : MonoBehaviour {
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_AllCleared, eventClear );
 		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, eventClear );
 		eventDisplayCurrentDicom ();
-		eventNewDicomList ();
+		//eventNewDicomList ();
+		eventClear ();
 	}
 
 	void OnDisable()
@@ -52,47 +54,81 @@ public class DicomDisplay : MonoBehaviour {
         DICOM dicom = mPatientDICOMLoader.getCurrentDicom();
 		if( dicom != null )
 		{
-			mDicomImage.gameObject.SetActive (true);
-			mDicomImage.SetDicom (dicom);
+			DicomImage.gameObject.SetActive (true);
+			DicomImage.SetDicom (dicom);
 		}
-		mStatusText.gameObject.SetActive (false);
+		StatusText.gameObject.SetActive (false);
 	}
 
 	void eventNewDicomList( object obj = null )
 	{
         PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
-        mDicomList.ClearOptions ();
+		eventClear ();	// Clear the list
+
 		List<string> seriesUIDs = mPatientDICOMLoader.getAvailableSeries ();
-		List<string> customNames = new List<string> ();
 		Patient p = Patient.getLoadedPatient ();
 		if( p != null )
 		{
+			int i = 0;
 			foreach (string uid in seriesUIDs) {
-				customNames.Add (p.getDICOMNameForSeriesUID (uid));
+				//customNames.Add (p.getDICOMNameForSeriesUID (uid));
+				GameObject newEntry = Instantiate (ListEntryButton) as GameObject;
+				newEntry.SetActive (true);
+
+				Text newEntryText = newEntry.transform.GetComponentInChildren<Text> ();
+				newEntryText.text = p.getDICOMNameForSeriesUID (uid);
+				newEntry.transform.SetParent (ListEntryButton.transform.parent, false);
+
+				// Make the button load the DICOM:
+				Button newButton = newEntry.GetComponent<Button> ();
+				int capturedID = i;
+				newButton.onClick.AddListener(() => selectedNewDicom( capturedID ));
+				i++;
 			}
 		}
-		mDicomList.AddOptions ( customNames );
-		if (customNames.Count == 0) {
-			mStatusText.gameObject.SetActive (true);
-			mStatusText.text = "No DICOM series found.";
+		if (seriesUIDs.Count == 0) {
+			Text newEntryText = ListEntryButton.transform.GetComponentInChildren<Text> ();
+			newEntryText.text = "No series found.";
+			ListEntryButton.SetActive (true);
+		} else {
+			ListEntryButton.SetActive (false);
 		}
+
+		DicomImage.gameObject.SetActive (false);
+		backToList ();
 	}
 	void eventClear( object obj = null )
 	{
-		mDicomList.ClearOptions ();
-		mDicomImage.clear ();
+		foreach (Transform tf in ListEntryButton.transform.parent) {
+			if (tf != ListEntryButton.transform) {
+				Destroy (tf.gameObject);
+			}
+		}
+		Text newEntryText = ListEntryButton.transform.GetComponentInChildren<Text> ();
+		newEntryText.text = "No series loaded.";
+		ListEntryButton.SetActive (true);
+		backToList ();
 	}
 	void eventHideDICOM( object obj = null )
 	{
-		mDicomImage.gameObject.SetActive (false);
+		DicomImage.gameObject.SetActive (false);
 	}
 	public void selectedNewDicom( int id )
 	{
         PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
 		mPatientDICOMLoader.loadDicom ( id );
 
-		mStatusText.gameObject.SetActive (true);
-		mStatusText.text = "Loading DICOM ...";
+		StatusText.gameObject.SetActive (true);
+		StatusText.text = "Loading DICOM ...";
+		ImageScreen.SetActive (true);
+		ListScreen.SetActive (false);
+		DicomImage.gameObject.SetActive (false);
+	}
+
+	public void backToList()
+	{
+		ImageScreen.SetActive (false);
+		ListScreen.SetActive (true);
 	}
 
 }

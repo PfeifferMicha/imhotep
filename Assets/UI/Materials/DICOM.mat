@@ -25,22 +25,22 @@ Material:
     m_Floats:
       data:
         first:
+          name: globalMaximum
+        second: 0
+      data:
+        first:
+          name: globalMinimum
+        second: 0
+      data:
+        first:
+          name: layer
+        second: 0.207
+      data:
+        first:
           name: minValue
-        second: 0.5022546
+        second: 0
       data:
         first:
           name: maxValue
         second: 1
-      data:
-        first:
-          name: layer
-        second: 0
-      data:
-        first:
-          name: globalMaximum
-        second: 35269
-      data:
-        first:
-          name: globalMinimum
-        second: 31744
     m_Colors: {}
