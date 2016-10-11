@@ -38,9 +38,9 @@ Material:
       data:
         first:
           name: minValue
-        second: 0.1017457
+        second: 0.0031151772
       data:
         first:
           name: maxValue
-        second: 0.935441
+        second: 0.9454734
     m_Colors: {}
