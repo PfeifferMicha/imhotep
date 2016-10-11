@@ -42,7 +42,7 @@ Shader "Custom/UIObject"
 			WriteMask [_StencilWriteMask]
 		}
 
-		//Cull Off
+		Cull Off
 		//Lighting Off
 		ZWrite Off
 		//ZTest [unity_GUIZTestMode]
