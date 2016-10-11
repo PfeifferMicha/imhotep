@@ -21,12 +21,9 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 
 	private bool visualizeRay = true;
 
-	private LineRenderer lineRenderer;
+	//private LineRenderer lineRenderer;
 
-	private bool previousRayHitSomething;
-	private Vector2 texCoordPrevious;
 	private Vector2 texCoordDelta;
-	private Vector3 positionPrevious;
 	private Vector3 positionDelta;
 	private Vector2 previousTouchpad = Vector2.zero;
 	private Vector2 touchpadValue = Vector2.zero;
@@ -44,8 +41,8 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 	{
 		visualizeRay = false;
 		Vector3 zero = new Vector3(0, 0, 0);
-		lineRenderer.SetPosition(0, zero);
-		lineRenderer.SetPosition(1, zero);
+		//lineRenderer.SetPosition(0, zero);
+		//lineRenderer.SetPosition(1, zero);
 	}
 
 	public Ray createRay()
@@ -177,5 +174,19 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 
 	public Camera getEventCamera() {
 		return fakeCamera;
+	}
+
+	public Vector2 getTexCoordDelta() {
+		return texCoordDelta;
+	}
+	public Vector3 get3DDelta() {
+		return positionDelta;
+	}
+
+	public void setTexCoordDelta( Vector2 delta ) {
+		texCoordDelta = delta;
+	}
+	public void set3DDelta( Vector2 delta ) {
+		positionDelta = delta;
 	}
 }

@@ -121,6 +121,8 @@ public class HierarchicalInputModule : BaseInputModule {
 				eventData.delta = Vector2.zero;
 				eventData.delta3D = Vector3.zero;
 			}
+			idm.currentInputDevice.setTexCoordDelta (eventData.delta);
+			idm.currentInputDevice.set3DDelta (eventData.delta3D);
 		}
 
 		//Debug.Log ("Active: " + activeGameObject + " previous: " + previousActiveGameObject);
@@ -213,29 +215,29 @@ public class HierarchicalInputModule : BaseInputModule {
 
 		// ----------------------------------
 		// Handle left click:
-		if (activeGameObject) {
+		//if (activeGameObject) {
 			HandleButton (ButtonType.Left, buttonInfo.buttonStates [ButtonType.Left], leftData, true);
-		}
+		//}
 
 
 		// ----------------------------------
 		// Handle right click:
-		if (activeGameObject) {
+		//if (activeGameObject) {
 			HandleButton (ButtonType.Right, buttonInfo.buttonStates [ButtonType.Right], rightData, false);
-		}
+		//}
 
 		// ----------------------------------
 		// Handle middle click:
-		if (activeGameObject) {
+		//if (activeGameObject) {
 			HandleButton (ButtonType.Middle, buttonInfo.buttonStates [ButtonType.Middle], middleData, false);
-		}
+		//}
 
 
 		// ----------------------------------
 		// Handle trigger:
-		if (activeGameObject) {
+		//if (activeGameObject) {
 			HandleButton (ButtonType.Trigger, buttonInfo.buttonStates [ButtonType.Trigger], triggerData, true);
-		}
+		//}
 
 		// ----------------------------------
 		// Handle scroll:
@@ -275,6 +277,7 @@ public class HierarchicalInputModule : BaseInputModule {
 		} else if (buttonState == PointerEventData.FramePressState.Released) {
 			// If the current object receiving the pointerUp event is also the one which received the
 			// pointer down event, this results in a click!
+			ExecuteEvents.ExecuteHierarchy (eventData.pointerPress, eventData, ExecuteEvents.pointerUpHandler);
 			if (eventData.pointerPress == activeGameObject) {
 				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
 			}
@@ -283,7 +286,6 @@ public class HierarchicalInputModule : BaseInputModule {
 				eventData.dragging = false;
 				eventData.pointerDrag = null;
 			}
-			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerUpHandler);
 			eventData.pointerPress = null;
 		} else if (buttonState == PointerEventData.FramePressState.NotChanged) {
 			if (allowDragging && eventData.pointerPress != null )

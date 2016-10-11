@@ -17,4 +17,10 @@ public interface InputDevice {
 	ButtonInfo updateButtonInfo ();
 
 	Camera getEventCamera ();
+
+	Vector2 getTexCoordDelta();
+	Vector3 get3DDelta();
+
+	void setTexCoordDelta( Vector2 delta );
+	void set3DDelta( Vector2 delta );
 }

@@ -21,10 +21,7 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
 	private float mouseSpeed = 0.4f;
 	private Vector3 lastPos = new Vector3(0,0,0);
 
-	private bool previousRayHitSomething;
-	private Vector2 texCoordPrevious;
 	private Vector2 texCoordDelta;
-	private Vector3 positionPrevious;
 	private Vector3 positionDelta;
 
 	private Vector3 rayDir = new Vector3( 0, 0, 1 );
@@ -122,8 +119,22 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
 
 	public Camera getEventCamera()
 	{
-		// TODO: Test if this alwasy works on Rift. Might need to create a fake camera instead.
 		return Camera.main;
+	}
+
+	//! Returns the difference in texture coordinates between this and the last frame:
+	public Vector2 getTexCoordDelta() {
+		return texCoordDelta;
+	}
+	public Vector3 get3DDelta() {
+		return positionDelta;
+	}
+
+	public void setTexCoordDelta( Vector2 delta ) {
+		texCoordDelta = delta;
+	}
+	public void set3DDelta( Vector2 delta ) {
+		positionDelta = delta;
 	}
 }
 
