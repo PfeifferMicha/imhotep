@@ -8,12 +8,14 @@ public class ViewControl : MonoBehaviour {
 	public GameObject mainPane;
 	public GameObject editPane;
 	public GameObject viewNameInputField;
+	public Color colorInactive;
+	public Color colorActive;
 
 	public MeshLoader mMeshLoader;
 	public Button newButton, deleteButton;
 	public Text viewNameText;
 	public Button buttoPrev, buttonNext;
-	public Text viewNumberText;
+	public GameObject viewCountElement;
 
 	private Shader meshShader, meshShaderTransparent;
 	public GameObject meshViewerScaleNode, meshViewerRotationNode;
@@ -25,6 +27,7 @@ public class ViewControl : MonoBehaviour {
 
 		meshShader = Shader.Find("Custom/MeshShader");
 		meshShaderTransparent = Shader.Find("Custom/MeshShaderTransparent");
+		viewCountElement.SetActive (false);
 
 		//meshViewerScaleNode = GameObject.Find ("MeshViewerBase/MeshViewerScale");
 		//meshViewerRotationNode = GameObject.Find ("MeshViewerBase/MeshViewerScale/MeshRotationNode");
@@ -69,7 +72,6 @@ public class ViewControl : MonoBehaviour {
 		deleteButton.interactable = false;
 		newButton.interactable = false;
 		viewNameText.text = "No patient loaded.";
-		viewNumberText.text = "";
 	}
 
 	public void showMainPane()
@@ -166,9 +168,10 @@ public class ViewControl : MonoBehaviour {
 
 				currentViewIndex = index;
 			}
-			viewNumberText.text = (currentViewIndex+1).ToString () + "/" + p.getViewCount ().ToString ();
 
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.MESH_Opacity_Changed);
+
+			updateViewCount ();
 		}
 	}
 
@@ -189,6 +192,37 @@ public class ViewControl : MonoBehaviour {
 			if (moc != null) {
 				moc.changeOpactiyOfChildren (opacity);
 			}
+		}
+	}
+
+	void updateViewCount()
+	{
+		Patient p = Patient.getLoadedPatient ();
+		if (p != null) {
+			if (viewCountElement.transform.parent.childCount < p.getViewCount () + 1) {
+				int toCreate = p.getViewCount () - (viewCountElement.transform.parent.childCount - 1);
+				for (int i = 0; i < toCreate; i++) {
+					GameObject newElem = Instantiate (viewCountElement);
+					newElem.transform.SetParent (viewCountElement.transform.parent, false);
+					newElem.SetActive (true);
+				}
+			} else if( viewCountElement.transform.parent.childCount > p.getViewCount () + 1) {
+				// Remove the last element until we have the correct amount of elements:
+				int toRemove = (viewCountElement.transform.parent.childCount - 1) - p.getViewCount();
+				for (int i = 0; i < toRemove; i++) {
+					Transform tf = viewCountElement.transform.parent.GetChild (viewCountElement.transform.parent.childCount - 1);
+					if( tf != null )
+						Destroy( tf.gameObject );
+				}
+			}
+
+			foreach (Transform tf in viewCountElement.transform.parent) {
+				tf.GetComponent<Image> ().color = colorInactive;
+			}
+
+			// Highlight the currently active view:
+			Transform t = viewCountElement.transform.parent.GetChild( currentViewIndex + 1 );
+			t.GetComponent<Image>().color = colorActive;
 		}
 	}
 }
