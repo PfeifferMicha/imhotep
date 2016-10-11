@@ -26,3 +26,4 @@ Thumbs.db
 .directory
 *.swp
 Documentation/html
+*.fuse_
