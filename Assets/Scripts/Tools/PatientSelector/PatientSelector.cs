@@ -5,6 +5,10 @@ using UI;
 
 public class PatientSelector : MonoBehaviour {
 
+	public Sprite OperationLiver = null;
+	public Sprite OperationBoneFracture = null;
+	public Sprite OperationUnknown = null;
+
     private GameObject mScrollView;
 
     // Use this for initialization
@@ -59,7 +63,6 @@ public class PatientSelector : MonoBehaviour {
 
 			// Fill button's text object:
 			Text t = newButton.transform.Find("Text").GetComponent<Text>();
-			t.color = new Color (0.8f, 0.8f, 0.8f);
 			t.text = "<color=white>" + patient.name + "</color>\n" + patient.birthDate;
 
 			newButton.transform.Find ("ImageFemale").gameObject.SetActive (false);
@@ -78,8 +81,14 @@ public class PatientSelector : MonoBehaviour {
 			}
 
 			Text detailsText = newButton.transform.Find("TextDetails").GetComponent<Text>();
-			detailsText.color = new Color (0.8f, 0.8f, 0.8f);
 			detailsText.text = patient.indication + "\n" + patient.details;
+
+			Image operationTypeImage = newButton.transform.Find ("OperationTypeImage").GetComponent<Image> ();
+			if (operationTypeImage != null) {
+				operationTypeImage.sprite = spriteForOperationType (patient.operationType);
+			} else {
+				operationTypeImage.gameObject.SetActive (false);
+			}
 
 			// Set up events:
 			int capturedIndex = index;
@@ -97,6 +106,17 @@ public class PatientSelector : MonoBehaviour {
 		//Vector2 currentScrollPos = mScrollView.GetComponent<ScrollRect>().normalizedPosition;
 		//mScrollView.GetComponent<ScrollRect>().normalizedPosition = new Vector2(0,currentScrollPos.y);
 
+	}
+
+	Sprite spriteForOperationType( PatientMeta.OperationType ot )
+	{
+		if (ot == PatientMeta.OperationType.Liver) {
+			return OperationLiver;
+		} else if (ot == PatientMeta.OperationType.BoneFracture) {
+			return OperationBoneFracture;
+		} else {
+			return OperationUnknown;
+		}
 	}
 
 	private GameObject defaultPatientButton = null;

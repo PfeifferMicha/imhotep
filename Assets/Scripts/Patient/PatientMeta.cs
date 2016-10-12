@@ -8,6 +8,12 @@ using LitJson;
 
 public class PatientMeta
 {
+	public enum OperationType {
+		BoneFracture,
+		Liver,
+		Unknown
+	}
+
 	public string firstName { get; private set; }
 	public string lastName { get; private set; }
 	public string name { 
@@ -24,6 +30,7 @@ public class PatientMeta
 	public string dicomPath { get; private set; }
 	public string meshPath { get; private set; }
 	public int age { get; private set; }
+	public OperationType operationType { get; private set; }
 
 	public PatientMeta ( string folder )
 	{
@@ -37,6 +44,8 @@ public class PatientMeta
 		} catch {
 			throw new System.Exception("Cannot parse meta.json. Invalid syntax?");
 		}
+
+		operationType = OperationType.Unknown;
 
 		if (data.Keys.Contains ("meta")) {
 			JsonData metaData = data["meta"];
@@ -69,6 +78,14 @@ public class PatientMeta
 			}
 			if (metaData.Keys.Contains ("Sex")) {
 				sex = metaData ["Sex"].ToString ();
+			}
+			if (metaData.Keys.Contains ("OperationType")) {
+				string ot = metaData ["OperationType"].ToString ();
+				try {
+					operationType = (OperationType)Enum.Parse (typeof(OperationType), ot);
+				} catch (System.Exception e ) {
+					Debug.LogWarning ("Could not interpret OperationType.");
+				}
 			}
 		}
 
