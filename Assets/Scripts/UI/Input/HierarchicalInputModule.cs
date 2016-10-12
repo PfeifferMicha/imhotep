@@ -183,6 +183,9 @@ public class HierarchicalInputModule : BaseInputModule {
 		}
 
 		HandlePointerExitAndEnter (eventData, activeGameObject);
+		if (activeGameObject != null) {
+			ExecuteEvents.Execute (activeGameObject, eventData, CustomEvents.pointerHoverHandler);
+		}
 
 		// ----------------------------------
 		// Fill the EventData with current information from the last hit:
@@ -206,10 +209,10 @@ public class HierarchicalInputModule : BaseInputModule {
 
 
 		// Stop any selection if anything was pressed:
-		if( AnyPressed( buttonInfo ) )
-		{
+		//if( AnyPressed( buttonInfo ) )
+		//{
 			//EventSystem.current.SetSelectedGameObject( null, eventData );
-		}
+		//}
 
 		// ----------------------------------
 		// Handle left click:

@@ -653,10 +653,10 @@ RectTransform:
   - {fileID: 507477487}
   m_Father: {fileID: 1275700519}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 88.8775, y: 0}
-  m_SizeDelta: {x: 177.755, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &77547502
 MonoBehaviour:
@@ -704,7 +704,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
   m_MinWidth: 177.755
-  m_MinHeight: 50
+  m_MinHeight: 35
   m_PreferredWidth: 177.75499
   m_PreferredHeight: 50
   m_FlexibleWidth: -1
@@ -3169,17 +3169,17 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 507477486}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.00000023245593}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 77547501}
   m_RootOrder: 1
-  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 7.3, y: -7.9}
-  m_SizeDelta: {x: -14.5, y: 22.1}
-  m_Pivot: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 5, y: 0.00000047683716}
+  m_SizeDelta: {x: -10, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &507477488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3206,7 +3206,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 1
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 0
     m_HorizontalOverflow: 0
@@ -10764,7 +10764,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 50}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1275700520
 MonoBehaviour:
@@ -13371,7 +13371,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22406968, guid: e807f434a518148a89615567920b0f49, type: 2}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22460566, guid: e807f434a518148a89615567920b0f49, type: 2}
       propertyPath: m_AnchorMax.y
@@ -13427,7 +13427,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22406968, guid: e807f434a518148a89615567920b0f49, type: 2}
       propertyPath: m_AnchorMax.x
-      value: 0.45
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22460566, guid: e807f434a518148a89615567920b0f49, type: 2}
       propertyPath: m_AnchorMin.x
@@ -13443,7 +13443,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22406968, guid: e807f434a518148a89615567920b0f49, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 22406968, guid: e807f434a518148a89615567920b0f49, type: 2}
       propertyPath: m_SizeDelta.y
@@ -13451,7 +13451,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22406968, guid: e807f434a518148a89615567920b0f49, type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11480652, guid: e807f434a518148a89615567920b0f49, type: 2}
       propertyPath: m_Color.r
@@ -13464,6 +13464,14 @@ Prefab:
     - target: {fileID: 11480652, guid: e807f434a518148a89615567920b0f49, type: 2}
       propertyPath: m_Color.b
       value: 0.7352941
+      objectReference: {fileID: 0}
+    - target: {fileID: 187418, guid: e807f434a518148a89615567920b0f49, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 130636, guid: e807f434a518148a89615567920b0f49, type: 2}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e807f434a518148a89615567920b0f49, type: 2}
@@ -13641,7 +13649,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1569761409
 Transform:
   m_ObjectHideFlags: 0
