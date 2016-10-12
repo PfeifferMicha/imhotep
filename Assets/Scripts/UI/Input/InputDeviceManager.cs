@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 
 public class InputDeviceManager : MonoBehaviour {
-	
 
     public enum RayInfoStates
     {
@@ -21,22 +20,35 @@ public class InputDeviceManager : MonoBehaviour {
 
 	public static InputDeviceManager instance { private set; get; }
 
+	private LeftController leftController;
+
 	public InputDeviceManager()
 	{
 		instance = this;
 	}
 
-	public bool registerInputDevice(InputDevice device)
+	public void registerInputDevice(InputDevice device)
     {
 		deactivateAllVisualizer();
 		deviceList.Add(device);
 		currentInputDevice = device; //TODO how to change currentInputDevice in game?
-        return true;
     }
 
 	private void deactivateAllVisualizer(){
 		foreach (InputDevice i in deviceList) {
 			i.deactivateVisualization();
+		}
+	}
+
+	public void registerLeftController( LeftController left )
+	{
+		leftController = left;
+	}
+
+	public void shakeLeftController( ushort milliseconds )
+	{
+		if (leftController != null) {
+			leftController.shake (milliseconds);
 		}
 	}
 }

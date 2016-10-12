@@ -87,7 +87,6 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 		trackedObj = this.GetComponent<SteamVR_TrackedObject> ();
 
 		//register device
-
 		if (InputDeviceManager.instance != null)
 		{
 			InputDeviceManager.instance.registerInputDevice(this);
@@ -102,8 +101,6 @@ public class ViveControllerInputDevice : MonoBehaviour, InputDevice {
 		{
 			Debug.LogError("[MouseInput.cs] Line renderer not set");
 		}*/
-
-
 	}
 
 	private bool triggerPressed(){

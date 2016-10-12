@@ -105,10 +105,10 @@ public class ToolControl : MonoBehaviour {
 				activeTool.SetActive (true);
 				activeToolChoise = tool.gameObject;
 				activeToolChoise.SetActive (false);		// Hide toolchoise
+				InputDeviceManager.instance.shakeLeftController( 1000 );
 				return;
 			}
 		}
-
 		Debug.LogWarning ("\tTool '" + tool.toolName + "' not found!");
 	}
 }

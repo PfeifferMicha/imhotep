@@ -14990,7 +14990,10 @@ MonoBehaviour:
   - {fileID: 1913157833}
   - {fileID: 1921864928}
   developmentMode: 1
+  mCurrentUVCoordinates: {x: 0, y: 0}
+  mouse: {fileID: 0}
   mouseSpeed: 0.04
+  mRenderer: {fileID: 0}
 --- !u!23 &1844044538
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -15061,6 +15064,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseInfo: 2
+  mMouse: {fileID: 0}
 --- !u!1 &1845854432
 GameObject:
   m_ObjectHideFlags: 0
@@ -15639,6 +15643,17 @@ MonoBehaviour:
   zoomingSpeed: 1
   maxZoom: 2
   minZoom: 0.2
+--- !u!114 &1913157837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1913157833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fd79e9595a97448d9ca5aef5d111cd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1913157839
 MonoBehaviour:
   m_ObjectHideFlags: 0
