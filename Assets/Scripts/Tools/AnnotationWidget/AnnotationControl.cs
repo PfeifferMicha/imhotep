@@ -50,7 +50,6 @@ public class AnnotationControl : MonoBehaviour {
 
 	//States
 	private ActiveScreen currentActiveScreen = ActiveScreen.none;
-    private State currentState = State.idle;
 
 	private GameObject currentAnnotatin = null;
 	private List<GameObject> annotationList = new List<GameObject>();
@@ -60,18 +59,6 @@ public class AnnotationControl : MonoBehaviour {
 	private static int annotationCounter = 0; //Used to create unique id for annoation point
 
 	private ClickNotifier clickNotifier;
-    
-	//The states of the annotation control. 
-	// idle - The annotations are displayed. The user can press 'Add annoation' to create a new annotation.
-	// addAnnotationPressed - The user pressed 'Add annoation' and we are waiting for a click on the mesh to select a point for the annoation
-	// annotationPointSelected - The user selected a point on the mesh and we are waiting for the text of the annotation. If the user confirm the text we return to 'idle'.
-	private enum State
-    {
-        idle,
-        generatingAnnotationPoint,
-        annotationPointSelected,
-        //textEntered
-    }
 
 	//The State of Annotation Control, which scrren is active
 	// none , no screen is active
@@ -112,7 +99,6 @@ public class AnnotationControl : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        changeCurrentStateToIdle();
 
         idm = GameObject.Find("GlobalScript").GetComponent<InputDeviceManager>();
 
@@ -224,19 +210,19 @@ public class AnnotationControl : MonoBehaviour {
 
 	//Called if the user confirmed changes on an Annotation in List and File
     public void SaveAnnotation()
-    {
-        if (currentState == State.annotationPointSelected && currentAnnotatin != null)
-        {
-			currentAnnotatin.GetComponent<Annotation>().SetLabel(annotationTextInput.text);
+    {	
+		
+    	currentAnnotatin = null;
+        
+		//Reset Edit Tools
+		annotationTextInput.text = "";
+        
+		//Deactivate all Edit Tools
+		annotationTextInput.gameObject.SetActive (false);
+		saveButton.gameObject.SetActive (false);
 
-            annotationTextInput.text = "";
-            currentAnnotatin = null;
-			changeCurrentStateToIdle();
-			annotationTextInput.gameObject.SetActive (false);
-			saveButton.gameObject.SetActive (false);
-
-            saveAnnotationInFile();
-        }
+		//Save changes in File
+		saveAnnotationInFile();
     }
 
 	// Deletes all annotations.
@@ -258,8 +244,6 @@ public class AnnotationControl : MonoBehaviour {
         }
         //Delete list
         annotationList = new List<GameObject>();
-
-        changeCurrentStateToIdle();
     }
 
 	//Creates view of annotationList (List elements on Screen)
@@ -298,65 +282,6 @@ public class AnnotationControl : MonoBehaviour {
             
         }
     }
-
-	//States are outdated
-    /*private void changeCurrentStateToIdle()
-    {
-        //addAnnotationButton.enabled = true;
-        //Text t = addAnnotationButton.GetComponentInChildren<Text>();
-        //if(t != null)
-        //{
-        //    t.text = "Add Annotation"; //Change text on button
-        //}
-
-		AddEditScreen.SetActive (false);
-		listScreen.SetActive (false);
-
-        currentState = State.idle;
-
-        updateAnnotationList();
-    }*/
-
-	//States are outdated
-	/*
-    private void changeCurrentStateToAddAnnotationPressed()
-    {
-        /*addAnnotationButton.enabled = false;
-        Text t = addAnnotationButton.GetComponentInChildren<Text>();
-        if (t != null)
-        {
-            t.text = "Select point";
-        }*//*
-
-		AddEditScreen.SetActive (true);
-		listScreen.SetActive (false);
-        annotationTextInput.gameObject.SetActive(false);
-        saveButton.gameObject.SetActive(false);
-		instructionText.GetComponent<Text> ().text = "Click organ to create new annotation...";
-
-        //TODO change color of button
-
-        currentState = State.generatingAnnotationPoint;
-    }*/
-	
-	//States are outdated
-	/*
-    private void changeCurrentStateToAnnotationPointSelected()
-    {
-        /*Text t = addAnnotationButton.GetComponentInChildren<Text>();
-        if (t != null)
-        {
-            t.text = "Enter text";
-        }*//*
-
-		instructionText.GetComponent<Text> ().text = "Enter text for new label:";
-
-        annotationTextInput.gameObject.SetActive(true);
-        saveButton.gameObject.SetActive(true);
-
-        currentState = State.annotationPointSelected;
-    }*/
-
 
 	//Saves all annotations in a file
     public void saveAnnotationInFile()
