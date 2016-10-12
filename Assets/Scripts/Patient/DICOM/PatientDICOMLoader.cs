@@ -177,7 +177,6 @@ public class PatientDICOMLoader : MonoBehaviour
     }
 
 
-
     public List<string> getAvailableSeries()
 	{
 		List<string> list = new List<string>();
