@@ -2,6 +2,7 @@
 using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace UI
 {
@@ -22,6 +23,9 @@ namespace UI
 
 		public Color TabHighlightColor;
 		public Color ButtonBaseColor;
+
+		public Sprite normalTabImage;
+		public Sprite selectedTabImage;
 
 		public Core()
 		{
@@ -63,6 +67,22 @@ namespace UI
 				}
 			}
 			return null;
+		}
+
+		public void selectTab( Button b )
+		{
+			ColorBlock colors = b.colors;
+			colors.normalColor = TabHighlightColor;
+			b.colors = colors;
+			b.image.sprite = selectedTabImage;
+		}
+
+		public void unselectTab( Button b )
+		{
+			ColorBlock colors = b.colors;
+			colors.normalColor = ButtonBaseColor;
+			b.colors = colors;
+			b.image.sprite = normalTabImage;
 		}
     }
 }

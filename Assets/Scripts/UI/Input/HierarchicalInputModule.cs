@@ -182,18 +182,7 @@ public class HierarchicalInputModule : BaseInputModule {
 			buttonInfo = new ButtonInfo ();
 		}
 
-		if (previousActiveGameObject != activeGameObject) {
-			if (previousActiveGameObject != null) {
-				//ExecuteEvents.ExecuteHierarchy (previousActiveGameObject, eventData, ExecuteEvents.pointerExitHandler);
-				//eventData.pointerEnter = null;
-			}
-			
-			if (activeGameObject != null) {
-				//eventData.pointerEnter = activeGameObject;
-				//ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerEnterHandler);
-			}
-			HandlePointerExitAndEnter (eventData, activeGameObject);
-		}
+		HandlePointerExitAndEnter (eventData, activeGameObject);
 
 		// ----------------------------------
 		// Fill the EventData with current information from the last hit:
@@ -219,7 +208,7 @@ public class HierarchicalInputModule : BaseInputModule {
 		// Stop any selection if anything was pressed:
 		if( AnyPressed( buttonInfo ) )
 		{
-			EventSystem.current.SetSelectedGameObject( null, eventData );
+			//EventSystem.current.SetSelectedGameObject( null, eventData );
 		}
 
 		// ----------------------------------
@@ -264,79 +253,99 @@ public class HierarchicalInputModule : BaseInputModule {
 
 	private void HandleButton( ButtonType buttonType, PointerEventData.FramePressState buttonState, CustomEventData eventData, bool allowDragging )
 	{
-		if (buttonState == PointerEventData.FramePressState.Pressed || buttonState == PointerEventData.FramePressState.PressedAndReleased) {
+		GameObject currentOverGo = eventData.pointerCurrentRaycast.gameObject;
+
+		// PointerDown notification
+		if (buttonState == PointerEventData.FramePressState.Pressed || buttonState == PointerEventData.FramePressState.PressedAndReleased )
+		{
 			eventData.eligibleForClick = true;
 			eventData.delta = Vector2.zero;
 			eventData.dragging = false;
 			eventData.useDragThreshold = true;
 			eventData.pressPosition = eventData.position;
-			eventData.pointerPressRaycast = raycastResult;
+			eventData.pointerPressRaycast = eventData.pointerCurrentRaycast;
 
+			DeselectIfSelectionChanged(currentOverGo, eventData);
 
-			DeselectIfSelectionChanged ( activeGameObject, eventData);
+			// search for the control that will receive the press
+			// if we can't find a press handler set the press
+			// handler to be what would receive a click.
+			var newPressed = ExecuteEvents.ExecuteHierarchy(currentOverGo, eventData, ExecuteEvents.pointerDownHandler);
+
+			// didnt find a press handler... search for a click handler
+			if (newPressed == null)
+				newPressed = ExecuteEvents.GetEventHandler<IPointerClickHandler>(currentOverGo);
+
+			// Debug.Log("Pressed: " + newPressed);
+
+			float time = Time.unscaledTime;
+
+			if (newPressed == eventData.lastPress)
+			{
+				var diffTime = time - eventData.clickTime;
+				if (diffTime < 0.3f)
+					++eventData.clickCount;
+				else
+					eventData.clickCount = 1;
+
+				eventData.clickTime = time;
+			}
+			else
+			{
+				eventData.clickCount = 1;
+			}
+
+			eventData.pointerPress = newPressed;
+			eventData.rawPointerPress = currentOverGo;
+
+			eventData.clickTime = time;
+
+			// Save the drag handler as well
+			eventData.pointerDrag = ExecuteEvents.GetEventHandler<IDragHandler>(currentOverGo);
+
+			if (eventData.pointerDrag != null)
+				ExecuteEvents.Execute(eventData.pointerDrag, eventData, ExecuteEvents.initializePotentialDrag);
 		}
 
+		// PointerUp notification
+		if (buttonState == PointerEventData.FramePressState.Released || buttonState == PointerEventData.FramePressState.PressedAndReleased )
+		{
+			// Debug.Log("Executing pressup on: " + pointer.pointerPress);
+			ExecuteEvents.Execute(eventData.pointerPress, eventData, ExecuteEvents.pointerUpHandler);
 
+			// Debug.Log("KeyCode: " + pointer.eventData.keyCode);
 
-		if (buttonState == PointerEventData.FramePressState.PressedAndReleased) {
-			eventData.pointerPress = activeGameObject;
-			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
-			eventData.pointerPress = null;
-			if (allowDragging && eventData.pointerDrag != null) {
-				ExecuteEvents.ExecuteHierarchy (eventData.pointerDrag, eventData, ExecuteEvents.endDragHandler);
-				eventData.dragging = false;
-				eventData.pointerDrag = null;
+			// see if we mouse up on the same element that we clicked on...
+			var pointerUpHandler = ExecuteEvents.GetEventHandler<IPointerClickHandler>(currentOverGo);
+
+			// PointerClick and Drop events
+			if (eventData.pointerPress == pointerUpHandler && eventData.eligibleForClick)
+			{
+				ExecuteEvents.Execute(eventData.pointerPress, eventData, ExecuteEvents.pointerClickHandler);
 			}
-		} else if (buttonState == PointerEventData.FramePressState.Pressed) {
-			eventData.pointerPress = activeGameObject;
+			else if (eventData.pointerDrag != null && eventData.dragging)
+			{
+				ExecuteEvents.ExecuteHierarchy(currentOverGo, eventData, ExecuteEvents.dropHandler);
+			}
+
+			eventData.eligibleForClick = false;
+			eventData.pointerPress = null;
+			eventData.rawPointerPress = null;
+
+			if (eventData.pointerDrag != null && eventData.dragging)
+				ExecuteEvents.Execute(eventData.pointerDrag, eventData, ExecuteEvents.endDragHandler);
+
 			eventData.dragging = false;
-			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerDownHandler);
-		} else if (buttonState == PointerEventData.FramePressState.Released) {
-			// If the current object receiving the pointerUp event is also the one which received the
-			// pointer down event, this results in a click!
-			if (eventData.pointerPress == activeGameObject) {
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
-			}
-			if (allowDragging && eventData.pointerDrag != null) {
-				ExecuteEvents.ExecuteHierarchy (eventData.pointerDrag, eventData, ExecuteEvents.endDragHandler);
-				eventData.dragging = false;
-				eventData.pointerDrag = null;
-			}
-			eventData.pointerPress = null;
-			ExecuteEvents.ExecuteHierarchy (eventData.pointerPress, eventData, ExecuteEvents.pointerUpHandler);
-		} else if (buttonState == PointerEventData.FramePressState.NotChanged) {
-			if (allowDragging && eventData.pointerPress != null) {
-				if (eventData.pointerDrag == null) {
+			eventData.pointerDrag = null;
 
-					eventData.pointerDrag = ExecuteEvents.GetEventHandler<IDragHandler> (eventData.pointerPress);
-
-					if (eventData.pointerDrag != null) {
-						ExecuteEvents.Execute (eventData.pointerDrag, eventData, ExecuteEvents.initializePotentialDrag);
-
-						if (!eventData.dragging) {
-							ExecuteEvents.Execute (eventData.pointerDrag, eventData, ExecuteEvents.beginDragHandler);
-							eventData.dragging = true;
-						}
-					}
-				} else {
-					ExecuteEvents.Execute (eventData.pointerDrag, eventData, ExecuteEvents.dragHandler);
-				}
-			}
-
-			// Only call the hover for the left mouse button (so we only call it once per frame):
-			if (eventData.button == PointerEventData.InputButton.Left && activeGameObject != null) {
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, CustomEvents.pointerHoverHandler);
-			}
-		}
-
-		// Released this frame?
-		if (buttonState == PointerEventData.FramePressState.Released || buttonState == PointerEventData.FramePressState.PressedAndReleased) {
-
-			Debug.Log ("RELEASED!!");
-			if (activeGameObject != null)
+			// redo pointer enter / exit to refresh state
+			// so that if we moused over somethign that ignored it before
+			// due to having pressed on something else
+			// it now gets it.
+			if (currentOverGo != eventData.pointerEnter)
 			{
 				HandlePointerExitAndEnter(eventData, null);
-				HandlePointerExitAndEnter(eventData, activeGameObject);
+				HandlePointerExitAndEnter(eventData, currentOverGo);
 			}
 		}
 	}

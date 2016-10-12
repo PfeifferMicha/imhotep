@@ -49,35 +49,29 @@ public class PatientBriefing : MonoBehaviour {
 
 				string capturedTabName = tabNames [i];	// might not be necessary to capture, but just in case the list changes?
 				Button b = newButton.GetComponent<Button>();
-				b.onClick.AddListener (() => setPatientText( capturedTabName ));
-				b.onClick.AddListener (() => highlightButton (b));
+				b.onClick.AddListener (() => selectTab (b));
 			}
 
-			setPatientText ("General");
+			if (tabButton.transform.parent.childCount > 1) {
+				// Select the first tab which is not the tabButton prefab:
+				selectTab (tabButton.transform.parent.GetChild(1).GetComponent<Button>());
+			}
 		}
 	}
 
-	private void setPatientText( string tabName ) {
+	private void selectTab( Button b )
+	{
+		foreach (Transform child in tabButton.transform.parent) {
+			UI.Core.instance.unselectTab (child.GetComponent<Button> ());
+		}
+		UI.Core.instance.selectTab (b);
 
+		string tabName = b.GetComponentInChildren<Text> ().text;
 		Patient loadedPatient = Patient.getLoadedPatient ();
 		if (loadedPatient != null) {
 			Debug.Log ("Loading tab: " + tabName);
+			text.text = loadedPatient.getAdditionalInfo (tabName);
 		}
-
-		text.text = loadedPatient.getAdditionalInfo (tabName);
-	}
-
-	private void highlightButton( Button b )
-	{
-		Debug.Log ("Highlight button: " + b.name);
-		foreach (Transform child in tabButton.transform.parent) {
-			ColorBlock colors = child.GetComponent<Button> ().colors;
-			colors.normalColor = UI.Core.instance.ButtonBaseColor;
-			child.GetComponent<Button> ().colors = colors;
-		}
-		ColorBlock cols = b.colors;
-		cols.normalColor = UI.Core.instance.TabHighlightColor;
-		b.colors = cols;
 	}
 
 	private void clearTabs()
