@@ -9581,8 +9581,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   layoutScreen: 2
-  layoutAlignHorizontal: 3
-  layoutAlignVertical: 3
+  layoutAlignHorizontal: 2
+  layoutAlignVertical: 1
   layoutLayer: 0
   material: {fileID: 0}
 --- !u!114 &1141902290
