@@ -122,11 +122,10 @@ public class AnnotationControl : MonoBehaviour {
 	}
 
 	//Used to Create Annotation
-	private GameObject createAnnotation(Quaternion rotation, Vector3 point) {
-		point = meshPositionNode.transform.InverseTransformPoint (point);
-        GameObject newAnnotation = (GameObject)Instantiate(annotationPointObj, point, rotation);
+	private GameObject createAnnotation(Quaternion rotation, Vector3 position) {
+		
+        GameObject newAnnotation = (GameObject)Instantiate(annotationPointObj, position, rotation);
 
-        //newAnnotationPoint.transform.localScale *= meshNode.transform.localScale.x; //x,y,z are the same
 		newAnnotation.transform.localScale = new Vector3( 5, 5, 5 );
 		newAnnotation.transform.SetParent( meshPositionNode.transform, false );
 
@@ -389,8 +388,7 @@ public class AnnotationControl : MonoBehaviour {
             Quaternion rotation = new Quaternion((float)apj.RotationX, (float)apj.RotationY, (float)apj.RotationZ, (float)apj.RotationW);
             Vector3 position = new Vector3((float)apj.PositionX, (float)apj.PositionY, (float)apj.PositionZ);
 
-			GameObject annotation = createAnnotation(Quaternion.identity, position);
-            annotation.transform.localRotation = rotation;
+			GameObject annotation = createAnnotation(rotation, position);
 
 			annotation.GetComponent<Annotation> ().SetLabel (apj.Text);
         }

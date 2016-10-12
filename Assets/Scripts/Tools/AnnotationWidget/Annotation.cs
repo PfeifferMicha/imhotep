@@ -12,7 +12,7 @@ public class Annotation : MonoBehaviour {
 	public string creator;
 	public DateTime creationDate;
 	public GameObject annotationLabel;
-	public Quaternion rotation;
+	//public Quaternion rotation;
     [DefaultValue(-1)]
 	public int id;
 
@@ -27,7 +27,7 @@ public class Annotation : MonoBehaviour {
     void Update () {
         //Update lines from annotation point to label
         //because lines are no game objects
-       
+
         if (annotationLabel != null)
         {
             this.GetComponent<LineRenderer>().SetPosition(0, this.transform.position);
@@ -41,18 +41,14 @@ public class Annotation : MonoBehaviour {
 	public void CreateLabel(GameObject annotationLabelMaster) {
 		//Create Label
 
-		annotationLabel = (GameObject)Instantiate(annotationLabelMaster, Vector3.zero, this.transform.localRotation);
+		annotationLabel = (GameObject)Instantiate(annotationLabelMaster, new Vector3(0f,0f,15f), this.transform.localRotation);
 		annotationLabel.transform.localScale = new Vector3 (0.05f, 0.05f, 0.05f);	//*= meshNode.transform.localScale.x; //x,y,z are the same
 		annotationLabel.transform.SetParent(this.transform, false);
 		annotationLabel.SetActive (true);
 
-		// Since the currentAnnotationPoint faces along the normal of the attached object,
-		// we can get an offset direction from its rotation:
-		annotationLabel.transform.localPosition = new Vector3(0f,0f,15f);
-
 		//Create line form point to label
 		this.GetComponent<LineRenderer>().SetPosition(0, this.transform.position);
-		this.GetComponent<LineRenderer>().SetPosition(1, this.transform.position);
+		this.GetComponent<LineRenderer>().SetPosition(1, this.annotationLabel.transform.position);
 
 		Text labelText = annotationLabel.transform.Find("Background/Text").gameObject.GetComponent<Text>();
 		labelText.text = text;
