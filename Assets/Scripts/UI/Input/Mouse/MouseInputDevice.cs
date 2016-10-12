@@ -43,6 +43,11 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
 
     public Ray createRay()
     {
+
+		if (!developmentMode) {
+			Cursor.lockState = CursorLockMode.Locked;
+		}
+
         Ray ray;
 		if(developmentMode){
         	ray = Camera.main.ScreenPointToRay(Input.mousePosition);
