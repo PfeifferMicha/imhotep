@@ -24,7 +24,7 @@ public class Annotation : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update () {
+	void Update () {
         //Update lines from annotation point to label
         //because lines are no game objects
 
