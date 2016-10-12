@@ -184,14 +184,15 @@ public class HierarchicalInputModule : BaseInputModule {
 
 		if (previousActiveGameObject != activeGameObject) {
 			if (previousActiveGameObject != null) {
-				ExecuteEvents.ExecuteHierarchy (previousActiveGameObject, eventData, ExecuteEvents.pointerExitHandler);
-				eventData.pointerEnter = null;
+				//ExecuteEvents.ExecuteHierarchy (previousActiveGameObject, eventData, ExecuteEvents.pointerExitHandler);
+				//eventData.pointerEnter = null;
 			}
 			
 			if (activeGameObject != null) {
-				eventData.pointerEnter = activeGameObject;
-				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerEnterHandler);
+				//eventData.pointerEnter = activeGameObject;
+				//ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerEnterHandler);
 			}
+			HandlePointerExitAndEnter (eventData, activeGameObject);
 		}
 
 		// ----------------------------------
@@ -263,10 +264,22 @@ public class HierarchicalInputModule : BaseInputModule {
 
 	private void HandleButton( ButtonType buttonType, PointerEventData.FramePressState buttonState, CustomEventData eventData, bool allowDragging )
 	{
-		if (buttonState == PointerEventData.FramePressState.PressedAndReleased) {
-			eventData.pointerPress = activeGameObject;
+		if (buttonState == PointerEventData.FramePressState.Pressed || buttonState == PointerEventData.FramePressState.PressedAndReleased) {
+			eventData.eligibleForClick = true;
+			eventData.delta = Vector2.zero;
+			eventData.dragging = false;
+			eventData.useDragThreshold = true;
 			eventData.pressPosition = eventData.position;
 			eventData.pointerPressRaycast = raycastResult;
+
+
+			DeselectIfSelectionChanged ( activeGameObject, eventData);
+		}
+
+
+
+		if (buttonState == PointerEventData.FramePressState.PressedAndReleased) {
+			eventData.pointerPress = activeGameObject;
 			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
 			eventData.pointerPress = null;
 			if (allowDragging && eventData.pointerDrag != null) {
@@ -275,15 +288,12 @@ public class HierarchicalInputModule : BaseInputModule {
 				eventData.pointerDrag = null;
 			}
 		} else if (buttonState == PointerEventData.FramePressState.Pressed) {
-			eventData.pointerPressRaycast = raycastResult;
 			eventData.pointerPress = activeGameObject;
-			eventData.pressPosition = eventData.position;
 			eventData.dragging = false;
 			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerDownHandler);
 		} else if (buttonState == PointerEventData.FramePressState.Released) {
 			// If the current object receiving the pointerUp event is also the one which received the
 			// pointer down event, this results in a click!
-			ExecuteEvents.ExecuteHierarchy (eventData.pointerPress, eventData, ExecuteEvents.pointerUpHandler);
 			if (eventData.pointerPress == activeGameObject) {
 				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.pointerClickHandler);
 			}
@@ -293,6 +303,7 @@ public class HierarchicalInputModule : BaseInputModule {
 				eventData.pointerDrag = null;
 			}
 			eventData.pointerPress = null;
+			ExecuteEvents.ExecuteHierarchy (eventData.pointerPress, eventData, ExecuteEvents.pointerUpHandler);
 		} else if (buttonState == PointerEventData.FramePressState.NotChanged) {
 			if (allowDragging && eventData.pointerPress != null) {
 				if (eventData.pointerDrag == null) {
@@ -315,6 +326,17 @@ public class HierarchicalInputModule : BaseInputModule {
 			// Only call the hover for the left mouse button (so we only call it once per frame):
 			if (eventData.button == PointerEventData.InputButton.Left && activeGameObject != null) {
 				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, CustomEvents.pointerHoverHandler);
+			}
+		}
+
+		// Released this frame?
+		if (buttonState == PointerEventData.FramePressState.Released || buttonState == PointerEventData.FramePressState.PressedAndReleased) {
+
+			Debug.Log ("RELEASED!!");
+			if (activeGameObject != null)
+			{
+				HandlePointerExitAndEnter(eventData, null);
+				HandlePointerExitAndEnter(eventData, activeGameObject);
 			}
 		}
 	}
@@ -373,5 +395,15 @@ public class HierarchicalInputModule : BaseInputModule {
 		@to.scrollDelta = @from.scrollDelta;
 		@to.pointerCurrentRaycast = @from.pointerCurrentRaycast;
 		@to.pointerEnter = @from.pointerEnter;
+	}
+
+	protected void DeselectIfSelectionChanged(GameObject currentOverGo, BaseEventData pointerEvent)
+	{
+		// Selection tracking
+		var selectHandlerGO = ExecuteEvents.GetEventHandler<ISelectHandler>(currentOverGo);
+		// if we have clicked something new, deselect the old thing
+		// leave 'selection handling' up to the press event though.
+		if (selectHandlerGO != eventSystem.currentSelectedGameObject)
+			eventSystem.SetSelectedGameObject(null, pointerEvent);
 	}
 }

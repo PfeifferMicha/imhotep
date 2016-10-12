@@ -2099,10 +2099,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1598079629}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 175.5, y: -16.15}
-  m_SizeDelta: {x: 337, y: 18.3}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &334043043
 MonoBehaviour:
@@ -6471,7 +6471,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_FirstSelected: {fileID: 0}
-  m_sendNavigationEvents: 1
+  m_sendNavigationEvents: 0
   m_DragThreshold: 5
 --- !u!114 &795904948
 MonoBehaviour:
@@ -8273,7 +8273,7 @@ MonoBehaviour:
   UIScale: 0.0025
   pixelsPerMeter: 500
   aspectRatio: 1
-  TabHighlightColor: {r: 0.9764706, g: 0.8117647, b: 0.5294118, a: 1}
+  TabHighlightColor: {r: 0.51926976, g: 0.80784315, b: 0.42745098, a: 1}
   ButtonBaseColor: {r: 0.44669116, g: 0.5219072, b: 0.5955882, a: 1}
 --- !u!1 &968136473
 GameObject:
@@ -9606,7 +9606,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1141902285
 RectTransform:
   m_ObjectHideFlags: 0
