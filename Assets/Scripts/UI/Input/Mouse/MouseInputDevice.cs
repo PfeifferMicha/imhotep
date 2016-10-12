@@ -63,7 +63,7 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
 
     public Vector2 getScrollDelta()
     {
-        return Input.mouseScrollDelta*5f;
+        return Input.mouseScrollDelta*20f;
     }
 
     public bool isVisualizerActive()
