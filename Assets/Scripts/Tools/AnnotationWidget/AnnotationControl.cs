@@ -217,7 +217,7 @@ public class AnnotationControl : MonoBehaviour {
 		*/
 	}
 
-	//Called if the user confirmed changes on an Annotation in List and File
+	//Called if the user pressed Sve Button
     public void SaveAnnotation()
     {	
 		
@@ -233,6 +233,18 @@ public class AnnotationControl : MonoBehaviour {
 		//Save changes in File
 		saveAnnotationInFile();
     }
+
+	//Called if the user pressed Edit Button
+	public void EditAnnotation()
+	{	
+		//TODO EditAnnotation
+	}
+
+	//Called if the user pressed Delete Button
+	public void DeleteAnnotation()
+	{	
+		//TODO DeleteAnnotation
+	}
 
 	// Deletes all annotations.
 	public void clearAll()
@@ -280,7 +292,7 @@ public class AnnotationControl : MonoBehaviour {
             // Change button text to name of tool:
 			//Doesnt work TODO
 			//GameObject textObject = newEntry.transform.Find("Text").gameObject;
-			Text buttonText = newEntry.GetComponent<Text>();
+			Text buttonText = newEntry.transform.Find("LabelText").gameObject.GetComponent<Text>();
             Annotation ap = g.GetComponent<Annotation>();
             if(ap != null)
             {
