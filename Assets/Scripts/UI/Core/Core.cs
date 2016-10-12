@@ -20,6 +20,9 @@ namespace UI
 		public float pixelsPerMeter = 500f;
 		public float aspectRatio = 1f;
 
+		public Color TabHighlightColor;
+		public Color ButtonBaseColor;
+
 		public Core()
 		{
 			instance = this;

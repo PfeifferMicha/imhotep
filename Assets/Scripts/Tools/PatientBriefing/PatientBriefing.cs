@@ -49,7 +49,8 @@ public class PatientBriefing : MonoBehaviour {
 
 				string capturedTabName = tabNames [i];	// might not be necessary to capture, but just in case the list changes?
 				Button b = newButton.GetComponent<Button>();
-				b.onClick.AddListener(() => setPatientText( capturedTabName ));
+				b.onClick.AddListener (() => setPatientText( capturedTabName ));
+				b.onClick.AddListener (() => highlightButton (b));
 			}
 
 			setPatientText ("General");
@@ -64,6 +65,19 @@ public class PatientBriefing : MonoBehaviour {
 		}
 
 		text.text = loadedPatient.getAdditionalInfo (tabName);
+	}
+
+	private void highlightButton( Button b )
+	{
+		Debug.Log ("Highlight button: " + b.name);
+		foreach (Transform child in tabButton.transform.parent) {
+			ColorBlock colors = child.GetComponent<Button> ().colors;
+			colors.normalColor = UI.Core.instance.ButtonBaseColor;
+			child.GetComponent<Button> ().colors = colors;
+		}
+		ColorBlock cols = b.colors;
+		cols.normalColor = UI.Core.instance.TabHighlightColor;
+		b.colors = cols;
 	}
 
 	private void clearTabs()
