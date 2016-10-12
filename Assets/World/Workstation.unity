@@ -4485,9 +4485,10 @@ MonoBehaviour:
   UICamera: {fileID: 470118322}
   UiMeshMaterial: {fileID: 2100000, guid: 4654fc3d0834c4e06bc8962e5f83ea5f, type: 2}
   UIMeshRoundedRadius: 1.2
-  UIMeshRoundedAngle: 200
+  UIMeshRoundedAngle: 180
+  UIMeshRoundedSideLength: 0.6
   UIMeshRoundedBottom: 0.55
-  UIMeshRoundedHeight: 2
+  UIMeshRoundedHeight: 1.7
   UIMeshRectangularBottom: 0.75
   UIMeshRectangularHeight: 1.5
   UIMeshRectangularRadius: 0.425

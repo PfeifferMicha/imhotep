@@ -29,7 +29,9 @@ public class Platform : MonoBehaviour {
 	[Tooltip("Radius of the rounded mesh")]
 	public float UIMeshRoundedRadius = 1.2f;
 	[Tooltip("Opening angle in degrees")]
-	public float UIMeshRoundedAngle = 160f;
+	public float UIMeshRoundedAngle = 180f;
+	[Tooltip("Length of the rounded mesh sides")]
+	public float UIMeshRoundedSideLength = 0.3f;
 	[Tooltip("Distance from platform to bottom of the UI")]
 	public float UIMeshRoundedBottom = 0.35f;
 	[Tooltip("Height of the UI")]
@@ -169,20 +171,46 @@ public class Platform : MonoBehaviour {
 		List<Vector2> newUV = new List<Vector2> ();
 		List<int> newTriangles = new List<int> ();
 
-		// Fill the lists with vertices and triangles:
-		int numSegments = 50;
+		float fullSize = 2f*UIMeshRoundedSideLength + Mathf.PI*UIMeshRoundedRadius;
+
+		// what percentage of the whole mesh is rounded (as opposed to straight):
+		ratioRounded = Mathf.PI*UIMeshRoundedRadius / fullSize;
+		ratioSide = UIMeshRoundedSideLength / fullSize;
+
 		float fullAngle = UIMeshRoundedAngle * Mathf.PI / 180f;
+
+		// Start with first straight segment:
+		float angle = - fullAngle * 0.5f;
+		float x = UIMeshRoundedRadius * Mathf.Sin (angle);
+		float y = UIMeshRoundedRadius * Mathf.Cos (angle);
+		newVertices.Add (new Vector3 (x, 0, y - UIMeshRoundedSideLength));
+		newUV.Add (new Vector2 (0, 0));
+		newVertices.Add (new Vector3 (x, UIMeshRoundedHeight, y - UIMeshRoundedSideLength));
+		newUV.Add (new Vector2 (0, 1));
+
+		// Create the rounded part:
+		int numSegments = 50;
 		for (int i = 0; i <= numSegments; i++) {
 			float currentAmount = (float)i / (float)numSegments;
-			float angle = fullAngle * currentAmount - fullAngle * 0.5f;
-			float x = UIMeshRoundedRadius * Mathf.Sin (angle);
-			float y = UIMeshRoundedRadius * Mathf.Cos (angle);
+			angle = fullAngle * currentAmount - fullAngle * 0.5f;
+			x = UIMeshRoundedRadius * Mathf.Sin (angle);
+			y = UIMeshRoundedRadius * Mathf.Cos (angle);
 			newVertices.Add (new Vector3 (x, 0, y));
-			newUV.Add (new Vector2 (currentAmount, 0));
+			newUV.Add (new Vector2 (ratioSide + currentAmount*ratioRounded, 0));
 			newVertices.Add (new Vector3 (x, UIMeshRoundedHeight, y));
-			newUV.Add (new Vector2 (currentAmount, 1));
+			newUV.Add (new Vector2 (ratioSide + currentAmount*ratioRounded, 1));
 		}
-		for (int i = 0; i <= numSegments - 1; i++) {
+
+		// Add second straight segment:
+		angle = fullAngle * 0.5f;
+		x = UIMeshRoundedRadius * Mathf.Sin (angle);
+		y = UIMeshRoundedRadius * Mathf.Cos (angle);
+		newVertices.Add (new Vector3 (x, 0, y - UIMeshRoundedSideLength));
+		newUV.Add (new Vector2 (1, 0));
+		newVertices.Add (new Vector3 (x, UIMeshRoundedHeight, y - UIMeshRoundedSideLength));
+		newUV.Add (new Vector2 (1, 1));
+
+		for (int i = 0; i <= numSegments + 1; i++) {
 			newTriangles.Add (i * 2 + 0);
 			newTriangles.Add (i * 2 + 1);
 			newTriangles.Add (i * 2 + 2);
@@ -211,7 +239,7 @@ public class Platform : MonoBehaviour {
 
 
 		// Set up the render texture:
-		float meshWidth = 2f*Mathf.PI * UIMeshRoundedRadius * ( UIMeshRoundedAngle / 360f);		// 2*pi*r
+		float meshWidth = fullSize;		// 2*pi*r
 		float meshHeight = UIMeshRoundedHeight;
 		float pixelsPerMeter = UI.Core.instance.pixelsPerMeter;
 		int textureWidth = (int)(meshWidth * pixelsPerMeter);
