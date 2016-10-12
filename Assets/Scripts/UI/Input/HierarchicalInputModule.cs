@@ -214,28 +214,32 @@ public class HierarchicalInputModule : BaseInputModule {
 		// ----------------------------------
 		// Handle left click:
 		//if (activeGameObject) {
-			HandleButton (ButtonType.Left, buttonInfo.buttonStates [ButtonType.Left], leftData, true);
+		HandleButton (ButtonType.Left, buttonInfo.buttonStates [ButtonType.Left], leftData, true);
+		ProcessDrag (leftData);
 		//}
 
 
 		// ----------------------------------
 		// Handle right click:
 		//if (activeGameObject) {
-			HandleButton (ButtonType.Right, buttonInfo.buttonStates [ButtonType.Right], rightData, false);
+		HandleButton (ButtonType.Right, buttonInfo.buttonStates [ButtonType.Right], rightData, false);
+		ProcessDrag (rightData);
 		//}
 
 		// ----------------------------------
 		// Handle middle click:
 		//if (activeGameObject) {
-			HandleButton (ButtonType.Middle, buttonInfo.buttonStates [ButtonType.Middle], middleData, false);
+		HandleButton (ButtonType.Middle, buttonInfo.buttonStates [ButtonType.Middle], middleData, false);
+		ProcessDrag (middleData);
 		//}
 
 
 		// ----------------------------------
 		// Handle trigger:
 		//if (activeGameObject) {
-			HandleButton (ButtonType.Trigger, buttonInfo.buttonStates [ButtonType.Trigger], triggerData, true);
+			//HandleButton (ButtonType.Trigger, buttonInfo.buttonStates [ButtonType.Trigger], triggerData, true);
 		//}
+
 
 		// ----------------------------------
 		// Handle scroll:
@@ -348,6 +352,42 @@ public class HierarchicalInputModule : BaseInputModule {
 				HandlePointerExitAndEnter(eventData, currentOverGo);
 			}
 		}
+	}
+
+	protected virtual void ProcessDrag(PointerEventData pointerEvent)
+	{
+		bool moving = pointerEvent.IsPointerMoving();
+
+		if (moving && pointerEvent.pointerDrag != null
+			&& !pointerEvent.dragging
+			&& ShouldStartDrag(pointerEvent.pressPosition, pointerEvent.position, eventSystem.pixelDragThreshold, pointerEvent.useDragThreshold))
+		{
+			ExecuteEvents.Execute(pointerEvent.pointerDrag, pointerEvent, ExecuteEvents.beginDragHandler);
+			pointerEvent.dragging = true;
+		}
+
+		// Drag notification
+		if (pointerEvent.dragging && moving && pointerEvent.pointerDrag != null)
+		{
+			// Before doing drag we should cancel any pointer down state
+			// And clear selection!
+			if (pointerEvent.pointerPress != pointerEvent.pointerDrag)
+			{
+				ExecuteEvents.Execute(pointerEvent.pointerPress, pointerEvent, ExecuteEvents.pointerUpHandler);
+
+				pointerEvent.eligibleForClick = false;
+				pointerEvent.pointerPress = null;
+				pointerEvent.rawPointerPress = null;
+			}
+			ExecuteEvents.Execute(pointerEvent.pointerDrag, pointerEvent, ExecuteEvents.dragHandler);
+		}
+	}
+	private static bool ShouldStartDrag(Vector2 pressPos, Vector2 currentPos, float threshold, bool useDragThreshold)
+	{
+		if (!useDragThreshold)
+			return true;
+
+		return (pressPos - currentPos).sqrMagnitude >= threshold * threshold;
 	}
 
 	private bool AnyPressed( ButtonInfo buttonInfo )
