@@ -16,6 +16,8 @@ public class Annotation : MonoBehaviour {
     [DefaultValue(-1)]
 	public int id;
 
+
+
     // Use this for initialization
     void Start () {
         creationDate = DateTime.Now;
@@ -36,9 +38,10 @@ public class Annotation : MonoBehaviour {
 
 
 	//Used to create new Label
-	private void CreateLabel() {
+	public void CreateLabel(GameObject annotationLabelMaster) {
 		//Create Label
-		annotationLabel = (GameObject)Instantiate(annotationLabel, Vector3.zero, this.transform.localRotation);
+
+		annotationLabel = (GameObject)Instantiate(annotationLabelMaster, Vector3.zero, this.transform.localRotation);
 		annotationLabel.transform.localScale = new Vector3 (0.05f, 0.05f, 0.05f);	//*= meshNode.transform.localScale.x; //x,y,z are the same
 		annotationLabel.transform.SetParent(this.transform, false);
 		annotationLabel.SetActive (true);
@@ -50,6 +53,9 @@ public class Annotation : MonoBehaviour {
 		//Create line form point to label
 		this.GetComponent<LineRenderer>().SetPosition(0, this.transform.position);
 		this.GetComponent<LineRenderer>().SetPosition(1, this.transform.position);
+
+		Text labelText = annotationLabel.transform.Find("Background/Text").gameObject.GetComponent<Text>();
+		labelText.text = text;
 	}
 
 	//Updates the Label Text, if no Label exists  create one
@@ -57,11 +63,12 @@ public class Annotation : MonoBehaviour {
 
 		if(annotationLabel == null) {
 			//create AnnotationLabel
-			CreateLabel();
+			Debug.LogError("Annotation has no AnnotationLabel to edit");
+			return;
 		}
 		// Change label text:
-		GameObject textObject = annotationLabel.transform.Find("Background/Text").gameObject;
-		Text labelText = textObject.GetComponent<Text>();
+		Text labelText = annotationLabel.transform.Find("Background/Text").gameObject.GetComponent<Text>();
 		labelText.text = newLabel;
+		text = newLabel;
 	}
 }

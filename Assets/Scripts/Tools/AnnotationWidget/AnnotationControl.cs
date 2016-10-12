@@ -11,7 +11,10 @@ using System.IO;
 // That way any other widget/tool can access the annotations as well, if needed in the future.
 
 //This class represents the annotiation points in a JSON file. It can be stored and loaded with the JSON mapper.
-public class AnnotationPointJson
+using System.Linq;
+
+
+public class AnnotationJson
 {
     public string Text { get; set; }
     public double PositionX { get; set; }
@@ -51,7 +54,7 @@ public class AnnotationControl : MonoBehaviour {
 	//States
 	private ActiveScreen currentActiveScreen = ActiveScreen.none;
 
-	private GameObject currentAnnotatin = null;
+	private GameObject currentAnnotation = null;
 	private List<GameObject> annotationList = new List<GameObject>();
 
     private InputDeviceManager idm;
@@ -113,27 +116,31 @@ public class AnnotationControl : MonoBehaviour {
 
 	//called by  "On Value Changed Event" , to update Label of current Annotation
 	public void InputChanged(string arg0){
-		if(currentAnnotatin != null) {
-			currentAnnotatin.GetComponent<Annotation> ().SetLabel (arg0);
+		if(currentAnnotation != null) {
+			currentAnnotation.GetComponent<Annotation> ().SetLabel (arg0);
 		}
 	}
 
 	//Used to Create Annotation
 	private GameObject createAnnotation(Quaternion rotation, Vector3 point) {
 		point = meshPositionNode.transform.InverseTransformPoint (point);
-        GameObject newAnnotationPoint = (GameObject)Instantiate(annotationPointObj, point, rotation);
+        GameObject newAnnotation = (GameObject)Instantiate(annotationPointObj, point, rotation);
 
         //newAnnotationPoint.transform.localScale *= meshNode.transform.localScale.x; //x,y,z are the same
-		newAnnotationPoint.transform.localScale = new Vector3( 5, 5, 5 );
-		newAnnotationPoint.transform.SetParent( meshPositionNode.transform, false );
+		newAnnotation.transform.localScale = new Vector3( 5, 5, 5 );
+		newAnnotation.transform.SetParent( meshPositionNode.transform, false );
 
-        Annotation ap = newAnnotationPoint.AddComponent<Annotation>();
+        Annotation ap = newAnnotation.AddComponent<Annotation>();
         ap.id = getUniqueAnnotationPointID();
         ap.enabled = false;
 
-        annotationList.Add(newAnnotationPoint);
-		newAnnotationPoint.SetActive (true);
-        return newAnnotationPoint;
+        annotationList.Add(newAnnotation);
+		newAnnotation.SetActive (true);
+
+		//Create Label for annotation
+		newAnnotation.GetComponent<Annotation> ().CreateLabel (annotationLabel);
+
+		return newAnnotation;
     }
 
 	//calculates an unique Annotation ID
@@ -184,6 +191,8 @@ public class AnnotationControl : MonoBehaviour {
 		*/
 	}
 
+
+
 	// Called when user clicks on Organ
 	void OnMeshClicked( PointerEventData eventData )
 	{
@@ -212,7 +221,7 @@ public class AnnotationControl : MonoBehaviour {
     public void SaveAnnotation()
     {	
 		
-    	currentAnnotatin = null;
+    	currentAnnotation = null;
         
 		//Reset Edit Tools
 		annotationTextInput.text = "";
@@ -269,6 +278,7 @@ public class AnnotationControl : MonoBehaviour {
 
 
             // Change button text to name of tool:
+			//Doesnt work TODO
 			//GameObject textObject = newEntry.transform.Find("Text").gameObject;
 			Text buttonText = newEntry.GetComponent<Text>();
             Annotation ap = g.GetComponent<Annotation>();
@@ -308,7 +318,7 @@ public class AnnotationControl : MonoBehaviour {
         {
             foreach(GameObject ap in annotationList)
             {
-                AnnotationPointJson apj = new AnnotationPointJson();
+                AnnotationJson apj = new AnnotationJson();
                 apj.Text = ap.GetComponent<Annotation>().text;
                 apj.PositionX = ap.transform.localPosition.x;
                 apj.PositionY = ap.transform.localPosition.y;
@@ -348,7 +358,7 @@ public class AnnotationControl : MonoBehaviour {
             return;
         }
 		
-        List<AnnotationPointJson> apjList = new List<AnnotationPointJson>();
+        List<AnnotationJson> apjList = new List<AnnotationJson>();
 
 
         // Read the file
@@ -356,24 +366,23 @@ public class AnnotationControl : MonoBehaviour {
         System.IO.StreamReader file = new System.IO.StreamReader(path);
         while ((line = file.ReadLine()) != null)
         {
-            AnnotationPointJson apj = JsonMapper.ToObject<AnnotationPointJson>(line);
+            AnnotationJson apj = JsonMapper.ToObject<AnnotationJson>(line);
             apjList.Add(apj);
         }
         file.Close();
 
-        foreach(AnnotationPointJson apj in apjList)
+		//List of Json Objects -> AnnotationList
+        foreach(AnnotationJson apj in apjList)
         {
             Quaternion rotation = new Quaternion((float)apj.RotationX, (float)apj.RotationY, (float)apj.RotationZ, (float)apj.RotationW);
             Vector3 position = new Vector3((float)apj.PositionX, (float)apj.PositionY, (float)apj.PositionZ);
 
-			GameObject annotationPoint = createAnnotation(Quaternion.identity, position);
-            annotationPoint.transform.localRotation = rotation;
+			GameObject annotation = createAnnotation(Quaternion.identity, position);
+            annotation.transform.localRotation = rotation;
 
-			annotationPoint.GetComponent<Annotation> ().SetLabel (apj.Text);
-            //createAnnotationLabelAndLine(annotationPoint, apj.Text);
+			annotation.GetComponent<Annotation> ().SetLabel (apj.Text);
         }
-		
-		//put all Annotations on Modell
+
         updateAnnotationList();      
 
     }
