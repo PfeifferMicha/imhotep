@@ -5,11 +5,6 @@ using UI;
 
 public class ViveControllerInputDevice : Controller, InputDevice {
 
-	//--------------- controller stuff---------------------
-	private SteamVR_Controller.Device controller { get{ return SteamVR_Controller.Input ((int)trackedObj.index);}}
-	private SteamVR_TrackedObject trackedObj;
-	//-----------------------------------------------------
-
 	private Vector2 texCoordDelta;
 	private Vector3 positionDelta;
 
@@ -49,8 +44,6 @@ public class ViveControllerInputDevice : Controller, InputDevice {
 
 	// Use this for initialization
 	void Start () {
-		//initialization
-		trackedObj = this.GetComponent<SteamVR_TrackedObject> ();
 
 		//register device
 		if (InputDeviceManager.instance != null)
@@ -65,10 +58,6 @@ public class ViveControllerInputDevice : Controller, InputDevice {
 
 	public ButtonInfo updateButtonInfo ()
 	{
-		if (controller == null) {
-			return buttonInfo;
-		}
-
 		UpdateTouchpad ();
 
 		buttonInfo.buttonStates [ButtonType.Trigger] = UpdateTriggerState ();

@@ -37,6 +37,9 @@ public class Controller : MonoBehaviour {
 	}
 
 	protected bool triggerPressed(){
+		if (controller == null) {
+			return false;
+		}
 		//Checks if the trigger is pressed down till it clicks
 		//Returns true as long as the trigger is pressed down
 		if (controller.GetAxis (triggerButton) == new Vector2 (1.0f, 0.0f)) {
@@ -47,6 +50,9 @@ public class Controller : MonoBehaviour {
 	}
 
 	protected void UpdateTouchpad() {
+		if (controller == null) {
+			return;
+		}
 		touchpadValue = controller.GetAxis (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad);
 		touchpadDelta = touchpadValue - previousTouchpad;
 		previousTouchpad = touchpadValue;
