@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace UI
 {
-	public class Core : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+	public class Core : MonoBehaviour
 	{
-		public bool mouseIsOverUIObject{ private set; get; }
+		public bool pointerIsOverUIObject{ private set; get; }
 
 		public static Core instance { private set; get; }
 
@@ -38,13 +38,9 @@ namespace UI
 			//PatientEventSystem.stopListening (PatientEventSystem.Event.PATIENT_Closed, hidePatientDefaultUI);
 		}
 
-		public void OnPointerEnter(PointerEventData dataName)
+		public void setPointerIsOnUI( bool onUI )
 		{
-			mouseIsOverUIObject = true;
-		}
-		public void OnPointerExit(PointerEventData dataName)
-		{
-			mouseIsOverUIObject = false;
+			pointerIsOverUIObject = onUI;
 		}
 
 		public void setCamera( Camera cam )

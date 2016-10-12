@@ -30,6 +30,8 @@ public class HierarchicalInputModule : BaseInputModule {
 	private RaycastHit raycastHit;
 	private RaycastResult raycastResult;
 
+	private bool isPointerOverUI = false;
+
 	protected override void Start()
 	{
 		lineRenderer = this.GetComponent<LineRenderer>();
@@ -50,6 +52,8 @@ public class HierarchicalInputModule : BaseInputModule {
 
 		Vector2 hitTextureCoord = Vector2.zero;
 		Vector3 hitWorldPos = Vector3.zero;
+
+		isPointerOverUI = false;
 
 		InputDeviceManager idm = InputDeviceManager.instance;
 		if( idm.currentInputDevice != null )
@@ -75,6 +79,7 @@ public class HierarchicalInputModule : BaseInputModule {
 						activeGameObject = raycastResult.gameObject;
 						lineRenderer.SetPosition (1, raycastHit.point);
 						hitWorldPos = raycastResult.worldPosition;
+						isPointerOverUI = true;
 					} else {
 						// 3. If no UI element was hit, raycast again but ignore the UIMesh:
 						layerMask = ~ ( 1 << LayerMask.NameToLayer( "UIMesh" ) );
@@ -101,6 +106,7 @@ public class HierarchicalInputModule : BaseInputModule {
 							lineRenderer.SetPosition (1, raycastHit.point);
 							hitWorldPos = raycastResult.worldPosition;
 							data.pointerCurrentRaycast = raycastResult;
+							isPointerOverUI = true;
 						}
 					}
 				}
@@ -162,6 +168,8 @@ public class HierarchicalInputModule : BaseInputModule {
 	//! Called every frame after UpdateModule (but only if this module is active!)
 	public override void Process()
 	{
+		UI.Core.instance.setPointerIsOnUI (isPointerOverUI);
+
 		SendUpdateEventToSelectedObject();
 
 		InputDeviceManager idm = InputDeviceManager.instance;
@@ -250,8 +258,6 @@ public class HierarchicalInputModule : BaseInputModule {
 			ExecuteEvents.ExecuteHierarchy(scrollHandler, eventData, ExecuteEvents.scrollHandler);
 			//ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, ExecuteEvents.scrollHandler);
 		}
-
-
 
 	}
 
