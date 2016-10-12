@@ -253,7 +253,7 @@ public class HierarchicalInputModule : BaseInputModule {
 
 	private void HandleButton( ButtonType buttonType, PointerEventData.FramePressState buttonState, CustomEventData eventData, bool allowDragging )
 	{
-		GameObject currentOverGo = eventData.pointerCurrentRaycast.gameObject;
+		GameObject currentOverGo = activeGameObject;
 
 		// PointerDown notification
 		if (buttonState == PointerEventData.FramePressState.Pressed || buttonState == PointerEventData.FramePressState.PressedAndReleased )
