@@ -288,8 +288,7 @@ public class HierarchicalInputModule : BaseInputModule {
 			}
 			eventData.pointerPress = null;
 		} else if (buttonState == PointerEventData.FramePressState.NotChanged) {
-			if (allowDragging && eventData.pointerPress != null )
-			{
+			if (allowDragging && eventData.pointerPress != null) {
 				if (eventData.pointerDrag == null) {
 
 					eventData.pointerDrag = ExecuteEvents.GetEventHandler<IDragHandler> (eventData.pointerPress);
@@ -298,13 +297,18 @@ public class HierarchicalInputModule : BaseInputModule {
 						ExecuteEvents.Execute (eventData.pointerDrag, eventData, ExecuteEvents.initializePotentialDrag);
 
 						if (!eventData.dragging) {
-							ExecuteEvents.Execute(eventData.pointerDrag, eventData, ExecuteEvents.beginDragHandler);
+							ExecuteEvents.Execute (eventData.pointerDrag, eventData, ExecuteEvents.beginDragHandler);
 							eventData.dragging = true;
 						}
 					}
 				} else {
-					ExecuteEvents.Execute(eventData.pointerDrag, eventData, ExecuteEvents.dragHandler);
+					ExecuteEvents.Execute (eventData.pointerDrag, eventData, ExecuteEvents.dragHandler);
 				}
+			}
+
+			// Only call the hover for the left mouse button (so we only call it once per frame):
+			if (eventData.button == PointerEventData.InputButton.Left && activeGameObject != null) {
+				ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, CustomEvents.pointerHoverHandler);
 			}
 		}
 	}

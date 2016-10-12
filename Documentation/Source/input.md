@@ -57,3 +57,9 @@ A lot of the Unity event interfaces are also implemented in IMHOTEP. The most co
 	Called when the mouse wheel was used while hovering over the object.
 	Note: This is also called when using the controller's touchpad.
 
+Custom events added by us:
+
+- IPointerHoverHandler - void OnPointerHover( PointerEventData data )
+	Called whenever the mouse is over an object.
+
+
