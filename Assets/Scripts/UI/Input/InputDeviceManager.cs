@@ -29,16 +29,9 @@ public class InputDeviceManager : MonoBehaviour {
 
 	public void registerInputDevice(InputDevice device)
     {
-		deactivateAllVisualizer();
 		deviceList.Add(device);
 		currentInputDevice = device; //TODO how to change currentInputDevice in game?
     }
-
-	private void deactivateAllVisualizer(){
-		foreach (InputDevice i in deviceList) {
-			i.deactivateVisualization();
-		}
-	}
 
 	public void registerLeftController( LeftController left )
 	{

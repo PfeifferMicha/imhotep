@@ -18,9 +18,4 @@ public class CreateBoxColliderForCanvas : MonoBehaviour {
         }
 
     }
-
-    // Update is called once per frame
-    void Update () {
-	
-	}
 }

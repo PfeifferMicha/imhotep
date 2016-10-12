@@ -14,11 +14,10 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
     private PointerEventData.FramePressState leftButtonState = PointerEventData.FramePressState.NotChanged;
     private PointerEventData.FramePressState middleButtonState = PointerEventData.FramePressState.NotChanged;
     private PointerEventData.FramePressState rightButtonState = PointerEventData.FramePressState.NotChanged;
-    private bool visualizeMouseRay = true;
 
     private LineRenderer lineRenderer;
 
-	private float mouseSpeed = 0.4f;
+	private const float mouseSpeed = 0.4f;
 	private Vector3 lastPos = new Vector3(0,0,0);
 
 	private Vector2 texCoordDelta;
@@ -27,19 +26,6 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
 	private Vector3 rayDir = new Vector3( 0, 0, 1 );
 
 	private ButtonInfo buttonInfo = new ButtonInfo();
-
-    public void activateVisualization()
-    {
-        visualizeMouseRay = true;
-    }
-
-    public void deactivateVisualization()
-    {
-        visualizeMouseRay = false;
-		Vector3 zero = new Vector3(0, 0, 0);
-		lineRenderer.SetPosition(0, zero);
-		lineRenderer.SetPosition(1, zero);
-    }
 
     public Ray createRay()
     {
@@ -64,11 +50,6 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
     public Vector2 getScrollDelta()
     {
         return Input.mouseScrollDelta*20f;
-    }
-
-    public bool isVisualizerActive()
-    {
-        return visualizeMouseRay;
     }
 
     // Use this for initialization
