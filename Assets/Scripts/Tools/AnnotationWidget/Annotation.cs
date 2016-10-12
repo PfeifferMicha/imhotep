@@ -7,14 +7,14 @@ using UnityEngine.UI;
 public class Annotation : MonoBehaviour {
 
     [DefaultValue("")]
-    public string text { get; set; }
+	public string text;
     [DefaultValue("")]
-    public string creator { get; set; }
-	public DateTime creationDate { get; set; }
-    private GameObject annotationLabel { get; }
-    public Quaternion rotation { get; set; }
+	public string creator;
+	public DateTime creationDate;
+	public GameObject annotationLabel;
+	public Quaternion rotation;
     [DefaultValue(-1)]
-    public int id { get; set; }
+	public int id;
 
     // Use this for initialization
     void Start () {

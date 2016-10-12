@@ -33,15 +33,22 @@ public class AnnotationControl : MonoBehaviour {
     //public Button addAnnotationButton;
 	public GameObject annotationListEntry;
 
-	public GameObject newAnnotationSetupScreen;
+
+
+
+	//Screens
+	public GameObject listScreen;
+	public GameObject AddEditScreen;
+
+	//Add Annotation Screen Things
 	public GameObject instructionText;
 	public InputField annotationTextInput;
 	public Button saveButton;
 
-	public GameObject listScreen;
 	public GameObject meshNode;
 	public GameObject meshPositionNode;
 
+	private ActiveScreen currentActiveScreen = ActiveScreen.none;
     private State currentState = State.idle;
     private GameObject currentAnnotatinPoint = null;
     private List<GameObject> annotationPoints = new List<GameObject>();
@@ -67,12 +74,10 @@ public class AnnotationControl : MonoBehaviour {
 	//The State of Annotation Control, which scrren is active
 	// none , no screen is active
 	// add , add screen is active
-	// edit, edit screen is active
 	// list, list screen is active
 	private enum ActiveScreen {
 		none,
 		add,
-		edit,
 		list
 	}
 
@@ -83,7 +88,7 @@ public class AnnotationControl : MonoBehaviour {
         PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Closed, closePatient);
         loadAnnotationFromFile();
 
-		newAnnotationSetupScreen.SetActive (false);
+		AddEditScreen.SetActive (false);
 		listScreen.SetActive (false);
 
 		annotationLabel.SetActive (false);
@@ -116,19 +121,17 @@ public class AnnotationControl : MonoBehaviour {
 
         annotationListEntry.gameObject.SetActive(false);
 
-		//Adds Method as Listner to onValueChanged of Input Filed (AnnotationLabel)
-		annotationTextInput.onValueChanged.AddListener (InputChanged());
     }
 
-	//called by  On Value Changed Event , to update Label of current Annotation
+	//called by  "On Value Changed Event" , to update Label of current Annotation
 	public void InputChanged(string arg0){
 		if(currentAnnotatinPoint != null) {
 			currentAnnotatinPoint.GetComponent<Annotation> ().SetLabel (arg0);
 		}
 	}
 
-    private GameObject createAnnotationPoint(Quaternion rotation, Vector3 point)
-	{
+	//Used to Create Annotation
+	private GameObject createAnnotation(Quaternion rotation, Vector3 point) {
 		point = meshPositionNode.transform.InverseTransformPoint (point);
         GameObject newAnnotationPoint = (GameObject)Instantiate(annotationPointObj, point, rotation);
 
@@ -145,7 +148,8 @@ public class AnnotationControl : MonoBehaviour {
         return newAnnotationPoint;
     }
 
-    private int getUniqueAnnotationPointID()
+	//calculates an unique Annotation ID
+	private int getUniqueAnnotationPointID()
     {
         int result = annotationPointCounter;
         annotationPointCounter++;
@@ -155,26 +159,58 @@ public class AnnotationControl : MonoBehaviour {
 	//Called if the user pressed 'add annoation' button
     public void AddAnnotationPressed()
     {
-        if (currentState == State.idle)
+		if(currentActiveScreen == ActiveScreen.add) {
+			//TODO Abort AddAnnotation and close Screen
+			AddEditScreen.SetActive(false);
+			currentActiveScreen = ActiveScreen.none;
+		} else {
+			//Open AnnotationScreen
+			listScreen.SetActive (false);
+			AddEditScreen.SetActive(true);
+			currentActiveScreen = ActiveScreen.add;
+		}
+
+		/*if (currentState == State.idle)
 		{
 			listScreen.SetActive (false);
             changeCurrentStateToAddAnnotationPressed();
-        }
+        }*/
     }
 
-	//! Switches to list of annotations:
+	//Called if the user pressed 'show Annotation' button
 	public void ShowAnnotationsList()
 	{
-		newAnnotationSetupScreen.SetActive (false);
+		if(currentActiveScreen == ActiveScreen.list) {
+			// Close AnnotationListScreen
+			listScreen.SetActive (false);
+			currentActiveScreen = ActiveScreen.none;
+		} else {
+			//Open AnnotationListScreen
+			AddEditScreen.SetActive(false);
+			listScreen.SetActive (true);
+			currentActiveScreen = ActiveScreen.list;
+		}
+
+		/*newAnnotationSetupScreen.SetActive (false);
 		listScreen.SetActive (true);
+		*/
 	}
 
+
+	// Called when user clicks on Organ
 	void OnMeshClicked( PointerEventData eventData )
 	{
 		Debug.Log ("Clicked: " + eventData.pointerPressRaycast.worldPosition);
+
+		if(currentActiveScreen == ActiveScreen.add) {
+			//TODO Create Annotation on Clicked Position
+		} else if(currentActiveScreen == ActiveScreen.list) {
+			//TODO Is an Annotation on Clicked Position?
+		}
+		/*
 		if (currentState == State.generatingAnnotationPoint) {
 
-			currentAnnotatinPoint = createAnnotationPoint(
+			currentAnnotatinPoint = createAnnotation(
 				Quaternion.LookRotation( eventData.pointerPressRaycast.worldNormal ),
 				eventData.pointerPressRaycast.worldPosition);
 			//createAnnotationLabelAndLine(currentAnnotatinPoint, "");
@@ -182,6 +218,7 @@ public class AnnotationControl : MonoBehaviour {
 			annotationTextInput.gameObject.SetActive (true);
 			saveButton.gameObject.SetActive (true);
 		}
+		*/
 	}
 
 	//Called if the user confirmed the text
@@ -297,7 +334,7 @@ public class AnnotationControl : MonoBehaviour {
             t.text = "Add Annotation"; //Change text on button
         }*/
 
-		newAnnotationSetupScreen.SetActive (false);
+		AddEditScreen.SetActive (false);
 		listScreen.SetActive (false);
 
         currentState = State.idle;
@@ -314,7 +351,7 @@ public class AnnotationControl : MonoBehaviour {
             t.text = "Select point";
         }*/
 
-		newAnnotationSetupScreen.SetActive (true);
+		AddEditScreen.SetActive (true);
 		listScreen.SetActive (false);
         annotationTextInput.gameObject.SetActive(false);
         saveButton.gameObject.SetActive(false);
@@ -421,9 +458,11 @@ public class AnnotationControl : MonoBehaviour {
             Quaternion rotation = new Quaternion((float)apj.RotationX, (float)apj.RotationY, (float)apj.RotationZ, (float)apj.RotationW);
             Vector3 position = new Vector3((float)apj.PositionX, (float)apj.PositionY, (float)apj.PositionZ);
 
-			GameObject annotationPoint = createAnnotationPoint(Quaternion.identity, position);
+			GameObject annotationPoint = createAnnotation(Quaternion.identity, position);
             annotationPoint.transform.localRotation = rotation;
-            createAnnotationLabelAndLine(annotationPoint, apj.Text);
+
+			annotationPoint.GetComponent<Annotation> ().SetLabel (apj.Text);
+            //createAnnotationLabelAndLine(annotationPoint, apj.Text);
         }
 
         updateAnnotationList();      
