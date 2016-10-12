@@ -27,6 +27,13 @@ namespace UI
 		public Sprite normalTabImage;
 		public Sprite selectedTabImage;
 
+		public GameObject indicatorLeft;
+		public GameObject indicatorRight;
+
+		public List<GameObject> activeIndicators = new List<GameObject> ();
+		private int notificationID = 0;
+
+
 		public Core()
 		{
 			instance = this;
@@ -35,6 +42,9 @@ namespace UI
 		public void OnEnable()
 		{
 			layoutSystem = new LayoutSystem ();
+
+			indicatorLeft.SetActive (false);
+			indicatorRight.SetActive (false);
 
 			//PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_Loaded, showPatientDefaultUI );
 			//PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_Closed, hidePatientDefaultUI );
@@ -83,6 +93,51 @@ namespace UI
 			colors.normalColor = ButtonBaseColor;
 			b.colors = colors;
 			b.image.sprite = normalTabImage;
+		}
+
+		public int addIndication( UI.Screen screen, string message )
+		{
+			if (activeIndicators.Count > 0) {
+				clearNotification (notificationID);
+			}
+
+			if (screen == UI.Screen.left) {
+				GameObject indicator1 = Instantiate (indicatorLeft) as GameObject;
+				indicator1.transform.SetParent (transform, false);
+				LayoutPosition pos1 = new LayoutPosition ();
+				pos1.screen = UI.Screen.right;
+				pos1.alignHorizontal = AlignmentH.center;
+				pos1.alignVertical = AlignmentV.center;
+				indicator1.SetActive (true);
+				indicator1.GetComponent<Widget> ().setPosition(pos1);
+				Text t = indicator1.GetComponentInChildren<Text> ();
+				t.text = message;
+				activeIndicators.Add (indicator1);
+
+				GameObject indicator2 = Instantiate (indicatorLeft) as GameObject;
+				indicator2.transform.SetParent (transform, false);
+				LayoutPosition pos2 = new LayoutPosition ();
+				pos2.screen = UI.Screen.center;
+				pos2.alignHorizontal = AlignmentH.center;
+				pos2.alignVertical = AlignmentV.center;
+				indicator2.SetActive (true);
+				indicator2.GetComponent<Widget> ().setPosition(pos2);
+				t = indicator2.GetComponentInChildren<Text> ();
+				t.text = message;
+				activeIndicators.Add (indicator2);
+			}
+			return (++notificationID);
+		}
+
+		public void clearNotification( int id )
+		{
+			if (notificationID != id)
+				return;
+
+			foreach (GameObject go in activeIndicators) {
+				Destroy (go);
+			}
+			activeIndicators.Clear ();
 		}
     }
 }

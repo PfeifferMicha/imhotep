@@ -11,6 +11,8 @@ public class PatientSelector : MonoBehaviour {
 
     private GameObject mScrollView;
 
+	private int notificationID;
+
     // Use this for initialization
     void Start () {
 
@@ -28,6 +30,14 @@ public class PatientSelector : MonoBehaviour {
         PatientDirectoryLoader.setPath("../Patients/");
 
     }
+	public void OnEnable()
+	{
+		notificationID = UI.Core.instance.addIndication (UI.Screen.left, "Please choose patient.");
+	}
+	public void OnDisable()
+	{
+		UI.Core.instance.clearNotification (notificationID);
+	}
 
     void ChoosePatient( int index )
     {
