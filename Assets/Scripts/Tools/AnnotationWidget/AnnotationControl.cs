@@ -64,6 +64,18 @@ public class AnnotationControl : MonoBehaviour {
         //textEntered
     }
 
+	//The State of Annotation Control, which scrren is active
+	// none , no screen is active
+	// add , add screen is active
+	// edit, edit screen is active
+	// list, list screen is active
+	private enum ActiveScreen {
+		none,
+		add,
+		edit,
+		list
+	}
+
     void OnEnable()
     {
         // Register event callbacks:
@@ -103,7 +115,17 @@ public class AnnotationControl : MonoBehaviour {
         }
 
         annotationListEntry.gameObject.SetActive(false);
+
+		//Adds Method as Listner to onValueChanged of Input Filed (AnnotationLabel)
+		annotationTextInput.onValueChanged.AddListener (InputChanged());
     }
+
+	//called by  On Value Changed Event , to update Label of current Annotation
+	public void InputChanged(string arg0){
+		if(currentAnnotatinPoint != null) {
+			currentAnnotatinPoint.GetComponent<Annotation> ().SetLabel (arg0);
+		}
+	}
 
     private GameObject createAnnotationPoint(Quaternion rotation, Vector3 point)
 	{
@@ -114,7 +136,7 @@ public class AnnotationControl : MonoBehaviour {
 		newAnnotationPoint.transform.localScale = new Vector3( 5, 5, 5 );
 		newAnnotationPoint.transform.SetParent( meshPositionNode.transform, false );
 
-        AnnotationPoint ap = newAnnotationPoint.AddComponent<AnnotationPoint>();
+        Annotation ap = newAnnotationPoint.AddComponent<Annotation>();
         ap.id = getUniqueAnnotationPointID();
         ap.enabled = false;
 
@@ -167,7 +189,8 @@ public class AnnotationControl : MonoBehaviour {
     {
         if (currentState == State.annotationPointSelected && currentAnnotatinPoint != null)
         {
-            createAnnotationLabelAndLine(currentAnnotatinPoint, annotationTextInput.text);
+            //createAnnotationLabelAndLine(currentAnnotatinPoint, annotationTextInput.text);
+			currentAnnotatinPoint.GetComponent<Annotation>().SetLabel(annotationTextInput.text);
 
             annotationTextInput.text = "";
             currentAnnotatinPoint = null;
@@ -179,9 +202,10 @@ public class AnnotationControl : MonoBehaviour {
         }
     }
 
-    private void createAnnotationLabelAndLine(GameObject annotationPoint, string textLabel)
+	//Outsourced to Annotation class
+    /*private void createAnnotationLabelAndLine(GameObject annotationPoint, string textLabel)
     {
-        AnnotationPoint ap = annotationPoint.GetComponent<AnnotationPoint>();
+        Annotation ap = annotationPoint.GetComponent<Annotation>();
         ap.text = textLabel;
         ap.enabled = true;
 
@@ -203,7 +227,7 @@ public class AnnotationControl : MonoBehaviour {
         //Create line form point to label
         annotationPoint.GetComponent<LineRenderer>().SetPosition(0, annotationPoint.transform.position);
         annotationPoint.GetComponent<LineRenderer>().SetPosition(1, newAnnotationLabel.transform.position);
-    }
+    }*/
 
 	// Deletes all annotations.
 	public void clearAll()
@@ -213,7 +237,7 @@ public class AnnotationControl : MonoBehaviour {
             if(g != null)
             {
                 //Destroy Label
-                GameObject label = g.GetComponent<AnnotationPoint>().annotationLabel;
+                GameObject label = g.GetComponent<Annotation>().annotationLabel;
                 if (label != null)
                 {
                     Destroy(label);
@@ -252,7 +276,7 @@ public class AnnotationControl : MonoBehaviour {
             // Change button text to name of tool:
 			//GameObject textObject = newEntry.transform.Find("Text").gameObject;
 			Text buttonText = newEntry.GetComponent<Text>();
-            AnnotationPoint ap = g.GetComponent<AnnotationPoint>();
+            Annotation ap = g.GetComponent<Annotation>();
             if(ap != null)
             {
                 buttonText.text = ap.text;
@@ -343,7 +367,7 @@ public class AnnotationControl : MonoBehaviour {
             foreach(GameObject ap in annotationPoints)
             {
                 AnnotationPointJson apj = new AnnotationPointJson();
-                apj.Text = ap.GetComponent<AnnotationPoint>().text;
+                apj.Text = ap.GetComponent<Annotation>().text;
                 apj.PositionX = ap.transform.localPosition.x;
                 apj.PositionY = ap.transform.localPosition.y;
                 apj.PositionZ = ap.transform.localPosition.z;
@@ -353,8 +377,8 @@ public class AnnotationControl : MonoBehaviour {
                 apj.RotationY = ap.transform.localRotation.y;
                 apj.RotationZ = ap.transform.localRotation.z;
 
-                apj.Creator = ap.GetComponent<AnnotationPoint>().creator;
-                apj.CreationDate = ap.GetComponent<AnnotationPoint>().creationDate;
+                apj.Creator = ap.GetComponent<Annotation>().creator;
+				apj.CreationDate = ap.GetComponent<Annotation> ().creationDate;
                 outputFile.WriteLine(JsonMapper.ToJson(apj));
             }
             outputFile.Close();
@@ -419,10 +443,10 @@ public class AnnotationControl : MonoBehaviour {
         //Delete point and label
         foreach (GameObject g in annotationPoints)
         {
-            if (g.GetComponent<AnnotationPoint>().id == apID.annotationPointID)
+            if (g.GetComponent<Annotation>().id == apID.annotationPointID)
             {
                 //Destroy Label
-                GameObject label = g.GetComponent<AnnotationPoint>().annotationLabel;
+                GameObject label = g.GetComponent<Annotation>().annotationLabel;
                 if (label != null)
                 {
                     Destroy(label);
@@ -438,7 +462,7 @@ public class AnnotationControl : MonoBehaviour {
         GameObject objToRemove = null;
         foreach (GameObject g in annotationPoints)
         {
-            if (g.GetComponent<AnnotationPoint>().id == apID.annotationPointID)
+            if (g.GetComponent<Annotation>().id == apID.annotationPointID)
             {
                 objToRemove = g;
                 break;
