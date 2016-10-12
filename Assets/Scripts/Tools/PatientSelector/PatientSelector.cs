@@ -59,7 +59,27 @@ public class PatientSelector : MonoBehaviour {
 
 			// Fill button's text object:
 			Text t = newButton.transform.Find("Text").GetComponent<Text>();
-			t.text = patient.name + "\n" + patient.birthDate + "\nOperation: " + patient.operationDate;
+			t.color = new Color (0.8f, 0.8f, 0.8f);
+			t.text = "<color=white>" + patient.name + "</color>\n" + patient.birthDate;
+
+			newButton.transform.Find ("ImageFemale").gameObject.SetActive (false);
+			newButton.transform.Find ("ImageMale").gameObject.SetActive (false);
+			if (patient.sex == "f") {
+				newButton.transform.Find ("ImageFemale").gameObject.SetActive (true);
+			} else if (patient.sex == "m") {
+				newButton.transform.Find ("ImageMale").gameObject.SetActive (true);
+			}
+
+			Text ageText = newButton.transform.Find("AgeText").GetComponent<Text>();
+			if (patient.age >= 0) {
+				ageText.text = patient.age + " Yrs.";
+			} else {
+				ageText.text = "";
+			}
+
+			Text detailsText = newButton.transform.Find("TextDetails").GetComponent<Text>();
+			detailsText.color = new Color (0.8f, 0.8f, 0.8f);
+			detailsText.text = patient.indication + "\n" + patient.details;
 
 			// Set up events:
 			int capturedIndex = index;

@@ -1,7 +1,7 @@
 #!/bin/bash
 # dieses script rendert alle svg-dateien als *.png
 
-resolution=100;
+resolution=150;
 
 shopt -s nullglob
 for infile in *.svg; do
