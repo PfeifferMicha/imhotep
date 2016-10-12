@@ -48,14 +48,16 @@ public class AnnotationControl : MonoBehaviour {
 	public GameObject meshNode;
 	public GameObject meshPositionNode;
 
+	//States
 	private ActiveScreen currentActiveScreen = ActiveScreen.none;
     private State currentState = State.idle;
-    private GameObject currentAnnotatinPoint = null;
-    private List<GameObject> annotationPoints = new List<GameObject>();
+
+	private GameObject currentAnnotatin = null;
+	private List<GameObject> annotationList = new List<GameObject>();
 
     private InputDeviceManager idm;
 
-    private static int annotationPointCounter = 0; //Used to create unique id for annoation point
+	private static int annotationCounter = 0; //Used to create unique id for annoation point
 
 	private ClickNotifier clickNotifier;
     
@@ -125,8 +127,8 @@ public class AnnotationControl : MonoBehaviour {
 
 	//called by  "On Value Changed Event" , to update Label of current Annotation
 	public void InputChanged(string arg0){
-		if(currentAnnotatinPoint != null) {
-			currentAnnotatinPoint.GetComponent<Annotation> ().SetLabel (arg0);
+		if(currentAnnotatin != null) {
+			currentAnnotatin.GetComponent<Annotation> ().SetLabel (arg0);
 		}
 	}
 
@@ -143,7 +145,7 @@ public class AnnotationControl : MonoBehaviour {
         ap.id = getUniqueAnnotationPointID();
         ap.enabled = false;
 
-        annotationPoints.Add(newAnnotationPoint);
+        annotationList.Add(newAnnotationPoint);
 		newAnnotationPoint.SetActive (true);
         return newAnnotationPoint;
     }
@@ -151,8 +153,8 @@ public class AnnotationControl : MonoBehaviour {
 	//calculates an unique Annotation ID
 	private int getUniqueAnnotationPointID()
     {
-        int result = annotationPointCounter;
-        annotationPointCounter++;
+        int result = annotationCounter;
+        annotationCounter++;
         return result;
     }
 
@@ -196,14 +198,13 @@ public class AnnotationControl : MonoBehaviour {
 		*/
 	}
 
-
 	// Called when user clicks on Organ
 	void OnMeshClicked( PointerEventData eventData )
 	{
 		Debug.Log ("Clicked: " + eventData.pointerPressRaycast.worldPosition);
 
 		if(currentActiveScreen == ActiveScreen.add) {
-			//TODO Create Annotation on Clicked Position
+			//TODO Create/Move Annotation on Clicked Position
 		} else if(currentActiveScreen == ActiveScreen.list) {
 			//TODO Is an Annotation on Clicked Position?
 		}
@@ -221,16 +222,15 @@ public class AnnotationControl : MonoBehaviour {
 		*/
 	}
 
-	//Called if the user confirmed the text
-    public void SaveAnnotationPoint()
+	//Called if the user confirmed changes on an Annotation in List and File
+    public void SaveAnnotation()
     {
-        if (currentState == State.annotationPointSelected && currentAnnotatinPoint != null)
+        if (currentState == State.annotationPointSelected && currentAnnotatin != null)
         {
-            //createAnnotationLabelAndLine(currentAnnotatinPoint, annotationTextInput.text);
-			currentAnnotatinPoint.GetComponent<Annotation>().SetLabel(annotationTextInput.text);
+			currentAnnotatin.GetComponent<Annotation>().SetLabel(annotationTextInput.text);
 
             annotationTextInput.text = "";
-            currentAnnotatinPoint = null;
+            currentAnnotatin = null;
 			changeCurrentStateToIdle();
 			annotationTextInput.gameObject.SetActive (false);
 			saveButton.gameObject.SetActive (false);
@@ -239,37 +239,10 @@ public class AnnotationControl : MonoBehaviour {
         }
     }
 
-	//Outsourced to Annotation class
-    /*private void createAnnotationLabelAndLine(GameObject annotationPoint, string textLabel)
-    {
-        Annotation ap = annotationPoint.GetComponent<Annotation>();
-        ap.text = textLabel;
-        ap.enabled = true;
-
-        //Create Label
-		GameObject newAnnotationLabel = (GameObject)Instantiate(annotationLabel, Vector3.zero, annotationPoint.transform.localRotation);
-		newAnnotationLabel.transform.localScale = new Vector3 (0.05f, 0.05f, 0.05f);	//*= meshNode.transform.localScale.x; //x,y,z are the same
-		newAnnotationLabel.transform.SetParent(annotationPoint.transform, false);
-		newAnnotationLabel.SetActive (true);
-
-        // Since the currentAnnotationPoint faces along the normal of the attached object,
-        // we can get an offset direction from its rotation:
-		newAnnotationLabel.transform.localPosition = new Vector3(0f,0f,15f);
-        ap.annotationLabel = newAnnotationLabel;
-        // Change label text:
-        GameObject textObject = newAnnotationLabel.transform.Find("Background/Text").gameObject;
-        Text labelText = textObject.GetComponent<Text>();
-		labelText.text = ap.text;
-
-        //Create line form point to label
-        annotationPoint.GetComponent<LineRenderer>().SetPosition(0, annotationPoint.transform.position);
-        annotationPoint.GetComponent<LineRenderer>().SetPosition(1, newAnnotationLabel.transform.position);
-    }*/
-
 	// Deletes all annotations.
 	public void clearAll()
     {
-        foreach (GameObject g in annotationPoints)
+        foreach (GameObject g in annotationList)
         {
             if(g != null)
             {
@@ -284,11 +257,12 @@ public class AnnotationControl : MonoBehaviour {
             }
         }
         //Delete list
-        annotationPoints = new List<GameObject>();
+        annotationList = new List<GameObject>();
 
         changeCurrentStateToIdle();
     }
 
+	//Creates view of annotationList (List elements on Screen)
     private void updateAnnotationList()
     {
         //Destroy all object up to one button
@@ -300,7 +274,7 @@ public class AnnotationControl : MonoBehaviour {
             }
         }
 
-        foreach (GameObject g in annotationPoints)
+        foreach (GameObject g in annotationList)
         {            
             // Create a new instance of the list button:
             GameObject newEntry = Instantiate(annotationListEntry).gameObject;
@@ -325,14 +299,15 @@ public class AnnotationControl : MonoBehaviour {
         }
     }
 
-    private void changeCurrentStateToIdle()
+	//States are outdated
+    /*private void changeCurrentStateToIdle()
     {
-        /*addAnnotationButton.enabled = true;
-        Text t = addAnnotationButton.GetComponentInChildren<Text>();
-        if(t != null)
-        {
-            t.text = "Add Annotation"; //Change text on button
-        }*/
+        //addAnnotationButton.enabled = true;
+        //Text t = addAnnotationButton.GetComponentInChildren<Text>();
+        //if(t != null)
+        //{
+        //    t.text = "Add Annotation"; //Change text on button
+        //}
 
 		AddEditScreen.SetActive (false);
 		listScreen.SetActive (false);
@@ -340,8 +315,10 @@ public class AnnotationControl : MonoBehaviour {
         currentState = State.idle;
 
         updateAnnotationList();
-    }
+    }*/
 
+	//States are outdated
+	/*
     private void changeCurrentStateToAddAnnotationPressed()
     {
         /*addAnnotationButton.enabled = false;
@@ -349,7 +326,7 @@ public class AnnotationControl : MonoBehaviour {
         if (t != null)
         {
             t.text = "Select point";
-        }*/
+        }*//*
 
 		AddEditScreen.SetActive (true);
 		listScreen.SetActive (false);
@@ -360,15 +337,17 @@ public class AnnotationControl : MonoBehaviour {
         //TODO change color of button
 
         currentState = State.generatingAnnotationPoint;
-    }
-
+    }*/
+	
+	//States are outdated
+	/*
     private void changeCurrentStateToAnnotationPointSelected()
     {
         /*Text t = addAnnotationButton.GetComponentInChildren<Text>();
         if (t != null)
         {
             t.text = "Enter text";
-        }*/
+        }*//*
 
 		instructionText.GetComponent<Text> ().text = "Enter text for new label:";
 
@@ -376,7 +355,8 @@ public class AnnotationControl : MonoBehaviour {
         saveButton.gameObject.SetActive(true);
 
         currentState = State.annotationPointSelected;
-    }
+    }*/
+
 
 	//Saves all annotations in a file
     public void saveAnnotationInFile()
@@ -401,7 +381,7 @@ public class AnnotationControl : MonoBehaviour {
         //Write annotations in file
         using (StreamWriter outputFile = new StreamWriter(path))
         {
-            foreach(GameObject ap in annotationPoints)
+            foreach(GameObject ap in annotationList)
             {
                 AnnotationPointJson apj = new AnnotationPointJson();
                 apj.Text = ap.GetComponent<Annotation>().text;
@@ -423,15 +403,18 @@ public class AnnotationControl : MonoBehaviour {
         return;
     }
 
+	//Load all annotations out of File in List
     private void loadAnnotationFromFile(object obj = null)
-    {
+    {	
         if (Patient.getLoadedPatient() == null)
         {
             return;
         }
-
+		
+		//Clear Screen
         clearAll();
-
+		
+		//get Annotation.json
         Patient currentPatient = Patient.getLoadedPatient();
         string path = currentPatient.path + "/annotation.json"; //TODO read from meta.json??
 
@@ -439,7 +422,7 @@ public class AnnotationControl : MonoBehaviour {
         {
             return;
         }
-
+		
         List<AnnotationPointJson> apjList = new List<AnnotationPointJson>();
 
 
@@ -464,7 +447,8 @@ public class AnnotationControl : MonoBehaviour {
 			annotationPoint.GetComponent<Annotation> ().SetLabel (apj.Text);
             //createAnnotationLabelAndLine(annotationPoint, apj.Text);
         }
-
+		
+		//put all Annotations on Modell
         updateAnnotationList();      
 
     }
@@ -480,7 +464,7 @@ public class AnnotationControl : MonoBehaviour {
         }
 
         //Delete point and label
-        foreach (GameObject g in annotationPoints)
+        foreach (GameObject g in annotationList)
         {
             if (g.GetComponent<Annotation>().id == apID.annotationPointID)
             {
@@ -499,7 +483,7 @@ public class AnnotationControl : MonoBehaviour {
 
         //Delete object in list
         GameObject objToRemove = null;
-        foreach (GameObject g in annotationPoints)
+        foreach (GameObject g in annotationList)
         {
             if (g.GetComponent<Annotation>().id == apID.annotationPointID)
             {
@@ -509,14 +493,13 @@ public class AnnotationControl : MonoBehaviour {
         }
         if (objToRemove != null)
         {
-            annotationPoints.Remove(objToRemove);
+            annotationList.Remove(objToRemove);
         }
 
         updateAnnotationList();
 
         saveAnnotationInFile();
-
-        changeCurrentStateToIdle();
+		
     }
 
 	//Called if the patient is closed
