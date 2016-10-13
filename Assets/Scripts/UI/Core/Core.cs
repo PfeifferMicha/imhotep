@@ -103,27 +103,23 @@ namespace UI
 
 			if (screen == UI.Screen.left) {
 				GameObject indicator1 = Instantiate (indicatorLeft) as GameObject;
-				indicator1.transform.SetParent (transform, false);
-				LayoutPosition pos1 = new LayoutPosition ();
-				pos1.screen = UI.Screen.right;
-				pos1.alignHorizontal = AlignmentH.center;
-				pos1.alignVertical = AlignmentV.center;
+				indicator1.GetComponent<Widget> ().layoutScreen = UI.Screen.right;
+				indicator1.GetComponent<Widget> ().layoutAlignHorizontal = AlignmentH.center;
+				indicator1.GetComponent<Widget> ().layoutAlignVertical = AlignmentV.center;
 				indicator1.SetActive (true);
-				indicator1.GetComponent<Widget> ().setPosition(pos1);
 				Text t = indicator1.GetComponentInChildren<Text> ();
 				t.text = message;
+				indicator1.transform.SetParent (transform, false);
 				activeIndicators.Add (indicator1);
 
 				GameObject indicator2 = Instantiate (indicatorLeft) as GameObject;
-				indicator2.transform.SetParent (transform, false);
-				LayoutPosition pos2 = new LayoutPosition ();
-				pos2.screen = UI.Screen.center;
-				pos2.alignHorizontal = AlignmentH.center;
-				pos2.alignVertical = AlignmentV.center;
+				indicator2.GetComponent<Widget> ().layoutScreen = UI.Screen.center;
+				indicator2.GetComponent<Widget> ().layoutAlignHorizontal = AlignmentH.center;
+				indicator2.GetComponent<Widget> ().layoutAlignVertical = AlignmentV.center;
 				indicator2.SetActive (true);
-				indicator2.GetComponent<Widget> ().setPosition(pos2);
 				t = indicator2.GetComponentInChildren<Text> ();
 				t.text = message;
+				indicator2.transform.SetParent (transform, false);
 				activeIndicators.Add (indicator2);
 			}
 			return (++notificationID);

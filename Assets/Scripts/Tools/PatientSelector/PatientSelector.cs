@@ -32,7 +32,7 @@ public class PatientSelector : MonoBehaviour {
     }
 	public void OnEnable()
 	{
-		notificationID = UI.Core.instance.addIndication (UI.Screen.left, "Please choose patient.");
+		notificationID = UI.Core.instance.addIndication ( GetComponent<Widget>().layoutScreen, "Please choose patient");
 	}
 	public void OnDisable()
 	{
@@ -93,7 +93,7 @@ public class PatientSelector : MonoBehaviour {
 			Text detailsText = newButton.transform.Find("TextDetails").GetComponent<Text>();
 			detailsText.text = patient.indication + "\n" + patient.details;
 
-			Image operationTypeImage = newButton.transform.Find ("OperationTypeImage").GetComponent<Image> ();
+			Image operationTypeImage = newButton.transform.Find ("IconBackground/OperationTypeImage").GetComponent<Image> ();
 			if (operationTypeImage != null) {
 				operationTypeImage.sprite = spriteForOperationType (patient.operationType);
 			} else {
