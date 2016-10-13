@@ -332,7 +332,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &26119097
 Transform:
   m_ObjectHideFlags: 0
@@ -1806,6 +1806,21 @@ Transform:
 GameObject:
   m_PrefabParentObject: {fileID: 133872, guid: d260a1a7ab9b608419b97d07c6dd23b9, type: 2}
   m_PrefabInternal: {fileID: 246395839}
+--- !u!114 &246395846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 246395841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ce57d6e9e44780459dd4822262dbd43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: 
+  creator: 
+  annotationLabel: {fileID: 1494569411}
+  id: 0
 --- !u!43 &247201347
 Mesh:
   m_ObjectHideFlags: 0

@@ -50,8 +50,7 @@ public class Annotation : MonoBehaviour {
 		this.GetComponent<LineRenderer>().SetPosition(0, this.transform.position);
 		this.GetComponent<LineRenderer>().SetPosition(1, this.annotationLabel.transform.position);
 
-		Text labelText = annotationLabel.transform.Find("Background/Text").gameObject.GetComponent<Text>();
-		labelText.text = text;
+		SetLabel (text);
 	}
 
 	//Updates the Label Text, if no Label exists  create one

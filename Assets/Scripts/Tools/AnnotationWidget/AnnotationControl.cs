@@ -115,16 +115,18 @@ public class AnnotationControl : MonoBehaviour {
     }
 
 	//called by  "On Value Changed Event" , to update Label of current Annotation
-	public void InputChanged(string arg0){
+	public void InputChanged(){
 		if(currentAnnotation != null) {
-			currentAnnotation.GetComponent<Annotation> ().SetLabel (arg0);
+			currentAnnotation.GetComponent<Annotation> ().SetLabel (annotationTextInput.text);
 		}
 	}
 
-	//Used to Create Annotation
-	private GameObject createAnnotation(Quaternion rotation, Vector3 position) {
-		
-        GameObject newAnnotation = (GameObject)Instantiate(annotationPointObj, position, rotation);
+	//Used to Create Annotation Mesh
+	// Local Position
+	private GameObject createAnnotationMesh(Quaternion rotation, Vector3 position) {
+
+		GameObject newAnnotation = (GameObject)Instantiate(annotationPointObj, position, rotation);
+        
 
 		newAnnotation.transform.localScale = new Vector3( 5, 5, 5 );
 		newAnnotation.transform.SetParent( meshPositionNode.transform, false );
@@ -161,6 +163,9 @@ public class AnnotationControl : MonoBehaviour {
 			//Open AnnotationScreen
 			listScreen.SetActive (false);
 			AddEditScreen.SetActive(true);
+			//deactivate input till current Annotation exists
+			annotationTextInput.gameObject.SetActive (false);
+			saveButton.gameObject.SetActive (false);
 			currentActiveScreen = ActiveScreen.add;
 		}
 
@@ -198,22 +203,17 @@ public class AnnotationControl : MonoBehaviour {
 		Debug.Log ("Clicked: " + eventData.pointerPressRaycast.worldPosition);
 
 		if(currentActiveScreen == ActiveScreen.add) {
-			//TODO Create/Move Annotation on Clicked Position
+			if(currentAnnotation == null) {
+				
+				Vector3 localpos = meshPositionNode.transform.InverseTransformPoint(eventData.pointerPressRaycast.worldPosition);
+				Vector3 localNormal = meshPositionNode.transform.InverseTransformDirection (eventData.pointerPressRaycast.worldNormal);
+				currentAnnotation = createAnnotationMesh(Quaternion.LookRotation( localNormal),
+					localpos);
+				CreateNewAnnotation ();
+			}
 		} else if(currentActiveScreen == ActiveScreen.list) {
 			//TODO Is an Annotation on Clicked Position?
 		}
-		/*
-		if (currentState == State.generatingAnnotationPoint) {
-
-			currentAnnotatinPoint = createAnnotation(
-				Quaternion.LookRotation( eventData.pointerPressRaycast.worldNormal ),
-				eventData.pointerPressRaycast.worldPosition);
-			//createAnnotationLabelAndLine(currentAnnotatinPoint, "");
-			currentState = State.annotationPointSelected;
-			annotationTextInput.gameObject.SetActive (true);
-			saveButton.gameObject.SetActive (true);
-		}
-		*/
 	}
 
 	//Called if the user pressed Sve Button
@@ -233,13 +233,32 @@ public class AnnotationControl : MonoBehaviour {
 		saveAnnotationInFile();
     }
 
-	//Called if the user pressed Edit Button
+	//Called to Create a New Annotation when Open Add/Edit Screen
+	private void CreateNewAnnotation () {
+		//Mesh should be existing
+		if(currentAnnotation == null) {
+			Debug.LogAssertion("currentAnnotation is null");
+		}
+
+
+		// you can now Change Label text and save
+		annotationTextInput.gameObject.SetActive (true);
+		saveButton.gameObject.SetActive (true);
+	}
+
+	//Called to Edit an Existing Annotation when Open Add/Edit Screen
+	private void EditExistingAnnotation() {
+		//TODO edit existing Annotation
+	}
+
+
+	//Called if the user pressed Edit Annotation Button (List Screen)
 	public void EditAnnotation()
 	{	
 		//TODO EditAnnotation
 	}
 
-	//Called if the user pressed Delete Button
+	//Called if the user pressed Delete Annotation Button (List Screen)
 	public void DeleteAnnotation()
 	{	
 		//TODO DeleteAnnotation
@@ -388,7 +407,7 @@ public class AnnotationControl : MonoBehaviour {
             Quaternion rotation = new Quaternion((float)apj.RotationX, (float)apj.RotationY, (float)apj.RotationZ, (float)apj.RotationW);
             Vector3 position = new Vector3((float)apj.PositionX, (float)apj.PositionY, (float)apj.PositionZ);
 
-			GameObject annotation = createAnnotation(rotation, position);
+			GameObject annotation = createAnnotationMesh(rotation, position);
 
 			annotation.GetComponent<Annotation> ().SetLabel (apj.Text);
         }
