@@ -12,9 +12,6 @@ public class Annotation : MonoBehaviour {
 	public string creator;
 	public DateTime creationDate;
 	public GameObject annotationLabel;
-	//public Quaternion rotation;
-    [DefaultValue(-1)]
-	public int id;
 
 
 
@@ -51,6 +48,13 @@ public class Annotation : MonoBehaviour {
 		this.GetComponent<LineRenderer>().SetPosition(1, this.annotationLabel.transform.position);
 
 		SetLabel (text);
+	}
+
+
+	public void destroyAnnotation() {
+		Destroy (annotationLabel);
+		annotationLabel = null;
+		Destroy (this.gameObject);
 	}
 
 	//Updates the Label Text, if no Label exists  create one
