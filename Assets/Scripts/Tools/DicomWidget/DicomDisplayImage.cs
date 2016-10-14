@@ -116,6 +116,11 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		}
 	}
 
+	public float frac( float val )
+	{
+		return val - Mathf.Floor (val);
+	}
+
 	public void SetDicom( DICOM dicom )
 	{
 		Texture2D tex = dicom.getTexture2D ();
@@ -135,16 +140,24 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		mMaterial.SetFloat ("globalMinimum", (float)dicom.getMinimum ());
 		mMaterial.SetFloat ("range", (float)(dicom.getMaximum () - dicom.getMinimum ()));
 
-		UInt16 value = 2080;
-		byte[] bytes = BitConverter.GetBytes( value );
+		UInt16 value = 1000;
+		Debug.Log ("original: " + value);
+		float floatValue = value;
+		Debug.Log ("floatValue: " + floatValue);
 
-		float R = (float)bytes[0];
-		float G = (float)bytes[1];
+		Color c = new Color ();
 
-		Debug.Log ("Floats: " + R + " " + G + " " + R / 255f + " " + G / 255f);
+		c.r = ((float)value % 256)/256f; value /= 256;
+		c.g = ((float)value % 256)/256f; value /= 256;
+		c.b = ((float)value % 256)/256f; value /= 256;
+		c.a = ((float)value % 256)/256f;
 
-		UInt16 pixelValue = (UInt16)(2131);
+		Debug.Log ("Color: " + c.r + " " + c.g + " " + c.b + " " + c.a);
 
+		const float fromFixed = 256.0f/255f;
+		UInt16 result = (UInt16)( 256*(c.r + 256*(c.g + 256*(c.b + 256*c.a))));
+
+		Debug.Log ("reconstructed: " + result);
 
 
 

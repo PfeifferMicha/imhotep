@@ -5,8 +5,8 @@
 		_MainTex ("Texture", 2D) = "white" {}
 		minValue("Minimum", Range(0, 1)) = 0
 		maxValue("Maximum", Range(0, 1)) = 1
-		globalMaximum("GloablMaximum", Range(0, 65536)) = 65536
-		globalMinimum("GloablMinimum", Range(0, 65536)) = 0
+		globalMaximum("GloablMaximum", Range(-65536, 65536)) = 65536
+		globalMinimum("GloablMinimum", Range(-65536, 65536)) = 0
 
 		dimensionsXY ("DimensionsXY", Vector) = (0,0,1,1)
 	}
@@ -61,6 +61,15 @@
 				return (col.g*256*255 + col.r*255 - globalMinimum)/(globalMaximum-globalMinimum);
 				//return (col.g*255)/globalMaximum;
 			}
+
+			float C2F2( float4 col )
+			{
+				const float fromFixed = 256.0/255;
+				return col.r*fromFixed/(1)
+						+col.g*fromFixed/(255)
+						+col.b*fromFixed/(255*255)
+						+col.a*fromFixed/(255*255*255);
+			}
 			
 			fixed4 frag (v3f i) : SV_Target
 			{
@@ -68,7 +77,20 @@
 				//fixed4 col = tex2D(_MainTex, i.uv);
 
 				fixed4 rawcol = tex2D(_MainTex, i.uv);
-				float val = C2F( rawcol );
+				//float val = C2F( rawcol );
+
+				//int val = ( (rawcol.r + 256*(rawcol.g + 256*(rawcol.b + 256*rawcol.a))));
+				float val = rawcol.r*256 + rawcol.g*256*256;
+
+
+				val = (val - globalMinimum)/(globalMaximum-globalMinimum);
+
+				//return fixed4(rawcol.rgb, 1);
+				//return fixed4( val, val, val, 1 );
+
+				//return rawcol;
+
+				//return fixed4( rawcol.g, rawcol.g, rawcol.g, 1 );
 
 				//if( rawcol.g*256*255 + rawcol.r*255 > 2000 )
 				//	return fixed4( 1,0,0,1);

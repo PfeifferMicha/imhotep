@@ -68,8 +68,6 @@
 				// sample the texture
 				//fixed4 col = tex2D(_MainTex, i.uv);
 				float val = C2F( tex3D(_MainTex, i.uv) );
-				if( val < globalMinimum ) return fixed4(1,0,0,1);
-				if( val > globalMaximum ) return fixed4(1,1,0,1);
 				
 				val = (val - minValue) / (maxValue - minValue);
 				fixed4 col = fixed4(val, val, val, 1.0);

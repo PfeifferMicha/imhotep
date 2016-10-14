@@ -126,7 +126,7 @@ public class DicomLoaderITK
 		// Some of the following tags may not be in the DICOM Header, so catch and ignore "not found" exceptions:
 
 		
-		Color[] colors = new Color[ texWidth*texHeight*texDepth ];		
+		Color32[] colors = new Color32[ texWidth*texHeight*texDepth ];		
 		int maxCol = 0;
 		int minCol = 65535;
 
@@ -201,7 +201,7 @@ public class DicomLoaderITK
 			throw(new System.Exception ("Cannot read DICOM. Unsupported pixel format: " + image.GetPixelID()));
 		}
 
-		return new DICOMLoadReturnObject (texWidth, texHeight, texDepth, colors, header);
+		return new DICOMLoadReturnObject (texWidth, texHeight, texDepth, colors, header, 0, 0);
 	}
 
 	public DICOMLoadReturnObject loadSlice( int indexToLoad, int slice )
@@ -237,9 +237,10 @@ public class DicomLoaderITK
 		int texWidth = Mathf.NextPowerOfTwo ((int)image.GetWidth ());
 		int texHeight = Mathf.NextPowerOfTwo ((int)image.GetHeight ());
 		int texDepth = 1;
-		Color[] colors = new Color[ texWidth*texHeight ];		
-		//int maxCol = -65535;
-		//int minCol = 65535;
+		Color32[] colors = new Color32[ texWidth*texHeight ];		
+
+		UInt16 minCol = UInt16.MaxValue;
+		UInt16 maxCol = UInt16.MinValue;
 
 		int slope = header.RescaleSlope;
 		int intercept = header.RescaleIntercept;
@@ -285,8 +286,6 @@ public class DicomLoaderITK
 
 			Int16[] colorsTmp = new Int16[ numberOfPixels ];
 			Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
-			UInt16 minCol = UInt16.MaxValue;
-			UInt16 maxCol = UInt16.MinValue;
 
 			int index = 0;
 			for (UInt32 z = 0; z < texDepth; z++) {
@@ -304,9 +303,9 @@ public class DicomLoaderITK
 							//colors[ z + (x + yTex*texWidth)*texDepth ] = F2C( (UInt16)colorsTmp[index] );
 							// Shift the signed int into the unsigned int range by adding 32768.
 							//Debug.Log("val: " + (colorsTmp[index]*slope - intercept));
-							UInt16 pixelValue = (UInt16)(colorsTmp[index]*slope - intercept);
+							UInt16 pixelValue = (UInt16)((colorsTmp[index] - intercept)/slope);
 							// Mask out unused high bits:
-							pixelValue &= unchecked((UInt16)~(1 << 15 | 1 << 14 | 1 << 13 | 1 << 12));
+							//pixelValue &= unchecked((UInt16)~(1 << 15 | 1 << 14 | 1 << 13 | 1 << 12));
 
 							colors[ (texWidth-1-x) + y*texWidth + z*texWidth*texHeight ] = F2C( pixelValue );
 
@@ -326,7 +325,7 @@ public class DicomLoaderITK
 			throw(new System.Exception ("Cannot read DICOM. Unsupported pixel format: " + image.GetPixelID()));
 		}
 
-		return new DICOMLoadReturnObject (texWidth, texHeight, texDepth, colors, header);
+		return new DICOMLoadReturnObject (texWidth, texHeight, texDepth, colors, header, minCol, maxCol);
 	}
 
 	private int indexForSeriesUID( string seriesUID )
@@ -354,13 +353,30 @@ public class DicomLoaderITK
 		return newlist;
 	}
 
-	Color F2C(UInt16 value)
+	float frac( float val )
 	{
-		byte[] bytes = BitConverter.GetBytes( value );
+		return val - Mathf.Floor(val);
+	}
+
+	Color32 F2C(UInt16 value)
+	{
+		/*byte[] bytes = BitConverter.GetBytes( 1000 );
 
 		float R = (float)bytes[0];
 		float G = (float)bytes[1];
-		return new Color( R/255.0f, G/255.0f, 0.0f, 0.0f );
+		//return new Color( R/255.0f, G/255.0f, 0.0f, 1.0f );
+		return new Color( R, G, 0.0f, 1.0f );*/
+		//value = 1000;
+
+		Color32 c = new Color32 ();
+
+		c.r = (byte)(value % 256); value /= 256;
+		c.g = (byte)(value % 256); value /= 256;
+		c.b = (byte)(value % 256); value /= 256;
+		c.a = (byte)(value % 256);
+		//Debug.LogWarning ("c: " + c.r + " " + c.g + " " + c.b + "  " + c.a);
+
+		return c;
 	}
 	Color F2C(Int16 value)
 	{
