@@ -1,13 +1,12 @@
-﻿Shader "Unlit/DICOM"
+﻿Shader "Unlit/DICOM2D"
 {
 	Properties
 	{
-		_MainTex ("Texture", 3D) = "white" {}
+		_MainTex ("Texture", 2D) = "white" {}
 		minValue("Minimum", Range(0, 1)) = 0
 		maxValue("Maximum", Range(0, 1)) = 1
-		layer("Layer", Range(0, 1)) = 0
 		globalMaximum("GloablMaximum", Range(0, 65536)) = 65536
-		globalMinimum("GloablMinimum", Range(-65536, 0)) = 0
+		globalMinimum("GloablMinimum", Range(0, 65536)) = 0
 
 		dimensionsXY ("DimensionsXY", Vector) = (0,0,1,1)
 	}
@@ -34,12 +33,12 @@
 
 			struct v3f
 			{
-				float3 uv : TEXCOORD0;
+				float2 uv : TEXCOORD0;
 				UNITY_FOG_COORDS(1)
 				float4 vertex : SV_POSITION;
 			};
 
-			sampler3D _MainTex;
+			sampler2D _MainTex;
 			float4 _MainTex_ST;
 			float minValue;
 			float maxValue;
@@ -52,14 +51,14 @@
 				v3f o;
 				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 				float2 tmp = TRANSFORM_TEX(v.uv, _MainTex);
-				o.uv = float3( tmp.x, tmp.y, layer );
+				o.uv = float2( tmp.x, tmp.y );
 				UNITY_TRANSFER_FOG(o,o.vertex);
 				return o;
 			}
 			
 			float C2F( float4 col )
 			{
-				return (col.g*65536 + col.r*256 - globalMinimum)/(globalMaximum-globalMinimum);
+				return (col.g*256*255 + col.r*255 - globalMinimum)/(globalMaximum-globalMinimum);
 				//return (col.g*255)/globalMaximum;
 			}
 			
@@ -67,14 +66,20 @@
 			{
 				// sample the texture
 				//fixed4 col = tex2D(_MainTex, i.uv);
-				float val = C2F( tex3D(_MainTex, i.uv) );
-				if( val < globalMinimum ) return fixed4(1,0,0,1);
-				if( val > globalMaximum ) return fixed4(1,1,0,1);
+
+				fixed4 rawcol = tex2D(_MainTex, i.uv);
+				float val = C2F( rawcol );
+
+				//if( rawcol.g*256*255 + rawcol.r*255 > 2000 )
+				//	return fixed4( 1,0,0,1);
 				
 				val = (val - minValue) / (maxValue - minValue);
 				fixed4 col = fixed4(val, val, val, 1.0);
+				//fixed4 col = fixed4(val, val, val, 1.0);
 				// apply fog
 				//UNITY_APPLY_FOG(i.fogCoord, col);
+
+				//return fixed4(tex2D(_MainTex, i.uv).rgb, 1);
 				return col;
 			}
 			ENDCG

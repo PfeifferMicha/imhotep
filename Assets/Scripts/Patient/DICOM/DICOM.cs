@@ -12,33 +12,40 @@ public class DICOM
 	{
 		return mHeader;
 	}
-	public Texture3D getTexture()
+	public Texture2D getTexture2D()
 	{
-		return mTexture;
+		return mTexture2D;
+	}
+	public Texture3D getTexture3D()
+	{
+		return mTexture3D;
 	}
 	public void setHeader( DICOMHeader hdr )
 	{
 		mHeader = hdr;
 	}
-	public void setTexture( Texture3D tex )
+	public void setTexture2D( Texture2D tex )
 	{
-		mTexture = tex;
+		mTexture2D = tex;
+	}
+	public void setTexture3D( Texture3D tex )
+	{
+		mTexture3D = tex;
 	}
 	public UInt32 getMaximum() {
-		return mMaximum;
+		return (UInt32)mHeader.MaxPixelValue;
 	}
 	public UInt32 getMinimum() {
-		return mMinimum;
+		return (UInt32)mHeader.MinPixelValue;;
 	}
-	public void setMaximum( UInt32 max ) {
-		mMaximum = max;
-	}
-	public void setMinimum( UInt32 min) {
-		mMinimum = min;
+	public bool is2DImage()
+	{
+		return (mTexture2D != null);
 	}
 
 	private DICOMHeader mHeader;
-	private Texture3D mTexture;
+	private Texture3D mTexture3D;
+	private Texture2D mTexture2D;
 	private UInt32 mMaximum;
 	private UInt32 mMinimum;
 }

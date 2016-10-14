@@ -2,13 +2,14 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
+using System;
 
 public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHandler, IPointerUpHandler {
 
 	private Material mMaterial;
 	private float mMinValue;
 	private float mMaxValue;
-	private float mLayer;
+	private int mLayer;
 	private uint mNumberOfLayers;
 	private float mFilledPartOfTexture;
 	private float initialWidth = 512;
@@ -20,11 +21,13 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	// When mDragging is true, moving the mouse will modify the windowing:
 	private bool mDragging = false;
 
+	private DICOM currentDICOM;
+
 	// Use this for initialization
 	void Awake () {
 		mMinValue = 0.0f;
 		mMaxValue = 1.0f;
-		mLayer = 0.0f;
+		mLayer = 0;
 		mDragging = false;
 
 		mMaterial = GetComponent<RawImage>().material;
@@ -38,11 +41,12 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	public void OnScroll(PointerEventData eventData)
 	{
-		Texture3D tex = (Texture3D)mMaterial.mainTexture;
-		int numLayers = tex.depth;
+		if (currentDICOM != null) {
+			//int numLayers = (int)currentDICOM.getHeader ().NumberOfImages;
 
-		mLayer = Mathf.Clamp (mLayer + Mathf.Ceil (2.0f * eventData.scrollDelta.y) / numLayers, 0, 1);
-
+			Debug.Log ("ScrollDelta:" + eventData.scrollDelta.y + " " + eventData.scrollDelta.x);
+			LayerChanged (mLayer + Mathf.Sign( eventData.scrollDelta.y ));
+		}
 		//mLayerSlider.value = mLayer;
 	}
 	public void OnPointerDown( PointerEventData eventData )
@@ -101,33 +105,51 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	public void LayerChanged( float newVal )
 	{
-		mLayer = newVal;
-		mLayer = Mathf.Clamp (mLayer, 0.0f, 1.0f);
-		mMaterial.SetFloat ("layer", mLayer*mFilledPartOfTexture);
+		if (currentDICOM != null) {
+			int numLayers = (int)currentDICOM.getHeader ().NumberOfImages;
+			//mMaterial.SetFloat ("layer", mLayer*mFilledPartOfTexture);
+			mLayer = (int)Mathf.Clamp (newVal, 0, numLayers - 1);
+			Debug.Log ("Layer: " + mLayer + " " + (int)currentDICOM.getHeader ().NumberOfImages);
+
+			PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
+			mPatientDICOMLoader.loadDicomSlice ( mLayer );
+		}
 	}
 
 	public void SetDicom( DICOM dicom )
 	{
-		Texture3D tex = dicom.getTexture ();
+		Texture2D tex = dicom.getTexture2D ();
 		float newWidth = initialWidth;
 		float newHeight = initialHeight;
 		float texWidth = tex.width;
 		float texHeight = tex.height;
-		if (texWidth > texHeight) {
+		/*if (texWidth > texHeight) {
 			newHeight = texHeight * newWidth / texWidth;
 		} else {
 			newWidth = texWidth * newHeight / texHeight;
-		}
+		}*/
 
-		GetComponent<RectTransform> ().sizeDelta = new Vector2 (newWidth, newHeight);
-
-		Debug.Log (mMaterial);
-		Debug.Log (dicom);
+		//GetComponent<RectTransform> ().sizeDelta = new Vector2 (newWidth, newHeight);
+		Debug.LogWarning("Min, max: " + dicom.getMinimum () + " " + dicom.getMaximum () );
 		mMaterial.SetFloat ("globalMaximum", (float)dicom.getMaximum ());
 		mMaterial.SetFloat ("globalMinimum", (float)dicom.getMinimum ());
 		mMaterial.SetFloat ("range", (float)(dicom.getMaximum () - dicom.getMinimum ()));
 
-		mMaterial.mainTexture = tex;
+		UInt16 value = 2080;
+		byte[] bytes = BitConverter.GetBytes( value );
+
+		float R = (float)bytes[0];
+		float G = (float)bytes[1];
+
+		Debug.Log ("Floats: " + R + " " + G + " " + R / 255f + " " + G / 255f);
+
+		UInt16 pixelValue = (UInt16)(2131);
+
+
+
+
+		GetComponent<RawImage> ().texture = tex;
+		//mMaterial.mainTexture = tex;
 
 		//mMaterial.SetFloat ("minValue", mMinValue);
 		//mMaterial.SetFloat ("maxValue", mMaxValue);
@@ -135,10 +157,13 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		mMaxSlider.value = 1.0f;
 		mLayerSlider.value = 0.5f;*/
 
-		mNumberOfLayers = dicom.getHeader ().numberOfImages;
+		mNumberOfLayers = dicom.getHeader ().NumberOfImages;
 		// Calculate how much of the texture is actually filled and only display that part:
-		mFilledPartOfTexture = (float)mNumberOfLayers/(float)tex.depth;
-		LayerChanged( 0.5f );
+		mFilledPartOfTexture = (float)mNumberOfLayers/(float)1;
+		//LayerChanged( 0.5f );
+
+		Debug.Log ("Size of DICOM: " + tex.width + " " + tex.height);
+		currentDICOM = dicom;
 	}
 
 	public void FlipHorizontal()
