@@ -193,7 +193,7 @@ public class AnnotationControl : MonoBehaviour {
 
 
 	// Called when user clicks on Organ
-	void OnMeshClicked( PointerEventData eventData )
+	public void OnMeshClicked( PointerEventData eventData )
 	{
 		Debug.Log ("Clicked: " + eventData.pointerPressRaycast.worldPosition);
 
@@ -279,9 +279,17 @@ public class AnnotationControl : MonoBehaviour {
 
 	}
 
-	//Called by AnnotationListEntryControl with the annotation to delete
+	//Called by AnnotationListEntryControl with the annotation to delete form view and File
 	public void DeleteAnnotation(GameObject aListEntry) {
-		deleteOneAnnotation (aListEntry);
+
+
+		//delete List Entry
+		annotationListEntryList.Remove (aListEntry);
+
+		removeOneAnnotation (aListEntry);
+
+		//delete in File (save new File)
+		saveAnnotationInFile();
 	}
 
 	// Deletes all annotationsMesh from Screen(clears Screen) and out off annotationList 
@@ -291,10 +299,7 @@ public class AnnotationControl : MonoBehaviour {
         {
             if(g != null)
             {
-				g.GetComponent<AnnotationListEntryControl> ().DeleteAnnotation ();
-
-                //Delete points
-                Destroy(g);
+				removeOneAnnotation (g);
             }
         }
         //Delete list
@@ -429,22 +434,13 @@ public class AnnotationControl : MonoBehaviour {
         }
     }
 
-	//Deletes a annotation given in self from view and FILE
-	private void deleteOneAnnotation(GameObject aListEntry) {
-        
-
-
-		//delete List Entry
-		annotationListEntryList.Remove (aListEntry);
+	//removes a annotation given in self from view
+	private void removeOneAnnotation(GameObject aListEntry) {
 
 		//delete Annotation Mesh
 		aListEntry.GetComponent<AnnotationListEntryControl> ().getAnnotation().GetComponent<Annotation>().destroyAnnotation();
 
-		Destroy (aListEntry);
-
-		//delete in File (save new File)
-        saveAnnotationInFile();
-		
+		Destroy (aListEntry);		
     }
 
 	//Called if the patient is closed
