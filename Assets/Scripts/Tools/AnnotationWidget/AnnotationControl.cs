@@ -45,8 +45,17 @@ public class AnnotationControl : MonoBehaviour {
 
 	//Add Annotation Screen Things
 	public GameObject instructionText;
+	public GameObject annotationSettings;
 	public InputField annotationTextInput;
-	public Button saveButton;
+	/*public Button saveButton;
+	public Button abortButton;
+	public Button redButton;
+	public Button blueButton;
+	public Button greenButton;
+	public Button yellowButton;
+	public Button purpleButton;
+	public Button cyanButton;*/
+
 
 
 	public GameObject meshNode;
@@ -159,8 +168,7 @@ public class AnnotationControl : MonoBehaviour {
 			AddEditScreen.SetActive(true);
 			if(currentAnnotationListEntry == null) {
 				//deactivate input till current Annotation exists
-				annotationTextInput.gameObject.SetActive (false);
-				saveButton.gameObject.SetActive (false);
+				annotationSettings.gameObject.SetActive(false);
 			} else {
 				UnlockEditSettings ();
 				GameObject curAnno = currentAnnotationListEntry.GetComponent<AnnotationListEntryControl> ().getAnnotation ();
@@ -213,22 +221,27 @@ public class AnnotationControl : MonoBehaviour {
 		}
 	}
 
-	//Called if the user pressed Sve Button
+	//Called if the user pressed Save Button
     public void SaveAnnotation()
     {	
 		
     	currentAnnotationListEntry = null;
         
 		//Reset Edit Tools
-		annotationTextInput.text = "";
+		annotationSettings.GetComponentInChildren<InputField>().text = "";
         
 		//Deactivate all Edit Tools
-		annotationTextInput.gameObject.SetActive (false);
-		saveButton.gameObject.SetActive (false);
+		annotationSettings.gameObject.SetActive(false);
 
 		//Save changes in File
 		saveAnnotationInFile();
     }
+
+	//Called if the user pressed Abort Button
+	public void AbortAnnotationChanges()
+	{	
+		//TODO abort System
+	}
 
 	//Called to Create a New Annotation when Open Add/Edit Screen
 	private void UnlockEditSettings () {
@@ -237,8 +250,8 @@ public class AnnotationControl : MonoBehaviour {
 			Debug.LogAssertion("currentAnnotation is null");
 		} else {
 			// you can now Change Label text and save
-			annotationTextInput.gameObject.SetActive (true);
-			saveButton.gameObject.SetActive (true);	
+			instructionText.gameObject.SetActive(false);
+			annotationSettings.gameObject.SetActive (true);
 		}
 
 
@@ -305,42 +318,6 @@ public class AnnotationControl : MonoBehaviour {
         //Delete list
 		annotationListEntryList = new List<GameObject>();
     }
-
-	//Creates view of annotationList (List elements on Screen)
-    /*private void updateAnnotationList()
-    {
-        //Destroy all object up to one button
-        for(int i = 0; i < annotationListEntry.transform.parent.childCount; i++)
-        {
-            if(i != 0) //TODO !=0
-            {
-                Destroy(annotationListEntry.transform.parent.GetChild(i).gameObject);
-            }
-        }
-
-        foreach (GameObject g in annotationList)
-        {            
-            // Create a new instance of the list button:
-            GameObject newEntry = Instantiate(annotationListEntry).gameObject;
-			newEntry.SetActive(true);
-
-            // Attach the new Entry to the list:
-			newEntry.transform.SetParent(annotationListEntry.transform.parent, false);
-
-
-            // Change Entry text to name of Annotation
-			Text buttonText = newEntry.transform.Find("LabelText").gameObject.GetComponent<Text>();
-            Annotation ap = g.GetComponent<Annotation>();
-            if(ap != null)
-            {
-                buttonText.text = ap.text;
-
-                // Attach AnnotationPointID to the new button and save the id of the annotation point 
-				newEntry.AddComponent<AnnotationPointID>().annotationPointID = ap.id;
-            }
-            
-        }
-    }*/
 
 	//Saves all annotations in a file
     private void saveAnnotationInFile()
