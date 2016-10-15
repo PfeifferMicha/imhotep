@@ -130,7 +130,7 @@ public class DicomDisplay : MonoBehaviour {
 
 	public void backToList()
 	{
-		//ImageScreen.SetActive (false);
+		ImageScreen.SetActive (false);
 		ListScreen.SetActive (true);
 	}
 

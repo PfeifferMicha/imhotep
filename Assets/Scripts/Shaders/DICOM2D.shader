@@ -28,12 +28,12 @@
 			struct appdata
 			{
 				float4 vertex : POSITION;
-				float2 uv : TEXCOORD0;
+				float2 texcoord : TEXCOORD0;
 			};
 
 			struct v3f
 			{
-				float2 uv : TEXCOORD0;
+				float2 texcoord : TEXCOORD0;
 				UNITY_FOG_COORDS(1)
 				float4 vertex : SV_POSITION;
 			};
@@ -50,8 +50,7 @@
 			{
 				v3f o;
 				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
-				float2 tmp = TRANSFORM_TEX(v.uv, _MainTex);
-				o.uv = float2( tmp.x, tmp.y );
+				o.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
 				UNITY_TRANSFER_FOG(o,o.vertex);
 				return o;
 			}
@@ -75,13 +74,14 @@
 			{
 				// sample the texture
 				//fixed4 col = tex2D(_MainTex, i.uv);
-
-				fixed4 rawcol = tex2D(_MainTex, i.uv);
-				//float val = C2F( rawcol );
-
-				//int val = ( (rawcol.r + 256*(rawcol.g + 256*(rawcol.b + 256*rawcol.a))));
-				float val = rawcol.r*256 + rawcol.g*256*256;
-
+				float val;
+				if( i.texcoord.x >= 0 && i.texcoord.x <= 1 && i.texcoord.y >= 0 && i.texcoord.y <= 1 )
+				{
+					fixed4 rawcol = tex2D(_MainTex, i.texcoord);
+					val = rawcol.r*256 + rawcol.g*256*256;
+				} else {
+					val = globalMinimum;
+				}
 
 				val = (val - globalMinimum)/(globalMaximum-globalMinimum);
 

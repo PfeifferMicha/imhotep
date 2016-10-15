@@ -93,26 +93,6 @@ Material:
         second: 0.5
       data:
         first:
-          name: minValue
-        second: 0.18227705
-      data:
-        first:
-          name: maxValue
-        second: 0.8550923
-      data:
-        first:
-          name: globalMaximum
-        second: 2131
-      data:
-        first:
-          name: globalMinimum
-        second: 0
-      data:
-        first:
-          name: layer
-        second: 0
-      data:
-        first:
           name: _Parallax
         second: 0.02
       data:
@@ -146,6 +126,26 @@ Material:
       data:
         first:
           name: _Metallic
+        second: 0
+      data:
+        first:
+          name: minValue
+        second: 0.5459178
+      data:
+        first:
+          name: maxValue
+        second: 0.83183813
+      data:
+        first:
+          name: globalMaximum
+        second: 1932
+      data:
+        first:
+          name: globalMinimum
+        second: 0
+      data:
+        first:
+          name: layer
         second: 0
     m_Colors:
       data:

@@ -12,14 +12,21 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	private int mLayer;
 	private uint mNumberOfLayers;
 	private float mFilledPartOfTexture;
-	private float initialWidth = 512;
-	private float initialHeight = 512;
+
+	// Positioning:
+	private float panX = 0;
+	private float panY = 0;
+	private float zoom = 1;
 	/*private Slider mMinSlider;
 	private Slider mMaxSlider;
 	private Slider mLayerSlider;*/
 
-	// When mDragging is true, moving the mouse will modify the windowing:
-	private bool mDragging = false;
+	// When dragLevelWindow is true, moving the mouse will modify the windowing:
+	private bool dragLevelWindow = false;
+	// When dragPan is true, moving the mouse will modify the position:
+	private bool dragPan = false;
+	// When dragZoom is true, moving the mouse will modify the position:
+	private bool dragZoom = false;
 
 	private DICOM currentDICOM;
 
@@ -28,13 +35,9 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		mMinValue = 0.0f;
 		mMaxValue = 1.0f;
 		mLayer = 0;
-		mDragging = false;
+		dragLevelWindow = false;
 
 		mMaterial = GetComponent<RawImage>().material;
-
-		// Remember how large the image was at the beginning:
-		initialWidth = GetComponent<RectTransform> ().rect.width;
-		initialHeight = GetComponent<RectTransform> ().rect.height;
 
 		//clear ();
 	}
@@ -52,29 +55,57 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	public void OnPointerDown( PointerEventData eventData )
 	{
 		if( eventData.button == PointerEventData.InputButton.Left )
-			mDragging = true;
+			dragLevelWindow = true;
+		else if( eventData.button == PointerEventData.InputButton.Right )
+			dragPan = true;
+		else if( eventData.button == PointerEventData.InputButton.Middle )
+			dragZoom = true;
 	}
 	public void OnPointerUp( PointerEventData eventData )
 	{
 		if( eventData.button == PointerEventData.InputButton.Left )
-			mDragging = false;
+			dragLevelWindow = false;
+		else if( eventData.button == PointerEventData.InputButton.Right )
+			dragPan = false;
+		else if( eventData.button == PointerEventData.InputButton.Middle )
+			dragZoom = false;
 	}
 	public void Update()
 	{
-		if (mDragging) {
+		if (dragLevelWindow) {
 			InputDeviceManager idm = GameObject.Find ("GlobalScript").GetComponent<InputDeviceManager> ();
 			InputDevice inputDevice = idm.currentInputDevice;
 
 			// TODO: Update to new input event system:
-			float contrastChange = inputDevice.getTexCoordDelta().x*0.5f;
-			float intensityChange = - inputDevice.getTexCoordDelta ().y*0.5f;
-			Debug.Log ("Contrast: " + contrastChange + " Intensity: " + intensityChange);
+			float contrastChange = inputDevice.getTexCoordDelta ().x * 0.5f;
+			float intensityChange = -inputDevice.getTexCoordDelta ().y * 0.5f;
 
 			float newMin = Mathf.Clamp (mMinValue + intensityChange - contrastChange, 0f, 1f);
 			float newMax = Mathf.Clamp (mMaxValue + intensityChange + contrastChange, 0f, 1f);
-			Debug.Log ("New Intensity: " + newMin + " .. " + newMax );
 			MinChanged (newMin);
 			MaxChanged (newMax);
+		}
+		if (dragPan) {
+			InputDeviceManager idm = GameObject.Find ("GlobalScript").GetComponent<InputDeviceManager> ();
+			InputDevice inputDevice = idm.currentInputDevice;
+
+			float dX = -inputDevice.getTexCoordDelta ().x;
+			float dY = -inputDevice.getTexCoordDelta ().y;
+
+			panX += dX*zoom;
+			panY += dY*zoom;
+
+			ApplyScaleAndPosition ();
+		}
+		if (dragZoom) {
+			InputDeviceManager idm = GameObject.Find ("GlobalScript").GetComponent<InputDeviceManager> ();
+			InputDevice inputDevice = idm.currentInputDevice;
+
+			float dY = -inputDevice.getTexCoordDelta ().y * 0.5f;
+
+			zoom = Mathf.Clamp (zoom + dY, 0.1f, 5f);
+
+			ApplyScaleAndPosition ();
 		}
 	}
 
@@ -124,70 +155,50 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	public void SetDicom( DICOM dicom )
 	{
 		Texture2D tex = dicom.getTexture2D ();
-		float newWidth = initialWidth;
-		float newHeight = initialHeight;
-		float texWidth = tex.width;
-		float texHeight = tex.height;
-		/*if (texWidth > texHeight) {
-			newHeight = texHeight * newWidth / texWidth;
-		} else {
-			newWidth = texWidth * newHeight / texHeight;
-		}*/
 
 		//GetComponent<RectTransform> ().sizeDelta = new Vector2 (newWidth, newHeight);
-		Debug.LogWarning("Min, max: " + dicom.getMinimum () + " " + dicom.getMaximum () );
+		/*Debug.LogWarning("Min, max: " + dicom.getMinimum () + " " + dicom.getMaximum () );
 		mMaterial.SetFloat ("globalMaximum", (float)dicom.getMaximum ());
 		mMaterial.SetFloat ("globalMinimum", (float)dicom.getMinimum ());
-		mMaterial.SetFloat ("range", (float)(dicom.getMaximum () - dicom.getMinimum ()));
-
-		UInt16 value = 1000;
-		Debug.Log ("original: " + value);
-		float floatValue = value;
-		Debug.Log ("floatValue: " + floatValue);
-
-		Color c = new Color ();
-
-		c.r = ((float)value % 256)/256f; value /= 256;
-		c.g = ((float)value % 256)/256f; value /= 256;
-		c.b = ((float)value % 256)/256f; value /= 256;
-		c.a = ((float)value % 256)/256f;
-
-		Debug.Log ("Color: " + c.r + " " + c.g + " " + c.b + " " + c.a);
-
-		const float fromFixed = 256.0f/255f;
-		UInt16 result = (UInt16)( 256*(c.r + 256*(c.g + 256*(c.b + 256*c.a))));
-
-		Debug.Log ("reconstructed: " + result);
-
-
+		mMaterial.SetFloat ("range", (float)(dicom.getMaximum () - dicom.getMinimum ()));*/
 
 		GetComponent<RawImage> ().texture = tex;
-		//mMaterial.mainTexture = tex;
 
-		//mMaterial.SetFloat ("minValue", mMinValue);
-		//mMaterial.SetFloat ("maxValue", mMaxValue);
-		/*mMinSlider.value = 0.0f;
-		mMaxSlider.value = 1.0f;
-		mLayerSlider.value = 0.5f;*/
-
-		mNumberOfLayers = dicom.getHeader ().NumberOfImages;
-		// Calculate how much of the texture is actually filled and only display that part:
-		mFilledPartOfTexture = (float)mNumberOfLayers/(float)1;
-		//LayerChanged( 0.5f );
-
-		Debug.Log ("Size of DICOM: " + tex.width + " " + tex.height);
 		currentDICOM = dicom;
+
+		ApplyScaleAndPosition ();
+	}
+
+	public void ApplyScaleAndPosition()
+	{
+		Texture2D tex = GetComponent<RawImage> ().texture as Texture2D;
+
+		float scaleW = 1f;
+		float scaleH = 1f;
+		if (tex.width > tex.height) {
+			scaleH = (float)tex.width / (float)tex.height;
+		} else {
+			scaleW = (float)tex.height / (float)tex.width;
+		}
+
+		float oX = panX;
+		float oY = panY;
+
+		Rect uvRect = GetComponent<RawImage> ().uvRect;
+		uvRect.size = new Vector2 (scaleW*zoom, scaleH*zoom);
+		uvRect.center = new Vector2 (0.5f + oX, 0.5f + oY);
+		GetComponent<RawImage> ().uvRect = uvRect;
 	}
 
 	public void FlipHorizontal()
 	{
-		Rect uvRect = new Rect (GetComponent<RawImage> ().uvRect);
+		Rect uvRect = GetComponent<RawImage> ().uvRect;
 		uvRect.width = -uvRect.width;
 		GetComponent<RawImage> ().uvRect = uvRect;
 	}
 	public void FlipVertical()
 	{
-		Rect uvRect = new Rect (GetComponent<RawImage> ().uvRect);
+		Rect uvRect = GetComponent<RawImage> ().uvRect;
 		uvRect.height = -uvRect.height;
 		GetComponent<RawImage> ().uvRect = uvRect;
 	}
