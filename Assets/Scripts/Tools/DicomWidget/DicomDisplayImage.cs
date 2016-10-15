@@ -10,8 +10,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	private float mMinValue;
 	private float mMaxValue;
 	private int mLayer;
-	private uint mNumberOfLayers;
-	private float mFilledPartOfTexture;
+	private bool flipHorizontal = true;
+	private bool flipVertical = true;
 
 	// Positioning:
 	private float panX = 0;
@@ -180,6 +180,10 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		} else {
 			scaleW = (float)tex.height / (float)tex.width;
 		}
+		if (flipHorizontal)
+			scaleW = scaleW * -1;
+		if (flipVertical)
+			scaleH = scaleH * -1;
 
 		float oX = panX;
 		float oY = panY;

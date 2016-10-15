@@ -274,7 +274,7 @@ public class DicomLoaderITK
 							}*/
 
 							//colors[ z + (x + yTex*texWidth)*texDepth ] = F2C( (UInt16)colorsTmp[index] );
-							colors[ (texWidth-1-x) + y*texWidth + z*texWidth*texHeight ] = F2C( (UInt16)(colorsTmp[index]*slope + intercept));
+							colors[ x + y*texWidth + z*texWidth*texHeight ] = F2C( (UInt16)(colorsTmp[index]*slope + intercept));
 							index ++;
 						}
 					}
@@ -307,7 +307,7 @@ public class DicomLoaderITK
 							// Mask out unused high bits:
 							//pixelValue &= unchecked((UInt16)~(1 << 15 | 1 << 14 | 1 << 13 | 1 << 12));
 
-							colors[ (texWidth-1-x) + y*texWidth + z*texWidth*texHeight ] = F2C( pixelValue );
+							colors[ x + y*texWidth + z*texWidth*texHeight ] = F2C( pixelValue );
 
 							if (pixelValue > maxCol)
 								maxCol = pixelValue;
