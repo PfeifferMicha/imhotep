@@ -1152,8 +1152,8 @@ RectTransform:
   m_RootOrder: 4
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 192, y: -24.001}
-  m_SizeDelta: {x: 53.2, y: -90.6}
+  m_AnchoredPosition: {x: 192, y: -19.3505}
+  m_SizeDelta: {x: 53.2, y: -81.298996}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &143787182
 MonoBehaviour:
@@ -1532,8 +1532,8 @@ RectTransform:
   m_RootOrder: 3
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 192, y: -24.001}
-  m_SizeDelta: {x: 53.2, y: -90.6}
+  m_AnchoredPosition: {x: 192, y: -19.3505}
+  m_SizeDelta: {x: 53.2, y: -81.298996}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &195933119
 MonoBehaviour:
@@ -2581,7 +2581,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 120, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &388046020
 MonoBehaviour:
@@ -6983,8 +6983,8 @@ RectTransform:
   m_RootOrder: 6
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -11.4, y: 0.25024033}
-  m_SizeDelta: {x: 83.6, y: -19.5}
+  m_AnchoredPosition: {x: -18.5, y: -0}
+  m_SizeDelta: {x: 76.5, y: -27.7}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &827653978
 MonoBehaviour:
@@ -7007,7 +7007,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 22
+    m_FontSize: 24
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 2
@@ -13306,7 +13306,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
+    m_FontSize: 24
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 2
@@ -13317,7 +13317,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Planned Operation '
+  m_Text: "Planned Operation \nTest"
 --- !u!222 &1509709316
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -14152,8 +14152,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 103.23, y: 34}
-  m_SizeDelta: {x: 397.55, y: 52.4}
+  m_AnchoredPosition: {x: 103.23, y: 30.074}
+  m_SizeDelta: {x: 397.5, y: 60.251}
   m_Pivot: {x: 0.5000002, y: 0.5000012}
 --- !u!114 &1573455037
 MonoBehaviour:
@@ -14176,7 +14176,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 20
+    m_FontSize: 24
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 2
@@ -14187,7 +14187,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Patient 1
+  m_Text: 'Patient 1
+
+    Test'
 --- !u!222 &1573455038
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -15857,8 +15859,8 @@ RectTransform:
   m_RootOrder: 5
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 172.3, y: 30.6}
-  m_SizeDelta: {x: 92.5, y: -80.2}
+  m_AnchoredPosition: {x: 172.3, y: 32.85}
+  m_SizeDelta: {x: 92.5, y: -75.7}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1842536956
 MonoBehaviour:
@@ -16543,10 +16545,10 @@ RectTransform:
   m_Father: {fileID: 1744325066}
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 794, y: 0}
-  m_Pivot: {x: 0, y: 1}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1912694768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16564,7 +16566,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 0
-  m_Spacing: 5
+  m_Spacing: 1
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
 --- !u!114 &1912694769
@@ -17026,7 +17028,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6691177, g: 0.8362644, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -17309,7 +17311,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -60, y: -60}
+  m_SizeDelta: {x: -10, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2023792378
 MonoBehaviour:

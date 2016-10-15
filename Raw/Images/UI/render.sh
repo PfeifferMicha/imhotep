@@ -1,7 +1,7 @@
 #!/bin/bash
 # Renders all *.svg files as *.png.
 
-resolution=150;
+resolution=200;
 
 shopt -s nullglob
 containsElement () {
