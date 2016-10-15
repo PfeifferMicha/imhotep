@@ -91,7 +91,6 @@ public class PatientMeta
 			}
 			if (metaData.Keys.Contains ("Warnings")) {
 				for (int i = 0; i < metaData ["Warnings"].Count; i++) {
-					Debug.Log ("Warning: " + metaData["Warnings"][i].ToString());
 					warnings.Add (metaData ["Warnings"] [i].ToString ());
 				}
 			}
