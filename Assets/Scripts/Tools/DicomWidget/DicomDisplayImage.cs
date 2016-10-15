@@ -92,6 +92,10 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 			float dX = -inputDevice.getTexCoordDelta ().x;
 			float dY = -inputDevice.getTexCoordDelta ().y;
+			if (flipHorizontal)
+				dX = -dX;
+			if (flipVertical)
+				dY = -dY;
 
 			panX += dX*zoom;
 			panY += dY*zoom;
