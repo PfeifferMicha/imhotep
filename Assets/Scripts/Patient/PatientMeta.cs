@@ -23,7 +23,7 @@ public class PatientMeta
 	public string birthDate { get; private set; }
 	public DateTime birthDateDT { get; private set; }
 	public string operationDate { get; private set; }
-	public string indication { get; private set; }
+	public string diagnosis { get; private set; }
 	public string details { get; private set; }
 	public string sex { get; private set; }
 	public string path { get; private set; }
@@ -31,6 +31,8 @@ public class PatientMeta
 	public string meshPath { get; private set; }
 	public int age { get; private set; }
 	public OperationType operationType { get; private set; }
+	public List<string> warnings { get; private set; }
+
 
 	public PatientMeta ( string folder )
 	{
@@ -44,7 +46,7 @@ public class PatientMeta
 		} catch {
 			throw new System.Exception("Cannot parse meta.json. Invalid syntax?");
 		}
-
+		warnings = new List<string> ();
 		operationType = OperationType.Unknown;
 
 		if (data.Keys.Contains ("meta")) {
@@ -67,8 +69,8 @@ public class PatientMeta
 					age = -1;
 				}
 			}
-			if (metaData.Keys.Contains ("Indication")) {
-				indication = metaData ["Indication"].ToString ();
+			if (metaData.Keys.Contains ("Diagnosis")) {
+				diagnosis = metaData ["Diagnosis"].ToString ();
 			}
 			if (metaData.Keys.Contains ("Details")) {
 				details = metaData ["Details"].ToString ();
@@ -85,6 +87,12 @@ public class PatientMeta
 					operationType = (OperationType)Enum.Parse (typeof(OperationType), ot);
 				} catch (System.Exception e ) {
 					Debug.LogWarning ("Could not interpret OperationType.");
+				}
+			}
+			if (metaData.Keys.Contains ("Warnings")) {
+				for (int i = 0; i < metaData ["Warnings"].Count; i++) {
+					Debug.Log ("Warning: " + metaData["Warnings"][i].ToString());
+					warnings.Add (metaData ["Warnings"] [i].ToString ());
 				}
 			}
 		}
