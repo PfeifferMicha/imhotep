@@ -37,7 +37,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		mLayer = 0;
 		dragLevelWindow = false;
 
-		mMaterial = GetComponent<RawImage>().material;
+		mMaterial = new Material (Shader.Find ("Unlit/DICOM2D"));
+		GetComponent<RawImage> ().material = mMaterial;
 
 		//clear ();
 	}
@@ -112,6 +113,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	public void MinChanged( float newVal )
 	{
+		if (mMaterial == null)
+			return;
 		mMinValue = newVal;
 		mMaterial.SetFloat ("minValue", mMinValue);
 		/*mMinSlider.value = mMinValue;
@@ -124,6 +127,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	public void MaxChanged( float newVal )
 	{
+		if (mMaterial == null)
+			return;
 		mMaxValue = newVal;
 		mMaterial.SetFloat ("maxValue", mMaxValue);
 		/*mMaxSlider.value = mMaxValue;
@@ -154,6 +159,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	public void SetDicom( DICOM dicom )
 	{
+		if (mMaterial == null)
+			return;
 		Texture2D tex = dicom.getTexture2D ();
 
 		//GetComponent<RectTransform> ().sizeDelta = new Vector2 (newWidth, newHeight);
@@ -161,6 +168,9 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		mMaterial.SetFloat ("globalMaximum", (float)dicom.getMaximum ());
 		mMaterial.SetFloat ("globalMinimum", (float)dicom.getMinimum ());
 		mMaterial.SetFloat ("range", (float)(dicom.getMaximum () - dicom.getMinimum ()));*/
+
+		mMaterial.SetFloat ("globalMinimum", (float)dicom.getHeader().MinPixelValue);
+		mMaterial.SetFloat ("globalMaximum", (float)dicom.getHeader().MaxPixelValue);
 
 		GetComponent<RawImage> ().texture = tex;
 

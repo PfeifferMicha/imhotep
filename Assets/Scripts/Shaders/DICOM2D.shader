@@ -5,8 +5,8 @@
 		_MainTex ("Texture", 2D) = "white" {}
 		minValue("Minimum", Range(0, 1)) = 0
 		maxValue("Maximum", Range(0, 1)) = 1
-		globalMaximum("GloablMaximum", Range(-65536, 65536)) = 65536
-		globalMinimum("GloablMinimum", Range(-65536, 65536)) = 0
+		globalMinimum("GlobalMinimum", Range(-65536, 65536)) = 0
+		globalMaximum("GlobalMaximum", Range(-65536, 65536)) = 65536
 
 		dimensionsXY ("DimensionsXY", Vector) = (0,0,1,1)
 	}
