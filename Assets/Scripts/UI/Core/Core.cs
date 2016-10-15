@@ -8,6 +8,7 @@ namespace UI
 {
 	public class Core : MonoBehaviour
 	{
+		//! Is set to true whenever the mouse is over a UI elemnt.
 		public bool pointerIsOverUIObject{ private set; get; }
 
 		public static Core instance { private set; get; }
