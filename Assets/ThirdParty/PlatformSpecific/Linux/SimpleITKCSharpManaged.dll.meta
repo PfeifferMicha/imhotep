@@ -1,0 +1,66 @@
+fileFormatVersion: 2
+guid: ce4567c390b414bd5b0c15b4c406c460
+timeCreated: 1461415666
+licenseType: Free
+PluginImporter:
+  serializedVersion: 1
+  iconMap: {}
+  executionOrder: {}
+  isPreloaded: 0
+  platformData:
+    Android:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+    Any:
+      enabled: 1
+      settings: {}
+    Editor:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+        DefaultValueInitialized: true
+        OS: AnyOS
+    Linux:
+      enabled: 1
+      settings:
+        CPU: x86
+    Linux64:
+      enabled: 1
+      settings:
+        CPU: x86_64
+    LinuxUniversal:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+    OSXIntel:
+      enabled: 0
+      settings:
+        CPU: None
+    OSXIntel64:
+      enabled: 0
+      settings:
+        CPU: None
+    OSXUniversal:
+      enabled: 0
+      settings:
+        CPU: None
+    SamsungTV:
+      enabled: 0
+      settings:
+        STV_MODEL: STANDARD_13
+    Win:
+      enabled: 0
+      settings:
+        CPU: None
+    Win64:
+      enabled: 0
+      settings:
+        CPU: None
+    WindowsStoreApps:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
