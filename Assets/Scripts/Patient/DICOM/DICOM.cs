@@ -46,7 +46,5 @@ public class DICOM
 	private DICOMHeader mHeader;
 	private Texture3D mTexture3D;
 	private Texture2D mTexture2D;
-	private UInt32 mMaximum;
-	private UInt32 mMinimum;
 }
 
