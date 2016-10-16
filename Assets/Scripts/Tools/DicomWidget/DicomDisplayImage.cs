@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 
 public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHandler, IPointerUpHandler {
@@ -9,16 +10,10 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	private Material mMaterial;
 	//private float mMinValue;
 	//private float mMaxValue;
-	private float mLevel;
-	private float mWindow;
 	private int mLayer;
-	private bool flipHorizontal = true;
-	private bool flipVertical = true;
 
 	// Positioning:
-	private float panX = 0;
-	private float panY = 0;
-	private float zoom = 1;
+	ViewSettings currentViewSettings = new ViewSettings();
 	/*private Slider mMinSlider;
 	private Slider mMaxSlider;
 	private Slider mLayerSlider;*/
@@ -32,12 +27,33 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	private DICOM currentDICOM;
 
+	private struct ViewSettings
+	{
+		public float level;
+		public float window;
+		public float panX;
+		public float panY;
+		public float zoom;
+		public bool flipHorizontal;
+		public bool flipVertical;
+	}
+
+	private Dictionary<string,ViewSettings> savedViewSettings = new Dictionary<string, ViewSettings>();
+
 	// Use this for initialization
 	void Awake () {
 		//mMinValue = 0.0f;
 		//mMaxValue = 1.0f;
-		mLevel = 0.5f;
-		mWindow = 1f;
+		currentViewSettings = new ViewSettings {
+			level = 0.5f,
+			window = 1f,
+			panX = 0f,
+			panY = 0f,
+			zoom = 1f,
+			flipHorizontal = true,
+			flipVertical = true
+		};
+
 		mLayer = 0;
 		dragLevelWindow = false;
 
@@ -85,10 +101,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			float intensityChange = -inputDevice.getTexCoordDelta ().y * 0.25f;
 			float contrastChange = inputDevice.getTexCoordDelta ().x * 0.5f;
 
-			setLevel (mLevel + intensityChange);
-			setWindow (mWindow + contrastChange);
-			//MinChanged (
-			//MaxChanged (newMax);
+			SetLevel (currentViewSettings.level + intensityChange);
+			SetWindow (currentViewSettings.window + contrastChange);
 		}
 		if (dragPan) {
 			InputDeviceManager idm = GameObject.Find ("GlobalScript").GetComponent<InputDeviceManager> ();
@@ -96,13 +110,13 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 			float dX = -inputDevice.getTexCoordDelta ().x;
 			float dY = -inputDevice.getTexCoordDelta ().y;
-			if (flipHorizontal)
+			if (currentViewSettings.flipHorizontal)
 				dX = -dX;
-			if (flipVertical)
+			if (currentViewSettings.flipVertical)
 				dY = -dY;
 
-			panX += dX*zoom;
-			panY += dY*zoom;
+			currentViewSettings.panX += dX*currentViewSettings.zoom;
+			currentViewSettings.panY += dY*currentViewSettings.zoom;
 
 			ApplyScaleAndPosition ();
 		}
@@ -112,30 +126,71 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 			float dY = -inputDevice.getTexCoordDelta ().y * 0.5f;
 
-			zoom = Mathf.Clamp (zoom + dY, 0.1f, 5f);
+			currentViewSettings.zoom = Mathf.Clamp (currentViewSettings.zoom + dY, 0.1f, 5f);
 
 			ApplyScaleAndPosition ();
 		}
 	}
 
-	public void setLevel( float newLevel )
+	public void SetLevel( float newLevel )
+	{
+		currentViewSettings.level = Mathf.Clamp (newLevel, -0.5f, 1.5f);
+		UpdateLevelWindow ();
+		SaveViewSettings ();
+	}
+
+	public void SetWindow( float newWindow )
+	{
+		currentViewSettings.window = Mathf.Clamp (newWindow, 0f, 1f);
+		UpdateLevelWindow ();
+		SaveViewSettings ();
+	}
+
+	private void UpdateLevelWindow()
 	{
 		if (mMaterial == null)
 			return;
 
-		mLevel = Mathf.Clamp (newLevel, -0.5f, 1.5f);
-		mMaterial.SetFloat ("level", mLevel);
+		mMaterial.SetFloat ("level", currentViewSettings.level);
+		mMaterial.SetFloat ("window", currentViewSettings.window);
 	}
 
-	public void setWindow( float newWindow )
+	private void SaveViewSettings()
 	{
-		if (mMaterial == null)
+		if (currentDICOM == null)
 			return;
 
-		mWindow = Mathf.Clamp (newWindow, 0f, 1f);
-		mMaterial.SetFloat ("window", mWindow);
+		string seriesUID = currentDICOM.getHeader ().SeriesUID;
+		if (savedViewSettings.ContainsKey (seriesUID)) {
+			savedViewSettings [seriesUID] = currentViewSettings;
+		} else {
+			savedViewSettings.Add (seriesUID, currentViewSettings);
+		}
 	}
 
+	private void LoadViewSettings()
+	{
+		if (currentDICOM == null)
+			return;
+
+		string seriesUID = currentDICOM.getHeader ().SeriesUID;
+		if (savedViewSettings.ContainsKey (seriesUID)) {
+			currentViewSettings = savedViewSettings [seriesUID];
+		} else {
+			currentViewSettings = new ViewSettings {
+				level = 0.5f,
+				window = 1f,
+				panX = 0f,
+				panY = 0f,
+				zoom = 1f,
+				flipHorizontal = true,
+				flipVertical = true
+			};
+		}
+
+		UpdateLevelWindow ();
+		ApplyScaleAndPosition ();
+	}
 
 	/*public void MinChanged( float newVal )
 	{
@@ -191,7 +246,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 		currentDICOM = dicom;
 
-		ApplyScaleAndPosition ();
+		LoadViewSettings ();
 	}
 
 	public void ApplyScaleAndPosition()
@@ -205,18 +260,20 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		} else {
 			scaleW = (float)tex.height / (float)tex.width;
 		}
-		if (flipHorizontal)
+		if (currentViewSettings.flipHorizontal)
 			scaleW = scaleW * -1;
-		if (flipVertical)
+		if (currentViewSettings.flipVertical)
 			scaleH = scaleH * -1;
 
-		float oX = panX;
-		float oY = panY;
+		float oX = currentViewSettings.panX;
+		float oY = currentViewSettings.panY;
 
 		Rect uvRect = GetComponent<RawImage> ().uvRect;
-		uvRect.size = new Vector2 (scaleW*zoom, scaleH*zoom);
+		uvRect.size = new Vector2 (scaleW*currentViewSettings.zoom, scaleH*currentViewSettings.zoom);
 		uvRect.center = new Vector2 (0.5f + oX, 0.5f + oY);
 		GetComponent<RawImage> ().uvRect = uvRect;
+
+		SaveViewSettings ();
 	}
 
 	public void FlipHorizontal()
