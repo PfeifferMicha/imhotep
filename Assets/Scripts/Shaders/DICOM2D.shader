@@ -3,8 +3,8 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		minValue("Minimum", Range(0, 1)) = 0
-		maxValue("Maximum", Range(0, 1)) = 1
+		level("Level", Range(-1, 2)) = 0.5
+		window("Window", Range(0, 1)) = 1
 		globalMinimum("GlobalMinimum", Range(-65536, 65536)) = 0
 		globalMaximum("GlobalMaximum", Range(-65536, 65536)) = 65536
 
@@ -40,8 +40,8 @@
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			float minValue;
-			float maxValue;
+			float level;
+			float window;
 			float layer;
 			float globalMaximum;
 			float globalMinimum;
@@ -53,21 +53,6 @@
 				o.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
 				UNITY_TRANSFER_FOG(o,o.vertex);
 				return o;
-			}
-			
-			float C2F( float4 col )
-			{
-				return (col.g*256*255 + col.r*255 - globalMinimum)/(globalMaximum-globalMinimum);
-				//return (col.g*255)/globalMaximum;
-			}
-
-			float C2F2( float4 col )
-			{
-				const float fromFixed = 256.0/255;
-				return col.r*fromFixed/(1)
-						+col.g*fromFixed/(255)
-						+col.b*fromFixed/(255*255)
-						+col.a*fromFixed/(255*255*255);
 			}
 			
 			fixed4 frag (v3f i) : SV_Target
@@ -95,7 +80,10 @@
 				//if( rawcol.g*256*255 + rawcol.r*255 > 2000 )
 				//	return fixed4( 1,0,0,1);
 				
-				val = (val - minValue) / (maxValue - minValue);
+				//val = (val - minValue) / (maxValue - minValue);
+
+				val = (val - level + window/2)/window;
+
 				fixed4 col = fixed4(val, val, val, 1.0);
 				//fixed4 col = fixed4(val, val, val, 1.0);
 				// apply fog

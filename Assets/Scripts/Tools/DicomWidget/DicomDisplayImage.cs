@@ -7,8 +7,10 @@ using System;
 public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHandler, IPointerUpHandler {
 
 	private Material mMaterial;
-	private float mMinValue;
-	private float mMaxValue;
+	//private float mMinValue;
+	//private float mMaxValue;
+	private float mLevel;
+	private float mWindow;
 	private int mLayer;
 	private bool flipHorizontal = true;
 	private bool flipVertical = true;
@@ -32,8 +34,10 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	// Use this for initialization
 	void Awake () {
-		mMinValue = 0.0f;
-		mMaxValue = 1.0f;
+		//mMinValue = 0.0f;
+		//mMaxValue = 1.0f;
+		mLevel = 0.5f;
+		mWindow = 1f;
 		mLayer = 0;
 		dragLevelWindow = false;
 
@@ -78,13 +82,13 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			InputDevice inputDevice = idm.currentInputDevice;
 
 			// TODO: Update to new input event system:
+			float intensityChange = -inputDevice.getTexCoordDelta ().y * 0.25f;
 			float contrastChange = inputDevice.getTexCoordDelta ().x * 0.5f;
-			float intensityChange = -inputDevice.getTexCoordDelta ().y * 0.5f;
 
-			float newMin = Mathf.Clamp (mMinValue + intensityChange - contrastChange, 0f, 1f);
-			float newMax = Mathf.Clamp (mMaxValue + intensityChange + contrastChange, 0f, 1f);
-			MinChanged (newMin);
-			MaxChanged (newMax);
+			setLevel (mLevel + intensityChange);
+			setWindow (mWindow + contrastChange);
+			//MinChanged (
+			//MaxChanged (newMax);
 		}
 		if (dragPan) {
 			InputDeviceManager idm = GameObject.Find ("GlobalScript").GetComponent<InputDeviceManager> ();
@@ -114,19 +118,31 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		}
 	}
 
+	public void setLevel( float newLevel )
+	{
+		if (mMaterial == null)
+			return;
 
-	public void MinChanged( float newVal )
+		mLevel = Mathf.Clamp (newLevel, -0.5f, 1.5f);
+		mMaterial.SetFloat ("level", mLevel);
+	}
+
+	public void setWindow( float newWindow )
+	{
+		if (mMaterial == null)
+			return;
+
+		mWindow = Mathf.Clamp (newWindow, 0f, 1f);
+		mMaterial.SetFloat ("window", mWindow);
+	}
+
+
+	/*public void MinChanged( float newVal )
 	{
 		if (mMaterial == null)
 			return;
 		mMinValue = newVal;
 		mMaterial.SetFloat ("minValue", mMinValue);
-		/*mMinSlider.value = mMinValue;
-		if (mMinValue > mMaxValue) {
-			mMaxValue = mMinValue;
-			mMaterial.SetFloat ("maxValue", mMaxValue);
-			mMaxSlider.value = mMaxValue;
-		}*/
 	}
 
 	public void MaxChanged( float newVal )
@@ -135,13 +151,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			return;
 		mMaxValue = newVal;
 		mMaterial.SetFloat ("maxValue", mMaxValue);
-		/*mMaxSlider.value = mMaxValue;
-		if (mMaxValue < mMinValue) {
-			mMinValue = mMaxValue;
-			mMaterial.SetFloat ("minValue", mMinValue);
-			mMinSlider.value = mMinValue;
-		}*/
-	}
+	}*/
 
 	public void LayerChanged( float newVal )
 	{
