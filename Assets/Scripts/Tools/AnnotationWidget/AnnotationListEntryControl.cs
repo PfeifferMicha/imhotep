@@ -13,6 +13,7 @@ public class AnnotationListEntryControl : MonoBehaviour {
 
 	public void setupListEntry (GameObject annotation) {
 		myAnnotation = annotation;
+		annotation.GetComponent<Annotation> ().myAnnotationListEntry = this.gameObject;
 		listEntryLabel.GetComponent<Text> ().text = myAnnotation.GetComponent<Annotation> ().text;
 	}
 

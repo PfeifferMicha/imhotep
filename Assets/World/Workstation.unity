@@ -1627,6 +1627,14 @@ Prefab:
       propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 133872, guid: d260a1a7ab9b608419b97d07c6dd23b9, type: 2}
+      propertyPath: m_TagString
+      value: AnnotationPoint
+      objectReference: {fileID: 0}
+    - target: {fileID: 102862, guid: d260a1a7ab9b608419b97d07c6dd23b9, type: 2}
+      propertyPath: m_TagString
+      value: AnnotationPoint
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d260a1a7ab9b608419b97d07c6dd23b9, type: 2}
   m_IsPrefabParent: 0
@@ -1652,6 +1660,7 @@ MonoBehaviour:
   text: 
   creator: 
   annotationLabel: {fileID: 1494569411}
+  myAnnotationListEntry: {fileID: 0}
 --- !u!1001 &246809576
 Prefab:
   m_ObjectHideFlags: 0
@@ -15604,7 +15613,7 @@ Prefab:
       objectReference: {fileID: 26119099}
     - target: {fileID: 11411014, guid: 7b9b69f00ac964a1f887c8ec516b3f8a, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SaveAnnotation
+      value: AbortAnnotationChanges
       objectReference: {fileID: 0}
     - target: {fileID: 11411014, guid: 7b9b69f00ac964a1f887c8ec516b3f8a, type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName

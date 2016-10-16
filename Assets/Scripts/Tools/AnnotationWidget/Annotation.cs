@@ -12,6 +12,7 @@ public class Annotation : MonoBehaviour {
 	public string creator;
 	public DateTime creationDate;
 	public GameObject annotationLabel;
+	public GameObject myAnnotationListEntry;
 
 
 
@@ -66,8 +67,7 @@ public class Annotation : MonoBehaviour {
 			return;
 		}
 		// Change label text:
-		Text labelText = annotationLabel.transform.Find("Background/Text").gameObject.GetComponent<Text>();
-		labelText.text = newLabel;
 		text = newLabel;
+		annotationLabel.GetComponentInChildren<Text> ().text = text;
 	}
 }

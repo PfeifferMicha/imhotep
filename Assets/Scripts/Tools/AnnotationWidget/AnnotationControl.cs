@@ -64,7 +64,9 @@ public class AnnotationControl : MonoBehaviour {
 	//States
 	private ActiveScreen currentActiveScreen = ActiveScreen.none;
 
+	//current is the edited of actual Object to reset when abort is pressed
 	private GameObject currentAnnotationListEntry = null;
+	private GameObject oldAnnotationListEntry = null;
 
 	private List<GameObject> annotationListEntryList = new List<GameObject>();
 	//private List<GameObject> annotationList = new List<GameObject>();
@@ -162,6 +164,7 @@ public class AnnotationControl : MonoBehaviour {
 			//TODO Abort AddAnnotation and close Screen
 			AddEditScreen.SetActive(false);
 			currentActiveScreen = ActiveScreen.none;
+			AbortAnnotationChanges ();
 		} else {
 			//Open AnnotationScreen
 			listScreen.SetActive (false);
@@ -217,14 +220,28 @@ public class AnnotationControl : MonoBehaviour {
 				UnlockEditSettings ();
 			}
 		} else if(currentActiveScreen == ActiveScreen.list) {
-			//TODO Is an Annotation on Clicked Position?
+			//Edit Annotation
+			if(eventData.pointerPressRaycast.gameObject.CompareTag("AnnotationPoint")) {
+				currentAnnotationListEntry = eventData.pointerPressRaycast.gameObject.GetComponent<Annotation> ().myAnnotationListEntry;
+				//TODO Highlight in List
+			}
+		} else if(currentActiveScreen == ActiveScreen.none) {
+			//Edit Annotation
+			if(eventData.pointerPressRaycast.gameObject.CompareTag("AnnotationPoint")) {
+				currentAnnotationListEntry = eventData.pointerPressRaycast.gameObject.GetComponent<Annotation> ().myAnnotationListEntry;
+				AddAnnotationPressed ();
+			}
 		}
 	}
 
 	//Called if the user pressed Save Button
     public void SaveAnnotation()
     {	
-		
+
+		if (oldAnnotationListEntry == null) {
+			annotationListEntryList.Add (currentAnnotationListEntry);			
+		}
+		oldAnnotationListEntry = null;
     	currentAnnotationListEntry = null;
         
 		//Reset Edit Tools
@@ -240,7 +257,9 @@ public class AnnotationControl : MonoBehaviour {
 	//Called if the user pressed Abort Button
 	public void AbortAnnotationChanges()
 	{	
-		//TODO abort System
+		currentAnnotationListEntry.GetComponent<Annotation>().SetLabel(oldAnnotationListEntry.GetComponent<Annotation>().text);
+		currentAnnotationListEntry = null;
+		oldAnnotationListEntry = null;
 	}
 
 	//Called to Create a New Annotation when Open Add/Edit Screen
@@ -257,7 +276,7 @@ public class AnnotationControl : MonoBehaviour {
 
 	}
 
-	//Creates a new AnnotationListEntry, gets the Annotation to this entry
+	//Creates a new AnnotationListEntry, gets the Annotation to this entry, does not add to list
 	private GameObject createNewAnnotationListEntry (GameObject annotation) {
 		if(annotation != null) {
 
@@ -270,7 +289,6 @@ public class AnnotationControl : MonoBehaviour {
 
 			newEntry.GetComponent<AnnotationListEntryControl> ().setupListEntry (annotation);
 
-			annotationListEntryList.Add (newEntry);
 
 			return newEntry;
 		} else {
@@ -279,15 +297,11 @@ public class AnnotationControl : MonoBehaviour {
 		return null;
 	}
 
-	//Called to Edit an Existing Annotation by clicking on Mesh
-	private void EditExistingAnnotation() {
-		//TODO edit existing Annotation
-	}
-
 
 	//Called by AnnotationListEntryControl with the annotation to edit
 	public void EditAnnotation(GameObject aListEntry) {	
 		currentAnnotationListEntry = aListEntry;
+		oldAnnotationListEntry = aListEntry;
 		AddAnnotationPressed ();
 
 	}
@@ -407,7 +421,8 @@ public class AnnotationControl : MonoBehaviour {
 			//setup new Annotation as maesh and in List
 			GameObject newAnnotation = createAnnotationMesh(rotation, position);
 			newAnnotation.GetComponent<Annotation>().SetLabel(apj.Text);
-			createNewAnnotationListEntry (newAnnotation);
+
+			annotationListEntryList.Add (createNewAnnotationListEntry (newAnnotation));
         }
     }
 
