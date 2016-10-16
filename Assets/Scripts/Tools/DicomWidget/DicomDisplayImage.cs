@@ -149,7 +149,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			int numLayers = (int)currentDICOM.getHeader ().NumberOfImages;
 			//mMaterial.SetFloat ("layer", mLayer*mFilledPartOfTexture);
 			mLayer = (int)Mathf.Clamp (newVal, 0, numLayers - 1);
-			Debug.Log ("Layer: " + mLayer + " " + (int)currentDICOM.getHeader ().NumberOfImages);
+			Debug.Log ("Layer: " + mLayer + "/" + (int)currentDICOM.getHeader ().NumberOfImages);
 
 			PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
 			mPatientDICOMLoader.loadDicomSlice ( mLayer );
@@ -167,6 +167,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			return;
 		Texture2D tex = dicom.getTexture2D ();
 
+		mLayer = dicom.slice;
 		//GetComponent<RectTransform> ().sizeDelta = new Vector2 (newWidth, newHeight);
 		/*Debug.LogWarning("Min, max: " + dicom.getMinimum () + " " + dicom.getMaximum () );
 		mMaterial.SetFloat ("globalMaximum", (float)dicom.getMaximum ());

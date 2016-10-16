@@ -67,8 +67,7 @@ public class PatientDICOMLoader : MonoBehaviour
 			DicomSliceForThread = -1;
 
             ThreadUtil t = new ThreadUtil(loadDicomWorker, loadDicomCallback);
-            t.Run();	
-
+            t.Run();
 
 			// Let loading screen know what we're currently doing:
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_AddLoadingJob,
@@ -182,8 +181,7 @@ public class PatientDICOMLoader : MonoBehaviour
 		{
 			loadingFinished = false;
 
-			if(returnObject != null) {     
-
+			if(returnObject != null) {
 
 				DICOM dicom = new DICOM();
 
@@ -210,6 +208,7 @@ public class PatientDICOMLoader : MonoBehaviour
 				}
 
 				dicom.setHeader(returnObject.header);
+				dicom.slice = returnObject.slice;
 				//dicom.setMaximum(returnObject.maxCol);
 				//dicom.setMinimum(returnObject.minCol);
 				//dicom.setMinimum(0);

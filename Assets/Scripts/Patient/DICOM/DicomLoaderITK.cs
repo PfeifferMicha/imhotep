@@ -325,7 +325,7 @@ public class DicomLoaderITK
 			throw(new System.Exception ("Cannot read DICOM. Unsupported pixel format: " + image.GetPixelID()));
 		}
 
-		return new DICOMLoadReturnObject (texWidth, texHeight, texDepth, colors, header);
+		return new DICOMLoadReturnObject (texWidth, texHeight, texDepth, colors, header, slice);
 	}
 
 	private int indexForSeriesUID( string seriesUID )

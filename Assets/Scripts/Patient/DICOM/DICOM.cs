@@ -42,6 +42,7 @@ public class DICOM
 	{
 		return (mTexture2D != null);
 	}
+	public int slice;
 
 	private DICOMHeader mHeader;
 	private Texture3D mTexture3D;
