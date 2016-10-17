@@ -5,9 +5,10 @@ using UI;
 
 public class PatientSelector : MonoBehaviour {
 
-	public Sprite OperationLiver = null;
-	public Sprite OperationBoneFracture = null;
-	public Sprite OperationUnknown = null;
+	public Sprite SpriteLiver = null;
+	public Sprite SpriteBone = null;
+	public Sprite SpriteBrain = null;
+	public Sprite SpriteUnknown = null;
 
     private GameObject mScrollView;
 
@@ -95,7 +96,7 @@ public class PatientSelector : MonoBehaviour {
 
 			Image operationTypeImage = newButton.transform.Find ("IconBackground/OperationTypeImage").GetComponent<Image> ();
 			if (operationTypeImage != null) {
-				operationTypeImage.sprite = spriteForOperationType (patient.operationType);
+				operationTypeImage.sprite = spriteForOperatedBodyPart (patient.operationBodyPart);
 			} else {
 				operationTypeImage.gameObject.SetActive (false);
 			}
@@ -127,14 +128,16 @@ public class PatientSelector : MonoBehaviour {
 
 	}
 
-	Sprite spriteForOperationType( PatientMeta.OperationType ot )
+	Sprite spriteForOperatedBodyPart( PatientMeta.OperationBodyPart ot )
 	{
-		if (ot == PatientMeta.OperationType.Liver) {
-			return OperationLiver;
-		} else if (ot == PatientMeta.OperationType.BoneFracture) {
-			return OperationBoneFracture;
+		if (ot == PatientMeta.OperationBodyPart.Liver) {
+			return SpriteLiver;
+		} else if (ot == PatientMeta.OperationBodyPart.Bone) {
+			return SpriteBone;
+		} else if (ot == PatientMeta.OperationBodyPart.Brain) {
+			return SpriteBrain;
 		} else {
-			return OperationUnknown;
+			return SpriteUnknown;
 		}
 	}
 

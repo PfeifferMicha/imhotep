@@ -4566,10 +4566,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e10b3bd17c8dc45c6a384fb716dcc7b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OperationLiver: {fileID: 21300000, guid: fb0e17b28f75c41cb9236f8fc41b42ee, type: 3}
-  OperationBoneFracture: {fileID: 21300000, guid: f25e760e824444fc3a0e66b3559e5941,
-    type: 3}
-  OperationUnknown: {fileID: 21300000, guid: bba48d8bd1ab04840b195713b014ec46, type: 3}
+  SpriteLiver: {fileID: 21300000, guid: e9e02bb8210d04c5f91eea77bd28b7b2, type: 3}
+  SpriteBone: {fileID: 21300000, guid: f25e760e824444fc3a0e66b3559e5941, type: 3}
+  SpriteBrain: {fileID: 21300000, guid: e26a766297a14435b917fc3de529d6f8, type: 3}
+  SpriteUnknown: {fileID: 21300000, guid: bba48d8bd1ab04840b195713b014ec46, type: 3}
 --- !u!1 &585471439
 GameObject:
   m_ObjectHideFlags: 0
