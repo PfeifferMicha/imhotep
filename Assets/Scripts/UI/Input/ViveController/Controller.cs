@@ -5,8 +5,16 @@ using System.Collections;
 public class Controller : MonoBehaviour {
 
 	//--------------- controller stuff---------------------
-	private SteamVR_Controller.Device controller { get{ return SteamVR_Controller.Input ((int)trackedObj.index);}}
-	private SteamVR_TrackedObject trackedObj;
+	private SteamVR_Controller.Device controller {
+		get{
+			if( trackedObj == null )
+				trackedObj = this.GetComponent<SteamVR_TrackedObject> ();
+			if (trackedObj == null)
+				return null;
+			return SteamVR_Controller.Input ((int)trackedObj.index);
+		}
+	}
+	private SteamVR_TrackedObject trackedObj = null;
 
 	private Valve.VR.EVRButtonId triggerButton = Valve.VR.EVRButtonId.k_EButton_SteamVR_Trigger;
 
@@ -33,13 +41,12 @@ public class Controller : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		trackedObj = this.GetComponent<SteamVR_TrackedObject> ();
+		//trackedObj = this.GetComponent<SteamVR_TrackedObject> ();
 	}
 
 	protected bool triggerPressed(){
-		if (controller == null) {
+		if( controller == null )
 			return false;
-		}
 		//Checks if the trigger is pressed down till it clicks
 		//Returns true as long as the trigger is pressed down
 		if (controller.GetAxis (triggerButton) == new Vector2 (1.0f, 0.0f)) {
@@ -50,9 +57,6 @@ public class Controller : MonoBehaviour {
 	}
 
 	protected void UpdateTouchpad() {
-		if (controller == null) {
-			return;
-		}
 		touchpadValue = controller.GetAxis (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad);
 		touchpadDelta = touchpadValue - previousTouchpad;
 		previousTouchpad = touchpadValue;

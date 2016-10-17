@@ -4393,7 +4393,6 @@ MonoBehaviour:
   layoutAlignHorizontal: 3
   layoutAlignVertical: 2
   layoutLayer: 0
-  material: {fileID: 0}
 --- !u!114 &583585063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6283,7 +6282,6 @@ MonoBehaviour:
   layoutAlignHorizontal: 3
   layoutAlignVertical: 3
   layoutLayer: 0
-  material: {fileID: 0}
 --- !u!114 &748166435
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8820,7 +8818,7 @@ Prefab:
       objectReference: {fileID: 247201347}
     - target: {fileID: 146900, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11463128, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: index
@@ -9933,7 +9931,6 @@ MonoBehaviour:
   layoutAlignHorizontal: 2
   layoutAlignVertical: 1
   layoutLayer: 0
-  material: {fileID: 0}
 --- !u!114 &1141902290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10584,7 +10581,6 @@ MonoBehaviour:
   layoutAlignHorizontal: 2
   layoutAlignVertical: 2
   layoutLayer: 0
-  material: {fileID: 0}
 --- !u!114 &1225650618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12985,7 +12981,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &1508808261
 AudioListener:
   m_ObjectHideFlags: 0
@@ -17525,7 +17521,6 @@ MonoBehaviour:
   layoutAlignHorizontal: 3
   layoutAlignVertical: 3
   layoutLayer: 0
-  material: {fileID: 0}
 --- !u!114 &2065549889
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -240,7 +240,8 @@ public class HierarchicalInputModule : BaseInputModule {
 		// ----------------------------------
 		// Handle trigger:
 		//if (activeGameObject) {
-			//HandleButton (ButtonType.Trigger, buttonInfo.buttonStates [ButtonType.Trigger], triggerData, true);
+		HandleButton (ButtonType.Trigger, buttonInfo.buttonStates [ButtonType.Trigger], triggerData, true);
+		ProcessDrag (triggerData);
 		//}
 
 

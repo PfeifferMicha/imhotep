@@ -48,12 +48,12 @@ public class LeftController : Controller {
 			previousPos = this.transform.localPosition;
 		}
 
-		if ( triggerState == UnityEngine.EventSystems.PointerEventData.FramePressState.Pressed && rotating == false) {
-			rotating = true;
+		if ( triggerState == UnityEngine.EventSystems.PointerEventData.FramePressState.Pressed && zooming == false) {
+			zooming = true;
 			originalDist = (this.transform.position - scalingNode.transform.position).magnitude;
 			mOriginalZoom = scalingNode.transform.localScale;
-		} else if (triggerState == UnityEngine.EventSystems.PointerEventData.FramePressState.Released && rotating == true) {
-			rotating = false;
+		} else if (triggerState == UnityEngine.EventSystems.PointerEventData.FramePressState.Released && zooming == true) {
+			zooming = false;
 		}
 
 		if (zooming) {
