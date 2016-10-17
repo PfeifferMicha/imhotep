@@ -35,6 +35,7 @@ public class AnnotationControl : MonoBehaviour {
     public GameObject annotationLabel;
     //public Button addAnnotationButton;
 	public GameObject annotationListEntry;
+	public GameObject annotationToolBar;
 
 
 
@@ -163,10 +164,11 @@ public class AnnotationControl : MonoBehaviour {
 		if(currentActiveScreen == ActiveScreen.add) {
 			//TODO Abort AddAnnotation and close Screen
 			AbortAnnotationChanges ();
+			closeAnnotationScreen ();
 		} else {
 			//Open AnnotationScreen
 			listScreen.SetActive (false);
-			AddEditScreen.SetActive(true);
+			openAnnotationScreen ();
 			if(currentAnnotationListEntry == null) {
 				//deactivate input till current Annotation exists
 				annotationSettings.gameObject.SetActive(false);
@@ -198,6 +200,35 @@ public class AnnotationControl : MonoBehaviour {
 		/*newAnnotationSetupScreen.SetActive (false);
 		listScreen.SetActive (true);
 		*/
+	}
+
+	//Swap image of Annotation button
+	private void closeAnnotationScreen() {
+		GameObject addButton = annotationToolBar.transform.GetChild (0).GetChild (0).gameObject;
+		//show Add
+		addButton.transform.GetChild (0).gameObject.SetActive (true);
+		addButton.transform.GetChild (1).gameObject.SetActive (false);
+	
+		// Reset Screen
+		currentAnnotationListEntry = null;
+		oldAnnotationListEntry = null;
+		//Reset Edit Tools
+		annotationSettings.GetComponentInChildren<InputField>().text = "";
+		annotationSettings.gameObject.SetActive(false);
+		instructionText.gameObject.SetActive (true);
+		// Close Screen
+		AddEditScreen.SetActive(false);
+		currentActiveScreen = ActiveScreen.none;
+	}
+
+	private void openAnnotationScreen() {
+		GameObject addButton = annotationToolBar.transform.GetChild (0).GetChild (0).gameObject;
+		//show Abort
+		addButton.transform.GetChild (1).gameObject.SetActive (true);
+		addButton.transform.GetChild (0).gameObject.SetActive (false);
+		// open Screen
+		AddEditScreen.SetActive(true);
+		currentActiveScreen = ActiveScreen.add;
 	}
 
 
@@ -241,7 +272,7 @@ public class AnnotationControl : MonoBehaviour {
 			annotationListEntryList.Add (currentAnnotationListEntry);			
 		}
 
-		resetAddEditScreen ();
+		closeAnnotationScreen ();
 
 		//Save changes in File
 		saveAnnotationInFile();
@@ -259,19 +290,7 @@ public class AnnotationControl : MonoBehaviour {
 			curAnnotation.GetComponent<Annotation>().AbortChanges(oldAnnotationListEntry.GetComponent<AnnotationListEntry>().getAnnotation());
 		}
 			
-		resetAddEditScreen ();
-	}
-
-	private void resetAddEditScreen() {
-		currentAnnotationListEntry = null;
-		oldAnnotationListEntry = null;
-		//Reset Edit Tools
-		annotationSettings.GetComponentInChildren<InputField>().text = "";
-		annotationSettings.gameObject.SetActive(false);
-		instructionText.gameObject.SetActive (true);
-		// Close Screen
-		AddEditScreen.SetActive(false);
-		currentActiveScreen = ActiveScreen.none;
+		closeAnnotationScreen ();
 	}
 
 	//Called to Create a New Annotation when Open Add/Edit Screen
