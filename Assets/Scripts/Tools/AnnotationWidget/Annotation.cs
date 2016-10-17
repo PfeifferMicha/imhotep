@@ -13,12 +13,16 @@ public class Annotation : MonoBehaviour {
 	public DateTime creationDate;
 	public GameObject annotationLabel;
 	public GameObject myAnnotationListEntry;
-
+	public Color myColor;
 
 
     // Use this for initialization
     void Start () {
         creationDate = DateTime.Now;
+		if(myColor == null) {
+			changeColor (Color.black);	
+		}
+
     }
 
     // Update is called once per frame
@@ -47,7 +51,6 @@ public class Annotation : MonoBehaviour {
 		//Create line form point to label
 		this.GetComponent<LineRenderer>().SetPosition(0, this.transform.position);
 		this.GetComponent<LineRenderer>().SetPosition(1, this.annotationLabel.transform.position);
-
 		SetLabel (text);
 	}
 
@@ -73,5 +76,11 @@ public class Annotation : MonoBehaviour {
 
 	public void AbortChanges(GameObject oldAnnotation) {
 		SetLabel (oldAnnotation.GetComponent<Annotation> ().text);
+		changeColor (oldAnnotation.GetComponent<Annotation> ().myColor);
+	}
+
+	public void changeColor(Color newColor) {
+		myColor = newColor;
+		this.GetComponent<Renderer> ().material.color = newColor;
 	}
 }

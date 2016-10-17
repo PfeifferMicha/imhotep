@@ -16,16 +16,19 @@ using System.Linq;
 
 public class AnnotationJson
 {
-    public string Text { get; set; }
-    public double PositionX { get; set; }
-    public double PositionY { get; set; }
-    public double PositionZ { get; set; }
-    public double RotationW { get; set; }
-    public double RotationX { get; set; }
-    public double RotationY { get; set; }
-    public double RotationZ { get; set; }
-    public string Creator { get; set; }
-    public DateTime CreationDate { get; set; } //TODO
+	public string Text;
+	public float ColorR;
+	public float ColorG;
+	public float ColorB;
+	public double PositionX;
+	public double PositionY;
+	public double PositionZ;
+	public double RotationW;
+	public double RotationX;
+	public double RotationY;
+	public double RotationZ;
+	public string Creator;
+	public DateTime CreationDate;
 
 }
 
@@ -37,9 +40,6 @@ public class AnnotationControl : MonoBehaviour {
 	public GameObject annotationListEntry;
 	public GameObject annotationToolBar;
 
-
-
-
 	//Screens
 	public GameObject listScreen;
 	public GameObject AddEditScreen;
@@ -48,16 +48,6 @@ public class AnnotationControl : MonoBehaviour {
 	public GameObject instructionText;
 	public GameObject annotationSettings;
 	public InputField annotationTextInput;
-	/*public Button saveButton;
-	public Button abortButton;
-	public Button redButton;
-	public Button blueButton;
-	public Button greenButton;
-	public Button yellowButton;
-	public Button purpleButton;
-	public Button cyanButton;*/
-
-
 
 	public GameObject meshNode;
 	public GameObject meshPositionNode;
@@ -251,18 +241,26 @@ public class AnnotationControl : MonoBehaviour {
 			}
 		} else if(currentActiveScreen == ActiveScreen.list) {
 			//Edit Annotation
-			if(eventData.pointerPressRaycast.gameObject.CompareTag("AnnotationPoint")) {
-				currentAnnotationListEntry = eventData.pointerPressRaycast.gameObject.GetComponent<Annotation> ().myAnnotationListEntry;
+			if(eventData.pointerPress.CompareTag("AnnotationPoint")) {
+				currentAnnotationListEntry = eventData.pointerPress.GetComponent<Annotation> ().myAnnotationListEntry;
+				oldAnnotationListEntry = currentAnnotationListEntry;
 				//TODO Highlight in List
 			}
 		} else if(currentActiveScreen == ActiveScreen.none) {
 			//Edit Annotation
-			if(eventData.pointerPressRaycast.gameObject.CompareTag("AnnotationPoint")) {
-				currentAnnotationListEntry = eventData.pointerPressRaycast.gameObject.GetComponent<Annotation> ().myAnnotationListEntry;
+			if(eventData.pointerPress.CompareTag("AnnotationPoint")) {				
+				currentAnnotationListEntry = eventData.pointerPress.GetComponent<Annotation> ().myAnnotationListEntry;
+				oldAnnotationListEntry = currentAnnotationListEntry;
 				AddAnnotationPressed ();
 			}
 		}
 	}
+
+	public void ChangeColorPressed(GameObject newColor) {
+		GameObject curAnno = currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().getAnnotation ();
+		curAnno.GetComponent<Annotation> ().changeColor (newColor.GetComponent<Button> ().colors.normalColor);
+	}
+
 
 	//Called if the user pressed Save Button
     public void SaveAnnotation()
@@ -392,7 +390,10 @@ public class AnnotationControl : MonoBehaviour {
 				GameObject ap = apListEntry.GetComponent<AnnotationListEntry> ().getAnnotation();
                 AnnotationJson apj = new AnnotationJson();
 				apj.Text = ap.GetComponent<Annotation>().text;
-                apj.PositionX = ap.transform.localPosition.x;
+				apj.ColorR = ap.GetComponent<Annotation> ().myColor.r;
+				apj.ColorG = ap.GetComponent<Annotation> ().myColor.g;
+				apj.ColorB = ap.GetComponent<Annotation> ().myColor.b;
+				apj.PositionX = ap.transform.localPosition.x;
                 apj.PositionY = ap.transform.localPosition.y;
                 apj.PositionZ = ap.transform.localPosition.z;
 
@@ -403,7 +404,7 @@ public class AnnotationControl : MonoBehaviour {
 
                 apj.Creator = ap.GetComponent<Annotation>().creator;
 				apj.CreationDate = ap.GetComponent<Annotation> ().creationDate;
-                outputFile.WriteLine(JsonMapper.ToJson(apj));
+				outputFile.WriteLine(JsonUtility.ToJson(apj));
             }
             outputFile.Close();
         }
@@ -438,7 +439,7 @@ public class AnnotationControl : MonoBehaviour {
         System.IO.StreamReader file = new System.IO.StreamReader(path);
         while ((line = file.ReadLine()) != null)
         {
-            AnnotationJson apj = JsonMapper.ToObject<AnnotationJson>(line);
+			AnnotationJson apj = JsonUtility.FromJson<AnnotationJson>(line);
             apjList.Add(apj);
         }
         file.Close();
@@ -452,7 +453,9 @@ public class AnnotationControl : MonoBehaviour {
 			//setup new Annotation as maesh and in List
 			GameObject newAnnotation = createAnnotationMesh(rotation, position);
 			newAnnotation.GetComponent<Annotation>().SetLabel(apj.Text);
-
+			if(apj.ColorR != null) {
+				newAnnotation.GetComponent<Annotation>().changeColor(new Color(apj.ColorR, apj.ColorG, apj.ColorB));
+			}
 			annotationListEntryList.Add (createNewAnnotationListEntry (newAnnotation));
         }
     }

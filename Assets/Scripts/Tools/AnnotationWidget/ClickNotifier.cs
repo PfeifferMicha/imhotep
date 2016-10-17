@@ -12,6 +12,7 @@ public class ClickNotifier : MonoBehaviour, IPointerClickHandler {
 	{
 		if (notificationEvent != null) {
 			notificationEvent (eventData);
+
 		}
 	}
 }
