@@ -54,6 +54,7 @@ public class ViveControllerInputDevice : Controller, InputDevice {
 
 		fakeCamera = gameObject.AddComponent<Camera> () as Camera;
 		fakeCamera.enabled = false;
+		fakeCamera.nearClipPlane = 0.0001f;
 	}
 
 	public ButtonInfo updateButtonInfo ()
