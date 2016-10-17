@@ -50,8 +50,10 @@ namespace UI
 			Component[] images;
 			images = GetComponentsInChildren (typeof(Image), true);
 			if (images != null) {
-				foreach (Image i in images)
-					i.material = imageMaterial;
+				foreach (Image i in images) {
+					if( i.material.name == "Default UI Material")
+						i.material = imageMaterial;
+				}
 			}
 		}
 

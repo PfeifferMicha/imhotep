@@ -5,9 +5,10 @@ using UI;
 
 public class PatientSelector : MonoBehaviour {
 
-	public Sprite OperationLiver = null;
-	public Sprite OperationBoneFracture = null;
-	public Sprite OperationUnknown = null;
+	public Sprite SpriteLiver = null;
+	public Sprite SpriteBone = null;
+	public Sprite SpriteBrain = null;
+	public Sprite SpriteUnknown = null;
 
     private GameObject mScrollView;
 
@@ -73,7 +74,7 @@ public class PatientSelector : MonoBehaviour {
 
 			// Fill button's text object:
 			Text t = newButton.transform.Find("Text").GetComponent<Text>();
-			t.text = "<color=white>" + patient.name + "</color>\n" + patient.birthDate;
+			t.text = patient.name + "\n  <color=#AAAAAA>" + patient.birthDate + "</color>";
 
 			newButton.transform.Find ("ImageFemale").gameObject.SetActive (false);
 			newButton.transform.Find ("ImageMale").gameObject.SetActive (false);
@@ -85,19 +86,28 @@ public class PatientSelector : MonoBehaviour {
 
 			Text ageText = newButton.transform.Find("AgeText").GetComponent<Text>();
 			if (patient.age >= 0) {
-				ageText.text = patient.age + " Yrs.";
+				ageText.text = patient.age + " a";
 			} else {
 				ageText.text = "";
 			}
 
 			Text detailsText = newButton.transform.Find("TextDetails").GetComponent<Text>();
-			detailsText.text = patient.indication + "\n" + patient.details;
+			detailsText.text = patient.diagnosis + "\n  <color=#AAAAAA>" + patient.details + "</color>";
 
 			Image operationTypeImage = newButton.transform.Find ("IconBackground/OperationTypeImage").GetComponent<Image> ();
 			if (operationTypeImage != null) {
-				operationTypeImage.sprite = spriteForOperationType (patient.operationType);
+				operationTypeImage.sprite = spriteForOperatedBodyPart (patient.operationBodyPart);
 			} else {
 				operationTypeImage.gameObject.SetActive (false);
+			}
+
+			if (patient.warnings.Count > 0) {
+				string warnings = "";
+				for (int i = 0; i < patient.warnings.Count; i++) {
+					warnings = warnings + patient.warnings [i] + "\n";
+				}
+				Text warningsText = newButton.transform.Find("TextWarnings").GetComponent<Text>();
+				warningsText.text = warnings;
 			}
 
 			// Set up events:
@@ -118,14 +128,16 @@ public class PatientSelector : MonoBehaviour {
 
 	}
 
-	Sprite spriteForOperationType( PatientMeta.OperationType ot )
+	Sprite spriteForOperatedBodyPart( PatientMeta.OperationBodyPart ot )
 	{
-		if (ot == PatientMeta.OperationType.Liver) {
-			return OperationLiver;
-		} else if (ot == PatientMeta.OperationType.BoneFracture) {
-			return OperationBoneFracture;
+		if (ot == PatientMeta.OperationBodyPart.Liver) {
+			return SpriteLiver;
+		} else if (ot == PatientMeta.OperationBodyPart.Bone) {
+			return SpriteBone;
+		} else if (ot == PatientMeta.OperationBodyPart.Brain) {
+			return SpriteBrain;
 		} else {
-			return OperationUnknown;
+			return SpriteUnknown;
 		}
 	}
 

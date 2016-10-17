@@ -8,6 +8,8 @@
 		layer("Layer", Range(0, 1)) = 0
 		globalMaximum("GloablMaximum", Range(0, 65536)) = 65536
 		globalMinimum("GloablMinimum", Range(-65536, 0)) = 0
+
+		dimensionsXY ("DimensionsXY", Vector) = (0,0,1,1)
 	}
 	SubShader
 	{

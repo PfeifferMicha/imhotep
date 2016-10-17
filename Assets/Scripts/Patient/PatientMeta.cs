@@ -8,9 +8,12 @@ using LitJson;
 
 public class PatientMeta
 {
-	public enum OperationType {
-		BoneFracture,
+	public enum OperationBodyPart {
+		Bone,
 		Liver,
+		Brain,
+		Pancreas,
+		Rectum,
 		Unknown
 	}
 
@@ -23,14 +26,16 @@ public class PatientMeta
 	public string birthDate { get; private set; }
 	public DateTime birthDateDT { get; private set; }
 	public string operationDate { get; private set; }
-	public string indication { get; private set; }
+	public string diagnosis { get; private set; }
 	public string details { get; private set; }
 	public string sex { get; private set; }
 	public string path { get; private set; }
 	public string dicomPath { get; private set; }
 	public string meshPath { get; private set; }
 	public int age { get; private set; }
-	public OperationType operationType { get; private set; }
+	public OperationBodyPart operationBodyPart { get; private set; }
+	public List<string> warnings { get; private set; }
+
 
 	public PatientMeta ( string folder )
 	{
@@ -44,8 +49,8 @@ public class PatientMeta
 		} catch {
 			throw new System.Exception("Cannot parse meta.json. Invalid syntax?");
 		}
-
-		operationType = OperationType.Unknown;
+		warnings = new List<string> ();
+		operationBodyPart = OperationBodyPart.Unknown;
 
 		if (data.Keys.Contains ("meta")) {
 			JsonData metaData = data["meta"];
@@ -67,8 +72,8 @@ public class PatientMeta
 					age = -1;
 				}
 			}
-			if (metaData.Keys.Contains ("Indication")) {
-				indication = metaData ["Indication"].ToString ();
+			if (metaData.Keys.Contains ("Diagnosis")) {
+				diagnosis = metaData ["Diagnosis"].ToString ();
 			}
 			if (metaData.Keys.Contains ("Details")) {
 				details = metaData ["Details"].ToString ();
@@ -79,12 +84,17 @@ public class PatientMeta
 			if (metaData.Keys.Contains ("Sex")) {
 				sex = metaData ["Sex"].ToString ();
 			}
-			if (metaData.Keys.Contains ("OperationType")) {
-				string ot = metaData ["OperationType"].ToString ();
+			if (metaData.Keys.Contains ("BodyPart")) {
+				string ot = metaData ["BodyPart"].ToString ();
 				try {
-					operationType = (OperationType)Enum.Parse (typeof(OperationType), ot);
+					operationBodyPart = (OperationBodyPart)Enum.Parse (typeof(OperationBodyPart), ot);
 				} catch (System.Exception e ) {
-					Debug.LogWarning ("Could not interpret OperationType.");
+					Debug.LogWarning ("Could not interpret BodyPart.");
+				}
+			}
+			if (metaData.Keys.Contains ("Warnings")) {
+				for (int i = 0; i < metaData ["Warnings"].Count; i++) {
+					warnings.Add (metaData ["Warnings"] [i].ToString ());
 				}
 			}
 		}
