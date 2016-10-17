@@ -70,4 +70,8 @@ public class Annotation : MonoBehaviour {
 		text = newLabel;
 		annotationLabel.GetComponentInChildren<Text> ().text = text;
 	}
+
+	public void AbortChanges(GameObject oldAnnotation) {
+		SetLabel (oldAnnotation.GetComponent<Annotation> ().text);
+	}
 }

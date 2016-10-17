@@ -131,7 +131,7 @@ public class AnnotationControl : MonoBehaviour {
 	//called by  "On Value Changed Event" , to update Label of current Annotation
 	public void InputChanged(){
 		if(currentAnnotationListEntry != null) {
-			currentAnnotationListEntry.GetComponent<AnnotationListEntryControl> ().updateLabel (annotationTextInput.text);
+			currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().updateLabel (annotationTextInput.text);
 
 		}
 	}
@@ -162,8 +162,6 @@ public class AnnotationControl : MonoBehaviour {
     {
 		if(currentActiveScreen == ActiveScreen.add) {
 			//TODO Abort AddAnnotation and close Screen
-			AddEditScreen.SetActive(false);
-			currentActiveScreen = ActiveScreen.none;
 			AbortAnnotationChanges ();
 		} else {
 			//Open AnnotationScreen
@@ -172,9 +170,10 @@ public class AnnotationControl : MonoBehaviour {
 			if(currentAnnotationListEntry == null) {
 				//deactivate input till current Annotation exists
 				annotationSettings.gameObject.SetActive(false);
+				instructionText.gameObject.SetActive (true);
 			} else {
 				UnlockEditSettings ();
-				GameObject curAnno = currentAnnotationListEntry.GetComponent<AnnotationListEntryControl> ().getAnnotation ();
+				GameObject curAnno = currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().getAnnotation ();
 				annotationTextInput.text = curAnno.GetComponent<Annotation> ().text;
 			}
 
@@ -241,25 +240,38 @@ public class AnnotationControl : MonoBehaviour {
 		if (oldAnnotationListEntry == null) {
 			annotationListEntryList.Add (currentAnnotationListEntry);			
 		}
-		oldAnnotationListEntry = null;
-    	currentAnnotationListEntry = null;
-        
-		//Reset Edit Tools
-		annotationSettings.GetComponentInChildren<InputField>().text = "";
-        
-		//Deactivate all Edit Tools
-		annotationSettings.gameObject.SetActive(false);
+
+		resetAddEditScreen ();
 
 		//Save changes in File
 		saveAnnotationInFile();
     }
 
-	//Called if the user pressed Abort Button
+	//Called to abort current add /edit process
 	public void AbortAnnotationChanges()
 	{	
-		currentAnnotationListEntry.GetComponent<Annotation>().SetLabel(oldAnnotationListEntry.GetComponent<Annotation>().text);
+		if (oldAnnotationListEntry == null) {
+			if(currentAnnotationListEntry != null) {
+				removeOneAnnotation (currentAnnotationListEntry);
+			}
+		} else {
+			GameObject curAnnotation = currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().getAnnotation ();
+			curAnnotation.GetComponent<Annotation>().AbortChanges(oldAnnotationListEntry.GetComponent<AnnotationListEntry>().getAnnotation());
+		}
+			
+		resetAddEditScreen ();
+	}
+
+	private void resetAddEditScreen() {
 		currentAnnotationListEntry = null;
 		oldAnnotationListEntry = null;
+		//Reset Edit Tools
+		annotationSettings.GetComponentInChildren<InputField>().text = "";
+		annotationSettings.gameObject.SetActive(false);
+		instructionText.gameObject.SetActive (true);
+		// Close Screen
+		AddEditScreen.SetActive(false);
+		currentActiveScreen = ActiveScreen.none;
 	}
 
 	//Called to Create a New Annotation when Open Add/Edit Screen
@@ -287,7 +299,7 @@ public class AnnotationControl : MonoBehaviour {
 			// Attach the new Entry to the list:
 			newEntry.transform.SetParent(annotationListEntry.transform.parent, false);
 
-			newEntry.GetComponent<AnnotationListEntryControl> ().setupListEntry (annotation);
+			newEntry.GetComponent<AnnotationListEntry> ().setupListEntry (annotation);
 
 
 			return newEntry;
@@ -358,7 +370,7 @@ public class AnnotationControl : MonoBehaviour {
         {
             foreach(GameObject apListEntry in annotationListEntryList)
             {
-				GameObject ap = apListEntry.GetComponent<AnnotationListEntryControl> ().getAnnotation();
+				GameObject ap = apListEntry.GetComponent<AnnotationListEntry> ().getAnnotation();
                 AnnotationJson apj = new AnnotationJson();
 				apj.Text = ap.GetComponent<Annotation>().text;
                 apj.PositionX = ap.transform.localPosition.x;
@@ -430,7 +442,7 @@ public class AnnotationControl : MonoBehaviour {
 	private void removeOneAnnotation(GameObject aListEntry) {
 
 		//delete Annotation Mesh
-		aListEntry.GetComponent<AnnotationListEntryControl> ().getAnnotation().GetComponent<Annotation>().destroyAnnotation();
+		aListEntry.GetComponent<AnnotationListEntry> ().getAnnotation().GetComponent<Annotation>().destroyAnnotation();
 
 		Destroy (aListEntry);		
     }
