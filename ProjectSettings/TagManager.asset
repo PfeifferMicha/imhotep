@@ -4,7 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - AnnotationPoint
+  - Annotation
+  - AnnotationLabel
   layers:
   - Default
   - TransparentFX

@@ -47,7 +47,6 @@ public class AnnotationControl : MonoBehaviour {
 	//Add Annotation Screen Things
 	public GameObject instructionText;
 	public GameObject annotationSettings;
-	public InputField annotationTextInput;
 
 	public GameObject meshNode;
 	public GameObject meshPositionNode;
@@ -119,14 +118,6 @@ public class AnnotationControl : MonoBehaviour {
 
     }
 
-	//called by  "On Value Changed Event" , to update Label of current Annotation
-	public void InputChanged(){
-		if(currentAnnotationListEntry != null) {
-			currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().updateLabel (annotationTextInput.text);
-
-		}
-	}
-
 	//Used to Create Annotation Mesh
 	// Local Position
 	private GameObject createAnnotationMesh(Quaternion rotation, Vector3 position) {
@@ -136,9 +127,6 @@ public class AnnotationControl : MonoBehaviour {
 
 		newAnnotation.transform.localScale = new Vector3( 5, 5, 5 );
 		newAnnotation.transform.SetParent( meshPositionNode.transform, false );
-
-        Annotation ap = newAnnotation.AddComponent<Annotation>();
-        ap.enabled = false;
 
 		newAnnotation.SetActive (true);
 
@@ -166,7 +154,6 @@ public class AnnotationControl : MonoBehaviour {
 			} else {
 				UnlockEditSettings ();
 				GameObject curAnno = currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().getAnnotation ();
-				annotationTextInput.text = curAnno.GetComponent<Annotation> ().text;
 			}
 
 			currentActiveScreen = ActiveScreen.add;
@@ -194,6 +181,7 @@ public class AnnotationControl : MonoBehaviour {
 
 	//Swap image of Annotation button
 	private void closeAnnotationScreen() {
+		
 		GameObject addButton = annotationToolBar.transform.GetChild (0).GetChild (0).gameObject;
 		//show Add
 		addButton.transform.GetChild (0).gameObject.SetActive (true);
@@ -203,7 +191,6 @@ public class AnnotationControl : MonoBehaviour {
 		currentAnnotationListEntry = null;
 		oldAnnotationListEntry = null;
 		//Reset Edit Tools
-		annotationSettings.GetComponentInChildren<InputField>().text = "";
 		annotationSettings.gameObject.SetActive(false);
 		instructionText.gameObject.SetActive (true);
 		// Close Screen
@@ -228,32 +215,40 @@ public class AnnotationControl : MonoBehaviour {
 	{
 		Debug.Log ("Clicked: " + eventData.pointerPressRaycast.worldPosition);
 
-		if(currentActiveScreen == ActiveScreen.add) {
-			if(currentAnnotationListEntry == null) {
-				
-				Vector3 localpos = meshPositionNode.transform.InverseTransformPoint(eventData.pointerPressRaycast.worldPosition);
-				Vector3 localNormal = meshPositionNode.transform.InverseTransformDirection (eventData.pointerPressRaycast.worldNormal);
-				GameObject newAnnotation = currentAnnotationListEntry = createAnnotationMesh(Quaternion.LookRotation( localNormal),
-					localpos);
-				//add to List
-				currentAnnotationListEntry = createNewAnnotationListEntry (newAnnotation);
-				UnlockEditSettings ();
-			}
-		} else if(currentActiveScreen == ActiveScreen.list) {
-			//Edit Annotation
-			if(eventData.pointerPress.CompareTag("AnnotationPoint")) {
-				currentAnnotationListEntry = eventData.pointerPress.GetComponent<Annotation> ().myAnnotationListEntry;
-				oldAnnotationListEntry = currentAnnotationListEntry;
-				//TODO Highlight in List
-			}
-		} else if(currentActiveScreen == ActiveScreen.none) {
-			//Edit Annotation
-			if(eventData.pointerPress.CompareTag("AnnotationPoint")) {				
-				currentAnnotationListEntry = eventData.pointerPress.GetComponent<Annotation> ().myAnnotationListEntry;
-				oldAnnotationListEntry = currentAnnotationListEntry;
-				AddAnnotationPressed ();
+		if (eventData.pointerPress.CompareTag("AnnotationLabel")) {
+			if(eventData.pointerPress.GetComponentInParent<AnnotationLabel> ())
+				eventData.pointerPress.GetComponentInParent<AnnotationLabel> ().LabelClicked (eventData );
+		} else {
+			if(currentActiveScreen == ActiveScreen.add) {
+				if(currentAnnotationListEntry == null) {
+					if(!eventData.pointerPress.CompareTag("Annotation") && !eventData.pointerPress.CompareTag("AnnotationLabel") ){
+						Vector3 localpos = meshPositionNode.transform.InverseTransformPoint(eventData.pointerPressRaycast.worldPosition);
+						Vector3 localNormal = meshPositionNode.transform.InverseTransformDirection (eventData.pointerPressRaycast.worldNormal);
+						GameObject newAnnotation = currentAnnotationListEntry = createAnnotationMesh(Quaternion.LookRotation( localNormal),
+							localpos);
+						//add to List
+						currentAnnotationListEntry = createNewAnnotationListEntry (newAnnotation);
+						UnlockEditSettings ();
+					}
+				}
+			} else if(currentActiveScreen == ActiveScreen.list) {
+				//Edit Annotation
+				if(eventData.pointerPress.CompareTag("Annotation") ) {
+					currentAnnotationListEntry = eventData.pointerPress.GetComponent<Annotation> ().myAnnotationListEntry;
+					oldAnnotationListEntry = currentAnnotationListEntry;
+					//TODO Highlight in List
+				}
+			} else if(currentActiveScreen == ActiveScreen.none) {
+				//Edit Annotation
+				if(eventData.pointerPress.CompareTag("Annotation")) {				
+					currentAnnotationListEntry = eventData.pointerPress.GetComponent<Annotation> ().myAnnotationListEntry;
+					oldAnnotationListEntry = currentAnnotationListEntry;
+					AddAnnotationPressed ();
+				}
 			}
 		}
+
+
 	}
 
 	public void ChangeColorPressed(GameObject newColor) {
@@ -261,12 +256,11 @@ public class AnnotationControl : MonoBehaviour {
 		curAnno.GetComponent<Annotation> ().changeColor (newColor.GetComponent<Button> ().colors.normalColor);
 	}
 
-
 	//Called if the user pressed Save Button
     public void SaveAnnotation()
     {	
 
-		if (oldAnnotationListEntry == null) {
+		if (oldAnnotationListEntry == null && currentAnnotationListEntry != null) {
 			annotationListEntryList.Add (currentAnnotationListEntry);			
 		}
 
@@ -363,7 +357,7 @@ public class AnnotationControl : MonoBehaviour {
     }
 
 	//Saves all annotations in a file
-    private void saveAnnotationInFile()
+	public void saveAnnotationInFile()
     {
         if (Patient.getLoadedPatient() == null)
         {
@@ -389,7 +383,7 @@ public class AnnotationControl : MonoBehaviour {
             {
 				GameObject ap = apListEntry.GetComponent<AnnotationListEntry> ().getAnnotation();
                 AnnotationJson apj = new AnnotationJson();
-				apj.Text = ap.GetComponent<Annotation>().text;
+				apj.Text = ap.GetComponent<Annotation> ().getLabel ();
 				apj.ColorR = ap.GetComponent<Annotation> ().myColor.r;
 				apj.ColorG = ap.GetComponent<Annotation> ().myColor.g;
 				apj.ColorB = ap.GetComponent<Annotation> ().myColor.b;
@@ -453,9 +447,7 @@ public class AnnotationControl : MonoBehaviour {
 			//setup new Annotation as maesh and in List
 			GameObject newAnnotation = createAnnotationMesh(rotation, position);
 			newAnnotation.GetComponent<Annotation>().SetLabel(apj.Text);
-			if(apj.ColorR != null) {
-				newAnnotation.GetComponent<Annotation>().changeColor(new Color(apj.ColorR, apj.ColorG, apj.ColorB));
-			}
+			newAnnotation.GetComponent<Annotation>().changeColor(new Color(apj.ColorR, apj.ColorG, apj.ColorB));
 			annotationListEntryList.Add (createNewAnnotationListEntry (newAnnotation));
         }
     }

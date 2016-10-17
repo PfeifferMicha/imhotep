@@ -381,7 +381,6 @@ MonoBehaviour:
   AddEditScreen: {fileID: 553633420}
   instructionText: {fileID: 928606416}
   annotationSettings: {fileID: 2121660048}
-  annotationTextInput: {fileID: 1594388091}
   meshNode: {fileID: 703851116}
   meshPositionNode: {fileID: 1120745101}
 --- !u!1 &26487848
@@ -1629,7 +1628,7 @@ GameObject:
   - 114: {fileID: 246395846}
   m_Layer: 0
   m_Name: AnnotationPoint
-  m_TagString: AnnotationPoint
+  m_TagString: Annotation
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1733,9 +1732,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ce57d6e9e44780459dd4822262dbd43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: 
   creator: 
-  annotationLabel: {fileID: 1494569411}
+  myAnnotationLabel: {fileID: 0}
   myAnnotationListEntry: {fileID: 0}
   myColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1001 &246809576
@@ -3235,7 +3233,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22417418, guid: 7b9b69f00ac964a1f887c8ec516b3f8a, type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22417418, guid: 7b9b69f00ac964a1f887c8ec516b3f8a, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -9331,6 +9329,12 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 1485599624}
   m_Script: {fileID: -2061169968, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+--- !u!114 &1054276358 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee,
+    type: 2}
+  m_PrefabInternal: {fileID: 1594388089}
+  m_Script: {fileID: 575553740, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!1001 &1065327659
 Prefab:
   m_ObjectHideFlags: 0
@@ -13458,9 +13462,10 @@ GameObject:
   - 114: {fileID: 1494569414}
   - 114: {fileID: 1494569413}
   - 114: {fileID: 1494569417}
+  - 114: {fileID: 1494569419}
   m_Layer: 0
   m_Name: AnnotationLabel
-  m_TagString: Untagged
+  m_TagString: AnnotationLabel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13478,6 +13483,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 1819102968}
+  - {fileID: 1594388090}
   m_Father: {fileID: 26119097}
   m_RootOrder: 4
   m_AnchorMin: {x: 0, y: 0}
@@ -13569,6 +13575,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &1494569419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1494569411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d875c0f5a411d54eaa6017e2ac76397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textBackground: {fileID: 1819102967}
+  myText: {fileID: 534350465}
+  text: 
+  myInputField: {fileID: 1054276358}
 --- !u!1001 &1499158025
 Prefab:
   m_ObjectHideFlags: 0
@@ -14807,8 +14828,12 @@ Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 2121660049}
+    m_TransformParent: {fileID: 1494569412}
     m_Modifications:
+    - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -14823,7 +14848,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -0
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_LocalRotation.x
@@ -14843,7 +14868,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -14851,7 +14876,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: 38
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_SizeDelta.x
@@ -14900,10 +14925,10 @@ Prefab:
     - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 26119099}
+      objectReference: {fileID: 1494569419}
     - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: InputChanged
+      value: ValueChanged
       objectReference: {fileID: 0}
     - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -14913,6 +14938,66 @@ Prefab:
       propertyPath: m_LineType
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1494569419}
+    - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: EditingFinished
+      objectReference: {fileID: 0}
+    - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 26119099}
+    - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: saveAnnotationInFile
+      objectReference: {fileID: 0}
+    - target: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_OnEndEdit.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 199906, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
   m_IsPrefabParent: 0
@@ -14921,12 +15006,6 @@ RectTransform:
   m_PrefabParentObject: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee,
     type: 2}
   m_PrefabInternal: {fileID: 1594388089}
---- !u!114 &1594388091 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 11481284, guid: 6a271d4dbbe944a40a7e2d73bba362ee,
-    type: 2}
-  m_PrefabInternal: {fileID: 1594388089}
-  m_Script: {fileID: 575553740, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
 --- !u!1 &1598079628
 GameObject:
   m_ObjectHideFlags: 0
@@ -15847,7 +15926,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22417418, guid: 7b9b69f00ac964a1f887c8ec516b3f8a, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22417418, guid: 7b9b69f00ac964a1f887c8ec516b3f8a, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -16283,7 +16362,7 @@ RectTransform:
   - {fileID: 543370576}
   - {fileID: 1272778982}
   m_Father: {fileID: 2121660049}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -93}
@@ -19184,7 +19263,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1594388090}
   - {fileID: 495897833}
   - {fileID: 1188467207}
   - {fileID: 1818005552}

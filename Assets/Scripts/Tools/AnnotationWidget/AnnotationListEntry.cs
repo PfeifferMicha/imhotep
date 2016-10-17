@@ -14,12 +14,12 @@ public class AnnotationListEntry : MonoBehaviour {
 	public void setupListEntry (GameObject annotation) {
 		myAnnotation = annotation;
 		annotation.GetComponent<Annotation> ().myAnnotationListEntry = this.gameObject;
-		listEntryLabel.GetComponent<Text> ().text = myAnnotation.GetComponent<Annotation> ().text;
+		listEntryLabel.GetComponent<Text> ().text = myAnnotation.GetComponent<Annotation> ().getLabel();
 	}
 
 	public void destroyAnnotation() {
 		//Destroy Label
-		GameObject label = myAnnotation.GetComponent<Annotation>().annotationLabel;
+		GameObject label = myAnnotation.GetComponent<Annotation>().myAnnotationLabel;
 		if (label != null)
 		{
 			Destroy(label);
@@ -35,7 +35,6 @@ public class AnnotationListEntry : MonoBehaviour {
 
 	public void updateLabel(string newLabel) {
 		listEntryLabel.GetComponent<Text> ().text = newLabel;
-		myAnnotation.GetComponent<Annotation> ().SetLabel (newLabel);
 	}
 
 	//Called if the user pressed Edit Annotation Button (List Screen)
@@ -47,4 +46,7 @@ public class AnnotationListEntry : MonoBehaviour {
 	public void DeleteAnnotation() {	
 		this.GetComponentInParent<AnnotationControl> ().DeleteAnnotation (this.gameObject);
 	}
+
+
+
 }

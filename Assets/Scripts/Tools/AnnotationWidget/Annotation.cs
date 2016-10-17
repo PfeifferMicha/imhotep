@@ -7,11 +7,9 @@ using UnityEngine.UI;
 public class Annotation : MonoBehaviour {
 
     [DefaultValue("")]
-	public string text;
-    [DefaultValue("")]
 	public string creator;
 	public DateTime creationDate;
-	public GameObject annotationLabel;
+	public GameObject myAnnotationLabel;
 	public GameObject myAnnotationListEntry;
 	public Color myColor;
 
@@ -30,10 +28,10 @@ public class Annotation : MonoBehaviour {
         //Update lines from annotation point to label
         //because lines are no game objects
 
-        if (annotationLabel != null)
+        if (myAnnotationLabel != null)
         {
             this.GetComponent<LineRenderer>().SetPosition(0, this.transform.position);
-            this.GetComponent<LineRenderer>().SetPosition(1, this.annotationLabel.transform.position);
+            this.GetComponent<LineRenderer>().SetPosition(1, this.myAnnotationLabel.transform.position);
         }
         
     }
@@ -43,44 +41,54 @@ public class Annotation : MonoBehaviour {
 	public void CreateLabel(GameObject annotationLabelMaster) {
 		//Create Label
 
-		annotationLabel = (GameObject)Instantiate(annotationLabelMaster, new Vector3(0f,0f,15f), this.transform.localRotation);
-		annotationLabel.transform.localScale = new Vector3 (0.05f, 0.05f, 0.05f);	//*= meshNode.transform.localScale.x; //x,y,z are the same
-		annotationLabel.transform.SetParent(this.transform, false);
-		annotationLabel.SetActive (true);
+		myAnnotationLabel = (GameObject)Instantiate(annotationLabelMaster, new Vector3(0f,0f,15f), this.transform.localRotation);
+		myAnnotationLabel.transform.localScale = new Vector3 (0.05f, 0.05f, 0.05f);	//*= meshNode.transform.localScale.x; //x,y,z are the same
+		myAnnotationLabel.transform.SetParent(this.transform, false);
+		myAnnotationLabel.SetActive (true);
 
 		//Create line form point to label
 		this.GetComponent<LineRenderer>().SetPosition(0, this.transform.position);
-		this.GetComponent<LineRenderer>().SetPosition(1, this.annotationLabel.transform.position);
-		SetLabel (text);
+		this.GetComponent<LineRenderer>().SetPosition(1, this.myAnnotationLabel.transform.position);
 	}
 
-
+	//Destroys Annotation and Label
 	public void destroyAnnotation() {
-		Destroy (annotationLabel);
-		annotationLabel = null;
+		Destroy (myAnnotationLabel);
+		myAnnotationLabel = null;
 		Destroy (this.gameObject);
 	}
 
 	//Updates the Label Text, if no Label exists  create one
 	public void SetLabel(String newLabel) {
 
-		if(annotationLabel == null) {
+		if(myAnnotationLabel == null) {
 			//create AnnotationLabel
 			Debug.LogError("Annotation has no AnnotationLabel to edit");
 			return;
 		}
 		// Change label text:
-		text = newLabel;
-		annotationLabel.GetComponentInChildren<Text> ().text = text;
+		myAnnotationLabel.GetComponent<AnnotationLabel> ().setLabel (newLabel);
 	}
 
+	//used to Abort last Changes on Annotation
 	public void AbortChanges(GameObject oldAnnotation) {
-		SetLabel (oldAnnotation.GetComponent<Annotation> ().text);
+		SetLabel (oldAnnotation.GetComponent<Annotation> ().myAnnotationLabel.GetComponent<AnnotationLabel>().text);
 		changeColor (oldAnnotation.GetComponent<Annotation> ().myColor);
 	}
 
+	//used to change color of Annotation
 	public void changeColor(Color newColor) {
 		myColor = newColor;
 		this.GetComponent<Renderer> ().material.color = newColor;
+	}
+		
+	//to get Annotation Label text
+	public String getLabel() {
+		return myAnnotationLabel.GetComponent<AnnotationLabel> ().text;
+	}
+
+	//Used to save Label Changes
+	public void saveChanges() {
+		myAnnotationListEntry.GetComponent<AnnotationListEntry> ().updateLabel (getLabel ());
 	}
 }
