@@ -7,7 +7,7 @@ using UI;
 
 public class MouseInputDevice : MonoBehaviour, InputDevice {
 	
-	InputDeviceManager.InputDeviceType getType ()
+	public InputDeviceManager.InputDeviceType getDeviceType ()
 	{
 		return InputDeviceManager.InputDeviceType.Mouse;
 	}

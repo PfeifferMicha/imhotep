@@ -5,7 +5,7 @@ using UI;
 
 public class ViveControllerInputDevice : Controller, InputDevice {
 
-	InputDeviceManager.InputDeviceType getType ()
+	public InputDeviceManager.InputDeviceType getDeviceType ()
 	{
 		return InputDeviceManager.InputDeviceType.ViveController;
 	}

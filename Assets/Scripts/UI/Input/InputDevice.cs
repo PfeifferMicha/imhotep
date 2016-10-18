@@ -5,7 +5,7 @@ using UI;
 
 public interface InputDevice {
 
-	InputDeviceManager.InputDeviceType getType ();
+	InputDeviceManager.InputDeviceType getDeviceType ();
 
 	Vector2 getScrollDelta();
 

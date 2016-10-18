@@ -68,7 +68,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		if (currentDICOM != null) {
 			//int numLayers = (int)currentDICOM.getHeader ().NumberOfImages;
 
-			Debug.Log ("ScrollDelta:" + eventData.scrollDelta.y + " " + eventData.scrollDelta.x);
+			Debug.Log ("ScrollDelta: " + eventData.scrollDelta.y + " " + eventData.scrollDelta.x);
 			LayerChanged (mLayer + Mathf.Sign( eventData.scrollDelta.y ));
 		}
 		//mLayerSlider.value = mLayer;
@@ -93,9 +93,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	}
 	public void Update()
 	{
+		InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;
 		if (dragLevelWindow) {
-			InputDeviceManager idm = GameObject.Find ("GlobalScript").GetComponent<InputDeviceManager> ();
-			InputDevice inputDevice = idm.currentInputDevice;
 
 			// TODO: Update to new input event system:
 			float intensityChange = -inputDevice.getTexCoordDelta ().y * 0.25f;
@@ -105,8 +104,6 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			SetWindow (currentViewSettings.window + contrastChange);
 		}
 		if (dragPan) {
-			InputDeviceManager idm = GameObject.Find ("GlobalScript").GetComponent<InputDeviceManager> ();
-			InputDevice inputDevice = idm.currentInputDevice;
 
 			float dX = -inputDevice.getTexCoordDelta ().x;
 			float dY = -inputDevice.getTexCoordDelta ().y;
@@ -121,14 +118,36 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			ApplyScaleAndPosition ();
 		}
 		if (dragZoom) {
-			InputDeviceManager idm = GameObject.Find ("GlobalScript").GetComponent<InputDeviceManager> ();
-			InputDevice inputDevice = idm.currentInputDevice;
 
 			float dY = -inputDevice.getTexCoordDelta ().y * 0.5f;
 
 			currentViewSettings.zoom = Mathf.Clamp (currentViewSettings.zoom + dY, 0.1f, 5f);
 
 			ApplyScaleAndPosition ();
+		}
+
+		// Let controller movement change position and zoom (if trigger is pressed):
+		if (inputDevice.getDeviceType () == InputDeviceManager.InputDeviceType.ViveController) {
+			ViveControllerInputDevice input = inputDevice as ViveControllerInputDevice;
+			Controller c = inputDevice as Controller;
+			if (c != null) {
+				if (c.triggerPressed ()) {
+					// Get movement delta:
+					Vector3 movement = c.positionDelta;
+					movement = c.transform.InverseTransformDirection (movement);
+
+					float dZ = movement.z;
+					currentViewSettings.zoom = Mathf.Clamp (currentViewSettings.zoom + dZ, 0.1f, 5f);
+
+					float dX = movement.x;
+					float dY = movement.y;
+					currentViewSettings.panX += dX*currentViewSettings.zoom;
+					currentViewSettings.panY += dY*currentViewSettings.zoom;
+
+					ApplyScaleAndPosition ();
+
+				}
+			}
 		}
 	}
 

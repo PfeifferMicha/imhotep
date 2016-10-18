@@ -39,12 +39,24 @@ public class Controller : MonoBehaviour {
 	protected PointerEventData.FramePressState triggerButtonState = PointerEventData.FramePressState.NotChanged;
 	//-----------------------------------------------------
 
+	//! The movement of the controller since the previous frame in world space:
+	public Vector3 positionDelta { private set; get; }
+
+	private Vector3 previousPosition;
+
 	// Use this for initialization
 	void Start () {
 		//trackedObj = this.GetComponent<SteamVR_TrackedObject> ();
+		positionDelta = Vector3.zero;
+		previousPosition = Vector3.zero;
 	}
 
-	protected bool triggerPressed(){
+	void Update() {
+		positionDelta = transform.position - previousPosition;
+		previousPosition = transform.position;
+	}
+
+	public bool triggerPressed(){
 		if( controller == null )
 			return false;
 		//Checks if the trigger is pressed down till it clicks
