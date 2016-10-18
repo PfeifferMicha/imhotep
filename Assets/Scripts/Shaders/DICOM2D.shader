@@ -63,7 +63,7 @@
 				if( i.texcoord.x >= 0 && i.texcoord.x <= 1 && i.texcoord.y >= 0 && i.texcoord.y <= 1 )
 				{
 					fixed4 rawcol = tex2D(_MainTex, i.texcoord);
-					val = rawcol.r*256 + rawcol.g*256*256;
+					val = (rawcol.r + (rawcol.g + (rawcol.b + rawcol.a*256)*256)*256)*256;
 				} else {
 					val = globalMinimum;
 				}

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -186,9 +187,9 @@ public class PatientDICOMLoader : MonoBehaviour
 				DICOM dicom = new DICOM();
 
 				if (returnObject.texDepth == 1) {		// depth of 1 voxels means it's just a texture, i.e. 2D!
-
-					Texture2D tex = new Texture2D (returnObject.texWidth, returnObject.texHeight, TextureFormat.RGBAFloat, false);
-					tex.SetPixels32 (returnObject.colors); //needs around 0.15 sec for a small DICOM, TODO coroutine?
+					EditorUtility.UnloadUnusedAssetsImmediate();
+					Texture2D tex = new Texture2D (returnObject.texWidth, returnObject.texHeight, TextureFormat.ARGB32, false, true);
+					tex.SetPixels32 (returnObject.colors);
 					tex.Apply ();
 					dicom.setTexture2D(tex);
 
@@ -201,7 +202,7 @@ public class PatientDICOMLoader : MonoBehaviour
 						SystemInfo.SupportsTextureFormat (TextureFormat.RGBAFloat));
 
 				} else {
-					Texture3D tex = new Texture3D (returnObject.texWidth, returnObject.texHeight, returnObject.texDepth, TextureFormat.RGBA32, false);
+					Texture3D tex = new Texture3D (returnObject.texWidth, returnObject.texHeight, returnObject.texDepth, TextureFormat.ARGB32, false);
 					//tex.SetPixels (returnObject.colors); //needs around 0.15 sec for a small DICOM, TODO coroutine?
 					tex.Apply ();
 					dicom.setTexture3D (tex);
