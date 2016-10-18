@@ -26,7 +26,7 @@ public class InputDeviceManager : MonoBehaviour {
 
 	public static InputDeviceManager instance { private set; get; }
 
-	private LeftController leftController;
+	public LeftController leftController { private set; get; }
 
 	public InputDeviceManager()
 	{

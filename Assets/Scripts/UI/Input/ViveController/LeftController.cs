@@ -25,8 +25,16 @@ public class LeftController : Controller {
 		SteamVR_Controller.Input( (int)controllerIndex ).TriggerHapticPulse( milliseconds );
 	}
 
+	public Vector2 getScrollDelta()
+	{
+		return touchpadDelta*100;
+	}
+
 	void Update()
 	{
+		base.Update();
+		UpdateTouchpad ();
+
 		PointerEventData.FramePressState triggerState = UpdateTriggerState ();
 
 		// -----------------------------------------

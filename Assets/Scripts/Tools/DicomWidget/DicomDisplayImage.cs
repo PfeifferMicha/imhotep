@@ -157,6 +157,17 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 				}
 			}
 		}
+
+		LeftController lc = InputDeviceManager.instance.leftController;
+		if (lc != null) {
+			Vector2 scrollDelta = lc.getScrollDelta ();
+
+			float intensityChange = -scrollDelta.y / 2000f;
+			float contrastChange = scrollDelta.x / 2000f;
+
+			SetLevel (currentViewSettings.level + intensityChange);
+			SetWindow (currentViewSettings.window + contrastChange);
+		}
 	}
 
 	public void SetLevel( float newLevel )

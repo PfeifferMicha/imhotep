@@ -51,7 +51,7 @@ public class Controller : MonoBehaviour {
 		previousPosition = Vector3.zero;
 	}
 
-	void Update() {
+	public void Update() {
 		positionDelta = transform.position - previousPosition;
 		previousPosition = transform.position;
 	}
@@ -77,9 +77,6 @@ public class Controller : MonoBehaviour {
 			touchpadDelta = touchpadValue - previousTouchpad;
 		}
 		previousTouchpad = touchpadValue;
-
-		Debug.Log ("Touch pad delta: " + touchpadDelta);
-		Debug.Log ("Touch pad value: " + touchpadValue);
 	}
 
 	protected PointerEventData.FramePressState UpdateTriggerState() {
