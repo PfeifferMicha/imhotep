@@ -107,4 +107,8 @@ public class Annotation : MonoBehaviour {
 		this.GetComponent<Renderer> ().material = defaultMaterial;
 		this.GetComponent<Renderer> ().material.color = new Color(myColor.r, myColor.g, myColor.b, 1.0f);
 	}
+
+	public void disableCollider() {
+			this.GetComponent<SphereCollider> ().enabled = false;
+	}
 }

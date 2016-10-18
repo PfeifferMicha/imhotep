@@ -1,18 +1,27 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections;
+using UI;
 
-public class ClickNotifier : MonoBehaviour, IPointerClickHandler {
+public class ClickNotifier : MonoBehaviour, IPointerClickHandler, IPointerHoverHandler {
 
 	public delegate void NotificationEvent( PointerEventData eventData );
 
-	public NotificationEvent notificationEvent;
+	public NotificationEvent clickNotificationEvent;
+	public NotificationEvent hoverNotificationEvent;
+
 
 	public void OnPointerClick(UnityEngine.EventSystems.PointerEventData eventData )
 	{
-		Debug.LogWarning (eventData.pointerPress);
-		if (notificationEvent != null) {
-			notificationEvent (eventData);
+		if (clickNotificationEvent != null) {
+			clickNotificationEvent (eventData);
 		}
 	}
+
+	public void OnPointerHover (UnityEngine.EventSystems.PointerEventData eventData) {
+		if (hoverNotificationEvent != null) {
+			hoverNotificationEvent (eventData);
+		}
+	}
+
 }

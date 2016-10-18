@@ -57,6 +57,7 @@ public class AnnotationControl : MonoBehaviour {
 	//current is the edited of actual Object to reset when abort is pressed
 	private GameObject currentAnnotationListEntry = null;
 	private GameObject newAnnotation = null;
+	private GameObject hoverAnnotation = null;
 	private Color oldColor;
 
 	private List<GameObject> annotationListEntryList = new List<GameObject>();
@@ -92,7 +93,8 @@ public class AnnotationControl : MonoBehaviour {
 		annotationPointObj.SetActive (false);
 
 		clickNotifier = meshPositionNode.AddComponent<ClickNotifier> ();
-		clickNotifier.notificationEvent = OnMeshClicked;
+		clickNotifier.clickNotificationEvent = OnMeshClicked;
+		clickNotifier.hoverNotificationEvent = hoveredOverMesh;
     }
 
     void OnDisable()
@@ -173,10 +175,6 @@ public class AnnotationControl : MonoBehaviour {
 			listScreen.SetActive (true);
 			currentActiveScreen = ActiveScreen.list;
 		}
-
-		/*newAnnotationSetupScreen.SetActive (false);
-		listScreen.SetActive (true);
-		*/
 	}
 
 	//Swap image of Annotation button
@@ -194,6 +192,10 @@ public class AnnotationControl : MonoBehaviour {
 		if(newAnnotation != null) {
 			newAnnotation.GetComponent<Annotation> ().destroyAnnotation ();
 			newAnnotation = null;
+		}
+		if(hoverAnnotation != null) {
+			hoverAnnotation.GetComponent<Annotation> ().destroyAnnotation ();
+			hoverAnnotation = null;
 		}
 		//Reset Edit Tools
 		annotationSettings.gameObject.SetActive(false);
@@ -260,11 +262,22 @@ public class AnnotationControl : MonoBehaviour {
 
 	}
 
+	public void hoveredOverMesh( PointerEventData eventData ) {
+		if(hoverAnnotation != null) {
+			Vector3 localpos = meshPositionNode.transform.InverseTransformPoint(eventData.pointerCurrentRaycast.worldPosition);
+			Vector3 localNormal = meshPositionNode.transform.InverseTransformDirection (eventData.pointerCurrentRaycast.worldNormal);
+			hoverAnnotation.GetComponent<Annotation> ().updatePosition (Quaternion.LookRotation( localNormal), localpos);
+		}
+	}
+
 	public void ChangeColorPressed(GameObject newColorButton) {
 		currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().changeAnnotationColor(
 			newColorButton.GetComponent<Button> ().colors.normalColor);
 		if(newAnnotation != null) {
 			newAnnotation.GetComponent<Annotation> ().changeColor (newColorButton.GetComponent<Button> ().colors.normalColor);
+		}
+		if(hoverAnnotation != null) {
+			hoverAnnotation.GetComponent<Annotation> ().changeColor (newColorButton.GetComponent<Button> ().colors.normalColor);
 		}
 	}
 
@@ -344,6 +357,8 @@ public class AnnotationControl : MonoBehaviour {
 	public void EditAnnotation(GameObject aListEntry) {
 		currentAnnotationListEntry = aListEntry;
 		newAnnotation = currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().duplicateAnnotation ();
+		hoverAnnotation = currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().duplicateAnnotation ();
+		hoverAnnotation.GetComponent<Annotation> ().disableCollider ();
 		oldColor = newAnnotation.GetComponent<Annotation> ().myColor;
 		AddAnnotationPressed ();
 
