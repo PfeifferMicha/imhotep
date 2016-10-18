@@ -69,9 +69,12 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	{
 		if (currentDICOM != null) {
 			//int numLayers = (int)currentDICOM.getHeader ().NumberOfImages;
-
-			Debug.Log ("ScrollDelta: " + eventData.scrollDelta.y + " " + eventData.scrollDelta.x);
-			LayerChanged (mLayer + Mathf.Sign( eventData.scrollDelta.y ));
+			int scrollAmount = Mathf.RoundToInt( eventData.scrollDelta.y*0.1f );
+			if( Mathf.Abs(scrollAmount) > 0 )
+			{
+				LayerChanged (mLayer + scrollAmount);
+				Debug.Log(scrollAmount);
+			}
 		}
 		//mLayerSlider.value = mLayer;
 	}
