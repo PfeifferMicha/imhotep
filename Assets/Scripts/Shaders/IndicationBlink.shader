@@ -49,7 +49,7 @@
 				// sample the texture
 				fixed4 texCol = tex2D(_MainTex, i.uv);
 
-				float brightAmount = 0.75 + max(sin( _Time[3] - length(texCol) ), 0);
+				float brightAmount = 0.5 + 1.5*max(sin( _Time[3] - length(texCol) ), 0);
 
 				return brightAmount*texCol.a*i.color;
 			}
