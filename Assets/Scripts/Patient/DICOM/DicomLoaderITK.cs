@@ -217,7 +217,7 @@ public class DicomLoaderITK
 		DICOMHeader header = availableSeries [indexToLoad];
 
 		// Get the file names for the series:
-		Debug.Log("\tLoading series " + header.SeriesUID);
+		//Debug.Log("\tLoading series " + header.SeriesUID);
 		VectorString fileNames = header.FileNames;	//ImageSeriesReader.GetGDCMSeriesFileNames( loadedDirectory, header.SeriesUID );
 
 		if (fileNames.Count <= 0)
@@ -228,8 +228,6 @@ public class DicomLoaderITK
 
 		// Read the Dicom image:
 		Image image = SimpleITK.ReadImage( fileNames[slice] );
-
-		Debug.LogWarning ("PIXEL REPRESENTATION: " + image.GetMetaData ("0028|0106"));
 
 		int origTexWidth = (int)image.GetWidth ();
 		int origTexHeight = (int)image.GetHeight ();

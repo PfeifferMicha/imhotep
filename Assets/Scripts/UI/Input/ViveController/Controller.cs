@@ -70,8 +70,16 @@ public class Controller : MonoBehaviour {
 
 	protected void UpdateTouchpad() {
 		touchpadValue = controller.GetAxis (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad);
-		touchpadDelta = touchpadValue - previousTouchpad;
+		if( touchpadValue.sqrMagnitude < 0.01f || previousTouchpad.sqrMagnitude < 0.01f )
+		{
+			touchpadDelta = Vector2.zero;
+		} else {
+			touchpadDelta = touchpadValue - previousTouchpad;
+		}
 		previousTouchpad = touchpadValue;
+
+		Debug.Log ("Touch pad delta: " + touchpadDelta);
+		Debug.Log ("Touch pad value: " + touchpadValue);
 	}
 
 	protected PointerEventData.FramePressState UpdateTriggerState() {
