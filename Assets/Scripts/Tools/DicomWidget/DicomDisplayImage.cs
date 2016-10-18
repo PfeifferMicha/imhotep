@@ -38,7 +38,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		public bool flipVertical;
 	}
 
-	private Dictionary<string,ViewSettings> savedViewSettings = new Dictionary<string, ViewSettings>();
+	private Dictionary<string, ViewSettings> savedViewSettings = new Dictionary<string, ViewSettings>();
 
 	public UI.Widget widget;
 
@@ -69,7 +69,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	{
 		if (currentDICOM != null) {
 			//int numLayers = (int)currentDICOM.getHeader ().NumberOfImages;
-			int scrollAmount = Mathf.RoundToInt( eventData.scrollDelta.y*0.1f );
+			int scrollAmount = Mathf.RoundToInt( eventData.scrollDelta.y*0.2f );
 			if( Mathf.Abs(scrollAmount) > 0 )
 			{
 				LayerChanged (mLayer + scrollAmount);
@@ -147,7 +147,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 					Transform tf = Platform.instance.getCenterTransformForScreen (widget.layoutPosition.screen);
 					movement = tf.InverseTransformDirection (movement);
 
-					float dZ = -movement.z*2f;
+					float dZ = -movement.z*2f*currentViewSettings.zoom;
 					currentViewSettings.zoom = Mathf.Clamp (currentViewSettings.zoom + dZ, 0.1f, 5f);
 
 					float dX = -movement.x;
