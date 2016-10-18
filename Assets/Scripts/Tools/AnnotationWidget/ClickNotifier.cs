@@ -10,6 +10,7 @@ public class ClickNotifier : MonoBehaviour, IPointerClickHandler {
 
 	public void OnPointerClick(UnityEngine.EventSystems.PointerEventData eventData )
 	{
+		Debug.LogWarning (eventData.pointerPress);
 		if (notificationEvent != null) {
 			notificationEvent (eventData);
 		}

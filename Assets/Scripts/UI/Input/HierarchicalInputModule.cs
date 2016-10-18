@@ -89,7 +89,7 @@ public class HierarchicalInputModule : BaseInputModule {
 						}
 					}
 				}
-
+					
 				if (raycastHit.transform != null) {
 					if (raycastHit.transform.gameObject.layer == LayerMask.NameToLayer ("UITool")) {
 						if (raycastHit.transform.GetComponent<CanvasRaycaster> () != null) {

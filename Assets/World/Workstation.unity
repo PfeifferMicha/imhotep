@@ -1736,6 +1736,8 @@ MonoBehaviour:
   myAnnotationLabel: {fileID: 0}
   myAnnotationListEntry: {fileID: 0}
   myColor: {r: 0, g: 0, b: 0, a: 0}
+  defaultMaterial: {fileID: 2100000, guid: d37ab906c3bbc104385ffa883f9e49ad, type: 2}
+  previewMaterial: {fileID: 2100000, guid: 46dc289218482af438b532ccf3cec021, type: 2}
 --- !u!1001 &246809576
 Prefab:
   m_ObjectHideFlags: 0
@@ -13552,7 +13554,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 2
   m_RenderMode: 2
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 470118322}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -13588,7 +13590,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textBackground: {fileID: 1819102967}
   myText: {fileID: 534350465}
-  text: 
   myInputField: {fileID: 1054276358}
 --- !u!1001 &1499158025
 Prefab:
@@ -14868,7 +14869,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_AnchoredPosition.x
