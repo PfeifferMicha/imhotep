@@ -68,7 +68,9 @@ public class Patient : PatientMeta
 					{
 						string content = System.IO.File.ReadAllText ( base.path + "/" + entry ["File"]);
 						string title = entry ["Name"].ToString();
-                        string type = entry["Type"].ToString(); ;
+						string type = "plainText";
+						if( entry.Keys.Contains("Type") )
+							type = entry["Type"].ToString();
 						string tabName = "General";
 						if (entry.Keys.Contains ("Tab")) {
 							tabName = entry ["Tab"].ToString();
