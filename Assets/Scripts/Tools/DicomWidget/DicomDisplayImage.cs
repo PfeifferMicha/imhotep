@@ -73,7 +73,6 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			if( Mathf.Abs(scrollAmount) > 0 )
 			{
 				LayerChanged (mLayer + scrollAmount);
-				Debug.Log(scrollAmount);
 			}
 		}
 		//mLayerSlider.value = mLayer;
@@ -101,8 +100,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;
 		if (inputDevice.getDeviceType () == InputDeviceManager.InputDeviceType.Mouse) {
 			if (dragLevelWindow) {
-
-				// TODO: Update to new input event system:
+				
 				float intensityChange = -inputDevice.getTexCoordDelta ().y * 0.25f;
 				float contrastChange = inputDevice.getTexCoordDelta ().x * 0.5f;
 
@@ -296,18 +294,28 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 		float scaleW = 1f;
 		float scaleH = 1f;
-		if (tex.width > tex.height) {
-			scaleH = (float)tex.width / (float)tex.height;
+		// Get the pixel-spacing from the DICOM header:
+		Vector3 spacing = new Vector3 ();
+		spacing.x = (float)currentDICOM.getHeader ().Spacing [0];
+		spacing.y = (float)currentDICOM.getHeader ().Spacing [1];
+		//spacing.z = (float)currentDICOM.getHeader ().Spacing [2];
+		// Number of pixels multiplied with the spacing of a pixel gives the texture width/height:
+		float effectiveWidth = tex.width * spacing.x;
+		float effectiveHeight = tex.height * spacing.y;
+		// Scale to the correct aspect ratio:
+		if (effectiveWidth > effectiveHeight) {
+			scaleH = (float)effectiveWidth / (float)effectiveHeight;
 		} else {
-			scaleW = (float)tex.height / (float)tex.width;
+			scaleW = (float)effectiveHeight / (float)effectiveWidth;
 		}
+
+		float oX = currentViewSettings.panX*scaleW;
+		float oY = currentViewSettings.panY*scaleH;
+
 		if (currentViewSettings.flipHorizontal)
 			scaleW = scaleW * -1;
 		if (currentViewSettings.flipVertical)
 			scaleH = scaleH * -1;
-
-		float oX = currentViewSettings.panX;
-		float oY = currentViewSettings.panY;
 
 		Rect uvRect = GetComponent<RawImage> ().uvRect;
 		uvRect.size = new Vector2 (scaleW*currentViewSettings.zoom, scaleH*currentViewSettings.zoom);
