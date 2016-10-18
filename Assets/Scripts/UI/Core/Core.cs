@@ -122,6 +122,46 @@ namespace UI
 				t.text = message;
 				indicator2.transform.SetParent (transform, false);
 				activeIndicators.Add (indicator2);
+			} else if (screen == UI.Screen.center) {
+				GameObject indicator1 = Instantiate (indicatorLeft) as GameObject;
+				indicator1.GetComponent<Widget> ().layoutScreen = UI.Screen.right;
+				indicator1.GetComponent<Widget> ().layoutAlignHorizontal = AlignmentH.center;
+				indicator1.GetComponent<Widget> ().layoutAlignVertical = AlignmentV.center;
+				indicator1.SetActive (true);
+				Text t = indicator1.GetComponentInChildren<Text> ();
+				t.text = message;
+				indicator1.transform.SetParent (transform, false);
+				activeIndicators.Add (indicator1);
+
+				GameObject indicator2 = Instantiate (indicatorRight) as GameObject;
+				indicator2.GetComponent<Widget> ().layoutScreen = UI.Screen.left;
+				indicator2.GetComponent<Widget> ().layoutAlignHorizontal = AlignmentH.center;
+				indicator2.GetComponent<Widget> ().layoutAlignVertical = AlignmentV.center;
+				indicator2.SetActive (true);
+				t = indicator2.GetComponentInChildren<Text> ();
+				t.text = message;
+				indicator2.transform.SetParent (transform, false);
+				activeIndicators.Add (indicator2);
+			} else if (screen == UI.Screen.right) {
+				GameObject indicator1 = Instantiate (indicatorRight) as GameObject;
+				indicator1.GetComponent<Widget> ().layoutScreen = UI.Screen.left;
+				indicator1.GetComponent<Widget> ().layoutAlignHorizontal = AlignmentH.center;
+				indicator1.GetComponent<Widget> ().layoutAlignVertical = AlignmentV.center;
+				indicator1.SetActive (true);
+				Text t = indicator1.GetComponentInChildren<Text> ();
+				t.text = message;
+				indicator1.transform.SetParent (transform, false);
+				activeIndicators.Add (indicator1);
+
+				GameObject indicator2 = Instantiate (indicatorRight) as GameObject;
+				indicator2.GetComponent<Widget> ().layoutScreen = UI.Screen.center;
+				indicator2.GetComponent<Widget> ().layoutAlignHorizontal = AlignmentH.center;
+				indicator2.GetComponent<Widget> ().layoutAlignVertical = AlignmentV.center;
+				indicator2.SetActive (true);
+				t = indicator2.GetComponentInChildren<Text> ();
+				t.text = message;
+				indicator2.transform.SetParent (transform, false);
+				activeIndicators.Add (indicator2);
 			}
 			return (++notificationID);
 		}
