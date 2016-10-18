@@ -54,7 +54,7 @@ namespace UI
 
 		private List<Widget> widgets = new List<Widget>();
 
-		public int statusBarHeight = 40;
+		public int statusBarHeight = 60;
 
 		public void setCamera( Camera cam )
 		{
