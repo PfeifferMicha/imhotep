@@ -31,8 +31,12 @@ namespace UI
 		public GameObject indicatorLeft;
 		public GameObject indicatorRight;
 
-		public List<GameObject> activeIndicators = new List<GameObject> ();
+		//! A bar on the lower end of the screen (for close button etc.)
+		public GameObject statusBar;
+
+		private List<GameObject> activeIndicators = new List<GameObject> ();
 		private int notificationID = 0;
+
 
 
 		public Core()
@@ -66,6 +70,12 @@ namespace UI
 			UICamera = cam;
 			aspectRatio = (float)UICamera.targetTexture.width / (float)UICamera.targetTexture.height;
 			layoutSystem.setCamera (cam);
+
+			// Adjust position/size of the statusbar:
+			Rect newRect = layoutSystem.getStatusBarPosition ();
+			RectTransform widgetRect = statusBar.GetComponent<RectTransform> ();
+			widgetRect.localPosition = newRect.position;
+			widgetRect.sizeDelta = newRect.size;
 		}
 
 		public Widget getWidgetByName( string name )

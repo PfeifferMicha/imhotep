@@ -462,27 +462,29 @@ public class Platform : MonoBehaviour {
 	{
 		Rect rect = new Rect ();
 		Rect fullScreen = UI.Core.instance.layoutSystem.sizeOfUIScene;
+		int statusBarHeight = UI.Core.instance.layoutSystem.statusBarHeight;
+		Vector2 sBar = new Vector2( 0, statusBarHeight);
 
 		if (rounded.activeSelf) {
 			if (screen == UI.Screen.left) {
-				rect.min = fullScreen.min;
+				rect.min = fullScreen.min + sBar;
 				rect.max = new Vector2 (fullScreen.min.x + fullScreen.width * 0.33f, fullScreen.max.y);
 			} else if (screen == UI.Screen.right) {
 				rect.max = fullScreen.max;
-				rect.min = new Vector2 (fullScreen.max.x - fullScreen.width * 0.33f, fullScreen.min.y);
+				rect.min = new Vector2 (fullScreen.max.x - fullScreen.width * 0.33f, fullScreen.min.y) + sBar;
 			} else {
-				rect.min = new Vector2 (fullScreen.center.x - fullScreen.width * 0.25f, fullScreen.min.y);
+				rect.min = new Vector2 (fullScreen.center.x - fullScreen.width * 0.25f, fullScreen.min.y) + sBar;
 				rect.max = new Vector2 (fullScreen.center.x + fullScreen.width * 0.25f, fullScreen.max.y);
 			}
 		} else {
 			if (screen == UI.Screen.left) {
-				rect.min = fullScreen.min;
+				rect.min = fullScreen.min + sBar;
 				rect.max = new Vector2 (fullScreen.min.x + fullScreen.width * ratioSide, fullScreen.max.y);
 			} else if (screen == UI.Screen.right) {
 				rect.max = fullScreen.max;
-				rect.min = new Vector2 (fullScreen.max.x - fullScreen.width * ratioSide, fullScreen.min.y);
+				rect.min = new Vector2 (fullScreen.max.x - fullScreen.width * ratioSide, fullScreen.min.y) + sBar;
 			} else {
-				rect.min = new Vector2 (fullScreen.center.x - fullScreen.width * ratioFront*0.5f, fullScreen.min.y);
+				rect.min = new Vector2 (fullScreen.center.x - fullScreen.width * ratioFront*0.5f, fullScreen.min.y) + sBar;
 				rect.max = new Vector2 (fullScreen.center.x + fullScreen.width * ratioFront*0.5f, fullScreen.max.y);
 			}
 		}
