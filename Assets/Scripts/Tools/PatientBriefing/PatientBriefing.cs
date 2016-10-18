@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using System;
+using System.IO;
 
 public class PatientBriefing : MonoBehaviour
 {
@@ -129,14 +130,13 @@ public class PatientBriefing : MonoBehaviour
     {
         textObj.SetActive(false);
         rawImageObj.SetActive(true);
-        System.Drawing.Bitmap image = (System.Drawing.Bitmap)TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.RenderToImageGdiPlus(info.content, new System.Drawing.Size(829, 940));//, System.Drawing.Text.TextRenderingHint.AntiAliasGridFit);
-        image.Save("image2.png", System.Drawing.Imaging.ImageFormat.Png);
-        // Create a new 829x940 texture ARGB32 (32 bit with alpha) and no mipmaps
-        Texture2D texture = new Texture2D(829, 940, TextureFormat.ARGB32, false);
+        System.Drawing.Bitmap image = (System.Drawing.Bitmap)TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.RenderToImageGdiPlus(info.content, new System.Drawing.Size(713, 1500));//, System.Drawing.Text.TextRenderingHint.AntiAliasGridFit);
+        //image.Save("image2.png", System.Drawing.Imaging.ImageFormat.Png);
+        // Create a new 713x1500 texture ARGB32 (32 bit with alpha) and no mipmaps
+        Texture2D texture = new Texture2D(713, 1500, TextureFormat.ARGB32, false);
 
+        /*
         // set the pixel values
-
-
         Color[] colorArray = new Color[image.Width * image.Height];
         for (int i = image.Height - 1; i >= 0; i--)
         {
@@ -148,7 +148,14 @@ public class PatientBriefing : MonoBehaviour
             }
         }
         //texture.SetPixels(colorArray);
-
+        */
+    
+        //Save image with MemoryStream and load it into texture
+        using (MemoryStream ms = new MemoryStream())
+        {
+            image.Save(ms, image.RawFormat);
+            texture.LoadImage(ms.ToArray());
+        }
         // Apply all SetPixel calls
         texture.Apply();
 
