@@ -45,13 +45,19 @@ public class Platform : MonoBehaviour {
 
 	public GameObject viveRig;
 
-
-	// Portion of the screen which is rounded (for rectangular setup):
+	//! Portion of the screen which is rounded (for rectangular setup):
 	private float ratioRounded;
-	// Portion of the screen which makes up a side (for rectangular setup):
+	//! Portion of the screen which makes up a side (for rectangular setup):
 	private float ratioSide;
-	// Portion of the screen which makes up front (for rectangular setup):
+	//! Portion of the screen which makes up front (for rectangular setup):
 	private float ratioFront;
+
+	//! Width of rectangular platform. Only valid if getIsRectangular() returns true.
+	private float rectWidth;
+	//! Depth of rectangular platform. Only valid if getIsRectangular() returns true.
+	private float rectDepth;
+
+	private Dictionary<UI.Screen, GameObject> screenCenters = new Dictionary<UI.Screen, GameObject>();
 
 	public Platform()
 	{
@@ -110,6 +116,9 @@ public class Platform : MonoBehaviour {
 		frontRight.transform.localPosition = new Vector3 (pos.x, 0, depth - frontDepth - initialBaseDepth);
 
 		mainCamera.transform.localPosition = new Vector3 (0f, 0f, depth * 0.5f);
+
+		rectWidth = width;
+		rectDepth = depth;
 	}
 	void resetDimensions()
 	{
@@ -263,6 +272,8 @@ public class Platform : MonoBehaviour {
 		// Let the layout system know about the new aspect ratio:
 		UI.Core.instance.setCamera( UICamera );
 
+		updateCenterGameObjects ();
+
 		// Debug write image to file:
 		/* cUIcamera.GetComponent<Camera> ().Render ();
 		RenderTexture.active = tex;
@@ -301,8 +312,8 @@ public class Platform : MonoBehaviour {
 		// Fill the lists with vertices and triangles:
 		int numRoundedSegments = 50;
 		float fullAngle = Mathf.PI;
-		// Add left side mesh:
 
+		// Add left side mesh:
 		newVertices.Add (new Vector3 (-width*0.5f, 0, -depthSize));
 		newUV.Add (new Vector2 (0, 0));
 		newVertices.Add (new Vector3 (-width*0.5f, UIMeshRectangularHeight, -depthSize));
@@ -390,6 +401,8 @@ public class Platform : MonoBehaviour {
 
 		// Let the layout system know about the new aspect ratio:
 		UI.Core.instance.setCamera( UICamera );
+
+		updateCenterGameObjects ();
 	}
 
 	/*! Remove UI Mesh, if present. */
@@ -400,7 +413,6 @@ public class Platform : MonoBehaviour {
 			Destroy( UIMesh );
 		}
 	}
-
 
 	/*! Return a new GameObject into which a new toolstand can be placed.
 	 * numberOfToolStands is the total number of toolstands that will be used.
@@ -475,5 +487,67 @@ public class Platform : MonoBehaviour {
 			}
 		}
 		return rect;
+	}
+
+
+	/*! Create empty GameObjects representing the centers of the screens.
+	 * Each of these objects is roughly at the center of each virtual screen.
+	 * The objects all face "inwards", i.e. towards the center of the platform.
+	 * They can be used to calculate, for example, whether an object is moving
+	 * "towards" or "away from" a screen. */
+	public void updateCenterGameObjects()
+	{
+		// Remove old gameobjects:
+		foreach ( KeyValuePair<UI.Screen, GameObject> entry in screenCenters) {
+			Destroy (entry.Value);
+		}
+		screenCenters.Clear ();
+
+		// Create new gameobjects:
+		if (getIsRounded ()) {
+			// TODO!
+		} else {
+			GameObject go;
+			float x, y, z;
+
+			// Create left screen center object:
+			go = new GameObject ();
+			x = -rectWidth * 0.5f;
+			y = UIMeshRectangularBottom + UIMeshRectangularHeight * 0.5f;
+			z = -rectDepth * 0.5f;
+			go.transform.position = new Vector3 (x, y, z);
+			go.transform.SetParent (transform, false);
+			go.transform.rotation = Quaternion.LookRotation (Vector3.right, Vector3.up);
+			screenCenters [UI.Screen.left] = go;
+
+			// Create center screen center object:
+			go = new GameObject ();
+			x = 0f;
+			y = UIMeshRectangularBottom + UIMeshRectangularHeight * 0.5f;
+			z = -rectDepth;
+			go.transform.position = new Vector3 (x, y, z);
+			go.transform.SetParent (transform, false);
+			go.transform.rotation = Quaternion.LookRotation (Vector3.forward, Vector3.up);
+			screenCenters [UI.Screen.center] = go;
+
+			// Create right screen center object:
+			go = new GameObject ();
+			x = rectWidth * 0.5f;
+			y = UIMeshRectangularBottom + UIMeshRectangularHeight * 0.5f;
+			z = -rectDepth * 0.5f;
+			go.transform.position = new Vector3 (x, y, z);
+			go.transform.SetParent (transform, false);
+			go.transform.rotation = Quaternion.LookRotation (Vector3.left, Vector3.up);
+			screenCenters [UI.Screen.right] = go;
+		}
+	}
+
+	/*! Return a transform representing the center of the screen.
+	 * This transform is placed at the center of a screen and (on the platform)
+	 * and is oriented inwards, i.e. towards the player. The transform can be
+	 * used to determine if a movement is "towards" or "away from" a certain screen.*/
+	public Transform getCenterTransformForScreen( UI.Screen s )
+	{
+		return screenCenters [s].transform;
 	}
 }

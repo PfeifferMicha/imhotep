@@ -22,6 +22,7 @@ public class DicomDisplay : MonoBehaviour {
 
 		StatusText.text = "Searching for DICOMs ...";
 		eventClear ();
+		DicomImage.widget = GetComponent<UI.Widget> ();
 	}
 
 	void OnEnable()

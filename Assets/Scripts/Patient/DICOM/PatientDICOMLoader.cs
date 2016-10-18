@@ -193,13 +193,13 @@ public class PatientDICOMLoader : MonoBehaviour
 					tex.Apply ();
 					dicom.setTexture2D(tex);
 
-					Color32[] cols = tex.GetPixels32 ();
+					/*Color32[] cols = tex.GetPixels32 ();
 					Color32 col = cols[0];
 
 					Debug.LogError ("Texture: " + col.r + " " + col.g + " " + col.b + " " + col.a);
 					Debug.LogError ("Result: " + (col.r + 256*(col.g + 256*(col.b + 256*col.a))));
 					Debug.LogError (
-						SystemInfo.SupportsTextureFormat (TextureFormat.RGBAFloat));
+						SystemInfo.SupportsTextureFormat (TextureFormat.RGBAFloat));*/
 
 				} else {
 					Texture3D tex = new Texture3D (returnObject.texWidth, returnObject.texHeight, returnObject.texDepth, TextureFormat.ARGB32, false);

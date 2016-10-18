@@ -40,6 +40,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	private Dictionary<string,ViewSettings> savedViewSettings = new Dictionary<string, ViewSettings>();
 
+	public UI.Widget widget;
+
 	// Use this for initialization
 	void Awake () {
 		//mMinValue = 0.0f;
@@ -94,36 +96,38 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	public void Update()
 	{
 		InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;
-		if (dragLevelWindow) {
+		if (inputDevice.getDeviceType () == InputDeviceManager.InputDeviceType.Mouse) {
+			if (dragLevelWindow) {
 
-			// TODO: Update to new input event system:
-			float intensityChange = -inputDevice.getTexCoordDelta ().y * 0.25f;
-			float contrastChange = inputDevice.getTexCoordDelta ().x * 0.5f;
+				// TODO: Update to new input event system:
+				float intensityChange = -inputDevice.getTexCoordDelta ().y * 0.25f;
+				float contrastChange = inputDevice.getTexCoordDelta ().x * 0.5f;
 
-			SetLevel (currentViewSettings.level + intensityChange);
-			SetWindow (currentViewSettings.window + contrastChange);
-		}
-		if (dragPan) {
+				SetLevel (currentViewSettings.level + intensityChange);
+				SetWindow (currentViewSettings.window + contrastChange);
+			}
+			if (dragPan) {
 
-			float dX = -inputDevice.getTexCoordDelta ().x;
-			float dY = -inputDevice.getTexCoordDelta ().y;
-			if (currentViewSettings.flipHorizontal)
-				dX = -dX;
-			if (currentViewSettings.flipVertical)
-				dY = -dY;
+				float dX = -inputDevice.getTexCoordDelta ().x;
+				float dY = -inputDevice.getTexCoordDelta ().y;
+				if (currentViewSettings.flipHorizontal)
+					dX = -dX;
+				if (currentViewSettings.flipVertical)
+					dY = -dY;
 
-			currentViewSettings.panX += dX*currentViewSettings.zoom;
-			currentViewSettings.panY += dY*currentViewSettings.zoom;
+				currentViewSettings.panX += dX * currentViewSettings.zoom;
+				currentViewSettings.panY += dY * currentViewSettings.zoom;
 
-			ApplyScaleAndPosition ();
-		}
-		if (dragZoom) {
+				ApplyScaleAndPosition ();
+			}
+			if (dragZoom) {
 
-			float dY = -inputDevice.getTexCoordDelta ().y * 0.5f;
+				float dY = -inputDevice.getTexCoordDelta ().y * 0.5f;
 
-			currentViewSettings.zoom = Mathf.Clamp (currentViewSettings.zoom + dY, 0.1f, 5f);
+				currentViewSettings.zoom = Mathf.Clamp (currentViewSettings.zoom + dY, 0.1f, 5f);
 
-			ApplyScaleAndPosition ();
+				ApplyScaleAndPosition ();
+			}
 		}
 
 		// Let controller movement change position and zoom (if trigger is pressed):
@@ -134,12 +138,16 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 				if (c.triggerPressed ()) {
 					// Get movement delta:
 					Vector3 movement = c.positionDelta;
-					movement = c.transform.InverseTransformDirection (movement);
 
-					float dZ = movement.z;
+					// Transform the movement into the local space of the screen's Transform, to see if we're
+					// moving away from, towards, left, right, up or down relative to the screen:
+					Transform tf = Platform.instance.getCenterTransformForScreen (widget.layoutPosition.screen);
+					movement = tf.InverseTransformDirection (movement);
+
+					float dZ = -movement.z*2f;
 					currentViewSettings.zoom = Mathf.Clamp (currentViewSettings.zoom + dZ, 0.1f, 5f);
 
-					float dX = movement.x;
+					float dX = -movement.x;
 					float dY = movement.y;
 					currentViewSettings.panX += dX*currentViewSettings.zoom;
 					currentViewSettings.panY += dY*currentViewSettings.zoom;
