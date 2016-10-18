@@ -36,7 +36,6 @@ public class AnnotationControl : MonoBehaviour {
 
     public GameObject annotationPointObj;
     public GameObject annotationLabel;
-    //public Button addAnnotationButton;
 	public GameObject annotationListEntry;
 	public GameObject annotationToolBar;
 
@@ -61,11 +60,7 @@ public class AnnotationControl : MonoBehaviour {
 	private Color oldColor;
 
 	private List<GameObject> annotationListEntryList = new List<GameObject>();
-	//private List<GameObject> annotationList = new List<GameObject>();
 
-    //private InputDeviceManager idm;
-
-	//private static int annotationCounter = 0; //Used to create unique id for annoation point
 
 	private ClickNotifier clickNotifier;
 
@@ -109,39 +104,19 @@ public class AnnotationControl : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-
-        //idm = GameObject.Find("GlobalScript").GetComponent<InputDeviceManager>();
-
         if(annotationPointObj == null)
         {
             Debug.LogError("No Annotation Point Object is set in Annotation.cs");
         }
 
         annotationListEntry.gameObject.SetActive(false);
-
     }
 
-	//Used to Create Annotation Mesh
-	// Local Position
-	private GameObject createAnnotationMesh(Quaternion rotation, Vector3 position) {
-
-		GameObject newAnnotation = (GameObject)Instantiate(annotationPointObj, position, rotation);
-        
-
-		newAnnotation.transform.localScale = new Vector3( 5, 5, 5 );
-		newAnnotation.transform.SetParent( meshPositionNode.transform, false );
-
-		newAnnotation.SetActive (true);
-
-		//Create Label for annotation
-		newAnnotation.GetComponent<Annotation> ().CreateLabel (annotationLabel);
-
-		return newAnnotation;
-    }
+	//################ Called By Buttons ###############
 
 	//Called if the user pressed 'add annoation' button
-    public void AddAnnotationPressed()
-    {
+	public void AddAnnotationPressed()
+	{
 		if(currentActiveScreen == ActiveScreen.add) {
 			//TODO Abort AddAnnotation and close Screen
 			AbortAnnotationChanges ();
@@ -160,7 +135,7 @@ public class AnnotationControl : MonoBehaviour {
 
 			currentActiveScreen = ActiveScreen.add;
 		}
-    }
+	}
 
 	//Called if the user pressed 'show Annotation' button
 	public void ShowAnnotationsList()
@@ -177,47 +152,50 @@ public class AnnotationControl : MonoBehaviour {
 		}
 	}
 
-	//Swap image of Annotation button
-	private void closeAnnotationScreen() {
-		
-		GameObject addButton = annotationToolBar.transform.GetChild (0).GetChild (0).gameObject;
-		//show Add
-		addButton.transform.GetChild (0).gameObject.SetActive (true);
-		addButton.transform.GetChild (1).gameObject.SetActive (false);
-		//enable List
-		annotationToolBar.transform.GetChild (0).GetChild (1).GetComponent<Button>().interactable = true;
-	
-		// Reset Screen
-		currentAnnotationListEntry = null;
+	//Called by Color Button with it self as Attribut
+	public void ChangeColorPressed(GameObject newColorButton) {
+		currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().changeAnnotationColor(
+			newColorButton.GetComponent<Button> ().colors.normalColor);
 		if(newAnnotation != null) {
-			newAnnotation.GetComponent<Annotation> ().destroyAnnotation ();
-			newAnnotation = null;
+			newAnnotation.GetComponent<Annotation> ().changeColor (newColorButton.GetComponent<Button> ().colors.normalColor);
 		}
 		if(hoverAnnotation != null) {
-			hoverAnnotation.GetComponent<Annotation> ().destroyAnnotation ();
-			hoverAnnotation = null;
+			hoverAnnotation.GetComponent<Annotation> ().changeColor (newColorButton.GetComponent<Button> ().colors.normalColor);
 		}
-		//Reset Edit Tools
-		annotationSettings.gameObject.SetActive(false);
-		instructionText.gameObject.SetActive (true);
-		// Close Screen
-		AddEditScreen.SetActive(false);
-		currentActiveScreen = ActiveScreen.none;
 	}
 
-	private void openAnnotationScreen() {
-		GameObject addButton = annotationToolBar.transform.GetChild (0).GetChild (0).gameObject;
-		//show Abort
-		addButton.transform.GetChild (1).gameObject.SetActive (true);
-		addButton.transform.GetChild (0).gameObject.SetActive (false);
-		//disableList
-		annotationToolBar.transform.GetChild (0).GetChild (1).GetComponent<Button>().interactable = false;
-		// open Screen
-		AddEditScreen.SetActive(true);
-		currentActiveScreen = ActiveScreen.add;
+	//Called if the user pressed Save Button
+	public void SaveAnnotation()
+	{	
+
+		if (newAnnotation == null && currentAnnotationListEntry != null) {
+			annotationListEntryList.Add (currentAnnotationListEntry);			
+		} else {
+			currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().replaceAnnotation (newAnnotation);
+			newAnnotation = null;
+		}
+
+
+		closeAnnotationScreen ();
+
+		//Save changes in File
+		saveAnnotationInFile();
 	}
 
+	//Called to abort current add /edit process by Button
+	public void AbortAnnotationChanges()
+	{	
+		if (newAnnotation == null) {
+			if(currentAnnotationListEntry != null) {
+				removeOneAnnotation (currentAnnotationListEntry);
+			}
+		} else {
+			currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().changeAnnotationColor(oldColor);
+		}
+		closeAnnotationScreen ();
+	}
 
+	//################ Called By Events ################
 
 	// Called when user clicks on Organ
 	public void OnMeshClicked( PointerEventData eventData )
@@ -262,6 +240,7 @@ public class AnnotationControl : MonoBehaviour {
 
 	}
 
+	//Called by Hover Organ Event
 	public void hoveredOverMesh( PointerEventData eventData ) {
 		if(hoverAnnotation != null) {
 			Vector3 localpos = meshPositionNode.transform.InverseTransformPoint(eventData.pointerCurrentRaycast.worldPosition);
@@ -270,46 +249,64 @@ public class AnnotationControl : MonoBehaviour {
 		}
 	}
 
-	public void ChangeColorPressed(GameObject newColorButton) {
-		currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().changeAnnotationColor(
-			newColorButton.GetComponent<Button> ().colors.normalColor);
-		if(newAnnotation != null) {
-			newAnnotation.GetComponent<Annotation> ().changeColor (newColorButton.GetComponent<Button> ().colors.normalColor);
-		}
-		if(hoverAnnotation != null) {
-			hoverAnnotation.GetComponent<Annotation> ().changeColor (newColorButton.GetComponent<Button> ().colors.normalColor);
-		}
+	//################ Private Methods #################
+
+	//Used to Create Annotation Mesh
+	// Local Position
+	private GameObject createAnnotationMesh(Quaternion rotation, Vector3 position) {
+
+		GameObject newAnnotation = (GameObject)Instantiate(annotationPointObj, position, rotation);
+
+		newAnnotation.transform.localScale = new Vector3( 5, 5, 5 );
+		newAnnotation.transform.SetParent( meshPositionNode.transform, false );
+
+		newAnnotation.SetActive (true);
+
+		//Create Label for annotation
+		newAnnotation.GetComponent<Annotation> ().CreateLabel (annotationLabel);
+
+		return newAnnotation;
 	}
 
-	//Called if the user pressed Save Button
-    public void SaveAnnotation()
-    {	
+	//Swap image of Annotation button
+	private void closeAnnotationScreen() {
 
-		if (newAnnotation == null && currentAnnotationListEntry != null) {
-			annotationListEntryList.Add (currentAnnotationListEntry);			
-		} else {
-			currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().replaceAnnotation (newAnnotation);
+		GameObject addButton = annotationToolBar.transform.GetChild (0).GetChild (0).gameObject;
+		//show Add
+		addButton.transform.GetChild (0).gameObject.SetActive (true);
+		addButton.transform.GetChild (1).gameObject.SetActive (false);
+		//enable List
+		annotationToolBar.transform.GetChild (0).GetChild (1).GetComponent<Button>().interactable = true;
+
+		// Reset Screen
+		currentAnnotationListEntry = null;
+		if(newAnnotation != null) {
+			newAnnotation.GetComponent<Annotation> ().destroyAnnotation ();
 			newAnnotation = null;
 		}
-
-
-		closeAnnotationScreen ();
-
-		//Save changes in File
-		saveAnnotationInFile();
-    }
-
-	//Called to abort current add /edit process
-	public void AbortAnnotationChanges()
-	{	
-		if (newAnnotation == null) {
-			if(currentAnnotationListEntry != null) {
-				removeOneAnnotation (currentAnnotationListEntry);
-			}
-		} else {
-			currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().changeAnnotationColor(oldColor);
+		if(hoverAnnotation != null) {
+			hoverAnnotation.GetComponent<Annotation> ().destroyAnnotation ();
+			hoverAnnotation = null;
 		}
-		closeAnnotationScreen ();
+		//Reset Edit Tools
+		annotationSettings.gameObject.SetActive(false);
+		instructionText.gameObject.SetActive (true);
+		// Close Screen
+		AddEditScreen.SetActive(false);
+		currentActiveScreen = ActiveScreen.none;
+	}
+
+	//Opens AnnotationScreen
+	private void openAnnotationScreen() {
+		GameObject addButton = annotationToolBar.transform.GetChild (0).GetChild (0).gameObject;
+		//show Abort
+		addButton.transform.GetChild (1).gameObject.SetActive (true);
+		addButton.transform.GetChild (0).gameObject.SetActive (false);
+		//disableList
+		annotationToolBar.transform.GetChild (0).GetChild (1).GetComponent<Button>().interactable = false;
+		// open Screen
+		AddEditScreen.SetActive(true);
+		currentActiveScreen = ActiveScreen.add;
 	}
 
 	//Change Annotation Position
@@ -327,8 +324,6 @@ public class AnnotationControl : MonoBehaviour {
 			instructionText.gameObject.SetActive(false);
 			annotationSettings.gameObject.SetActive (true);
 		}
-
-
 	}
 
 	//Creates a new AnnotationListEntry, gets the Annotation to this entry, does not add to list
@@ -352,6 +347,77 @@ public class AnnotationControl : MonoBehaviour {
 		return null;
 	}
 
+	// Deletes all annotationsMesh from Screen(clears Screen) and out off annotationList 
+	private void clearAll()
+	{
+		foreach (GameObject g in annotationListEntryList)
+		{
+			if(g != null)
+			{
+				removeOneAnnotation (g);
+			}
+		}
+		//Delete list
+		annotationListEntryList = new List<GameObject>();
+	}
+
+	//Load all annotations out of File in List
+	private void loadAnnotationFromFile(object obj = null)
+	{	
+		if (Patient.getLoadedPatient() == null)
+		{
+			return;
+		}
+
+		//Clear Screen
+		clearAll();
+
+		//get Annotation.json
+		Patient currentPatient = Patient.getLoadedPatient();
+		string path = currentPatient.path + "/annotation.json"; //TODO read from meta.json??
+
+		if (!File.Exists(path))
+		{
+			return;
+		}
+
+		List<AnnotationJson> apjList = new List<AnnotationJson>();
+
+
+		// Read the file
+		string line;
+		System.IO.StreamReader file = new System.IO.StreamReader(path);
+		while ((line = file.ReadLine()) != null)
+		{
+			AnnotationJson apj = JsonUtility.FromJson<AnnotationJson>(line);
+			apjList.Add(apj);
+		}
+		file.Close();
+
+		//List of Json Objects -> AnnotationList
+		foreach(AnnotationJson apj in apjList)
+		{
+			Quaternion rotation = new Quaternion((float)apj.RotationX, (float)apj.RotationY, (float)apj.RotationZ, (float)apj.RotationW);
+			Vector3 position = new Vector3((float)apj.PositionX, (float)apj.PositionY, (float)apj.PositionZ);
+
+			//setup new Annotation as maesh and in List
+			GameObject newAnnotation = createAnnotationMesh(rotation, position);
+			newAnnotation.GetComponent<Annotation>().setLabeText(apj.Text);
+			newAnnotation.GetComponent<Annotation>().changeColor(new Color(apj.ColorR, apj.ColorG, apj.ColorB));
+			annotationListEntryList.Add (createNewAnnotationListEntry (newAnnotation));
+		}
+	}
+
+	//removes a annotation given in self from view
+	private void removeOneAnnotation(GameObject aListEntry) {
+
+		//delete Annotation Mesh
+		aListEntry.GetComponent<AnnotationListEntry> ().getAnnotation().GetComponent<Annotation>().destroyAnnotation();
+
+		Destroy (aListEntry);		
+	}
+
+	//################ Other Methods ###################
 
 	//Called to edit Annotation
 	public void EditAnnotation(GameObject aListEntry) {
@@ -361,8 +427,6 @@ public class AnnotationControl : MonoBehaviour {
 		hoverAnnotation.GetComponent<Annotation> ().disableCollider ();
 		oldColor = newAnnotation.GetComponent<Annotation> ().myColor;
 		AddAnnotationPressed ();
-
-
 	}
 
 	//Called by AnnotationListEntryControl with the annotation to delete form view and File
@@ -376,129 +440,58 @@ public class AnnotationControl : MonoBehaviour {
 		saveAnnotationInFile();
 	}
 
-	// Deletes all annotationsMesh from Screen(clears Screen) and out off annotationList 
-	private void clearAll()
-    {
-		foreach (GameObject g in annotationListEntryList)
-        {
-            if(g != null)
-            {
-				removeOneAnnotation (g);
-            }
-        }
-        //Delete list
-		annotationListEntryList = new List<GameObject>();
-    }
-
 	//Saves all annotations in a file
 	public void saveAnnotationInFile()
-    {
-        if (Patient.getLoadedPatient() == null)
-        {
-            return;
-        }
+	{
+		if (Patient.getLoadedPatient() == null)
+		{
+			return;
+		}
 
-        Patient currentPatient = Patient.getLoadedPatient();
-        string path = currentPatient.path + "/annotation.json";
+		Patient currentPatient = Patient.getLoadedPatient();
+		string path = currentPatient.path + "/annotation.json";
 
-        //Create file if it not exists
-        if (!File.Exists(path))
-        {
-            using (StreamWriter outputFile = new StreamWriter(path,true))
-            {
-                outputFile.Close();
-            }
-        }
+		//Create file if it not exists
+		if (!File.Exists(path))
+		{
+			using (StreamWriter outputFile = new StreamWriter(path,true))
+			{
+				outputFile.Close();
+			}
+		}
 
-        //Write annotations in file
-        using (StreamWriter outputFile = new StreamWriter(path))
-        {
-            foreach(GameObject apListEntry in annotationListEntryList)
-            {
+		//Write annotations in file
+		using (StreamWriter outputFile = new StreamWriter(path))
+		{
+			foreach(GameObject apListEntry in annotationListEntryList)
+			{
 				GameObject ap = apListEntry.GetComponent<AnnotationListEntry> ().getAnnotation();
-                AnnotationJson apj = new AnnotationJson();
+				AnnotationJson apj = new AnnotationJson();
 				apj.Text = ap.GetComponent<Annotation> ().getLabelText ();
 				apj.ColorR = ap.GetComponent<Annotation> ().myColor.r;
 				apj.ColorG = ap.GetComponent<Annotation> ().myColor.g;
 				apj.ColorB = ap.GetComponent<Annotation> ().myColor.b;
 				apj.PositionX = ap.transform.localPosition.x;
-                apj.PositionY = ap.transform.localPosition.y;
-                apj.PositionZ = ap.transform.localPosition.z;
+				apj.PositionY = ap.transform.localPosition.y;
+				apj.PositionZ = ap.transform.localPosition.z;
 
-                apj.RotationW = ap.transform.localRotation.w;
-                apj.RotationX = ap.transform.localRotation.x;
-                apj.RotationY = ap.transform.localRotation.y;
-                apj.RotationZ = ap.transform.localRotation.z;
+				apj.RotationW = ap.transform.localRotation.w;
+				apj.RotationX = ap.transform.localRotation.x;
+				apj.RotationY = ap.transform.localRotation.y;
+				apj.RotationZ = ap.transform.localRotation.z;
 
-                apj.Creator = ap.GetComponent<Annotation>().creator;
+				apj.Creator = ap.GetComponent<Annotation>().creator;
 				apj.CreationDate = ap.GetComponent<Annotation> ().creationDate;
 				outputFile.WriteLine(JsonUtility.ToJson(apj));
-            }
-            outputFile.Close();
-        }
-        return;
-    }
-
-	//Load all annotations out of File in List
-    private void loadAnnotationFromFile(object obj = null)
-    {	
-        if (Patient.getLoadedPatient() == null)
-        {
-            return;
-        }
-		
-		//Clear Screen
-        clearAll();
-		
-		//get Annotation.json
-        Patient currentPatient = Patient.getLoadedPatient();
-        string path = currentPatient.path + "/annotation.json"; //TODO read from meta.json??
-
-        if (!File.Exists(path))
-        {
-            return;
-        }
-		
-        List<AnnotationJson> apjList = new List<AnnotationJson>();
-
-
-        // Read the file
-        string line;
-        System.IO.StreamReader file = new System.IO.StreamReader(path);
-        while ((line = file.ReadLine()) != null)
-        {
-			AnnotationJson apj = JsonUtility.FromJson<AnnotationJson>(line);
-            apjList.Add(apj);
-        }
-        file.Close();
-
-		//List of Json Objects -> AnnotationList
-        foreach(AnnotationJson apj in apjList)
-        {
-            Quaternion rotation = new Quaternion((float)apj.RotationX, (float)apj.RotationY, (float)apj.RotationZ, (float)apj.RotationW);
-            Vector3 position = new Vector3((float)apj.PositionX, (float)apj.PositionY, (float)apj.PositionZ);
-
-			//setup new Annotation as maesh and in List
-			GameObject newAnnotation = createAnnotationMesh(rotation, position);
-			newAnnotation.GetComponent<Annotation>().setLabeText(apj.Text);
-			newAnnotation.GetComponent<Annotation>().changeColor(new Color(apj.ColorR, apj.ColorG, apj.ColorB));
-			annotationListEntryList.Add (createNewAnnotationListEntry (newAnnotation));
-        }
-    }
-
-	//removes a annotation given in self from view
-	private void removeOneAnnotation(GameObject aListEntry) {
-
-		//delete Annotation Mesh
-		aListEntry.GetComponent<AnnotationListEntry> ().getAnnotation().GetComponent<Annotation>().destroyAnnotation();
-
-		Destroy (aListEntry);		
-    }
+			}
+			outputFile.Close();
+		}
+		return;
+	}
 
 	//Called if the patient is closed
-    public void closePatient(object obj = null)
-    {
+	public void closePatient(object obj = null)
+	{
 		clearAll();
-    }
-
+	}
 }
