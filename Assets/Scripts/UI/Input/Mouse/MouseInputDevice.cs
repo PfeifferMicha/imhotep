@@ -6,14 +6,14 @@ using UnityEditor;
 using UI;
 
 public class MouseInputDevice : MonoBehaviour, InputDevice {
-
+	
+	InputDeviceManager.InputDeviceType getType ()
+	{
+		return InputDeviceManager.InputDeviceType.Mouse;
+	}
 
 	public bool developmentMode = true;
 	public Vector3 rayOriginOffset;
-
-    private PointerEventData.FramePressState leftButtonState = PointerEventData.FramePressState.NotChanged;
-    private PointerEventData.FramePressState middleButtonState = PointerEventData.FramePressState.NotChanged;
-    private PointerEventData.FramePressState rightButtonState = PointerEventData.FramePressState.NotChanged;
 
     private LineRenderer lineRenderer;
 

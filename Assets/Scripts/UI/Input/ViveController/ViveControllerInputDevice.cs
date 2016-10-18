@@ -5,6 +5,11 @@ using UI;
 
 public class ViveControllerInputDevice : Controller, InputDevice {
 
+	InputDeviceManager.InputDeviceType getType ()
+	{
+		return InputDeviceManager.InputDeviceType.ViveController;
+	}
+
 	private Vector2 texCoordDelta;
 	private Vector3 positionDelta;
 

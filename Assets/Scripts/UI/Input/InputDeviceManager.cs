@@ -12,6 +12,12 @@ public class InputDeviceManager : MonoBehaviour {
         rayHitsBackground
     }
 
+	public enum InputDeviceType
+	{
+		Mouse,
+		ViveController
+	}
+
     public RayInfoStates rayInfo = RayInfoStates.rayHitsBackground;
 
 	public InputDevice currentInputDevice = null; //Defines with game object controlls the input
