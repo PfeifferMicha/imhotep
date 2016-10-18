@@ -71,7 +71,4 @@ public class AnnotationListEntry : MonoBehaviour {
 	public void changeAnnotationColor(Color newColor) {
 		myAnnotation.GetComponent<Annotation> ().changeColor (newColor);
 	}
-
-
-
 }
