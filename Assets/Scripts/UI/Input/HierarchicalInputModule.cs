@@ -88,19 +88,24 @@ public class HierarchicalInputModule : BaseInputModule {
 							activeGameObject = null;
 						}
 					}
-				} else if ( raycastHit.transform.gameObject.layer == LayerMask.NameToLayer( "UITool" ) ) {
-					if (raycastHit.transform.GetComponent<CanvasRaycaster> () != null) {
-						RectTransform tf = raycastHit.transform.GetComponent<RectTransform> ();
-						PointerEventData data = new PointerEventData (EventSystem.current);
-						data.position = new Vector2 (tf.InverseTransformPoint (raycastHit.point).x, tf.InverseTransformPoint (raycastHit.point).y);
-						List<RaycastResult> raycastResults = new List<RaycastResult> ();
-						raycastHit.transform.GetComponent<CanvasRaycaster> ().Raycast (data, raycastResults);
-						if (raycastResults.Count > 0) {
-							raycastResult = raycastResults [0];
-							activeGameObject = raycastResult.gameObject;
-							lineRenderer.SetPosition (1, raycastHit.point);
-							hitWorldPos = raycastResult.worldPosition;
-							data.pointerCurrentRaycast = raycastResult;
+				}
+
+				if (raycastHit.transform != null) {
+					if (raycastHit.transform.gameObject.layer == LayerMask.NameToLayer ("UITool")) {
+						if (raycastHit.transform.GetComponent<CanvasRaycaster> () != null) {
+							RectTransform tf = raycastHit.transform.GetComponent<RectTransform> ();
+							PointerEventData data = new PointerEventData (EventSystem.current);
+							data.position = new Vector2 (tf.InverseTransformPoint (raycastHit.point).x, tf.InverseTransformPoint (raycastHit.point).y);
+							List<RaycastResult> raycastResults = new List<RaycastResult> ();
+							raycastHit.transform.GetComponent<CanvasRaycaster> ().Raycast (data, raycastResults);
+							if (raycastResults.Count > 0) {
+								raycastResult = raycastResults [0];
+								activeGameObject = raycastResult.gameObject;
+								lineRenderer.SetPosition (1, raycastHit.point);
+								hitWorldPos = raycastResult.worldPosition;
+								data.pointerCurrentRaycast = raycastResult;
+								//isPointerOverUI = true;
+							}
 						}
 					}
 				}
