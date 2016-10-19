@@ -19,7 +19,6 @@ public class ToolControl : MonoBehaviour {
 		instance = this;
 	}
 
-	// Use this for initialization
 	void Start () {
 		ToolStandPrefab.SetActive (false);
 
@@ -28,7 +27,6 @@ public class ToolControl : MonoBehaviour {
 		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, patientClosed );
 
 		clearAllToolStands ();
-
 		//generateAvailableTools (null);
 	}
 
@@ -47,6 +45,8 @@ public class ToolControl : MonoBehaviour {
 			newToolStand.name = "ToolStand (" + toolName + ")";
 			newToolStand.transform.SetParent (go.transform, false);
 			StartCoroutine (activateToolStand (newToolStand, Random.value*0.25f + 0.3f*Mathf.Abs(transform.childCount*0.5f - i)));
+
+			toolStands.Add (newToolStand);
 
 			GameObject controllerChoise = Object.Instantiate (ControllerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 			controllerChoise.transform.localRotation = Quaternion.Euler (new Vector3 (0f, 270f, 270f));
@@ -70,7 +70,7 @@ public class ToolControl : MonoBehaviour {
 
 	public void patientClosed( object obj )
 	{
-		Patient p = obj as Patient;
+		closeActiveTool ();
 		clearAllToolStands ();
 	}
 
