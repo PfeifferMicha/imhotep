@@ -44,7 +44,6 @@ public class ToolControl : MonoBehaviour {
 			float minDist = controllerPickupDist;
 			GameObject closestController = null;
 			foreach (GameObject controllerChoise in controllerChoises) {
-				if (controllerChoise.activeSelf) {
 					float dist = Vector3.Distance (
 						            controllerChoise.transform.position,
 						            c.transform.position);
@@ -53,16 +52,17 @@ public class ToolControl : MonoBehaviour {
 						closestController = controllerChoise;
 					}
 					controllerChoise.GetComponent<ToolChoise> ().UnHighlight ();
-				}
 			}
 			// If a tool choise controller was close enough, highlight it:
 			if (closestController != null) {
-				ToolChoise tc = closestController.GetComponent<ToolChoise> ();
-				tc.Highlight ();
+				if (closestController.activeSelf) {
+					ToolChoise tc = closestController.GetComponent<ToolChoise> ();
+					tc.Highlight ();
 
-				// If the user pressed the trigger, choose the tool:
-				if (c.triggerPressed ()) {
-					chooseTool (tc);
+					// If the user pressed the trigger, choose the tool:
+					if (c.triggerPressed ()) {
+						chooseTool (tc);
+					}
 				}
 			}
 		}
@@ -147,7 +147,7 @@ public class ToolControl : MonoBehaviour {
 				activeTool.SetActive (true);
 				activeToolChoise = tool.gameObject;
 				activeToolChoise.SetActive (false);		// Hide toolchoise
-				InputDeviceManager.instance.shakeLeftController( 1000 );
+				InputDeviceManager.instance.shakeLeftController( 3000 );
 				return;
 			}
 		}
