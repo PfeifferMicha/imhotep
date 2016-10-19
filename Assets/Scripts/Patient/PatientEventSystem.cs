@@ -60,7 +60,7 @@ public class PatientEventSystem
 			thisEvent.AddListener(listener);
 			instance.mEventDictionary.Add(eventType, thisEvent);
 		}
-		Debug.Log("Added event listener for event: " + eventType);
+		//Debug.Log("Added event listener for event: " + eventType);
 	}
 	public static void stopListening(Event eventType, UnityAction<object> listener)
 	{
@@ -74,7 +74,7 @@ public class PatientEventSystem
 		{
 			thisEvent.RemoveListener(listener);
 		}
-		Debug.Log("Removed event listener for event: " + eventType);
+		//Debug.Log("Removed event listener for event: " + eventType);
 	}
 	public static void triggerEvent(Event eventType, object obj = null )
 	{

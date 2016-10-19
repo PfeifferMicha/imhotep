@@ -75,8 +75,13 @@ public class DicomLoaderITK
 		//reader.SetFileNames (fileNames);
 
 		Image metaDataImage = SimpleITK.ReadImage( fileNames[0] );
-		DICOMHeader header = new DICOMHeader (metaDataImage, fileNames);
-		return header;
+		try{
+			DICOMHeader header = new DICOMHeader (metaDataImage, fileNames);
+			return header;
+		} catch( System.Exception e ) {
+			Debug.LogError ("Something went wrong while loading: " + fileNames [0] + ". Exception was: " + e.Message + ")");
+			return null;
+		}
 	}
 
 	public DICOMLoadReturnObject load( int indexToLoad )

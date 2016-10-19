@@ -29,18 +29,23 @@ public class DICOMHeader : ICloneable
 		StudyUID = image.GetMetaData ("0020|000d");
 		SeriesUID = image.GetMetaData ("0020|000e");
 		Modality = "";
-		ImageComments = image.GetMetaData ("0020|4000");
+		ImageComments = "";
 		InstitutionName = "";
-		string tmp = image.GetMetaData ("0008|0022");
-		AcquisitionDate = DICOMDateToDateTime (tmp);
 		PatientName = "Unknown";
-
 		RescaleSlope = 1;
 		RescaleSlope = 0;
 		MinPixelValue = UInt16.MinValue;
 		MaxPixelValue = UInt16.MaxValue;
 
+
 		// Some of the following tags may not be in the DICOM Header, so catch and ignore "not found" exceptions:
+		try {
+			ImageComments = image.GetMetaData ("0020|4000");
+		} catch { Debug.LogWarning ("Could not find DICOM tag: (0020|4000)");}
+		try {
+			string tmp = image.GetMetaData ("0008|0022");
+			AcquisitionDate = DICOMDateToDateTime (tmp);
+		} catch { Debug.LogWarning ("Could not find DICOM tag: (0008|0022)");}
 		try {
 			setPatientName ( image.GetMetaData( "0010|0010" ) );
 		} catch { Debug.LogWarning ("Could not find DICOM tag: (0010|0010)");}
