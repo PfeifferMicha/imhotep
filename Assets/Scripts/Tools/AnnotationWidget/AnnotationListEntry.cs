@@ -79,4 +79,8 @@ public class AnnotationListEntry : MonoBehaviour {
 	public void updateAnnotationposition(Quaternion rotation, Vector3 position) {
 		myAnnotation.GetComponent<Annotation> ().updatePosition (rotation, position);
 	}
+
+	public Vector2 getListPos() {
+		return this.gameObject.GetComponent<RectTransform> ().anchoredPosition;
+	}
 }

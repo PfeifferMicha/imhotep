@@ -226,10 +226,9 @@ public class AnnotationControl : MonoBehaviour
 					} 
 				}
 			} else if (currentActiveScreen == ActiveScreen.list) {
-				//Edit Annotation
+				//Jump to Annotation in List
 				if (eventData.pointerEnter.CompareTag ("Annotation")) {
-					currentAnnotationListEntry = eventData.pointerEnter.GetComponent<Annotation> ().myAnnotationListEntry;
-					//TODO Highlight in List
+					jumpToListEntry (eventData.pointerEnter);
 				}
 			} else if (currentActiveScreen == ActiveScreen.none) {
 				//Edit Annotation
@@ -256,10 +255,11 @@ public class AnnotationControl : MonoBehaviour
 	//################ Private Methods #################
 
 	private void jumpToListEntry(GameObject annotation) {
+		
 		if(currentActiveScreen == ActiveScreen.list) {
 			GameObject listEntry = annotation.GetComponent<Annotation> ().myAnnotationListEntry;
-			Vector3 localPos = listEntry.GetComponent<Transform> ().localPosition;
-			//TODO
+			Vector2 pos = listEntry.gameObject.GetComponent<AnnotationListEntry>().getListPos();
+			listEntry.transform.parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0.0f, (-(pos.y) - (listScreen.GetComponent<RectTransform>().rect.height / 3 ) ));
 		}
 	}
 

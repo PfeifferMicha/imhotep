@@ -6,25 +6,18 @@ using System;
 
 public class AnnotationLabel : MonoBehaviour {
 
-	public GameObject textBackground;
-	public GameObject myText;
+	public Image textBackground;
+	public Text myText;
 	public InputField myInputField;
-	private BoxCollider myBoxCollider;
-
-
-	// Use this for initialization
-	private void initLabel () {
-		myBoxCollider = this.gameObject.AddComponent<BoxCollider>();
-		myBoxCollider.center = Vector3.zero;
-	}
+	public BoxCollider myBoxCollider;
+	//Padding to top + bot edges of background
+	private float padding = 0.0f;
 
 	//Used to set Label when load from file
 	public void setLabelText(string newLabel) {
-		if(myBoxCollider == null) {
-			initLabel ();
-		}
-		myText.GetComponent<Text> ().text = newLabel;
-		updateColliderSize ();
+		myText.text = newLabel;
+		myInputField.text = newLabel;
+		resizeLabel ();
 	}
 
 	public String getLabelText() {
@@ -33,37 +26,45 @@ public class AnnotationLabel : MonoBehaviour {
 
 	//Called when you click on Text Label
 	public void LabelClicked( PointerEventData eventData ) {
-		myInputField.text = myText.GetComponent<Text> ().text;
-		myBoxCollider.size = new Vector3(myInputField.gameObject.GetComponent<RectTransform>().rect.width, myInputField.gameObject.GetComponent<RectTransform>().rect.height, 0.1f);
-		textBackground.SetActive (false);
+		Debug.Log ("Clicked");
 		myInputField.gameObject.SetActive (true);
+		myInputField.ActivateInputField ();
+		myInputField.Select();
+		myInputField.MoveTextEnd (true);
+		textBackground.color = new Color (textBackground.color.r, textBackground.color.b, textBackground.color.b, 0.0f);
+		myText.color = new Color (myText.color.r, myText.color.b, myText.color.b, 0.0f);
+
 
 	}
 
 	// called when vlue in input Field changed
 	public void ValueChanged () {
 		Debug.Log ("ValueChanged");
-		myText.GetComponent<Text> ().text = myInputField.text;
-	}
-
-	//used to dynamicly update collider size
-	private void updateColliderSize() {
-		//Text updates preferedHeight with delay ... force Update needed
-		Canvas.ForceUpdateCanvases ();
-		RectOffset padding = textBackground.GetComponent<HorizontalLayoutGroup>().padding;
-		myBoxCollider.size = new Vector3 (this.GetComponent<RectTransform>().rect.width, myText.GetComponent<Text>().preferredHeight + padding.top + padding.bottom, 0.1f);
+		myText.text = myInputField.text;
+		resizeLabel ();
 	}
 
 	//Called when User finishs editing Label
 	public void  EditingFinished () {
 		Debug.LogWarning ("Finished");
-		setLabelText (myInputField.text);
-		/*if(this.GetComponentInParent<Annotation> () != null) {
-			this.GetComponentInParent<Annotation> ().saveChanges ();
-		}*/
-			
 		myInputField.gameObject.SetActive (false);
-		textBackground.SetActive (true);
-		updateColliderSize ();
+		textBackground.color = new Color (textBackground.color.r, textBackground.color.b, textBackground.color.b, 1.0f);
+		myText.color = new Color (myText.color.r, myText.color.b, myText.color.b, 1.0f);
+	}
+
+	private void resizeLabel() {
+		if(padding == 0.0f) {
+			padding = textBackground.gameObject.GetComponent<VerticalLayoutGroup> ().padding.top
+				+ textBackground.gameObject.GetComponent<VerticalLayoutGroup> ().padding.bottom;
+		}
+
+		//calc height
+		Canvas.ForceUpdateCanvases();
+		float newHeight = myText.preferredHeight + padding;
+		Vector2 resize = new Vector2 (this.gameObject.GetComponent<RectTransform> ().rect.width, newHeight);
+		//resize objects
+		this.gameObject.GetComponent<RectTransform>().sizeDelta = resize;
+		myBoxCollider.size = new Vector3(myBoxCollider.size.x, newHeight, myBoxCollider.size.z);
+		myInputField.gameObject.GetComponent<RectTransform> ().sizeDelta = resize;
 	}
 }

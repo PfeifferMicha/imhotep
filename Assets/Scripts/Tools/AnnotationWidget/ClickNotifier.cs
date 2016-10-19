@@ -13,6 +13,7 @@ public class ClickNotifier : MonoBehaviour, IPointerClickHandler, IPointerHoverH
 
 	public void OnPointerClick(UnityEngine.EventSystems.PointerEventData eventData )
 	{
+		
 		if (clickNotificationEvent != null) {
 			clickNotificationEvent (eventData);
 		}
