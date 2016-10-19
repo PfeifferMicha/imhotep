@@ -1048,6 +1048,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 0
+--- !u!1 &143249874 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 110976, guid: 28d3b4b966eb0e747aac14c1ad957b42, type: 2}
+  m_PrefabInternal: {fileID: 635500481}
 --- !u!1 &143787180
 GameObject:
   m_ObjectHideFlags: 0
@@ -1116,10 +1120,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 143787180}
---- !u!1 &143249874 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 110976, guid: 28d3b4b966eb0e747aac14c1ad957b42, type: 2}
-  m_PrefabInternal: {fileID: 635500481}
 --- !u!1 &145658446
 GameObject:
   m_ObjectHideFlags: 0
@@ -1854,6 +1854,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   creator: 
+  myAnnotationLabel: {fileID: 0}
   myAnnotationListEntry: {fileID: 0}
   defaultMaterial: {fileID: 2100000, guid: d37ab906c3bbc104385ffa883f9e49ad, type: 2}
   previewMaterial: {fileID: 2100000, guid: 46dc289218482af438b532ccf3cec021, type: 2}
@@ -2059,10 +2060,10 @@ RectTransform:
   - {fileID: 713131218}
   m_Father: {fileID: 1132063642}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 88.877495, y: 0}
-  m_SizeDelta: {x: 177.75499, y: 63}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &264464033
 MonoBehaviour:
@@ -3210,6 +3211,10 @@ Camera:
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
   m_StereoMirrorMode: 0
+--- !u!1 &473133398 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 110976, guid: 28d3b4b966eb0e747aac14c1ad957b42, type: 2}
+  m_PrefabInternal: {fileID: 543370575}
 --- !u!224 &479000248
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3307,10 +3312,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!1 &473133398 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 110976, guid: 28d3b4b966eb0e747aac14c1ad957b42, type: 2}
-  m_PrefabInternal: {fileID: 543370575}
 --- !u!1 &489717247
 GameObject:
   m_ObjectHideFlags: 0
@@ -15422,7 +15423,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22423994, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_AnchoredPosition.x

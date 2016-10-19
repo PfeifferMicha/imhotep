@@ -37,12 +37,16 @@ public class AnnotationListEntry : MonoBehaviour {
 	public GameObject duplicateAnnotation() {
 		Quaternion rotation = myAnnotation.transform.localRotation;
 		Vector3 position = myAnnotation.transform.localPosition;
+
 		GameObject clone = (GameObject)Instantiate(myAnnotation, position, rotation);
 		clone.transform.SetParent(myAnnotation.transform.parent, false );
 		clone.SetActive (true);
+
 		clone.GetComponent<Annotation> ().destroyLabel ();
+
 		myAnnotation.GetComponent<Annotation> ().makeOpaque ();
 		clone.GetComponent<Annotation> ().makeTransperent ();
+		clone.GetComponent<Annotation> ().changeColor (myAnnotation.GetComponent<Annotation> ().getColor ());
 		return clone;
 	}
 

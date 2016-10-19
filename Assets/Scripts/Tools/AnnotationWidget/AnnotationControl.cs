@@ -192,6 +192,7 @@ public class AnnotationControl : MonoBehaviour
 				removeOneAnnotation (currentAnnotationListEntry);
 			}
 		} else {
+			Debug.LogWarning (oldColor);
 			currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().changeAnnotationColor (oldColor);
 		}
 		closeAnnotationScreen ();
@@ -202,39 +203,38 @@ public class AnnotationControl : MonoBehaviour
 	// Called when user clicks on Organ
 	public void OnMeshClicked (PointerEventData eventData)
 	{
-		Debug.Log ("Clicked: " + eventData.pointerPressRaycast.worldPosition);
 		if (eventData.button != PointerEventData.InputButton.Left) {
 			return;
 		}
-		if (eventData.pointerPress.CompareTag ("AnnotationLabel")) {
-			if (eventData.pointerPress.GetComponentInParent<AnnotationLabel> ())
-				eventData.pointerPress.GetComponentInParent<AnnotationLabel> ().LabelClicked (eventData);
+		if (eventData.pointerEnter.CompareTag ("AnnotationLabel")) {
+			if (eventData.pointerEnter.GetComponentInParent<AnnotationLabel> ())
+				eventData.pointerEnter.GetComponentInParent<AnnotationLabel> ().LabelClicked (eventData);
 		} else {
 			if (currentActiveScreen == ActiveScreen.add) {
 				Vector3 localpos = meshPositionNode.transform.InverseTransformPoint (eventData.pointerPressRaycast.worldPosition);
 				Vector3 localNormal = meshPositionNode.transform.InverseTransformDirection (eventData.pointerPressRaycast.worldNormal);
 				if (currentAnnotationListEntry == null) {
-					if (!eventData.pointerPress.CompareTag ("Annotation") && !eventData.pointerPress.CompareTag ("AnnotationLabel")) {
+					if (!eventData.pointerEnter.CompareTag ("Annotation") && !eventData.pointerEnter.CompareTag ("AnnotationLabel")) {
 						GameObject newAnnotation = createAnnotationMesh (Quaternion.LookRotation (localNormal), localpos);
 						//add to List
 						currentAnnotationListEntry = createNewAnnotationListEntry (newAnnotation);
 						UnlockEditSettings ();
 					} 
 				} else {
-					if (!eventData.pointerPress.CompareTag ("Annotation") && !eventData.pointerPress.CompareTag ("AnnotationLabel")) {
+					if (!eventData.pointerEnter.CompareTag ("Annotation") && !eventData.pointerEnter.CompareTag ("AnnotationLabel")) {
 						changeAnnotationPosition (Quaternion.LookRotation (localNormal), localpos);
 					} 
 				}
 			} else if (currentActiveScreen == ActiveScreen.list) {
 				//Edit Annotation
-				if (eventData.pointerPress.CompareTag ("Annotation")) {
-					currentAnnotationListEntry = eventData.pointerPress.GetComponent<Annotation> ().myAnnotationListEntry;
+				if (eventData.pointerEnter.CompareTag ("Annotation")) {
+					currentAnnotationListEntry = eventData.pointerEnter.GetComponent<Annotation> ().myAnnotationListEntry;
 					//TODO Highlight in List
 				}
 			} else if (currentActiveScreen == ActiveScreen.none) {
 				//Edit Annotation
-				if (eventData.pointerPress.CompareTag ("Annotation")) {
-					EditAnnotation (eventData.pointerPress.GetComponent<Annotation> ().myAnnotationListEntry);
+				if (eventData.pointerEnter.CompareTag ("Annotation")) {
+					EditAnnotation (eventData.pointerEnter.GetComponent<Annotation> ().myAnnotationListEntry);
 				}
 			}
 		}
@@ -246,6 +246,7 @@ public class AnnotationControl : MonoBehaviour
 	public void hoveredOverMesh (PointerEventData eventData)
 	{
 		if (hoverAnnotation != null) {
+			Debug.Log ("Hover");
 			Vector3 localpos = meshPositionNode.transform.InverseTransformPoint (eventData.pointerCurrentRaycast.worldPosition);
 			Vector3 localNormal = meshPositionNode.transform.InverseTransformDirection (eventData.pointerCurrentRaycast.worldNormal);
 			hoverAnnotation.GetComponent<Annotation> ().updatePosition (Quaternion.LookRotation (localNormal), localpos);

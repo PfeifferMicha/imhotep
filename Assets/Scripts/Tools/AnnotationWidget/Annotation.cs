@@ -9,9 +9,10 @@ public class Annotation : MonoBehaviour {
     [DefaultValue("")]
 	public string creator;
 	public DateTime creationDate;
-	private GameObject myAnnotationLabel;
+	//needs to be public so clone dont "loose" knowledge of his label ... but still child
+	public GameObject myAnnotationLabel;
 	public GameObject myAnnotationListEntry;
-	private Color myColor = Color.black;
+	private Color myColor;
 	public Material defaultMaterial, previewMaterial;
 
     // Use this for initialization
@@ -73,11 +74,7 @@ public class Annotation : MonoBehaviour {
 		myAnnotationLabel.GetComponent<AnnotationLabel> ().setLabelText (newLabel);
 	}
 
-	//used to change color of Annotation
-	public void changeColor(Color newColor) {
-		myColor = newColor;
-		this.GetComponent<Renderer> ().material.color = new Color(myColor.r, myColor.g, myColor.b, this.GetComponent<Renderer> ().material.color.a);
-	}
+
 
 	public void updatePosition(Quaternion rotation, Vector3 position) {
 		this.GetComponent<Transform> ().localPosition = position;
@@ -96,12 +93,18 @@ public class Annotation : MonoBehaviour {
 
 	//to get Color
 	public Color getColor() {
-		return myColor;
+		return new Color(myColor.r, myColor.g, myColor.b, this.GetComponent<Renderer> ().material.color.a);
 	}
 
 	//Used to save Label Changes
 	public void saveChanges() {
 		myAnnotationListEntry.GetComponent<AnnotationListEntry> ().updateLabel (getLabelText ());
+	}
+
+	//used to change color of Annotation
+	public void changeColor(Color newColor) {
+		myColor = new Color(newColor.r, newColor.g, newColor.b, this.GetComponent<Renderer> ().material.color.a);
+		this.GetComponent<Renderer> ().material.color = new Color(newColor.r, newColor.g, newColor.b, this.GetComponent<Renderer> ().material.color.a);
 	}
 
 	public void makeTransperent() {

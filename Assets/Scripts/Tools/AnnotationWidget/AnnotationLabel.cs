@@ -9,13 +9,11 @@ public class AnnotationLabel : MonoBehaviour {
 	public GameObject textBackground;
 	public GameObject myText;
 	public InputField myInputField;
-	private RectTransform myRect;
 	private BoxCollider myBoxCollider;
 
 
 	// Use this for initialization
 	private void initLabel () {
-		myRect = this.GetComponent<RectTransform>();
 		myBoxCollider = this.gameObject.AddComponent<BoxCollider>();
 		myBoxCollider.center = Vector3.zero;
 	}
@@ -39,12 +37,12 @@ public class AnnotationLabel : MonoBehaviour {
 		myBoxCollider.size = new Vector3(myInputField.gameObject.GetComponent<RectTransform>().rect.width, myInputField.gameObject.GetComponent<RectTransform>().rect.height, 0.1f);
 		textBackground.SetActive (false);
 		myInputField.gameObject.SetActive (true);
-		myInputField.ActivateInputField ();
 
 	}
 
 	// called when vlue in input Field changed
 	public void ValueChanged () {
+		Debug.Log ("ValueChanged");
 		myText.GetComponent<Text> ().text = myInputField.text;
 	}
 
@@ -60,9 +58,9 @@ public class AnnotationLabel : MonoBehaviour {
 	public void  EditingFinished () {
 		Debug.LogWarning ("Finished");
 		setLabelText (myInputField.text);
-		if(this.GetComponentInParent<Annotation> () != null) {
+		/*if(this.GetComponentInParent<Annotation> () != null) {
 			this.GetComponentInParent<Annotation> ().saveChanges ();
-		}
+		}*/
 			
 		myInputField.gameObject.SetActive (false);
 		textBackground.SetActive (true);
