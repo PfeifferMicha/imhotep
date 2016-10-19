@@ -1,38 +1,108 @@
 ﻿using System;
 using itk.simple;
 using UnityEngine;
+using System.Globalization;
 
-public class DICOMHeader
+public class DICOMHeader : ICloneable
 {
-	public DICOMHeader ( Image image )
-	{
-		mStudyUID = image.GetMetaData ("0020|000d");;
-		mSeriesUID = image.GetMetaData ("0020|000e");;
-		mPatientName = "Unknown";
+	private string PatientName;
+	private DateTime SeriesDateTime;
+	public string SeriesUID { get; private set; }
+	public string StudyUID { get; private set; }
+	public string Modality { get; private set; }
+	public string InstitutionName { get; set; }
+	public string ImageComments { get; private set; }
+	public DateTime AcquisitionDate { get; private set; }
+	public uint Dimension{ get; private set; }
+	public VectorDouble Origin{ get; private set; }
+	public VectorDouble Spacing{ get; private set; }
+	public VectorDouble Direction{ get; private set; }
+	public uint NumberOfImages{ get; set; }
+	public VectorString FileNames{ get; private set; }
+	public int RescaleIntercept{ get; private set; }
+	public int RescaleSlope{ get; private set; }
+	public int MaxPixelValue{ get; private set; }
+	public int MinPixelValue{ get; private set; }
 
-		mOrigin = image.GetOrigin ();
-		mDimension = image.GetDimension ();
-		mSpacing = image.GetSpacing();
-		mDirection = image.GetDirection();
-		Debug.Log ("New DICOM Header:");
-		Debug.Log (mOrigin[0] + " " + mOrigin[1] + " " + mOrigin[2]);
-		Debug.Log (mDimension);
-		Debug.Log (mSpacing[0] + " " + mSpacing[1] + " " + mSpacing[2]);
-		Debug.Log (mDirection[0] + " " + mDirection[1] + " " + mDirection[2] + " " + mDirection[3] + " " + mDirection[4] + " " + mDirection[5]);
-		Debug.Log (image.GetPixelIDTypeAsString ());
+	public DICOMHeader ( Image image, VectorString fileNames )
+	{
+		StudyUID = image.GetMetaData ("0020|000d");
+		SeriesUID = image.GetMetaData ("0020|000e");
+		Modality = "";
+		ImageComments = image.GetMetaData ("0020|4000");
+		InstitutionName = "";
+		string tmp = image.GetMetaData ("0008|0022");
+		AcquisitionDate = DICOMDateToDateTime (tmp);
+		PatientName = "Unknown";
+
+		RescaleSlope = 1;
+		RescaleSlope = 0;
+		MinPixelValue = UInt16.MinValue;
+		MaxPixelValue = UInt16.MaxValue;
+
+		// Some of the following tags may not be in the DICOM Header, so catch and ignore "not found" exceptions:
+		try {
+			setPatientName ( image.GetMetaData( "0010|0010" ) );
+		} catch { Debug.LogWarning ("Could not find DICOM tag: (0010|0010)");}
+		try {
+			setSeriesDate( image.GetMetaData( "0008|0021" ) );
+		} catch { Debug.LogWarning ("Could not find DICOM tag: (0008|0021)");}
+		try {
+			Modality = image.GetMetaData( "0008|0060" );
+		} catch { Debug.LogWarning ("Could not find DICOM tag: (0008|0060)");}
+		try {
+			InstitutionName = image.GetMetaData( "0008|0080" );
+		} catch { Debug.LogWarning ("Could not find DICOM tag: (0008|0080)");}
+		try {
+			RescaleIntercept = Int32.Parse( image.GetMetaData("0028|1052") );
+		} catch { Debug.LogWarning ("Could not find DICOM tag: (0028|1052)");}
+		try {
+			RescaleSlope = Int32.Parse( image.GetMetaData("0028|1053") );
+		} catch { Debug.LogWarning ("Could not find DICOM tag: (0028|1053)");}
+		try {
+			MinPixelValue = Int32.Parse( image.GetMetaData("0028|0106") );
+		} catch { Debug.LogWarning ("Could not find DICOM tag: (0028|0106)");}
+		try {
+			MaxPixelValue = Int32.Parse( image.GetMetaData("0028|0107") );
+		} catch { Debug.LogWarning ("Could not find DICOM tag: (0028|0107)");}
+
+		Origin = image.GetOrigin ();
+		Dimension = image.GetDimension ();
+		Spacing = image.GetSpacing();
+		Direction = image.GetDirection();
+
+		FileNames = fileNames;
+		NumberOfImages = (uint)fileNames.Count;
+		/*Debug.Log ("New DICOM Header:");
+		Debug.Log (Origin[0] + " " + Origin[1] + " " + Origin[2]);
+		Debug.Log (Dimension);
+		Debug.Log (Spacing[0] + " " + Spacing[1] + " " + Spacing[2]);
+		Debug.Log (Direction[0] + " " + Direction[1] + " " + Direction[2] + " " + Direction[3] + " " + Direction[4] + " " + Direction[5]);
+		Debug.Log (image.GetPixelIDTypeAsString ());*/
+	}
+
+	public object Clone()
+	{
+		return this.MemberwiseClone ();
+	}
+
+	DateTime DICOMDateToDateTime( string dateString )
+	{
+		DateTime result = DateTime.ParseExact ( dateString, "yyyyMMdd", CultureInfo.InvariantCulture);
+		return result;
 	}
 
 	public string getPatientName() {
-		return mPatientName;
+		return PatientName;
 	}
 	public void setPatientName( string name ) {
 		// TODO: Parse to get rid of ^.
-		mPatientName = name;
+		PatientName = name;
 	}
 
 	public DateTime getSeriesDateTime()
 	{
-		return mSeriesDateTime;
+		return SeriesDateTime;
 	}
 
 	public void setSeriesDate( string date )
@@ -45,11 +115,11 @@ public class DICOMHeader
 		int month = Int16.Parse( date.Substring( 4, 2 ) );
 		int day = Int16.Parse( date.Substring( 6, 2 ) );
 		// Leave time unchanged:
-		int hour = mSeriesDateTime.Hour;
-		int minute = mSeriesDateTime.Minute;
-		int second = mSeriesDateTime.Second;
+		int hour = SeriesDateTime.Hour;
+		int minute = SeriesDateTime.Minute;
+		int second = SeriesDateTime.Second;
 
-		mSeriesDateTime = new DateTime( year, month, day, hour, minute, second );
+		SeriesDateTime = new DateTime( year, month, day, hour, minute, second );
 	}
 
 	public void setSeriesTime( string time )
@@ -67,33 +137,26 @@ public class DICOMHeader
 		if( time.Length >= 6 )
 			second = Int16.Parse( time.Substring( 4, 2 ) );
 		// Leave date unchanged:
-		int year = mSeriesDateTime.Year;
-		int month = mSeriesDateTime.Month;
-		int day = mSeriesDateTime.Day;
+		int year = SeriesDateTime.Year;
+		int month = SeriesDateTime.Month;
+		int day = SeriesDateTime.Day;
 
-		mSeriesDateTime = new DateTime( year, month, day, hour, minute, second );
+		SeriesDateTime = new DateTime( year, month, day, hour, minute, second );
 	}
-
-	private string mPatientName;
-	private DateTime mSeriesDateTime;
-	public string mSeriesUID { get; set; }
-	public string mStudyUID { get; set; }
-	public string mModality { get; set; }
-	public string mInstitutionName { get; set; }
-	public uint mDimension{ get; private set; }
-	public VectorDouble mOrigin{ get; private set; }
-	public VectorDouble mSpacing{ get; private set; }
-	public VectorDouble mDirection{ get; private set; }
-	public uint numberOfImages{ get; set; }
 
 	public override string ToString ()
 	{
 		return "DICOM Header: " + "\n" +
-		"\t" + "(0020, 000d), Study Instance UID: " + mStudyUID + "\n" +
-		"\t" + "(0020, 000e), Series Instance UID: " + mSeriesUID + "\n" +
-		"\t" + "(0010, 0010), Patient Name: " + mPatientName + "\n" +
-		"\t" + "(0008, 0021), Series Date: " + mSeriesDateTime.Year + " " + mSeriesDateTime.Month + " " + mSeriesDateTime.Day + "\n" +
-		"\t" + "(0008, 0031), Series Time: " + mSeriesDateTime.TimeOfDay + "\n";
+		"\t" + "(0020, 000d), Study Instance UID: " + StudyUID + "\n" +
+		"\t" + "(0020, 000e), Series Instance UID: " + SeriesUID + "\n" +
+		"\t" + "(0010, 0010), Patient Name: " + PatientName + "\n" +
+		"\t" + "(0008, 0021), Series Date: " + SeriesDateTime.Year + " " + SeriesDateTime.Month + " " + SeriesDateTime.Day + "\n" +
+		"\t" + "(0008, 0031), Series Time: " + SeriesDateTime.TimeOfDay + "\n";
+	}
+
+	public string toDescription()
+	{
+		return Modality + " " + ImageComments + " (" + AcquisitionDate + ")";
 	}
 }
 

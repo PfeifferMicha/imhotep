@@ -54,12 +54,15 @@ namespace UI
 
 		private List<Widget> widgets = new List<Widget>();
 
+		public int statusBarHeight = 60;
+
 		public void setCamera( Camera cam )
 		{
 			UICamera = cam;
 
-			Vector2 max = new Vector2 (1 * UI.Core.instance.aspectRatio, 1) / UI.Core.instance.UIScale;
+			Vector2 max = new Vector2 (1f * UI.Core.instance.aspectRatio, 1f) / UI.Core.instance.UIScale;
 			Vector2 min = -max;
+			//min = min + new Vector2 (0, statusBarHeight);	// leave space for status bar
 			sizeOfUIScene = new Rect (min, max - min);
 			Debug.Log ("Full Screen Size: " + sizeOfUIScene);
 
@@ -206,6 +209,27 @@ namespace UI
 				}
 			}
 		}
-	}
 
+		public Rect getStatusBarPosition()
+		{
+			Rect rect = new Rect ( 
+				0f,
+				-(sizeOfUIScene.height - statusBarHeight)*0.5f,
+				sizeOfUIScene.width,
+				statusBarHeight - 4f);
+			return rect;
+		}
+
+		public void closeAllWidgets()
+		{
+			while (true) {
+				if (widgets.Count == 0)
+					break;
+
+				// Disabling the widget's gameobject will call Widget.OnDisable, which removes
+				// the widget from the "widgets" list as well.
+				widgets [0].gameObject.SetActive (false);
+			}
+		}
+	}
 }

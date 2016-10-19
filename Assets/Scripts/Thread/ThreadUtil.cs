@@ -89,7 +89,7 @@ public class ThreadUtil {
     private void Callback(object sender, RunWorkerCompletedEventArgs e)
     {
         callbackMethod(sender, e);
-        Debug.Log("[ThreadUtil] Thread finished - duration: " + (DateTime.Now - start));
+        //Debug.Log("[ThreadUtil] Thread finished - duration: " + (DateTime.Now - start));
     }
 
     public void Run()

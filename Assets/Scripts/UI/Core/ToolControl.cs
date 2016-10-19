@@ -9,17 +9,19 @@ public class ToolControl : MonoBehaviour {
 	public Platform platform;
 
 	List<GameObject> toolStands = new List<GameObject>();
+	List<GameObject> controllerChoises = new List<GameObject>();
 
 	private GameObject activeTool = null;
 	private GameObject activeToolChoise = null;
 
 	public static ToolControl instance { private set; get; }
 
+	public float controllerPickupDist = 0.3f;
+
 	public ToolControl() {
 		instance = this;
 	}
 
-	// Use this for initialization
 	void Start () {
 		ToolStandPrefab.SetActive (false);
 
@@ -28,8 +30,42 @@ public class ToolControl : MonoBehaviour {
 		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, patientClosed );
 
 		clearAllToolStands ();
-
 		//generateAvailableTools (null);
+	}
+
+	void Update() {
+
+		// If the input device is a controller, handle picking up and highlighting:
+		InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;
+		if (inputDevice.getDeviceType() == InputDeviceManager.InputDeviceType.ViveController) {
+			Controller c = inputDevice as Controller;
+
+			// Check which tool choise is closest:
+			float minDist = controllerPickupDist;
+			GameObject closestController = null;
+			foreach (GameObject controllerChoise in controllerChoises) {
+					float dist = Vector3.Distance (
+						            controllerChoise.transform.position,
+						            c.transform.position);
+					if (dist < minDist) {
+						minDist = dist;
+						closestController = controllerChoise;
+					}
+					controllerChoise.GetComponent<ToolChoise> ().UnHighlight ();
+			}
+			// If a tool choise controller was close enough, highlight it:
+			if (closestController != null) {
+				if (closestController.activeSelf) {
+					ToolChoise tc = closestController.GetComponent<ToolChoise> ();
+					tc.Highlight ();
+
+					// If the user pressed the trigger, choose the tool:
+					if (c.triggerPressed ()) {
+						chooseTool (tc);
+					}
+				}
+			}
+		}
 	}
 
 	public void generateAvailableTools( object obj = null )
@@ -40,13 +76,14 @@ public class ToolControl : MonoBehaviour {
 		foreach (Transform child in transform) {
 			string toolName = child.name;
 
-
 			Debug.Log ("Generating tool stand for: " + toolName);
 			GameObject go = platform.toolStandPosition (i, (uint)transform.childCount);
 			GameObject newToolStand = Object.Instantiate( ToolStandPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 			newToolStand.name = "ToolStand (" + toolName + ")";
 			newToolStand.transform.SetParent (go.transform, false);
 			StartCoroutine (activateToolStand (newToolStand, Random.value*0.25f + 0.3f*Mathf.Abs(transform.childCount*0.5f - i)));
+
+			toolStands.Add (newToolStand);
 
 			GameObject controllerChoise = Object.Instantiate (ControllerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 			controllerChoise.transform.localRotation = Quaternion.Euler (new Vector3 (0f, 270f, 270f));
@@ -57,6 +94,7 @@ public class ToolControl : MonoBehaviour {
 			Transform tableBone = newToolStand.transform.Find ("ToolStandArmature/BoneArm/BoneRotate/BoneSlide");
 			controllerChoise.transform.SetParent( tableBone, false );
 			controllerChoise.SetActive (true);
+			controllerChoises.Add (controllerChoise);
 
 			i ++;
 		}
@@ -70,12 +108,16 @@ public class ToolControl : MonoBehaviour {
 
 	public void patientClosed( object obj )
 	{
-		Patient p = obj as Patient;
+		closeActiveTool ();
 		clearAllToolStands ();
 	}
 
 	public void clearAllToolStands()
 	{
+		foreach( GameObject controllerChoise in controllerChoises )
+		{
+			GameObject.Destroy (controllerChoise);
+		}
 		foreach( GameObject toolStand in toolStands )
 		{
 			GameObject.Destroy (toolStand);
@@ -105,10 +147,10 @@ public class ToolControl : MonoBehaviour {
 				activeTool.SetActive (true);
 				activeToolChoise = tool.gameObject;
 				activeToolChoise.SetActive (false);		// Hide toolchoise
+				InputDeviceManager.instance.shakeLeftController( 3000 );
 				return;
 			}
 		}
-
 		Debug.LogWarning ("\tTool '" + tool.toolName + "' not found!");
 	}
 }

@@ -5,9 +5,7 @@ using UI;
 
 public interface InputDevice {
 
-    void activateVisualization();
-    void deactivateVisualization();
-    bool isVisualizerActive();
+	InputDeviceManager.InputDeviceType getDeviceType ();
 
 	Vector2 getScrollDelta();
 

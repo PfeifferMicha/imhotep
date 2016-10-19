@@ -20,7 +20,7 @@ public class ModelRotator : MonoBehaviour
 
 	private void Update()
 	{
-		if (UI.Core.instance.mouseIsOverUIObject == false) {
+		if (UI.Core.instance.pointerIsOverUIObject == false) {
 			if (Input.GetMouseButton (1) || Input.GetKey (KeyCode.M)) {
 				float inputH = -Input.GetAxis ("Mouse X");
 				float inputV = -Input.GetAxis ("Mouse Y");

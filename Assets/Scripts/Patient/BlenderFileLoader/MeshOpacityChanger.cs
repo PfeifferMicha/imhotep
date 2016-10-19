@@ -12,13 +12,11 @@ public class MeshOpacityChanger : MonoBehaviour {
 	void Start () {
 		//meshShader = Shader.Find("Custom/MeshShader");
 		//meshShaderTransparent = Shader.Find("Custom/MeshShaderTransparent");
-		materialOpaque = Resources.Load("Materials/TemplateMaterial/DefaultOpaque", typeof(Material)) as Material;
-		materialTransparent = Resources.Load("Materials/TemplateMaterial/DefaultTransparent", typeof(Material)) as Material;
-
+		materialOpaque = Instantiate( Resources.Load("Materials/TemplateMaterial/DefaultOpaque", typeof(Material)) as Material ) as Material;
+		materialTransparent = Instantiate( Resources.Load("Materials/TemplateMaterial/DefaultTransparent", typeof(Material)) as Material ) as Material;
 	}
 
 	public void changeOpactiyOfChildren(float f){
-		Debug.Log( name + " " + f );
 		if (f == 0.0f)
 		{
 			this.gameObject.SetActive(false);

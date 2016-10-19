@@ -21,7 +21,8 @@ public class Patient : PatientMeta
 	public class AdditionalInformation
 	{
 		public string name { get; set; }
-		public string content { get; set; }
+        public string type { get; set; }
+		public string content { get; set; } //TODO save path, not content of the file
 		public string tabName { get; set; }
 	}
 
@@ -30,7 +31,7 @@ public class Patient : PatientMeta
 
 		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_FinishedLoading, finishedLoading);
 
-		string metaFile = Path.Combine( base.path, "meta.json" );
+        string metaFile = Path.Combine( base.path, "meta.json" );
 		string raw = File.ReadAllText(metaFile);
 		JsonData data;
 		try{
@@ -49,8 +50,9 @@ public class Patient : PatientMeta
 			c += bold ("Patient Name: ") + name + "\n";
 			c += bold ("Date of Birth: ") + birthDate + "\n";
 			c += bold ("Date of Operation: ") + operationDate + "\n";
-			AdditionalInformation info = new AdditionalInformation {
-				name = "Patient Information",
+            AdditionalInformation info = new AdditionalInformation {
+                name = "Patient Information",
+                type = "Plaintext",
 				content = c,
 				tabName = "General"
 			};
@@ -59,12 +61,16 @@ public class Patient : PatientMeta
 			// Find other information in files (which are given in meta.json) and add them to the tabs:
 			for (int i = 0; i < infoArray.Count; i++) {
 				JsonData entry = infoArray [i];
-				if (entry.Keys.Contains ("Name") && entry.Keys.Contains ("File")) {
+				if (entry.Keys.Contains ("Name") && entry.Keys.Contains ("File"))
+                {  //TODO use JsonMapper.ToObject to load this
 
-					if( System.IO.File.Exists( base.path + "/" + entry ["File"] ) )
+                    if ( System.IO.File.Exists( base.path + "/" + entry ["File"] ) )
 					{
 						string content = System.IO.File.ReadAllText ( base.path + "/" + entry ["File"]);
 						string title = entry ["Name"].ToString();
+						string type = "plainText";
+						if( entry.Keys.Contains("Type") )
+							type = entry["Type"].ToString();
 						string tabName = "General";
 						if (entry.Keys.Contains ("Tab")) {
 							tabName = entry ["Tab"].ToString();
@@ -72,10 +78,16 @@ public class Patient : PatientMeta
 						if (name.Length > 0 && content.Length > 0) {
 							info = new AdditionalInformation {
 								name = title,
+                                type = type,
 								content = content,
 								tabName = tabName
 							};
-							additionalInformation.Add (info);
+                            if(info.type == "HTML")
+                            {
+                                info.content = rewritePathInHTML(info.content, entry ["File"].ToString());
+                                
+                            }
+                            additionalInformation.Add (info);
 							if (!additionalInformationTabs.Contains (tabName)) {
 								additionalInformationTabs.Add (tabName);
 							}
@@ -91,7 +103,24 @@ public class Patient : PatientMeta
 		loadedPatient = this;
     }
 
-	~Patient()
+    private string rewritePathInHTML(string content, string filePath)
+    {
+        //
+        string folderHTMLSources = ""; 
+        string[] substrings = filePath.Split('/');
+        for (int i = 0; i < substrings.Length - 1; i++)
+        {
+            folderHTMLSources += substrings[i];
+        }
+
+        //Rewrite src and href in HTML, because relative paths are wrong
+        string c = content;
+        c = c.Replace("src=\".", "src=\"./" + path + "/" + folderHTMLSources);
+        c = c.Replace("href=\".", "href=\"./" + path + "/" + folderHTMLSources);
+        return c;
+    }
+
+    ~Patient()
 	{
 		PatientEventSystem.stopListening (PatientEventSystem.Event.PATIENT_FinishedLoading, finishedLoading);
 	}
@@ -106,9 +135,12 @@ public class Patient : PatientMeta
 	{
 		return additionalInformationTabs;
 	}
-	public string getAdditionalInfo( string tabName )
+	public List<AdditionalInformation> getAdditionalInfo()
 	{
-		string result = "";
+        return additionalInformation;
+
+        /*
+        string result = "";
 		foreach (AdditionalInformation info in additionalInformation) {
 			// Add all info for this tab to the string:
 			if (info.tabName == tabName) {
@@ -116,7 +148,7 @@ public class Patient : PatientMeta
 				result += info.content + "\n\n";
 			}
 		}
-		return result;
+		return result;  */
 	}
 
 	private string bold( string input )

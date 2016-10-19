@@ -2,12 +2,14 @@
 using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace UI
 {
-	public class Core : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+	public class Core : MonoBehaviour
 	{
-		public bool mouseIsOverUIObject{ private set; get; }
+		//! Is set to true whenever the mouse is over a UI elemnt.
+		public bool pointerIsOverUIObject{ private set; get; }
 
 		public static Core instance { private set; get; }
 
@@ -20,6 +22,25 @@ namespace UI
 		public float pixelsPerMeter = 500f;
 		public float aspectRatio = 1f;
 
+		public Color TabHighlightColor;
+		public Color ButtonBaseColor;
+
+		public Sprite normalTabImage;
+		public Sprite selectedTabImage;
+
+		public GameObject indicatorLeft;
+		public GameObject indicatorRight;
+
+		//! A bar on the lower end of the screen (for close button etc.)
+		public GameObject statusBar;
+		private GameObject closePatientButton;
+
+		private List<GameObject> activeIndicators = new List<GameObject> ();
+		private int notificationID = 0;
+
+		public GameObject PatientSelector;
+
+
 		public Core()
 		{
 			instance = this;
@@ -29,7 +50,20 @@ namespace UI
 		{
 			layoutSystem = new LayoutSystem ();
 
-			//PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_Loaded, showPatientDefaultUI );
+			indicatorLeft.SetActive (false);
+			indicatorRight.SetActive (false);
+			statusBar.SetActive (true);
+
+			Transform tf = statusBar.transform.Find ("ButtonClose");
+			if (tf != null) {
+				closePatientButton = tf.gameObject;
+				closePatientButton.GetComponent<Button> ().onClick.AddListener (() => closePatient ());
+				closePatientButton.SetActive (false);
+			} else {
+				Debug.LogWarning ("ButtonClose not found on Status Bar!");
+			}
+
+			PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_FinishedLoading, patientLoaded );
 			//PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_Closed, hidePatientDefaultUI );
 		}
 		public void OnDisable()
@@ -38,13 +72,9 @@ namespace UI
 			//PatientEventSystem.stopListening (PatientEventSystem.Event.PATIENT_Closed, hidePatientDefaultUI);
 		}
 
-		public void OnPointerEnter(PointerEventData dataName)
+		public void setPointerIsOnUI( bool onUI )
 		{
-			mouseIsOverUIObject = true;
-		}
-		public void OnPointerExit(PointerEventData dataName)
-		{
-			mouseIsOverUIObject = false;
+			pointerIsOverUIObject = onUI;
 		}
 
 		public void setCamera( Camera cam )
@@ -52,6 +82,12 @@ namespace UI
 			UICamera = cam;
 			aspectRatio = (float)UICamera.targetTexture.width / (float)UICamera.targetTexture.height;
 			layoutSystem.setCamera (cam);
+
+			// Adjust position/size of the statusbar:
+			Rect newRect = layoutSystem.getStatusBarPosition ();
+			RectTransform widgetRect = statusBar.GetComponent<RectTransform> ();
+			widgetRect.localPosition = newRect.position;
+			widgetRect.sizeDelta = newRect.size;
 		}
 
 		public Widget getWidgetByName( string name )
@@ -64,6 +100,116 @@ namespace UI
 				}
 			}
 			return null;
+		}
+
+		public void selectTab( Button b )
+		{
+			ColorBlock colors = b.colors;
+			colors.normalColor = TabHighlightColor;
+			b.colors = colors;
+			b.image.sprite = selectedTabImage;
+		}
+
+		public void unselectTab( Button b )
+		{
+			ColorBlock colors = b.colors;
+			colors.normalColor = ButtonBaseColor;
+			b.colors = colors;
+			b.image.sprite = normalTabImage;
+		}
+
+		public int addIndication( UI.Screen screen, string message )
+		{
+			if (activeIndicators.Count > 0) {
+				clearNotification (notificationID);
+			}
+
+			if (screen == UI.Screen.left) {
+				GameObject indicator1 = Instantiate (indicatorLeft) as GameObject;
+				indicator1.GetComponent<Widget> ().layoutScreen = UI.Screen.right;
+				indicator1.GetComponent<Widget> ().layoutAlignHorizontal = AlignmentH.center;
+				indicator1.GetComponent<Widget> ().layoutAlignVertical = AlignmentV.center;
+				indicator1.SetActive (true);
+				Text t = indicator1.GetComponentInChildren<Text> ();
+				t.text = message;
+				indicator1.transform.SetParent (transform, false);
+				activeIndicators.Add (indicator1);
+
+				GameObject indicator2 = Instantiate (indicatorLeft) as GameObject;
+				indicator2.GetComponent<Widget> ().layoutScreen = UI.Screen.center;
+				indicator2.GetComponent<Widget> ().layoutAlignHorizontal = AlignmentH.center;
+				indicator2.GetComponent<Widget> ().layoutAlignVertical = AlignmentV.center;
+				indicator2.SetActive (true);
+				t = indicator2.GetComponentInChildren<Text> ();
+				t.text = message;
+				indicator2.transform.SetParent (transform, false);
+				activeIndicators.Add (indicator2);
+			} else if (screen == UI.Screen.center) {
+				GameObject indicator1 = Instantiate (indicatorLeft) as GameObject;
+				indicator1.GetComponent<Widget> ().layoutScreen = UI.Screen.right;
+				indicator1.GetComponent<Widget> ().layoutAlignHorizontal = AlignmentH.center;
+				indicator1.GetComponent<Widget> ().layoutAlignVertical = AlignmentV.center;
+				indicator1.SetActive (true);
+				Text t = indicator1.GetComponentInChildren<Text> ();
+				t.text = message;
+				indicator1.transform.SetParent (transform, false);
+				activeIndicators.Add (indicator1);
+
+				GameObject indicator2 = Instantiate (indicatorRight) as GameObject;
+				indicator2.GetComponent<Widget> ().layoutScreen = UI.Screen.left;
+				indicator2.GetComponent<Widget> ().layoutAlignHorizontal = AlignmentH.center;
+				indicator2.GetComponent<Widget> ().layoutAlignVertical = AlignmentV.center;
+				indicator2.SetActive (true);
+				t = indicator2.GetComponentInChildren<Text> ();
+				t.text = message;
+				indicator2.transform.SetParent (transform, false);
+				activeIndicators.Add (indicator2);
+			} else if (screen == UI.Screen.right) {
+				GameObject indicator1 = Instantiate (indicatorRight) as GameObject;
+				indicator1.GetComponent<Widget> ().layoutScreen = UI.Screen.left;
+				indicator1.GetComponent<Widget> ().layoutAlignHorizontal = AlignmentH.center;
+				indicator1.GetComponent<Widget> ().layoutAlignVertical = AlignmentV.center;
+				indicator1.SetActive (true);
+				Text t = indicator1.GetComponentInChildren<Text> ();
+				t.text = message;
+				indicator1.transform.SetParent (transform, false);
+				activeIndicators.Add (indicator1);
+
+				GameObject indicator2 = Instantiate (indicatorRight) as GameObject;
+				indicator2.GetComponent<Widget> ().layoutScreen = UI.Screen.center;
+				indicator2.GetComponent<Widget> ().layoutAlignHorizontal = AlignmentH.center;
+				indicator2.GetComponent<Widget> ().layoutAlignVertical = AlignmentV.center;
+				indicator2.SetActive (true);
+				t = indicator2.GetComponentInChildren<Text> ();
+				t.text = message;
+				indicator2.transform.SetParent (transform, false);
+				activeIndicators.Add (indicator2);
+			}
+			return (++notificationID);
+		}
+
+		public void clearNotification( int id )
+		{
+			if (notificationID != id)
+				return;
+
+			foreach (GameObject go in activeIndicators) {
+				Destroy (go);
+			}
+			activeIndicators.Clear ();
+		}
+
+		public void closePatient()
+		{
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_Closed);
+			layoutSystem.closeAllWidgets ();
+			closePatientButton.SetActive (false);
+			PatientSelector.SetActive (true);
+		}
+
+		public void patientLoaded( object obj = null )
+		{
+			closePatientButton.SetActive (true);
 		}
     }
 }

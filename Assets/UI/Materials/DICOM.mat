@@ -38,9 +38,13 @@ Material:
       data:
         first:
           name: minValue
-        second: 0.0007425323
+        second: 0.25801587
       data:
         first:
           name: maxValue
-        second: 1
-    m_Colors: {}
+        second: 0.43295258
+    m_Colors:
+      data:
+        first:
+          name: dimensionsXY
+        second: {r: 0, g: 0, b: 1, a: 1}
