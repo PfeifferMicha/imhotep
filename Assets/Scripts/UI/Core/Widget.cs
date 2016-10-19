@@ -71,11 +71,6 @@ namespace UI
 			UI.Core.instance.layoutSystem.removeWidget (this);
 		}
 
-        public void Close()
-        {
-            Destroy(gameObject);
-        }
-
 		public void OnDestroy()
 		{
 			UI.Core.instance.layoutSystem.removeWidget (this);

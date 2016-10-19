@@ -33,10 +33,12 @@ namespace UI
 
 		//! A bar on the lower end of the screen (for close button etc.)
 		public GameObject statusBar;
+		private GameObject closePatientButton;
 
 		private List<GameObject> activeIndicators = new List<GameObject> ();
 		private int notificationID = 0;
 
+		public GameObject PatientSelector;
 
 
 		public Core()
@@ -50,8 +52,18 @@ namespace UI
 
 			indicatorLeft.SetActive (false);
 			indicatorRight.SetActive (false);
+			statusBar.SetActive (true);
 
-			//PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_Loaded, showPatientDefaultUI );
+			Transform tf = statusBar.transform.Find ("ButtonClose");
+			if (tf != null) {
+				closePatientButton = tf.gameObject;
+				closePatientButton.GetComponent<Button> ().onClick.AddListener (() => closePatient ());
+				closePatientButton.SetActive (false);
+			} else {
+				Debug.LogWarning ("ButtonClose not found on Status Bar!");
+			}
+
+			PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_FinishedLoading, patientLoaded );
 			//PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_Closed, hidePatientDefaultUI );
 		}
 		public void OnDisable()
@@ -185,6 +197,19 @@ namespace UI
 				Destroy (go);
 			}
 			activeIndicators.Clear ();
+		}
+
+		public void closePatient()
+		{
+			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_Closed);
+			layoutSystem.closeAllWidgets ();
+			closePatientButton.SetActive (false);
+			PatientSelector.SetActive (true);
+		}
+
+		public void patientLoaded( object obj = null )
+		{
+			closePatientButton.SetActive (true);
 		}
     }
 }

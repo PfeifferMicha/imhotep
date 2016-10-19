@@ -219,5 +219,17 @@ namespace UI
 				statusBarHeight - 4f);
 			return rect;
 		}
+
+		public void closeAllWidgets()
+		{
+			while (true) {
+				if (widgets.Count == 0)
+					break;
+
+				// Disabling the widget's gameobject will call Widget.OnDisable, which removes
+				// the widget from the "widgets" list as well.
+				widgets [0].gameObject.SetActive (false);
+			}
+		}
 	}
 }
