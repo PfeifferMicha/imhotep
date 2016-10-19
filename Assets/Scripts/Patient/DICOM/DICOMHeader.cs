@@ -26,50 +26,63 @@ public class DICOMHeader : ICloneable
 
 	public DICOMHeader ( Image image, VectorString fileNames )
 	{
-		StudyUID = image.GetMetaData ("0020|000d");
-		SeriesUID = image.GetMetaData ("0020|000e");
+
 		Modality = "";
 		ImageComments = "";
 		InstitutionName = "";
 		PatientName = "Unknown";
 		RescaleSlope = 1;
-		RescaleSlope = 0;
+		RescaleIntercept = 0;
 		MinPixelValue = UInt16.MinValue;
 		MaxPixelValue = UInt16.MaxValue;
 
+		// Study and Series UID should always be present:
+		StudyUID = image.GetMetaData ("0020|000d");
+		SeriesUID = image.GetMetaData ("0020|000e");
 
 		// Some of the following tags may not be in the DICOM Header, so catch and ignore "not found" exceptions:
 		try {
 			ImageComments = image.GetMetaData ("0020|4000");
-		} catch { Debug.LogWarning ("Could not find DICOM tag: (0020|4000)");}
+		} catch { Debug.LogWarning ("Could not find or interpret DICOM tag: (0020|4000)");}
 		try {
 			string tmp = image.GetMetaData ("0008|0022");
 			AcquisitionDate = DICOMDateToDateTime (tmp);
-		} catch { Debug.LogWarning ("Could not find DICOM tag: (0008|0022)");}
+		} catch { Debug.LogWarning ("Could not find or interpret DICOM tag: (0008|0022)");}
 		try {
 			setPatientName ( image.GetMetaData( "0010|0010" ) );
-		} catch { Debug.LogWarning ("Could not find DICOM tag: (0010|0010)");}
+		} catch { Debug.LogWarning ("Could not find or interpret DICOM tag: (0010|0010)");}
 		try {
 			setSeriesDate( image.GetMetaData( "0008|0021" ) );
-		} catch { Debug.LogWarning ("Could not find DICOM tag: (0008|0021)");}
+		} catch { Debug.LogWarning ("Could not find or interpret DICOM tag: (0008|0021)");}
 		try {
 			Modality = image.GetMetaData( "0008|0060" );
-		} catch { Debug.LogWarning ("Could not find DICOM tag: (0008|0060)");}
+		} catch { Debug.LogWarning ("Could not find or interpret DICOM tag: (0008|0060)");}
 		try {
 			InstitutionName = image.GetMetaData( "0008|0080" );
-		} catch { Debug.LogWarning ("Could not find DICOM tag: (0008|0080)");}
+		} catch(System.Exception e ) { Debug.LogWarning ("Could not find or interpret DICOM tag: (0008|0080) Exception: " + e.Message );}
 		try {
 			RescaleIntercept = Int32.Parse( image.GetMetaData("0028|1052") );
-		} catch { Debug.LogWarning ("Could not find DICOM tag: (0028|1052)");}
+		} catch(System.Exception e ) { Debug.LogWarning ("Could not find or interpret DICOM tag: (0028|1052) Exception: " + e.Message );}
 		try {
-			RescaleSlope = Int32.Parse( image.GetMetaData("0028|1053") );
-		} catch { Debug.LogWarning ("Could not find DICOM tag: (0028|1053)");}
+			string slope = image.GetMetaData("0028|1053");
+			RescaleSlope = Int32.Parse( slope );
+		} catch(System.Exception e ) { Debug.LogWarning ("Could not find or interpret DICOM tag: (0028|1053) Exception: " + e.Message );}
 		try {
 			MinPixelValue = Int32.Parse( image.GetMetaData("0028|0106") );
-		} catch { Debug.LogWarning ("Could not find DICOM tag: (0028|0106)");}
+		} catch(System.Exception e ) { Debug.LogWarning ("Could not find or interpret DICOM tag: (0028|0106) Exception: " + e.Message );}
 		try {
 			MaxPixelValue = Int32.Parse( image.GetMetaData("0028|0107") );
-		} catch { Debug.LogWarning ("Could not find DICOM tag: (0028|0107)");}
+		} catch(System.Exception e ) { Debug.LogWarning ("Could not find or interpret DICOM tag: (0028|0107) Exception: " + e.Message );}
+
+		if (MaxPixelValue == UInt16.MaxValue) {
+			
+			int storedBits = 16;
+			try {
+				storedBits = Int32.Parse( image.GetMetaData("0028|0101") );
+			} catch(System.Exception e ) { Debug.LogWarning ("Could not find or interpret DICOM tag: (0028,0101) Exception: " + e.Message );}
+
+			MaxPixelValue = 1 << storedBits;
+		}
 
 		Origin = image.GetOrigin ();
 		Dimension = image.GetDimension ();
