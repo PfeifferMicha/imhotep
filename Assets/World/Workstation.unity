@@ -5118,6 +5118,7 @@ MonoBehaviour:
   ToolStandPrefab: {fileID: 1604670023}
   ControllerPrefab: {fileID: 1332333448}
   platform: {fileID: 595333583}
+  controllerPickupDist: 0.3
 --- !u!1 &628493067
 GameObject:
   m_ObjectHideFlags: 0
@@ -9122,7 +9123,7 @@ Prefab:
       objectReference: {fileID: 1443498313}
     - target: {fileID: 146900, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11463128, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: index
@@ -11682,18 +11683,6 @@ MonoBehaviour:
   toolName: DefaultToolName
   toolControl: {fileID: 0}
   ToolNameText: {fileID: 921868309}
---- !u!135 &1332333450
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1332333448}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.1
-  m_Center: {x: 0, y: 0, z: 0.06}
 --- !u!1 &1346786158
 GameObject:
   m_ObjectHideFlags: 0
@@ -12962,7 +12951,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &1508808261
 AudioListener:
   m_ObjectHideFlags: 0
