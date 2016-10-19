@@ -6423,6 +6423,7 @@ MonoBehaviour:
   textObj: {fileID: 2143796119}
   tabButton: {fileID: 1918628403}
   rawImageObj: {fileID: 856795636}
+  scrollView: {fileID: 86558}
 --- !u!1 &750330829
 GameObject:
   m_ObjectHideFlags: 0
