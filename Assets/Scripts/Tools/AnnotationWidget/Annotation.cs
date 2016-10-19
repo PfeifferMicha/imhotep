@@ -9,9 +9,9 @@ public class Annotation : MonoBehaviour {
     [DefaultValue("")]
 	public string creator;
 	public DateTime creationDate;
-	public GameObject myAnnotationLabel;
+	private GameObject myAnnotationLabel;
 	public GameObject myAnnotationListEntry;
-	public Color myColor = Color.black;
+	private Color myColor = Color.black;
 	public Material defaultMaterial, previewMaterial;
 
     // Use this for initialization
@@ -93,6 +93,12 @@ public class Annotation : MonoBehaviour {
 	public String getLabelText() {
 		return myAnnotationLabel.GetComponent<AnnotationLabel> ().getLabelText();
 	}
+
+	//to get Color
+	public Color getColor() {
+		return myColor;
+	}
+
 	//Used to save Label Changes
 	public void saveChanges() {
 		myAnnotationListEntry.GetComponent<AnnotationListEntry> ().updateLabel (getLabelText ());

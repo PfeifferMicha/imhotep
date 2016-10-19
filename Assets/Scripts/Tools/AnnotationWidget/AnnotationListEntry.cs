@@ -19,7 +19,7 @@ public class AnnotationListEntry : MonoBehaviour {
 
 	public void destroyAnnotation() {
 		//Destroy Label
-		GameObject label = myAnnotation.GetComponent<Annotation>().myAnnotationLabel;
+		GameObject label = myAnnotation.GetComponent<Annotation>().getLabel();
 		if (label != null)
 		{
 			Destroy(label);
@@ -70,5 +70,9 @@ public class AnnotationListEntry : MonoBehaviour {
 
 	public void changeAnnotationColor(Color newColor) {
 		myAnnotation.GetComponent<Annotation> ().changeColor (newColor);
+	}
+
+	public void updateAnnotationposition(Quaternion rotation, Vector3 position) {
+		myAnnotation.GetComponent<Annotation> ().updatePosition (rotation, position);
 	}
 }
