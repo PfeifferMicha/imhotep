@@ -58,6 +58,7 @@ public class AnnotationControl : MonoBehaviour
 	private GameObject currentAnnotationListEntry = null;
 
 	private List<GameObject> annotationListEntryList = new List<GameObject> ();
+	private GameObject hoverAnnotation;
 
 
 	private ClickNotifier clickNotifier;
@@ -138,17 +139,23 @@ public class AnnotationControl : MonoBehaviour
 			currentActiveScreen = ActiveScreen.none;
 		} else {
 			//Open AnnotationListScreen
-			closeAnnotationScreen();
+			closeAnnotationScreen ();
 			listScreen.SetActive (true);
 			currentActiveScreen = ActiveScreen.list;
 		}
 	}
-
 	//Called by Color Button with it self as Attribut
 	public void ChangeColorPressed (GameObject newColorButton)
 	{
-		currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().changeAnnotationColor (
-			newColorButton.GetComponent<Button> ().colors.normalColor);
+		if (currentAnnotationListEntry != null) {
+			currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().changeAnnotationColor (
+				newColorButton.GetComponent<Button> ().colors.normalColor);
+		}
+		if (hoverAnnotation != null) {
+			hoverAnnotation.GetComponent<Annotation> ().changeColor (
+				newColorButton.GetComponent<Button> ().colors.normalColor);
+		}
+
 		saveAnnotationInFile ();
 	}
 
@@ -161,18 +168,15 @@ public class AnnotationControl : MonoBehaviour
 			return;
 		}
 		if (eventData.pointerEnter.CompareTag ("AnnotationLabel")) {
-			if (currentActiveScreen == ActiveScreen.add) {
-				eventData.pointerEnter.GetComponentInParent<AnnotationLabel> ().LabelClicked (eventData);
-			} else if (currentActiveScreen == ActiveScreen.list) {
+			if (currentActiveScreen == ActiveScreen.list) {
 				//Jump to Annotation in List
 				jumpToListEntry (eventData.pointerEnter.GetComponentInParent<Annotation> ().gameObject);
 			} else {
 				EditAnnotation (eventData.pointerEnter.GetComponentInParent<Annotation> ().myAnnotationListEntry);
+				eventData.pointerEnter.GetComponentInParent<AnnotationLabel> ().LabelClicked (eventData);
 			}
 		} else if (eventData.pointerEnter.CompareTag ("Annotation")) {
-			if (currentActiveScreen == ActiveScreen.add) {
-				
-			} else if (currentActiveScreen == ActiveScreen.list) {
+			if (currentActiveScreen == ActiveScreen.list) {
 				jumpToListEntry (eventData.pointerEnter);
 			} else {
 				EditAnnotation (eventData.pointerEnter.GetComponent<Annotation> ().myAnnotationListEntry);
@@ -202,24 +206,45 @@ public class AnnotationControl : MonoBehaviour
 	//Called by Hover Organ Event
 	public void hoveredOverMesh (PointerEventData eventData)
 	{
-		/*if (hoverAnnotation != null) {
-			Debug.Log ("Hover");
-			Vector3 localpos = meshPositionNode.transform.InverseTransformPoint (eventData.pointerCurrentRaycast.worldPosition);
-			Vector3 localNormal = meshPositionNode.transform.InverseTransformDirection (eventData.pointerCurrentRaycast.worldNormal);
-			hoverAnnotation.GetComponent<Annotation> ().updatePosition (Quaternion.LookRotation (localNormal), localpos);
-		}*/
+		if (hoverAnnotation != null) {
+			if(!eventData.pointerEnter.gameObject.CompareTag("AnnotationLabel") && !eventData.pointerEnter.gameObject.CompareTag("Annotation")) {
+				hoverAnnotation.SetActive (true);
+				Vector3 localpos = meshPositionNode.transform.InverseTransformPoint (eventData.pointerCurrentRaycast.worldPosition);
+				Debug.LogWarning (eventData.pointerEnter);
+				Vector3 localNormal = meshPositionNode.transform.InverseTransformDirection (eventData.pointerCurrentRaycast.worldNormal);
+				hoverAnnotation.GetComponent<Annotation> ().updatePosition (Quaternion.LookRotation (localNormal), localpos);
+			} else {
+				hoverAnnotation.SetActive (false);
+			}
+
+		}
 	}
 
 	//################ Private Methods #################
 
-	private void jumpToListEntry(GameObject annotation) {
-		
-		if(currentActiveScreen == ActiveScreen.list) {
+	private void jumpToListEntry (GameObject annotation)
+	{
+		if (currentActiveScreen == ActiveScreen.list) {
 			GameObject listEntry = annotation.GetComponent<Annotation> ().myAnnotationListEntry;
-			Vector2 pos = listEntry.gameObject.GetComponent<AnnotationListEntry>().getListPos();
-			listEntry.transform.parent.GetComponent<RectTransform>().anchoredPosition = 
-				new Vector2(0.0f, (-(pos.y) - (listScreen.GetComponent<RectTransform>().rect.height / 3 ) ));
+			Vector2 pos = listEntry.gameObject.GetComponent<AnnotationListEntry> ().getListPos ();
+			listEntry.transform.parent.GetComponent<RectTransform> ().anchoredPosition = 
+				new Vector2 (0.0f, (-(pos.y) - (listScreen.GetComponent<RectTransform> ().rect.height / 3)));
 		}
+	}
+
+	private void createHoverAnnotation ()
+	{
+		//Clone Annotation
+		hoverAnnotation = (GameObject)Instantiate (annotationPointObj);
+
+		hoverAnnotation.transform.localScale = new Vector3 (5, 5, 5);
+		hoverAnnotation.transform.SetParent (meshPositionNode.transform, false);
+		//SetSettings
+		hoverAnnotation.SetActive (true);
+		hoverAnnotation.GetComponent<Annotation> ().makeTransperent ();
+		hoverAnnotation.GetComponent<Annotation> ().disableCollider ();
+		hoverAnnotation.GetComponent<Annotation> ().setDefaultColor ();
+
 	}
 
 
@@ -236,6 +261,7 @@ public class AnnotationControl : MonoBehaviour
 		newAnnotation.SetActive (true);
 		//Create Label for annotation
 		newAnnotation.GetComponent<Annotation> ().CreateLabel (annotationLabel);
+		newAnnotation.GetComponent<Annotation> ().setDefaultColor ();
 
 		return newAnnotation;
 	}
@@ -245,10 +271,9 @@ public class AnnotationControl : MonoBehaviour
 	{
 		// Reset Screen
 		currentAnnotationListEntry = null;
-		/*if (hoverAnnotation != null) {
-			hoverAnnotation.GetComponent<Annotation> ().destroyAnnotation ();
-			hoverAnnotation = null;
-		}*/
+		Destroy (hoverAnnotation);
+		hoverAnnotation = null;
+
 		//Reset Edit Tools
 		instructionText.gameObject.SetActive (true);
 		// Close Screen
@@ -263,15 +288,26 @@ public class AnnotationControl : MonoBehaviour
 	//Opens AnnotationScreen
 	private void openAnnotationScreen ()
 	{
+		//setup Hover
+		if (hoverAnnotation == null) {
+			createHoverAnnotation ();
+		}
+		//set color to actual edit annotation
+		if (currentAnnotationListEntry != null) {
+			hoverAnnotation.GetComponent<Annotation> ().changeColor (
+				currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().getAnnotationColor ());
+		}
 		// open Screen
-		listScreen.SetActive(false);
+		listScreen.SetActive (false);
 		AddEditScreen.SetActive (true);
 		currentActiveScreen = ActiveScreen.add;
 	}
 
 	//Change Annotation Position
-	private void changeAnnotationPosition (Quaternion rotation, Vector3 position) {
+	private void changeAnnotationPosition (Quaternion rotation, Vector3 position)
+	{
 		currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().updateAnnotationposition (rotation, position);
+		saveAnnotationInFile ();
 	}
 
 	//Creates a new AnnotationListEntry, gets the Annotation to this entry, does not add to list
@@ -344,9 +380,8 @@ public class AnnotationControl : MonoBehaviour
 			//setup new Annotation as maesh and in List
 			GameObject newAnnotation = createAnnotationMesh (rotation, position);
 			newAnnotation.GetComponent<Annotation> ().setLabeText (apj.Text);
-			if(apj.ColorR == 0.0f && apj.ColorG == 0.0f && apj.ColorB == 0.0f) {
-				newAnnotation.GetComponent<Annotation> ().setDefaultColor ();
-			} else {
+			//Color not empty (Black)
+			if (apj.ColorR != 0.0f || apj.ColorG != 0.0f || apj.ColorB != 0.0f) {
 				newAnnotation.GetComponent<Annotation> ().changeColor (new Color (apj.ColorR, apj.ColorG, apj.ColorB));
 			}
 
@@ -359,7 +394,7 @@ public class AnnotationControl : MonoBehaviour
 	{
 
 		//delete Annotation Mesh
-		aListEntry.GetComponent<AnnotationListEntry> ().DestroyAnnotation();
+		aListEntry.GetComponent<AnnotationListEntry> ().DestroyAnnotation ();
 
 		Destroy (aListEntry);		
 	}
@@ -370,8 +405,6 @@ public class AnnotationControl : MonoBehaviour
 	public void EditAnnotation (GameObject aListEntry)
 	{
 		currentAnnotationListEntry = aListEntry;
-		/*hoverAnnotation = currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().duplicateAnnotation ();
-		hoverAnnotation.GetComponent<Annotation> ().disableCollider ();*/
 		instructionText.SetActive (false);
 		openAnnotationScreen ();
 	}
@@ -412,9 +445,9 @@ public class AnnotationControl : MonoBehaviour
 				GameObject ap = apListEntry.GetComponent<AnnotationListEntry> ().getAnnotation ();
 				AnnotationJson apj = new AnnotationJson ();
 				apj.Text = ap.GetComponent<Annotation> ().getLabelText ();
-				apj.ColorR = ap.GetComponent<Annotation> ().getColor().r;
-				apj.ColorG = ap.GetComponent<Annotation> ().getColor().g;
-				apj.ColorB = ap.GetComponent<Annotation> ().getColor().b;
+				apj.ColorR = ap.GetComponent<Annotation> ().getColor ().r;
+				apj.ColorG = ap.GetComponent<Annotation> ().getColor ().g;
+				apj.ColorB = ap.GetComponent<Annotation> ().getColor ().b;
 				apj.PositionX = ap.transform.localPosition.x;
 				apj.PositionY = ap.transform.localPosition.y;
 				apj.PositionZ = ap.transform.localPosition.z;

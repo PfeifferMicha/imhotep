@@ -1753,7 +1753,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!120 &246395842
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -3834,7 +3834,7 @@ GameObject:
   - 224: {fileID: 534350466}
   - 222: {fileID: 534350468}
   - 114: {fileID: 534350467}
-  m_Layer: 11
+  m_Layer: 12
   m_Name: Text
   m_TagString: AnnotationLabel
   m_Icon: {fileID: 0}
@@ -13847,7 +13847,7 @@ GameObject:
   - 114: {fileID: 1494569418}
   - 65: {fileID: 1494569417}
   - 114: {fileID: 1494569419}
-  m_Layer: 11
+  m_Layer: 12
   m_Name: AnnotationLabel
   m_TagString: AnnotationLabel
   m_Icon: {fileID: 0}
@@ -14729,7 +14729,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22400102, guid: 7b9b69f00ac964a1f887c8ec516b3f8a, type: 2}
       propertyPath: m_SizeDelta.x
-      value: -54
+      value: -56
       objectReference: {fileID: 0}
     - target: {fileID: 114648, guid: 7b9b69f00ac964a1f887c8ec516b3f8a, type: 2}
       propertyPath: m_Name
@@ -15469,15 +15469,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 127806, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_Layer
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 126374, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_Layer
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 199906, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_Layer
-      value: 11
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 22404606, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -15539,8 +15539,16 @@ Prefab:
       propertyPath: m_FontData.m_Alignment
       value: 4
       objectReference: {fileID: 0}
-    m_RemovedComponents: [{fileID: 11498260, guid: 6a271d4dbbe944a40a7e2d73bba362ee,
-        type: 2}]
+    - target: {fileID: 126374, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_TagString
+      value: AnnotationLabel
+      objectReference: {fileID: 0}
+    - target: {fileID: 127806, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
+      propertyPath: m_TagString
+      value: AnnotationLabel
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 11498260, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 6a271d4dbbe944a40a7e2d73bba362ee, type: 2}
   m_IsPrefabParent: 0
 --- !u!224 &1594388090 stripped
@@ -15870,7 +15878,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2794118, g: 0.2794118, b: 0.2794118, a: 1}
+  m_Color: {r: 0.45490196, g: 0.45490196, b: 0.45490196, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -16738,7 +16746,7 @@ GameObject:
   - 114: {fileID: 1819102969}
   - 114: {fileID: 1819102972}
   - 114: {fileID: 1819102971}
-  m_Layer: 11
+  m_Layer: 12
   m_Name: Background
   m_TagString: AnnotationLabel
   m_Icon: {fileID: 0}
@@ -16776,7 +16784,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.2794118, g: 0.2794118, b: 0.2794118, a: 1}
+  m_Color: {r: 0.45588237, g: 0.45588237, b: 0.45588237, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

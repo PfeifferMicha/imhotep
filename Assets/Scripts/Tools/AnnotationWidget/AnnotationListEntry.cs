@@ -33,6 +33,10 @@ public class AnnotationListEntry : MonoBehaviour {
 		return myAnnotation;
 	}
 
+	public Color getAnnotationColor() {
+		return myAnnotation.GetComponent<Annotation>().getColor();
+	}
+
 	public void updateLabel(string newLabel) {
 		listEntryLabel.text = newLabel;
 	}
