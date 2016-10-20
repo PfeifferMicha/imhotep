@@ -64,7 +64,7 @@ namespace UI
 			Vector2 min = -max;
 			//min = min + new Vector2 (0, statusBarHeight);	// leave space for status bar
 			sizeOfUIScene = new Rect (min, max - min);
-			Debug.Log ("Full Screen Size: " + sizeOfUIScene);
+			//Debug.Log ("Full Screen Size: " + sizeOfUIScene);
 
 			leftScreen = Platform.instance.getScreenDimensions ( Screen.left );
 			rightScreen = Platform.instance.getScreenDimensions ( Screen.right );

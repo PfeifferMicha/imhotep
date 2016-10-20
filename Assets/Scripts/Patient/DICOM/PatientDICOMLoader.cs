@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -187,7 +186,6 @@ public class PatientDICOMLoader : MonoBehaviour
 				DICOM dicom = new DICOM();
 
 				if (returnObject.texDepth == 1) {		// depth of 1 voxels means it's just a texture, i.e. 2D!
-					EditorUtility.UnloadUnusedAssetsImmediate();
 					Texture2D tex = new Texture2D (returnObject.texWidth, returnObject.texHeight, TextureFormat.ARGB32, false, true);
 					tex.SetPixels32 (returnObject.colors);
 					tex.Apply ();

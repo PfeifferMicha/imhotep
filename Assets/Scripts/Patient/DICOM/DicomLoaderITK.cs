@@ -75,8 +75,14 @@ public class DicomLoaderITK
 		//reader.SetFileNames (fileNames);
 
 		Image metaDataImage = SimpleITK.ReadImage( fileNames[0] );
-		DICOMHeader header = new DICOMHeader (metaDataImage, fileNames);
-		return header;
+		Debug.Log ("Loading Header: " + fileNames[0]);
+		try{
+			DICOMHeader header = new DICOMHeader (metaDataImage, fileNames);
+			return header;
+		} catch( System.Exception e ) {
+			Debug.LogError ("Something went wrong while loading: " + fileNames [0] + ". Exception was: " + e.Message + ")");
+			return null;
+		}
 	}
 
 	public DICOMLoadReturnObject load( int indexToLoad )
@@ -256,7 +262,7 @@ public class DicomLoaderITK
 
 			Int16[] colorsTmp = new Int16[ numberOfPixels ];
 			Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
-
+			Debug.Log ("Slope, Intercept: " + slope + " " + intercept);
 			int index = 0;
 			for (UInt32 z = 0; z < texDepth; z++) {
 				for (UInt32 y = 0; y < texHeight; y++) {

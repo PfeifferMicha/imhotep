@@ -12,6 +12,7 @@ public class PatientBriefing : MonoBehaviour
     public GameObject textObj;
     public GameObject tabButton;
     public GameObject rawImageObj;
+    public GameObject scrollView;
     private Text text;
 
     // Use this for initialization
@@ -122,6 +123,7 @@ public class PatientBriefing : MonoBehaviour
     {
         textObj.SetActive(true);
         rawImageObj.SetActive(false);
+        scrollView.GetComponent<ScrollRect>().content = textObj.GetComponent<RectTransform>();
         text.text = result;
         return;
     }
@@ -130,6 +132,8 @@ public class PatientBriefing : MonoBehaviour
     {
         textObj.SetActive(false);
         rawImageObj.SetActive(true);
+        scrollView.GetComponent<ScrollRect>().content = rawImageObj.GetComponent<RectTransform>();
+
         System.Drawing.Bitmap image = (System.Drawing.Bitmap)TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.RenderToImageGdiPlus(info.content, new System.Drawing.Size(713, 1500));//, System.Drawing.Text.TextRenderingHint.AntiAliasGridFit);
         //image.Save("image2.png", System.Drawing.Imaging.ImageFormat.Png);
         // Create a new 713x1500 texture ARGB32 (32 bit with alpha) and no mipmaps
