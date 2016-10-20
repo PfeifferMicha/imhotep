@@ -21,7 +21,7 @@ public class AnnotationLabel : MonoBehaviour {
 	}
 
 	public String getLabelText() {
-		return myText.GetComponent<Text> ().text;
+		return myText.text;
 	}
 
 	//Called when you click on Text Label

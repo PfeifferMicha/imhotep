@@ -17,7 +17,7 @@ public class AnnotationListEntry : MonoBehaviour {
 		listEntryLabel.text = annotation.GetComponent<Annotation>().getLabelText();
 	}
 
-	public void destroyAnnotation() {
+	public void DestroyAnnotation() {
 		//Destroy Label
 		GameObject label = myAnnotation.GetComponent<Annotation>().getLabel();
 		if (label != null)

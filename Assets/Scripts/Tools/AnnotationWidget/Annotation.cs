@@ -19,10 +19,14 @@ public class Annotation : MonoBehaviour {
     // Use this for initialization
     void Start () {
         creationDate = DateTime.Now;
-		defaultColor = defaultMaterial.color;
+    }
+
+	void OnEnable () {
+		defaultColor = new Color(defaultMaterial.color.r, defaultMaterial.color.g, defaultMaterial.color.b);
 		defaultMaterial = Instantiate (defaultMaterial);
 		previewMaterial = Instantiate (previewMaterial);
-    }
+	}
+
 
     // Update is called once per frame
 	void Update () {
@@ -40,7 +44,6 @@ public class Annotation : MonoBehaviour {
         
     }
 
-
 	//Used to create new Label
 	public void CreateLabel(GameObject annotationLabelMaster) {
 		//Create Label
@@ -52,17 +55,6 @@ public class Annotation : MonoBehaviour {
 		//Create line form point to label
 		this.GetComponent<LineRenderer>().SetPosition(0, this.transform.position);
 		this.GetComponent<LineRenderer>().SetPosition(1, this.myAnnotationLabel.transform.position);
-	}
-
-	//Destroys Annotation and Label
-	public void destroyAnnotation() {
-		destroyLabel ();
-		Destroy (this.gameObject);
-	}
-
-	public void destroyLabel() {
-		Destroy (myAnnotationLabel);
-		myAnnotationLabel = null;
 	}
 
 	//Updates the Label Text
@@ -113,7 +105,7 @@ public class Annotation : MonoBehaviour {
 
 	//used to change color of Annotation
 	public void setDefaultColor() {
-		myColor = new Color(defaultColor.r, defaultColor.g, defaultColor.b, defaultColor.a);
+		myColor = new Color(defaultColor.r, defaultColor.g, defaultColor.b, this.GetComponent<Renderer> ().material.color.a);
 		this.GetComponent<Renderer>().material.color = new Color(myColor.r, myColor.g, myColor.b, this.GetComponent<Renderer> ().material.color.a);
 	}
 
