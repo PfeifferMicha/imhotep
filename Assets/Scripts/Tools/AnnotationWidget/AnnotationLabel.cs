@@ -41,6 +41,7 @@ public class AnnotationLabel : MonoBehaviour {
 	public void ValueChanged () {
 		Debug.Log ("ValueChanged");
 		myText.text = myInputField.text;
+		this.GetComponentInParent<Annotation> ().saveLabelChanges ();
 		resizeLabel ();
 	}
 
