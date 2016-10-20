@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using System;
 using System.IO;
+using System.Collections;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 public class PatientBriefing : MonoBehaviour
 {
@@ -132,12 +133,14 @@ public class PatientBriefing : MonoBehaviour
     {
         textObj.SetActive(false);
         rawImageObj.SetActive(true);
+        //Set scroll content
         scrollView.GetComponent<ScrollRect>().content = rawImageObj.GetComponent<RectTransform>();
 
-        System.Drawing.Bitmap image = (System.Drawing.Bitmap)TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.RenderToImageGdiPlus(info.content, new System.Drawing.Size(713, 1500));//, System.Drawing.Text.TextRenderingHint.AntiAliasGridFit);
-        //image.Save("image2.png", System.Drawing.Imaging.ImageFormat.Png);
-        // Create a new 713x1500 texture ARGB32 (32 bit with alpha) and no mipmaps
-        Texture2D texture = new Texture2D(713, 1500, TextureFormat.ARGB32, false);
+        int widthOfStrechedRawImage = (int)rawImageObj.GetComponent<RawImage>().rectTransform.rect.width - 17;
+
+        System.Drawing.Bitmap image = (System.Drawing.Bitmap)TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.RenderToImageGdiPlus(rewriteBodyWidth(info.content, widthOfStrechedRawImage), new System.Drawing.Size(widthOfStrechedRawImage, 1500));//, System.Drawing.Text.TextRenderingHint.AntiAliasGridFit);
+        // Create a new widthOfStrechedRawImagex1500 texture ARGB32 (32 bit with alpha) and no mipmaps
+        Texture2D texture = new Texture2D(widthOfStrechedRawImage, 1500, TextureFormat.ARGB32, false);
 
         /*
         // set the pixel values
@@ -166,6 +169,26 @@ public class PatientBriefing : MonoBehaviour
         // connect texture to material of GameObject this script is attached to
         rawImageObj.GetComponent<RawImage>().material.mainTexture = texture;
         return;
+    }
+
+    private string rewriteBodyWidth(string input, int width)
+    {
+        string pattern = "width:\\s*\\d+px\\s*;";
+        string replacement = "width:"+ width + "px;";
+        Regex rgx = new Regex(pattern);
+        //If a width attribute is found
+        if (rgx.IsMatch(input))
+        {
+            string result = rgx.Replace(input, replacement);
+            return result;
+        }
+        
+        //Else, add width attribute to body
+        string pattern2 = "<body ";
+        string replacement2 = "<body width:" + width + "px;";
+        Regex rgx2 = new Regex(pattern2);
+        string result2 = rgx2.Replace(input, replacement2);
+        return result2;
     }
 
     private void clearTabs()
