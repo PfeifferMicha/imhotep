@@ -13,13 +13,16 @@ public class Annotation : MonoBehaviour {
 	public GameObject myAnnotationLabel;
 	public GameObject myAnnotationListEntry;
 	private Color myColor;
+	private Color defaultColor;
 	public Material defaultMaterial, previewMaterial;
 
     // Use this for initialization
     void Start () {
         creationDate = DateTime.Now;
+		defaultColor = defaultMaterial.color;
 		defaultMaterial = Instantiate (defaultMaterial);
 		previewMaterial = Instantiate (previewMaterial);
+		makeOpaque ();
     }
 
     // Update is called once per frame
@@ -97,14 +100,22 @@ public class Annotation : MonoBehaviour {
 	}
 
 	//Used to save Label Changes
-	public void saveChanges() {
-		myAnnotationListEntry.GetComponent<AnnotationListEntry> ().updateLabel (getLabelText ());
+	public void saveLabelChanges() {
+		if(myAnnotationListEntry != null) {
+			myAnnotationListEntry.GetComponent<AnnotationListEntry>().updateLabel (getLabelText ());
+		}
 	}
 
 	//used to change color of Annotation
 	public void changeColor(Color newColor) {
 		myColor = new Color(newColor.r, newColor.g, newColor.b, this.GetComponent<Renderer> ().material.color.a);
-		this.GetComponent<Renderer> ().material.color = new Color(newColor.r, newColor.g, newColor.b, this.GetComponent<Renderer> ().material.color.a);
+		this.gameObject.GetComponent<Renderer> ().material.color = new Color(newColor.r, newColor.g, newColor.b, this.GetComponent<Renderer> ().material.color.a);
+	}
+
+	//used to change color of Annotation
+	public void setDefaultColor() {
+		myColor = new Color(defaultColor.r, defaultColor.g, defaultColor.b, defaultColor.a);
+		this.GetComponent<Renderer> ().material.color = new Color(defaultColor.r, defaultColor.g, defaultColor.b, this.GetComponent<Renderer> ().material.color.a);
 	}
 
 	public void makeTransperent() {
