@@ -22,7 +22,6 @@ public class Annotation : MonoBehaviour {
 		defaultColor = defaultMaterial.color;
 		defaultMaterial = Instantiate (defaultMaterial);
 		previewMaterial = Instantiate (previewMaterial);
-		makeOpaque ();
     }
 
     // Update is called once per frame
@@ -109,23 +108,23 @@ public class Annotation : MonoBehaviour {
 	//used to change color of Annotation
 	public void changeColor(Color newColor) {
 		myColor = new Color(newColor.r, newColor.g, newColor.b, this.GetComponent<Renderer> ().material.color.a);
-		this.gameObject.GetComponent<Renderer> ().material.color = new Color(newColor.r, newColor.g, newColor.b, this.GetComponent<Renderer> ().material.color.a);
+		this.GetComponent<Renderer>().material.color = new Color(myColor.r, myColor.g, myColor.b, this.GetComponent<MeshRenderer> ().material.color.a);
 	}
 
 	//used to change color of Annotation
 	public void setDefaultColor() {
 		myColor = new Color(defaultColor.r, defaultColor.g, defaultColor.b, defaultColor.a);
-		this.GetComponent<Renderer> ().material.color = new Color(defaultColor.r, defaultColor.g, defaultColor.b, this.GetComponent<Renderer> ().material.color.a);
+		this.GetComponent<Renderer>().material.color = new Color(myColor.r, myColor.g, myColor.b, this.GetComponent<Renderer> ().material.color.a);
 	}
 
 	public void makeTransperent() {
-		this.GetComponent<Renderer> ().material = previewMaterial;
-		this.GetComponent<Renderer> ().material.color = new Color(myColor.r, myColor.g, myColor.b, 0.2f);
+		this.GetComponent<Renderer>().material = previewMaterial;
+		this.GetComponent<Renderer>().material.color = new Color(myColor.r, myColor.g, myColor.b, 0.2f);
 	}
 
 	public void makeOpaque() {
-		this.GetComponent<Renderer> ().material = defaultMaterial;
-		this.GetComponent<Renderer> ().material.color = new Color(myColor.r, myColor.g, myColor.b, 1.0f);
+		this.GetComponent<Renderer>().material = defaultMaterial;
+		this.GetComponent<Renderer>().material.color = new Color(myColor.r, myColor.g, myColor.b, 1.0f);
 	}
 
 	public void disableCollider() {
