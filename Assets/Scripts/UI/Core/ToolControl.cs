@@ -38,7 +38,7 @@ public class ToolControl : MonoBehaviour {
 		// If the input device is a controller, handle picking up and highlighting:
 		InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;
 		if (inputDevice.getDeviceType() == InputDeviceManager.InputDeviceType.ViveController) {
-			Controller c = inputDevice as Controller;
+			Controller rc = inputDevice as Controller;
 
 			// Check which tool choise is closest:
 			float minDist = controllerPickupDist;
@@ -46,13 +46,30 @@ public class ToolControl : MonoBehaviour {
 			foreach (GameObject controllerChoise in controllerChoises) {
 					float dist = Vector3.Distance (
 						            controllerChoise.transform.position,
-						            c.transform.position);
+							rc.transform.position);
 					if (dist < minDist) {
 						minDist = dist;
 						closestController = controllerChoise;
 					}
 					controllerChoise.GetComponent<ToolChoise> ().UnHighlight ();
 			}
+
+			// Also check left controller:
+			Controller lc = InputDeviceManager.instance.leftController;
+			if (lc != null) {
+				foreach (GameObject controllerChoise in controllerChoises) {
+					float dist = Vector3.Distance (
+						             controllerChoise.transform.position,
+						             lc.transform.position);
+					if (dist < minDist) {
+						minDist = dist;
+						closestController = controllerChoise;
+					}
+					//controllerChoise.GetComponent<ToolChoise> ().UnHighlight ();
+				}
+			}
+
+
 			// If a tool choise controller was close enough, highlight it:
 			if (closestController != null) {
 				if (closestController.activeSelf) {
@@ -60,7 +77,7 @@ public class ToolControl : MonoBehaviour {
 					tc.Highlight ();
 
 					// If the user pressed the trigger, choose the tool:
-					if (c.triggerPressed ()) {
+					if (rc.triggerPressed() || lc.triggerPressed ()) {
 						chooseTool (tc);
 					}
 				}
