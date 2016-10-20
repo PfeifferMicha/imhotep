@@ -31,4 +31,23 @@ Troubleshooting when UI element doesn't work:
 Tool UI:
 ---------------------------------
 
+The Tool UI Scene holds all those UI elements which should be connected to the left controller when the tool is picked up.
 
+To create a new tool:
+
+1. Create a GameObject which is a direct child of the ToolScene. Attach a ToolWidget component to this GameObject. This GameObject will be called the "Tool" from now on.
+2. Add your tool's UI elements (Canvases, Lists, Buttons etc.) as children of the Tool. See the other tools for a good setup. These elements will be attached to the controller when the tool is picked up.
+3. Set the Layer of the Tool and its children to be "UITool" in the inspector.
+
+This should be enough to have a first UI ready for your tool. To add functionality, add your own script to the Tool GameObject. You can use normal Unity callbacks (Start, Update, OnEnable, OnDisable...) to program the tool's functions. Note that OnEnable is called when the tool is picked up and OnDisable is called when the tool is placed back on the ToolStand (i.e. another Tool is picked up). Initialize things you need to initialize only once in Start. Things that you need to set up when the tool is picked up should be placed in OnEnable. Also make sure to "clean up" in OnDisable.
+
+Note: You can skip steps 1 and 2 by simply pulling the ToolExample from Assets/Scripts/UI/Prefabs into the ToolScene (and then change the "Tool Example" to the name you want your tool to have).
+Note: If there are no controllers found then the tool's UI is connected to the camera instead, acting like a helmet heads-up-display. This UI can then be controlled using the mouse.
+
+
+Prefabs:
+---------------------------------
+
+The easiest way to get started with your own tool is to copy already existing tools in the project's hierarchy (for example, you can copy the "Opacity Control" in the ToolScene and the "Patient Briefing" in the UIScene.
+
+Additionally, the project contains UI prefabs in Assets/Scripts/UI/Prefabs. The "Tool Example" is an empty tool which can be pulled into the ToolScene. The "Widget" is an empty widget which can be pulled into the UIScene/UI.

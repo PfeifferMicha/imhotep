@@ -257,7 +257,7 @@ public class MeshLoader : MonoBehaviour {
 		{
 			if(mle.name == meshName)
 			{
-				Debug.Log("Found color for " + mle.name + ": " + mle.color);
+				//Debug.Log("Found color for " + mle.name + ": " + mle.color);
 				Material mat = Resources.Load("Materials/DefaultMud", typeof(Material)) as Material;
                 //Material mat = Resources.Load("Materials/DefaultMaterialAfterLoadingOpaque", typeof(Material)) as Material;
 				mat.color = HexToColor (mle.color);

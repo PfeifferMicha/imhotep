@@ -188,7 +188,8 @@ public class HierarchicalInputModule : BaseInputModule {
 
 		HandlePointerExitAndEnter (eventData, activeGameObject);
 		if (activeGameObject != null) {
-			ExecuteEvents.Execute (activeGameObject, eventData, CustomEvents.pointerHoverHandler);
+			Debug.Log (activeGameObject + " not null");
+			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, CustomEvents.pointerHoverHandler);
 		}
 
 		// ----------------------------------
