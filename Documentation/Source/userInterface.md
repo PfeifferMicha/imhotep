@@ -31,4 +31,9 @@ Troubleshooting when UI element doesn't work:
 Tool UI:
 ---------------------------------
 
+Prefabs:
+---------------------------------
 
+The easiest way to get started with your own tool is to copy already existing tools in the project's hierarchy (for example, you can copy the "Opacity Control" in the ToolScene and the "Patient Briefing" in the UIScene.
+
+Additionally, the project contains UI prefabs in Assets/Scripts/UI/Prefabs. The "Tool Example" is an empty tool which can be pulled into the ToolScene. The "Widget" is an empty widget which can be pulled into the UIScene/UI.

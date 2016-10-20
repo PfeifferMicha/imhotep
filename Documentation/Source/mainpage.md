@@ -37,9 +37,9 @@ To run the project using the *HTC Vive*:
 Getting Started:
 ----------------------------------------------
 
-[Input](Documentation/Source/input.md) Describes how the IMHOTEP Input system differs from Unitys default system.
+[Input](Documentation/Source/input.md): Describes how the IMHOTEP Input system differs from Unitys default system.
 
-[UI](Documentation/Source/userinterface.md) Describes how UI elements are set up in IMHOTEP.
+[User Interface](Documentation/Source/userInterface.md): Describes how UI elements are set up in IMHOTEP.
 
-[Patient Event System](Documentation/Source/patientEventSystem.md) How to make your tools react to Patient load/close events.
+[Patient Event System](Documentation/Source/patientEventSystem.md): Describes how to make your tools react to Patient load/close events.
 
