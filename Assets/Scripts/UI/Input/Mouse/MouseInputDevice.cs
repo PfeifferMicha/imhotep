@@ -2,8 +2,10 @@
 using System.Collections;
 using System;
 using UnityEngine.EventSystems;
-using UnityEditor;
 using UI;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class MouseInputDevice : MonoBehaviour, InputDevice {
 	
@@ -124,6 +126,7 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
 	}
 }
 
+#if UNITY_EDITOR
 //! Show/Hide 
 [CustomEditor(typeof(MouseInputDevice))]
 public class MouseInputDeviceEditor : Editor
@@ -140,3 +143,4 @@ public class MouseInputDeviceEditor : Editor
 			mid.rayOriginOffset = Vector3.zero;
 	}
 }
+#endif
