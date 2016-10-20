@@ -26,7 +26,7 @@ public class ModelZoomer : MonoBehaviour
 
     private void Update()
     {
-		if (UI.Core.instance.pointerIsOverUIObject == false) {
+		if (UI.Core.instance.pointerIsOverPlatformUIObject == false) {
 			if (Input.GetAxis ("Mouse ScrollWheel") != 0) {
 				
 

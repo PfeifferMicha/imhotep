@@ -31,6 +31,7 @@ public class HierarchicalInputModule : BaseInputModule {
 	private RaycastResult raycastResult;
 
 	private bool isPointerOverUI = false;
+	private bool isPointerOverPlatformUI = false;
 
 	protected override void Start()
 	{
@@ -54,6 +55,7 @@ public class HierarchicalInputModule : BaseInputModule {
 		Vector3 hitWorldPos = Vector3.zero;
 
 		isPointerOverUI = false;
+		isPointerOverPlatformUI = false;
 
 		InputDeviceManager idm = InputDeviceManager.instance;
 		if( idm.currentInputDevice != null )
@@ -80,6 +82,7 @@ public class HierarchicalInputModule : BaseInputModule {
 						lineRenderer.SetPosition (1, raycastHit.point);
 						hitWorldPos = raycastResult.worldPosition;
 						isPointerOverUI = true;
+						isPointerOverPlatformUI = true;
 					} else {
 						// 3. If no UI element was hit, raycast again but ignore the UIMesh:
 						layerMask = ~ ( 1 << LayerMask.NameToLayer( "UIMesh" ) );
@@ -96,7 +99,8 @@ public class HierarchicalInputModule : BaseInputModule {
 				}
 
 				if (raycastHit.transform != null) {
-					if (raycastHit.transform.gameObject.layer == LayerMask.NameToLayer ("UITool")) {
+					if (raycastHit.transform.gameObject.layer == LayerMask.NameToLayer ("UITool") ||
+						raycastHit.transform.gameObject.layer == LayerMask.NameToLayer ("UIOrgans") ) {
 						if (raycastHit.transform.GetComponent<CanvasRaycaster> () != null) {
 							RectTransform tf = raycastHit.transform.GetComponent<RectTransform> ();
 							PointerEventData data = new PointerEventData (EventSystem.current);
@@ -110,6 +114,9 @@ public class HierarchicalInputModule : BaseInputModule {
 								hitWorldPos = raycastResult.worldPosition;
 								data.pointerCurrentRaycast = raycastResult;
 								isPointerOverUI = true;
+								if (raycastHit.transform.gameObject.layer == LayerMask.NameToLayer ("UITool")) {
+									isPointerOverPlatformUI = true;
+								}
 							}
 						}
 					}
@@ -173,6 +180,7 @@ public class HierarchicalInputModule : BaseInputModule {
 	public override void Process()
 	{
 		UI.Core.instance.setPointerIsOnUI (isPointerOverUI);
+		UI.Core.instance.setPointerIsOnPlatformUI (isPointerOverPlatformUI);
 
 		SendUpdateEventToSelectedObject();
 
@@ -188,7 +196,6 @@ public class HierarchicalInputModule : BaseInputModule {
 
 		HandlePointerExitAndEnter (eventData, activeGameObject);
 		if (activeGameObject != null) {
-			Debug.Log (activeGameObject + " not null");
 			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, CustomEvents.pointerHoverHandler);
 		}
 

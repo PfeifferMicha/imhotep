@@ -10,6 +10,9 @@ namespace UI
 	{
 		//! Is set to true whenever the mouse is over a UI elemnt.
 		public bool pointerIsOverUIObject{ private set; get; }
+		/*! Is set to true whenever the mouse is over a UI element on the platform
+		 * (but ignores UI elments which are beyond the UIMesh, like things that are attached to the organs).*/
+		public bool pointerIsOverPlatformUIObject{ private set; get; }
 
 		public static Core instance { private set; get; }
 
@@ -75,6 +78,10 @@ namespace UI
 		public void setPointerIsOnUI( bool onUI )
 		{
 			pointerIsOverUIObject = onUI;
+		}
+		public void setPointerIsOnPlatformUI( bool onUI )
+		{
+			pointerIsOverPlatformUIObject = onUI;
 		}
 
 		public void setCamera( Camera cam )
