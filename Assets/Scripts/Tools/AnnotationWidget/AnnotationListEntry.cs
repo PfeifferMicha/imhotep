@@ -7,14 +7,14 @@ public class AnnotationListEntry : MonoBehaviour {
 
 	public Button editButton;
 	public Button deleteButton;
-	public Text listEntryLabel;
+	public GameObject listEntryLabel;
 
 	private GameObject myAnnotation;
 
 	public void setupListEntry (GameObject annotation) {
 		myAnnotation = annotation;
-		annotation.GetComponent<Annotation>().myAnnotationListEntry = this.gameObject;
-		listEntryLabel.text = annotation.GetComponent<Annotation>().getLabelText();
+		annotation.GetComponent<Annotation> ().myAnnotationListEntry = this.gameObject;
+		listEntryLabel.GetComponent<Text> ().text = myAnnotation.GetComponent<Annotation> ().getLabelText();
 	}
 
 	public void destroyAnnotation() {
@@ -25,7 +25,7 @@ public class AnnotationListEntry : MonoBehaviour {
 			Destroy(label);
 		}
 		//Delete points
-		Destroy(myAnnotation.gameObject);
+		Destroy(myAnnotation);
 		myAnnotation = null;
 	}
 
@@ -33,8 +33,33 @@ public class AnnotationListEntry : MonoBehaviour {
 		return myAnnotation;
 	}
 
+	//returns a clone of current Annotation
+	public GameObject duplicateAnnotation() {
+		Quaternion rotation = myAnnotation.transform.localRotation;
+		Vector3 position = myAnnotation.transform.localPosition;
+
+		GameObject clone = (GameObject)Instantiate(myAnnotation, position, rotation);
+		clone.transform.SetParent(myAnnotation.transform.parent, false );
+		clone.SetActive (true);
+
+		clone.GetComponent<Annotation> ().destroyLabel ();
+
+		myAnnotation.GetComponent<Annotation> ().makeOpaque ();
+		clone.GetComponent<Annotation> ().makeTransperent ();
+		clone.GetComponent<Annotation> ().changeColor (myAnnotation.GetComponent<Annotation> ().getColor ());
+		return clone;
+	}
+
+	//Replaces currentAnnotation with the one given and destroys old one
+	public void replaceAnnotation(GameObject newAnnotation) {
+		newAnnotation.GetComponent<Annotation> ().CreateLabel (myAnnotation.GetComponent<Annotation> ().getLabel());
+		myAnnotation.GetComponent<Annotation> ().destroyAnnotation ();
+		newAnnotation.GetComponent<Annotation> ().makeOpaque ();
+		setupListEntry (newAnnotation);
+	}
+
 	public void updateLabel(string newLabel) {
-		listEntryLabel.text = newLabel;
+		listEntryLabel.GetComponent<Text> ().text = newLabel;
 	}
 
 	//Called if the user pressed Edit Annotation Button (List Screen)
@@ -48,11 +73,11 @@ public class AnnotationListEntry : MonoBehaviour {
 	}
 
 	public void changeAnnotationColor(Color newColor) {
-		myAnnotation.GetComponent<Annotation>().changeColor (newColor);
+		myAnnotation.GetComponent<Annotation> ().changeColor (newColor);
 	}
 
 	public void updateAnnotationposition(Quaternion rotation, Vector3 position) {
-		myAnnotation.GetComponent<Annotation>().updatePosition (rotation, position);
+		myAnnotation.GetComponent<Annotation> ().updatePosition (rotation, position);
 	}
 
 	public Vector2 getListPos() {
