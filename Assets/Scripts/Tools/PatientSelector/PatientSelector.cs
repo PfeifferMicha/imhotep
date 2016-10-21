@@ -74,7 +74,7 @@ public class PatientSelector : MonoBehaviour {
 
 			// Fill button's text object:
 			Text t = newButton.transform.Find("Text").GetComponent<Text>();
-			t.text = patient.name + "\n  <color=#AAAAAA>" + patient.birthDate + "</color>";
+			t.text = patient.name + "\n  <color=#DDDDDD>" + patient.birthDate + "</color>";
 
 			newButton.transform.Find ("ImageFemale").gameObject.SetActive (false);
 			newButton.transform.Find ("ImageMale").gameObject.SetActive (false);
@@ -92,7 +92,7 @@ public class PatientSelector : MonoBehaviour {
 			}
 
 			Text detailsText = newButton.transform.Find("TextDetails").GetComponent<Text>();
-			detailsText.text = patient.diagnosis + "\n  <color=#AAAAAA>" + patient.details + "</color>";
+			detailsText.text = patient.diagnosis + "\n  <color=#DDDDDD>" + patient.details + "</color>";
 
 			Image operationTypeImage = newButton.transform.Find ("IconBackground/OperationTypeImage").GetComponent<Image> ();
 			if (operationTypeImage != null) {
