@@ -83,6 +83,8 @@ public class AnnotationControl : MonoBehaviour
 
 		AddEditScreen.SetActive (false);
 		listScreen.SetActive (false);
+		currentActiveScreen = ActiveScreen.none;
+
 
 		annotationLabel.SetActive (false);
 		annotationPointObj.SetActive (false);
@@ -90,6 +92,7 @@ public class AnnotationControl : MonoBehaviour
 		clickNotifier = meshPositionNode.AddComponent<ClickNotifier> ();
 		clickNotifier.clickNotificationEvent = OnMeshClicked;
 		clickNotifier.hoverNotificationEvent = hoveredOverMesh;
+		clickNotifier.exitNotificationEvent = pointerExitMesh;
 	}
 
 	void OnDisable ()
@@ -159,6 +162,11 @@ public class AnnotationControl : MonoBehaviour
 		saveAnnotationInFile ();
 	}
 
+	//Click on List Entry to Rotate Organ to Annottion
+	public void HighLightAnnotation(GameObject listEntry) {
+		//TODO
+	}
+
 	//################ Called By Events ################
 
 	// Called when user clicks on Organ
@@ -210,13 +218,19 @@ public class AnnotationControl : MonoBehaviour
 			if(!eventData.pointerEnter.gameObject.CompareTag("AnnotationLabel") && !eventData.pointerEnter.gameObject.CompareTag("Annotation")) {
 				hoverAnnotation.SetActive (true);
 				Vector3 localpos = meshPositionNode.transform.InverseTransformPoint (eventData.pointerCurrentRaycast.worldPosition);
-				Debug.LogWarning (eventData.pointerEnter);
 				Vector3 localNormal = meshPositionNode.transform.InverseTransformDirection (eventData.pointerCurrentRaycast.worldNormal);
 				hoverAnnotation.GetComponent<Annotation> ().updatePosition (Quaternion.LookRotation (localNormal), localpos);
 			} else {
 				hoverAnnotation.SetActive (false);
 			}
+		}
+	}
 
+	//Called if pointer is noty anymore on Mesh
+	public void pointerExitMesh (PointerEventData eventData)
+	{
+		if (hoverAnnotation != null) {
+			hoverAnnotation.SetActive (false);
 		}
 	}
 
@@ -342,6 +356,13 @@ public class AnnotationControl : MonoBehaviour
 		}
 		//Delete list
 		annotationListEntryList = new List<GameObject> ();
+
+		//Delete hoverAnnotation
+		Destroy (hoverAnnotation);
+		hoverAnnotation = null;
+
+
+
 	}
 
 	//Load all annotations out of File in List
