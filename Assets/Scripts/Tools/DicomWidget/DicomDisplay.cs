@@ -52,8 +52,8 @@ public class DicomDisplay : MonoBehaviour {
 	void eventDisplayCurrentDicom( object obj = null )
 	{
         PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();        
-        DICOM dicom = mPatientDICOMLoader.getCurrentDicom();
-		if( dicom != null && dicom.is2DImage() )
+        DICOMSlice dicom = mPatientDICOMLoader.getCurrentDicom();
+		if( dicom != null )
 		{
 			DicomImage.gameObject.SetActive (true);
 			DicomImage.SetDicom (dicom);

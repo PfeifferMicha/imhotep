@@ -25,7 +25,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	// When dragZoom is true, moving the mouse will modify the position:
 	private bool dragZoom = false;
 
-	private DICOM currentDICOM;
+	private DICOMSlice currentDICOM;
 
 	private struct ViewSettings
 	{
@@ -265,7 +265,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		return val - Mathf.Floor (val);
 	}
 
-	public void SetDicom( DICOM dicom )
+	public void SetDicom( DICOMSlice dicom )
 	{
 		if (mMaterial == null)
 			return;

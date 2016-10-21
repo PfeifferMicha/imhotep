@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 
 
-public class DICOMLoadReturnObject {
+public class DICOMLoadReturnObjectSlice {
 
     public int texWidth { get; set; }
     public int texHeight { get; set; }
@@ -12,7 +12,7 @@ public class DICOMLoadReturnObject {
     public DICOMHeader header { get; set; }
 	public int slice;
 
-	public DICOMLoadReturnObject (int texWidth, int texHeight, int texDepth, Color32[] colors, DICOMHeader header, int slice = -1 )
+	public DICOMLoadReturnObjectSlice (int texWidth, int texHeight, int texDepth, Color32[] colors, DICOMHeader header, int slice = -1 )
     {
         this.texWidth = texWidth;
         this.texHeight = texHeight;

@@ -13,18 +13,24 @@ public class PatientDICOMLoader : MonoBehaviour
 	private DicomLoaderITK mDicomLoader = new DicomLoaderITK ();
 
 	//! Already loaded DICOM:
-	private DICOM mCurrentDICOM = null;
+	private DICOMSlice mCurrentDICOM = null;
+
+	private DICOMVolume mCurrentDICOMVolume = null;
 
 
 	//! Simple lock, used to prevent loading multiple directory or DICOMs at the same time:
 	private bool isLoading = false;
 
-	//! Path which should be searched:
+	//! Path which should be searched
 	private string PathForThread = "";
-	//! ID of the DICOM in list which should be loaded:
+	//! ID of the DICOM in list which should be loaded
     private int DicomIDForThread = 0;
+	//! Slice number which should be loaded (or -1 for full volume)
 	private int DicomSliceForThread = 0;
-    private DICOMLoadReturnObject returnObject = null;
+	//! Temporary object returned by the loader
+	private DICOMLoadReturnObjectSlice returnObjectSlice = null;
+	//! Temporary object returned by the loader
+	private DICOMLoadReturnObjectVolume returnObjectVolume = null;
     private bool loadingFinished = false;
     private bool loadingDirectoryFinished = false;
 
@@ -54,7 +60,10 @@ public class PatientDICOMLoader : MonoBehaviour
         loadingDirectoryFinished = true;
     }
 
-    public void loadDicom( int id )
+	/*! Start loading the DICOM in the availableSeries list with the given ID.
+	 * \return true if we started loading the given series, false if loading was blocked
+	 * 		(because something else is still being loaded). */
+    public bool loadDicom( int id )
 	{
         if (!isLoading) {
 			// Lock:
@@ -72,31 +81,26 @@ public class PatientDICOMLoader : MonoBehaviour
 			// Let loading screen know what we're currently doing:
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_AddLoadingJob,
 				"DICOM");
-
-            /*// If there was a series found with the given ID, laod it:
-            if (mAvailableSeries.Count > DicomIDForThread)
-            {
-                mCurrentDICOM = mDicomLoader.load(mPath, mAvailableSeries[DicomIDForThread]);
-            }
-
-            if (mCurrentDICOM != null)
-            {
-                PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewLoaded);
-            }
-            // Unlock:
-            isLoading = false;*/
-
+			
+			return true;
         }
+		return false;
 	}
 
 
-	public void loadDicomSlice( int slice )
+	/*! Start loading a new slice of the currently loaded DICOM.
+	 * \return true if we started loading the given series, false if loading was blocked
+	 * 		(because something else is still being loaded). */
+	public bool loadDicomSlice( int slice )
 	{
 		// Load the slice from the previously loaded DICOM:
-		loadDicomSlice( DicomIDForThread, slice );
+		return loadDicomSlice( DicomIDForThread, slice );
 	}
 
-	public void loadDicomSlice( int id, int slice )
+	/*! Start loading a new slice of the DICOM given by ID in the availableSeries list.
+	 * \return true if we started loading the given series, false if loading was blocked
+	 * 		(because something else is still being loaded). */
+	public bool loadDicomSlice( int id, int slice )
 	{
 		if (!isLoading) {
 			// Lock:
@@ -116,29 +120,20 @@ public class PatientDICOMLoader : MonoBehaviour
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_AddLoadingJob,
 				"DICOM");
 
-			/*// If there was a series found with the given ID, laod it:
-            if (mAvailableSeries.Count > DicomIDForThread)
-            {
-                mCurrentDICOM = mDicomLoader.load(mPath, mAvailableSeries[DicomIDForThread]);
-            }
-
-            if (mCurrentDICOM != null)
-            {
-                PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewLoaded);
-            }
-            // Unlock:
-            isLoading = false;*/
-
+			return true;
 		}
+		return false;
 	}
 
     private void loadDicomWorker(object sender, DoWorkEventArgs e)
     {
 		//List<string> series = mDicomLoader.getAvailableSeries ();
 		if (DicomSliceForThread >= 0) {
-			returnObject = mDicomLoader.loadSlice (DicomIDForThread, DicomSliceForThread);
+			returnObjectSlice = mDicomLoader.loadSlice (DicomIDForThread, DicomSliceForThread);
+			returnObjectVolume = null;
 		} else {
-			returnObject = mDicomLoader.load (DicomIDForThread);
+			returnObjectVolume = mDicomLoader.load (DicomIDForThread);
+			returnObjectSlice = null;
 		}
     }
 
@@ -152,9 +147,15 @@ public class PatientDICOMLoader : MonoBehaviour
 		return mDicomLoader.getAvailableSeries();
 	}
 
-	public DICOM getCurrentDicom()
+	public DICOMSlice getCurrentDicom()
 	{
 		return mCurrentDICOM;
+	}
+
+
+	public DICOMVolume getCurrentDicomVolume()
+	{
+		return mCurrentDICOMVolume;
 	}
 
 
@@ -181,48 +182,56 @@ public class PatientDICOMLoader : MonoBehaviour
 		{
 			loadingFinished = false;
 
-			if(returnObject != null) {
+			if(returnObjectSlice != null) {
 
-				DICOM dicom = new DICOM();
+				DICOMSlice dicom = new DICOMSlice();
 
-				if (returnObject.texDepth == 1) {		// depth of 1 voxels means it's just a texture, i.e. 2D!
-					Texture2D tex = new Texture2D (returnObject.texWidth, returnObject.texHeight, TextureFormat.ARGB32, false, true);
-					tex.SetPixels32 (returnObject.colors);
-					tex.Apply ();
-					dicom.setTexture2D(tex);
+				Texture2D tex = new Texture2D (returnObjectSlice.texWidth, returnObjectSlice.texHeight, TextureFormat.ARGB32, false, true);
+				tex.SetPixels32 (returnObjectSlice.colors);
+				tex.Apply ();
+				dicom.setTexture2D(tex);
 
-					/*Color32[] cols = tex.GetPixels32 ();
-					Color32 col = cols[0];
+				/*Texture3D tex = new Texture3D (returnObject.texWidth, returnObject.texHeight, returnObject.texDepth, TextureFormat.ARGB32, false);
+				//tex.SetPixels (returnObject.colors); //needs around 0.15 sec for a small DICOM, TODO coroutine?
+				tex.Apply ();
+				dicom.setTexture3D (tex);*/
 
-					Debug.LogError ("Texture: " + col.r + " " + col.g + " " + col.b + " " + col.a);
-					Debug.LogError ("Result: " + (col.r + 256*(col.g + 256*(col.b + 256*col.a))));
-					Debug.LogError (
-						SystemInfo.SupportsTextureFormat (TextureFormat.RGBAFloat));*/
-
-				} else {
-					Texture3D tex = new Texture3D (returnObject.texWidth, returnObject.texHeight, returnObject.texDepth, TextureFormat.ARGB32, false);
-					//tex.SetPixels (returnObject.colors); //needs around 0.15 sec for a small DICOM, TODO coroutine?
-					tex.Apply ();
-					dicom.setTexture3D (tex);
-				}
-
-				dicom.setHeader(returnObject.header);
-				dicom.slice = returnObject.slice;
-				//dicom.setMaximum(returnObject.maxCol);
-				//dicom.setMinimum(returnObject.minCol);
-				//dicom.setMinimum(0);
+				dicom.setHeader(returnObjectSlice.header);
+				dicom.slice = returnObjectSlice.slice;
 				mCurrentDICOM = dicom;
 
-				// If a series was loaded successfully, let listeners know:
+
+				// Unlock:
+				isLoading = false;
+
+				returnObjectSlice = null;
+
+				// If an image was loaded successfully, let listeners know:
 				if (mCurrentDICOM != null)
 				{
 					PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewLoaded);
 				}
 
+			}
+			if (returnObjectVolume != null) {
+
+				DICOMVolume dicom = new DICOMVolume();
+				dicom.setHeader(returnObjectVolume.header);
+				dicom.setImage(returnObjectVolume.itkImage);
+
+				mCurrentDICOMVolume = dicom;
+
 				// Unlock:
 				isLoading = false;
 
-				returnObject = null;
+				returnObjectVolume = null;
+
+				// If an image was loaded successfully, let listeners know:
+				if (mCurrentDICOM != null)
+				{
+					PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewLoaded);
+				}
+
 			}
 
 			// Let loading screen know what we're currently doing:

@@ -85,13 +85,12 @@ public class DicomLoaderITK
 		}
 	}
 
-	public DICOMLoadReturnObject load( int indexToLoad )
+	public DICOMLoadReturnObjectVolume load( int indexToLoad )
 	{
 		if (loadedDirectory == null) {
 			Debug.LogWarning ("Set the directory before trying to load a series!");
 			return null;
 		}
-
 		if (indexToLoad < 0 || indexToLoad >= availableSeries.Count) {
 			Debug.LogWarning ("Could not find series.");
 			return null;
@@ -99,42 +98,31 @@ public class DicomLoaderITK
 		DICOMHeader header = availableSeries [indexToLoad];
 
 		// Get the file names for the series:
-		Debug.Log("\tLoading series " + header.SeriesUID);
 		VectorString fileNames = header.FileNames;	//ImageSeriesReader.GetGDCMSeriesFileNames( loadedDirectory, header.SeriesUID );
 
 		if (fileNames.Count <= 0)
 			throw(new System.Exception ("No files found for series."));
 
-		// Read the Dicom image series
+		// Create a reader which will read the whole series:
 		ImageSeriesReader reader = new ImageSeriesReader ();
 		reader.SetFileNames (fileNames);
-
+		// Load the entire image into a series:
 		Image image = reader.Execute();
-
-		UInt32 numberOfPixels = image.GetWidth () * image.GetHeight () * image.GetDepth ();
 
 		int origTexWidth = (int)image.GetWidth ();
 		int origTexHeight = (int)image.GetHeight ();
 		int origTexDepth = (int)image.GetDepth ();
 		int texWidth = Mathf.NextPowerOfTwo ((int)image.GetWidth ());
 		int texHeight = Mathf.NextPowerOfTwo ((int)image.GetHeight ());
-		int texDepth = Mathf.NextPowerOfTwo ((int)image.GetDepth ());
-		/*Debug.Log ("\tImage: " + image.ToString());
-		Debug.Log ("\tImage Pixel Type: " + image.GetPixelID());
-		Debug.Log ("\tImage size: " + origTexWidth + "x" + origTexHeight + "x" + origTexDepth );
-		Debug.Log ("\tTexture size: " + texWidth + "x" + texHeight + "x" + texDepth );
-		Debug.Log ("\tImage number of pixels: " + numberOfPixels);*/
+		int texDepth = 1;
+		Color32[] colors = new Color32[ texWidth*texHeight ];		
 
-		//Image metaDataImage = SimpleITK.ReadImage( fileNames[0] );
-		//DICOMHeader header = new DICOMHeader (metaDataImage, fileNames);
-		//header.NumberOfImages = image.GetDepth ();
+		//UInt16 minCol = UInt16.MaxValue;
+		//UInt16 maxCol = UInt16.MinValue;
 
-		// Some of the following tags may not be in the DICOM Header, so catch and ignore "not found" exceptions:
+		int slope = header.RescaleSlope;
+		int intercept = header.RescaleIntercept;
 
-		
-		Color32[] colors = new Color32[ texWidth*texHeight*texDepth ];		
-		//int maxCol = 0;
-		//int minCol = 65535;
 
 		if (image.GetDimension () != 2 && image.GetDimension () != 3)
 		{
@@ -142,28 +130,21 @@ public class DicomLoaderITK
 		}
 
 		IntPtr bufferPtr;
+		UInt32 numberOfPixels = image.GetWidth () * image.GetHeight ();
 		if (image.GetPixelID () == PixelIDValueEnum.sitkUInt16) {
 			bufferPtr = image.GetBufferAsUInt16 ();
 
 			Int16[] colorsTmp = new Int16[ numberOfPixels ];
 			Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
-
+			Debug.Log ("Slope, Intercept: " + slope + " " + intercept);
 			int index = 0;
 			for (UInt32 z = 0; z < texDepth; z++) {
 				for (UInt32 y = 0; y < texHeight; y++) {
 					for (UInt32 x = 0; x < texWidth; x++) {
 						if( x < origTexWidth && y < origTexHeight && z < origTexDepth )
 						{
-							/*if( colorsTmp[index] > maxCol ){
-								maxCol = (int)colorsTmp[index];
-							}
-
-							if (colorsTmp [index] < minCol) {
-								minCol = (int)colorsTmp [index];
-							}*/
-
 							//colors[ z + (x + yTex*texWidth)*texDepth ] = F2C( (UInt16)colorsTmp[index] );
-							colors[ (texWidth-1-x) + y*texWidth + z*texWidth*texHeight ] = F2C( (UInt16)colorsTmp[index] );
+							colors[ x + y*texWidth + z*texWidth*texHeight ] = F2C( (UInt16)(colorsTmp[index]*slope + intercept));
 							index ++;
 						}
 					}
@@ -182,35 +163,35 @@ public class DicomLoaderITK
 					for (UInt32 x = 0; x < texWidth; x++) {
 						if( x < origTexWidth && y < origTexHeight && z < origTexDepth )
 						{
-							/*if( colorsTmp[index] > maxCol ){
-								maxCol = (int)colorsTmp[index];
-							}
-							if( colorsTmp[index] < minCol ){
-								minCol = (int)colorsTmp[index];
-							}*/
-
 							//colors[ z + (x + yTex*texWidth)*texDepth ] = F2C( (UInt16)colorsTmp[index] );
 							// Shift the signed int into the unsigned int range by adding 32768.
-							colors[ (texWidth-1-x) + y*texWidth + z*texWidth*texHeight ] = F2C( (UInt16)(colorsTmp[index]+32768) );
+							//Debug.Log("val: " + (colorsTmp[index]*slope - intercept));
+							UInt16 pixelValue = (UInt16)((colorsTmp[index] - intercept)/slope);
+							// Mask out unused high bits:
+							//pixelValue &= unchecked((UInt16)~(1 << 15 | 1 << 14 | 1 << 13 | 1 << 12));
+
+							colors[ x + y*texWidth + z*texWidth*texHeight ] = F2C( pixelValue );
+
+							/*if (pixelValue > maxCol)
+								maxCol = pixelValue;
+							if (pixelValue < minCol)
+								minCol = pixelValue;*/
+
 
 							index ++;
 						}
 					}
 				}
 			}
-			//Debug.LogError (minCol);
-			//Debug.LogError (maxCol);
-
-			//minCol += 32768;	// Signed Int16 to unsigned Int16
-			//maxCol += 32768;	// Signed Int16 to unsigned Int16
+			//Debug.LogError ("Min, max pixel values: " + minCol + " " + maxCol);
 		} else {
 			throw(new System.Exception ("Cannot read DICOM. Unsupported pixel format: " + image.GetPixelID()));
 		}
 
-		return new DICOMLoadReturnObject (texWidth, texHeight, texDepth, colors, header);
+		return new DICOMLoadReturnObjectVolume (image, header);
 	}
 
-	public DICOMLoadReturnObject loadSlice( int indexToLoad, int slice )
+	public DICOMLoadReturnObjectSlice loadSlice( int indexToLoad, int slice )
 	{
 		if (loadedDirectory == null) {
 			Debug.LogWarning ("Set the directory before trying to load a series!");
@@ -329,7 +310,7 @@ public class DicomLoaderITK
 			throw(new System.Exception ("Cannot read DICOM. Unsupported pixel format: " + image.GetPixelID()));
 		}
 
-		return new DICOMLoadReturnObject (texWidth, texHeight, texDepth, colors, header, slice);
+		return new DICOMLoadReturnObjectSlice (texWidth, texHeight, texDepth, colors, header, slice);
 	}
 
 	private int indexForSeriesUID( string seriesUID )
