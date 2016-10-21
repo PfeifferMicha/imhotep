@@ -194,10 +194,6 @@ public class HierarchicalInputModule : BaseInputModule {
 			buttonInfo = new ButtonInfo ();
 		}
 
-		HandlePointerExitAndEnter (eventData, activeGameObject);
-		if (activeGameObject != null) {
-			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, CustomEvents.pointerHoverHandler);
-		}
 
 		// ----------------------------------
 		// Fill the EventData with current information from the last hit:
@@ -208,6 +204,11 @@ public class HierarchicalInputModule : BaseInputModule {
 		raycastResult.worldNormal = raycastHit.normal;
 		eventData.pointerCurrentRaycast = raycastResult;
 		eventData.position = raycastResult.screenPosition;
+
+		HandlePointerExitAndEnter (eventData, activeGameObject);
+		if (activeGameObject != null) {
+			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, CustomEvents.pointerHoverHandler);
+		}
 
 
 		CopyFromTo (eventData, leftData);
