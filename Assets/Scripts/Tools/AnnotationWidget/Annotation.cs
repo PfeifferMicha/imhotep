@@ -101,31 +101,39 @@ public class Annotation : MonoBehaviour {
 	//used to change color of Annotation
 	public void changeColor(Color newColor) {
 		myColor = new Color(newColor.r, newColor.g, newColor.b, this.GetComponent<Renderer> ().material.color.a);
-		this.GetComponent<Renderer>().material.color = new Color(myColor.r, myColor.g, myColor.b, this.GetComponent<MeshRenderer> ().material.color.a);
+		Material[] mats = this.GetComponent<MeshRenderer>().materials;
+		mats [0].color = myColor;
+		this.GetComponent<MeshRenderer>().materials = mats;
 	}
 
 	//used to change color of Annotation
 	public void setDefaultColor() {
 		myColor = new Color(defaultColor.r, defaultColor.g, defaultColor.b, this.GetComponent<Renderer> ().material.color.a);
-		this.GetComponent<Renderer>().material.color = new Color(myColor.r, myColor.g, myColor.b, this.GetComponent<Renderer> ().material.color.a);
+		Material[] mats = this.GetComponent<MeshRenderer>().materials;
+		mats [0].color = myColor;
+		this.GetComponent<MeshRenderer>().materials = mats;
 	}
 
 	public void makeTransperent() {
-		this.GetComponent<MeshRenderer>().material = previewMaterial;
-		foreach(Material mat in this.GetComponent<MeshRenderer>().materials) {
-			Color pinColor = mat.color;
+		Material[] mats = this.GetComponent<MeshRenderer>().materials;
+		for (int i = 0; i < mats.GetLength(0); i++) {
+			Color pinColor = mats[i].color;
 			pinColor.a = 0.2f;
-			mat.color = pinColor;
+			mats[i] = previewMaterial;
+			mats[i].color = pinColor;
 		}
+		this.GetComponent<MeshRenderer>().materials = mats;
 	}
 
 	public void makeOpaque() {
-		this.GetComponent<Renderer>().material = defaultMaterial;
-		foreach(Material mat in this.GetComponent<Renderer>().materials) {
-			Color pinColor = mat.color;
+		Material[] mats = this.GetComponent<MeshRenderer>().materials;
+		for (int i = 0; i < mats.GetLength(0); i++) {
+			Color pinColor = mats[i].color;
 			pinColor.a = 1f;
-			mat.color = pinColor;
+			mats[i] = defaultMaterial;
+			mats[i].color = pinColor;
 		}
+		this.GetComponent<MeshRenderer>().materials = mats;
 	}
 
 	public void disableCollider() {

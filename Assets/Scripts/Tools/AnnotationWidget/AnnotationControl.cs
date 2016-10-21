@@ -275,8 +275,14 @@ public class AnnotationControl : MonoBehaviour
 		newAnnotation.SetActive (true);
 		//Create Label for annotation
 		newAnnotation.GetComponent<Annotation> ().CreateLabel (annotationLabel);
-		newAnnotation.GetComponent<Annotation> ().setDefaultColor ();
 
+		//set Color
+		if(hoverAnnotation != null) {
+			newAnnotation.GetComponent<Annotation> ().changeColor(hoverAnnotation.GetComponent<Annotation>().getColor());
+		} else {
+			newAnnotation.GetComponent<Annotation> ().setDefaultColor ();
+		}
+			
 		return newAnnotation;
 	}
 
