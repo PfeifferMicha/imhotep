@@ -356,7 +356,7 @@ public class AnnotationControl : MonoBehaviour
 		}
 		//Delete list
 		annotationListEntryList = new List<GameObject> ();
-
+		currentAnnotationListEntry = null;
 		//Delete hoverAnnotation
 		Destroy (hoverAnnotation);
 		hoverAnnotation = null;
@@ -414,6 +414,10 @@ public class AnnotationControl : MonoBehaviour
 	private void removeOneAnnotation (GameObject aListEntry)
 	{
 
+		if(currentAnnotationListEntry = aListEntry)
+		{
+			currentAnnotationListEntry = null;
+		}
 		//delete Annotation Mesh
 		aListEntry.GetComponent<AnnotationListEntry> ().DestroyAnnotation ();
 
