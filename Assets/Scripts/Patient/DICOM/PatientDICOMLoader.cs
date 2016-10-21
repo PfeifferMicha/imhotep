@@ -9,6 +9,9 @@ using itk.simple;
  * When events happen, other modules are notified using the PatientEventSystem class. */
 public class PatientDICOMLoader : MonoBehaviour
 {
+	//! The singleton instance of the loader (for easier access):
+	public static PatientDICOMLoader instance { get; private set; }
+
 	//! DICOM loader instance:
 	private DicomLoaderITK mDicomLoader = new DicomLoaderITK ();
 
@@ -33,6 +36,11 @@ public class PatientDICOMLoader : MonoBehaviour
 	private DICOMLoadReturnObjectVolume returnObjectVolume = null;
     private bool loadingFinished = false;
     private bool loadingDirectoryFinished = false;
+
+	public PatientDICOMLoader()
+	{
+		instance = this;
+	}
 
     public void loadDirectory( string path )
 	{
@@ -209,7 +217,7 @@ public class PatientDICOMLoader : MonoBehaviour
 				// If an image was loaded successfully, let listeners know:
 				if (mCurrentDICOM != null)
 				{
-					PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewLoaded);
+					PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewLoaded, mCurrentDICOM);
 				}
 
 			}
@@ -227,9 +235,9 @@ public class PatientDICOMLoader : MonoBehaviour
 				returnObjectVolume = null;
 
 				// If an image was loaded successfully, let listeners know:
-				if (mCurrentDICOM != null)
+				if (mCurrentDICOMVolume != null)
 				{
-					PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewLoaded);
+					PatientEventSystem.triggerEvent(PatientEventSystem.Event.DICOM_NewLoadedVolume, mCurrentDICOMVolume );
 				}
 
 			}
