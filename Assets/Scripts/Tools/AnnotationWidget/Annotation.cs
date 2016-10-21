@@ -15,6 +15,7 @@ public class Annotation : MonoBehaviour {
 	private Color myColor;
 	private Color defaultColor;
 	public Material defaultMaterial, previewMaterial;
+	public Collider myCollider;
 
     // Use this for initialization
     void Start () {
@@ -110,16 +111,24 @@ public class Annotation : MonoBehaviour {
 	}
 
 	public void makeTransperent() {
-		this.GetComponent<Renderer>().material = previewMaterial;
-		this.GetComponent<Renderer>().material.color = new Color(myColor.r, myColor.g, myColor.b, 0.2f);
+		this.GetComponent<MeshRenderer>().material = previewMaterial;
+		foreach(Material mat in this.GetComponent<MeshRenderer>().materials) {
+			Color pinColor = mat.color;
+			pinColor.a = 0.2f;
+			mat.color = pinColor;
+		}
 	}
 
 	public void makeOpaque() {
 		this.GetComponent<Renderer>().material = defaultMaterial;
-		this.GetComponent<Renderer>().material.color = new Color(myColor.r, myColor.g, myColor.b, 1.0f);
+		foreach(Material mat in this.GetComponent<Renderer>().materials) {
+			Color pinColor = mat.color;
+			pinColor.a = 1f;
+			mat.color = pinColor;
+		}
 	}
 
 	public void disableCollider() {
-			this.GetComponent<SphereCollider> ().enabled = false;
+		myCollider.enabled = false;
 	}
 }
