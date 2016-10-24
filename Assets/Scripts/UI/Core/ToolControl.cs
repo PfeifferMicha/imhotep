@@ -135,10 +135,12 @@ public class ToolControl : MonoBehaviour {
 		{
 			GameObject.Destroy (controllerChoise);
 		}
+		controllerChoises.Clear ();
 		foreach( GameObject toolStand in toolStands )
 		{
 			GameObject.Destroy (toolStand);
 		}
+		toolStands.Clear ();
 	}
 
 	public void closeActiveTool()
