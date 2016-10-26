@@ -11,11 +11,13 @@ public class MeshMaterialControl : MonoBehaviour {
 	public Color materialColor;
 
 	// Use this for initialization
-	void Start () {
+	void Awake() {
 		//meshShader = Shader.Find("Custom/MeshShader");
 		//meshShaderTransparent = Shader.Find("Custom/MeshShaderTransparent");
 		materialOpaque = Instantiate( Resources.Load("Materials/MeshOpaque", typeof(Material)) as Material ) as Material;
+		materialOpaque.SetFloat ("_amount", 0f);
 		materialTransparent = Instantiate( Resources.Load("Materials/MeshTransparent", typeof(Material)) as Material ) as Material;
+		materialTransparent.SetFloat ("_amount", 0f);
 	}
 
 	public void changeOpactiyOfChildren(float f){

@@ -208,11 +208,12 @@ public class MeshLoader : MonoBehaviour {
 				// Let others know that a new mesh has been loaded:
 				PatientEventSystem.triggerEvent (PatientEventSystem.Event.MESH_LoadedSingle, objToSpawn);
 
+				// Make sure the color of the material is set correctly:
+				matControl.changeOpactiyOfChildren (1f);
+
                 yield return null;
             }
 
-			// Make sure the color of the material is set correctly:
-			matControl.changeOpactiyOfChildren (1f);
 
 			// Move the object by half the size of all of the meshes.
 			// This makes sure the object will rotate around its actual center:
