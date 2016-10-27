@@ -118,6 +118,32 @@ public class DICOMHeader : ICloneable
 		PatientName = name;
 	}
 
+	public Vector3 getDirectionCosineX()
+	{
+		Vector3 vec = new Vector3 ((float)Direction [0], (float)Direction [1], (float)Direction [2]);
+		return vec;
+	}
+
+	public Vector3 getDirectionCosineY()
+	{
+		Vector3 vec = new Vector3 ((float)Direction [3], (float)Direction [4], (float)Direction [5]);
+		return vec;
+	}
+
+	public Vector3 getFrameNormal()
+	{
+
+		/*frame_vec[2, 0] = frame_vec[0, 1] * frame_vec[1, 2] - frame_vec[0, 2] * frame_vec[1, 1];
+		frame_vec[2, 1] = frame_vec[0, 2] * frame_vec[1, 0] - frame_vec[0, 0] * frame_vec[1, 2];
+		frame_vec[2, 2] = frame_vec[0, 0] * frame_vec[1, 1] - frame_vec[0, 1] * frame_vec[1, 0];*/
+		Vector3 vec = new Vector3 (
+				(float)(Direction [1] * Direction [5] - Direction [2] * Direction [4]),
+				(float)(Direction [3] * Direction [3] - Direction [0] * Direction [5]),
+				(float)(Direction [0] * Direction [4] - Direction [1] * Direction [3]));
+
+		return vec;
+	}
+
 	public DateTime getSeriesDateTime()
 	{
 		return SeriesDateTime;

@@ -52,7 +52,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			panX = 0f,
 			panY = 0f,
 			zoom = 1f,
-			flipHorizontal = true,
+			flipHorizontal = false,
 			flipVertical = true
 		};
 
@@ -222,7 +222,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 				panX = 0f,
 				panY = 0f,
 				zoom = 1f,
-				flipHorizontal = true,
+				flipHorizontal = false,
 				flipVertical = true
 			};
 		}

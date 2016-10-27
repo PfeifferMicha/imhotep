@@ -136,7 +136,6 @@ public class DicomLoaderITK
 
 			Int16[] colorsTmp = new Int16[ numberOfPixels ];
 			Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
-			Debug.Log ("Slope, Intercept: " + slope + " " + intercept);
 			int index = 0;
 			for (UInt32 z = 0; z < texDepth; z++) {
 				for (UInt32 y = 0; y < texHeight; y++) {
@@ -144,7 +143,7 @@ public class DicomLoaderITK
 						if( x < origTexWidth && y < origTexHeight && z < origTexDepth )
 						{
 							//colors[ z + (x + yTex*texWidth)*texDepth ] = F2C( (UInt16)colorsTmp[index] );
-							colors[ x + y*texWidth + z*texWidth*texHeight ] = F2C( (UInt16)(colorsTmp[index]*slope + intercept));
+							colors[ x + y*texWidth + z*texWidth*texHeight ] = F2C( (UInt16)((colorsTmp[index] - intercept)/slope));
 							index ++;
 						}
 					}
@@ -245,26 +244,18 @@ public class DicomLoaderITK
 			Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
 			Debug.Log ("Slope, Intercept: " + slope + " " + intercept);
 			int index = 0;
-			for (UInt32 z = 0; z < texDepth; z++) {
+			//for (UInt32 z = 0; z < texDepth; z++) {
 				for (UInt32 y = 0; y < texHeight; y++) {
 					for (UInt32 x = 0; x < texWidth; x++) {
-						if( x < origTexWidth && y < origTexHeight && z < origTexDepth )
+						if( x < origTexWidth && y < origTexHeight )// && z < origTexDepth )
 						{
-							/*if( colorsTmp[index] > maxCol ){
-								maxCol = (int)colorsTmp[index];
-							}
-
-							if (colorsTmp [index] < minCol) {
-								minCol = (int)colorsTmp [index];
-							}*/
-
 							//colors[ z + (x + yTex*texWidth)*texDepth ] = F2C( (UInt16)colorsTmp[index] );
-							colors[ x + y*texWidth + z*texWidth*texHeight ] = F2C( (UInt16)(colorsTmp[index]*slope + intercept));
+							colors[ x + y*texWidth ] = F2C( (UInt16)((colorsTmp[index] - intercept)/slope));
 							index ++;
 						}
 					}
 				}
-			}
+			//}
 
 		} else if ( image.GetPixelID() == PixelIDValueEnum.sitkInt16 ) {
 			bufferPtr = image.GetBufferAsInt16 ();
@@ -273,42 +264,32 @@ public class DicomLoaderITK
 			Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
 
 			int index = 0;
-			for (UInt32 z = 0; z < texDepth; z++) {
+			//for (UInt32 z = 0; z < texDepth; z++) {
 				for (UInt32 y = 0; y < texHeight; y++) {
 					for (UInt32 x = 0; x < texWidth; x++) {
-						if( x < origTexWidth && y < origTexHeight && z < origTexDepth )
+						if( x < origTexWidth && y < origTexHeight )// && z < origTexDepth )
 						{
-							/*if( colorsTmp[index] > maxCol ){
-								maxCol = (int)colorsTmp[index];
-							}
-							if( colorsTmp[index] < minCol ){
-								minCol = (int)colorsTmp[index];
-							}*/
-
 							//colors[ z + (x + yTex*texWidth)*texDepth ] = F2C( (UInt16)colorsTmp[index] );
 							// Shift the signed int into the unsigned int range by adding 32768.
 							//Debug.Log("val: " + (colorsTmp[index]*slope - intercept));
 							UInt16 pixelValue = (UInt16)((colorsTmp[index] - intercept)/slope);
 							// Mask out unused high bits:
 							//pixelValue &= unchecked((UInt16)~(1 << 15 | 1 << 14 | 1 << 13 | 1 << 12));
-
-							colors[ x + y*texWidth + z*texWidth*texHeight ] = F2C( pixelValue );
-
-							/*if (pixelValue > maxCol)
-								maxCol = pixelValue;
-							if (pixelValue < minCol)
-								minCol = pixelValue;*/
-
+							colors[ x + y*texWidth ] = F2C( pixelValue );
 
 							index ++;
 						}
 					}
 				}
-			}
+			//}
 			//Debug.LogError ("Min, max pixel values: " + minCol + " " + maxCol);
 		} else {
 			throw(new System.Exception ("Cannot read DICOM. Unsupported pixel format: " + image.GetPixelID()));
 		}
+
+		//Debug.Log ("Direction cos X: " + header.getDirectionCosineX ());
+		//Debug.Log ("Direction cos Y: " + header.getDirectionCosineY ());
+		//Debug.Log ("Normal: " + header.getFrameNormal ());
 
 		return new DICOMLoadReturnObjectSlice (texWidth, texHeight, texDepth, colors, header, slice);
 	}
