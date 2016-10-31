@@ -56,6 +56,7 @@ public class Controller : MonoBehaviour {
 		previousPosition = transform.position;
 	}
 
+	/*! Returns true if the trigger is pressed down all the way. */
 	public bool triggerPressed(){
 		if( controller == null )
 			return false;
@@ -66,6 +67,14 @@ public class Controller : MonoBehaviour {
 			//Debug.Log ("Trigger compelete pressed");
 		}
 		return false;
+	}
+
+	/*! Returns how far the controller's trigger is pressed (0 to 1) */
+	public float triggerValue(){
+		if( controller == null )
+			return 0f;
+
+		return controller.GetAxis (triggerButton).x;
 	}
 
 	protected void UpdateTouchpad() {
