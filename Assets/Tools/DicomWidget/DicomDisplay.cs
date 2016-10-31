@@ -35,7 +35,7 @@ public class DicomDisplay : MonoBehaviour {
 		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, eventClear );
 		eventClear ();
 		eventNewDicomList ();
-		eventDisplayCurrentDicom ();
+		//eventDisplayCurrentDicom ();
 	}
 
 	void OnDisable()
