@@ -74,7 +74,6 @@ public class DicomDisplay : MonoBehaviour {
 		{
 			int i = 0;
 			foreach (DICOMHeader header in series) {
-				Debug.Log ("Header: " + header);
 				//customNames.Add (p.getDICOMNameForSeriesUID (uid));
 				GameObject newEntry = Instantiate (ListEntryButton) as GameObject;
 				newEntry.SetActive (true);
