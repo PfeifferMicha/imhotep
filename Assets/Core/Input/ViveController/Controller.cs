@@ -136,6 +136,11 @@ public class Controller : MonoBehaviour {
 	}
 
 
+	public void shake( ushort milliseconds )
+	{
+		SteamVR_Controller.Input( (int)controllerIndex ).TriggerHapticPulse( milliseconds );
+	}
+
 	public void set3DDelta( Vector2 delta ) {
 		positionDelta = delta;
 	}
