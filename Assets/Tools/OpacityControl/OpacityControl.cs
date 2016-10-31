@@ -37,11 +37,6 @@ public class OpacityControl : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     private void createContent(object obj = null)
     {
 
