@@ -56,8 +56,10 @@ Shader "Custom/TriangleEffectShader" {
 
                 // Calculate a highlight for vertices which we're looking at directly:
                 float4 cameraSpacePos = normalize( mul( UNITY_MATRIX_MV, v.vertex) );
-                half nl = max(0, dot(cameraSpacePos, float4(0, 0, -1, 1 ) ));
-                half highlightGauss = exp( -pow( nl-1 ,2)/0.05);
+                half nl = clamp(0, dot(normalize(cameraSpacePos), float4(0, 0, -1, 1 ) ), 1);
+                //half highlightGauss = min( 1, exp( -pow( nl-1,2)/0.05) );
+                nl = nl*0.75;
+                half highlight = pow( nl, 4 );
 
 
                 float tmp = (pi + atan2( v.vertex.x, v.vertex.y )) / (2*pi);
@@ -79,7 +81,7 @@ Shader "Custom/TriangleEffectShader" {
                 //}
 
 
-                o.col = float4( clipping, highlightGauss, edgeEffect, noise );
+                o.col = float4( clipping, highlight, edgeEffect, noise );
 
                 return o;
             }
@@ -95,11 +97,11 @@ Shader "Custom/TriangleEffectShader" {
             	float clipping = i.col.x;
             	if( clipping > .99 ) discard;
 
-            	float highlightGauss = i.col.y;
+            	float highlight = i.col.y;
             	float edgeEffect = i.col.z;
             	float noise = i.col.w;
 
-            	fixed4 col = _Color + 0.5*_HighlightColor*highlightGauss;
+            	fixed4 col = _Color + 0.5*_HighlightColor*highlight;
 
             	// Calculate distance from triangle border (see UV mapping):
             	float triangleBorder = max( max( i.uv.x, 1-i.uv.y ), 1 - (i.uv.x - i.uv.y) );
@@ -122,8 +124,8 @@ Shader "Custom/TriangleEffectShader" {
 
             	//col = abs(edgeEffect);
             	col.a = 1;
-            	return col;
-                //return col;
+            	//return float4(i.col.y, i.col.y, i.col.y, 1);
+                return col;
             }
             ENDCG
         }
