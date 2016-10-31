@@ -15,8 +15,6 @@ namespace UI
 		public AlignmentV layoutAlignVertical = AlignmentV.stretch;
 		[Range(0, 99)] public int layoutLayer = 0;
 
-		private Vector3 activeScale = new Vector3( 1f, 1f, 1f );
-		private Vector3 inactiveScale = new Vector3( 0.95f, 0.95f, 0.95f );
 		private Material textMaterial = null;
 		private Material imageMaterial = null;
 

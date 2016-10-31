@@ -87,8 +87,6 @@ public class ToolControl : MonoBehaviour {
 
 	public void generateAvailableTools( object obj = null )
 	{
-		Patient p = obj as Patient;
-
 		uint i = 0;
 		foreach (Transform child in transform) {
 			string toolName = child.name;

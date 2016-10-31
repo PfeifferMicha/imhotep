@@ -40,7 +40,7 @@ public class Controller : MonoBehaviour {
 	//-----------------------------------------------------
 
 	//! The movement of the controller since the previous frame in world space:
-	public Vector3 positionDelta { private set; get; }
+	public Vector3 positionDelta { protected set; get; }
 
 	private Vector3 previousPosition;
 
@@ -124,5 +124,10 @@ public class Controller : MonoBehaviour {
 		}
 
 		return triggerButtonState;
+	}
+
+
+	public void set3DDelta( Vector2 delta ) {
+		positionDelta = delta;
 	}
 }

@@ -133,7 +133,6 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 		// Let controller movement change position and zoom (if trigger is pressed):
 		if (inputDevice.getDeviceType () == InputDeviceManager.InputDeviceType.ViveController) {
-			ViveControllerInputDevice input = inputDevice as ViveControllerInputDevice;
 			Controller c = inputDevice as Controller;
 			if (c != null) {
 				if (c.triggerPressed ()) {

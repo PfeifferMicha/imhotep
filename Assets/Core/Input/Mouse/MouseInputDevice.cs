@@ -20,7 +20,6 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
     private LineRenderer lineRenderer;
 
 	private const float mouseSpeed = 0.4f;
-	private Vector3 lastPos = new Vector3(0,0,0);
 
 	private Vector2 texCoordDelta;
 	private Vector3 positionDelta;

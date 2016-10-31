@@ -30,7 +30,7 @@ public class LeftController : Controller {
 		return touchpadDelta*100;
 	}
 
-	void Update()
+	new void Update()
 	{
 		base.Update();
 		UpdateTouchpad ();

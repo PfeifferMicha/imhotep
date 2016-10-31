@@ -18,16 +18,12 @@ public class ViewControl : MonoBehaviour {
 	public Button buttoPrev, buttonNext;
 	public GameObject viewCountElement;
 
-	private Shader meshShader, meshShaderTransparent;
 	public GameObject meshViewerScaleNode, meshViewerRotationNode;
 
 	private int currentViewIndex = 0;
 
 	// Use this for initialization
 	void Start () {
-
-		meshShader = Shader.Find("Custom/MeshShader");
-		meshShaderTransparent = Shader.Find("Custom/MeshShaderTransparent");
 		viewCountElement.SetActive (false);
 
 		//meshViewerScaleNode = GameObject.Find ("MeshViewerBase/MeshViewerScale");
@@ -201,8 +197,6 @@ public class ViewControl : MonoBehaviour {
 		Patient p = Patient.getLoadedPatient ();
 		if (p != null) {
 			int elementsToShow = Math.Max( p.getViewCount (), 1 );
-			Debug.Log ("Elements to show: " + elementsToShow);
-			Debug.Log ("viewCountElement.transform.parent.childCount: " + viewCountElement.transform.parent.childCount);
 
 			if (viewCountElement.transform.parent.childCount < elementsToShow + 1 ) {
 				int toCreate = elementsToShow - (viewCountElement.transform.parent.childCount - 1);
@@ -214,7 +208,6 @@ public class ViewControl : MonoBehaviour {
 			} else if( viewCountElement.transform.parent.childCount > elementsToShow + 1 ) {
 				// Remove the last element until we have the correct amount of elements:
 				int toRemove = (viewCountElement.transform.parent.childCount - 1) - elementsToShow;
-				Debug.Log ("toRemove: " + toRemove);
 				for (int i = 0; i < toRemove; i++) {
 					Transform tf = viewCountElement.transform.parent.GetChild (viewCountElement.transform.parent.childCount - 1 - i);
 					Debug.Log (i + " " + tf);

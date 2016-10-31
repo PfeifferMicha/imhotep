@@ -68,7 +68,7 @@ public class PatientMeta
 					DateTime dt = DateTime.Parse(birthDate, culture, System.Globalization.DateTimeStyles.AssumeLocal);
 					age = DateTime.Now.Year - dt.Year;
 					birthDate = dt.Day + " " + dt.ToString("MMMM") + " " + dt.Year;
-				} catch (System.Exception ex) {
+				} catch {
 					age = -1;
 				}
 			}
@@ -88,7 +88,7 @@ public class PatientMeta
 				string ot = metaData ["BodyPart"].ToString ();
 				try {
 					operationBodyPart = (OperationBodyPart)Enum.Parse (typeof(OperationBodyPart), ot);
-				} catch (System.Exception e ) {
+				} catch {
 					Debug.LogWarning ("Could not interpret BodyPart.");
 				}
 			}

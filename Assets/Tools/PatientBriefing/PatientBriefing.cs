@@ -60,7 +60,6 @@ public class PatientBriefing : MonoBehaviour
 				newButton.transform.FindChild("Text").GetComponent<Text>().text = tabNames[i];
 				newButton.transform.SetParent(tabButton.transform.parent, false);
 
-				string capturedTabName = tabNames[i];   // might not be necessary to capture, but just in case the list changes?
 				Button b = newButton.GetComponent<Button>();
 				b.onClick.AddListener(() => selectTab(b));
 			}

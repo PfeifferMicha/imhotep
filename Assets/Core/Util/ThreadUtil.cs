@@ -72,7 +72,7 @@ public class ThreadUtil {
 //    private DoWorkEventHandler threadedMethod;
     private RunWorkerCompletedEventHandler callbackMethod;
 
-    private DateTime start;
+    //private DateTime start;
 
     public ThreadUtil(DoWorkEventHandler threadedMethod, RunWorkerCompletedEventHandler callbackMethod)
     {
@@ -94,7 +94,7 @@ public class ThreadUtil {
 
     public void Run()
     {
-        start = DateTime.Now;
+        //start = DateTime.Now;
         backgroundWorker.RunWorkerAsync();
         //Debug.Log("[ThreadUtil] Thread started");
     }
