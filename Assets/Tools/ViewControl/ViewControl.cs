@@ -210,7 +210,6 @@ public class ViewControl : MonoBehaviour {
 				int toRemove = (viewCountElement.transform.parent.childCount - 1) - elementsToShow;
 				for (int i = 0; i < toRemove; i++) {
 					Transform tf = viewCountElement.transform.parent.GetChild (viewCountElement.transform.parent.childCount - 1 - i);
-					Debug.Log (i + " " + tf);
 					if( tf != null )
 						Destroy( tf.gameObject );
 				}
