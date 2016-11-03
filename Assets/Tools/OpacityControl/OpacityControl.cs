@@ -10,7 +10,7 @@ public class OpacityControl : MonoBehaviour
 
     private MeshLoader mMeshLoader;
 
-    void OnEnable()
+    void Awake()
     {
         // Register event callbacks for MESH events:
         PatientEventSystem.startListening(PatientEventSystem.Event.MESH_LoadedAll, createContent);
@@ -18,7 +18,7 @@ public class OpacityControl : MonoBehaviour
         
     }
 
-    void OnDisable()
+    void OnDestroy()
     {
         // Unregister myself - no longer receives events (until the next OnEnable() call):
         PatientEventSystem.stopListening(PatientEventSystem.Event.MESH_LoadedAll, createContent);
@@ -39,7 +39,6 @@ public class OpacityControl : MonoBehaviour
 
     private void createContent(object obj = null)
     {
-
         clearContent();
 
         foreach (GameObject g in mMeshLoader.MeshGameObjectContainers)

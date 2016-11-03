@@ -6,6 +6,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
 
 public class PatientBriefing : MonoBehaviour
 {
@@ -16,8 +17,36 @@ public class PatientBriefing : MonoBehaviour
 	public GameObject scrollView;
 	private Text text;
 
-	// Use this for initialization
-	void OnEnable()
+    //True if HTML Renderer has finished
+    private bool htmlRendered = false;
+
+    //Variables for thread
+    string html = "";
+    int widthOfStrechedRawImage = 0;
+    byte[] imageArray;
+
+    void Update()
+    {
+        if (htmlRendered)
+        {
+            htmlRendered = false;
+
+            // Create a new widthOfStrechedRawImagex1500 texture ARGB32 (32 bit with alpha) and no mipmaps
+            Texture2D texture = new Texture2D(widthOfStrechedRawImage, 1500, TextureFormat.ARGB32, false);           
+            texture.LoadImage(imageArray);
+            texture.Apply();
+            // connect texture to material of GameObject this script is attached to
+            rawImageObj.GetComponent<RawImage>().material.mainTexture = texture;
+
+            textObj.SetActive(false);
+            rawImageObj.SetActive(true);
+            //Set scroll content
+            scrollView.GetComponent<ScrollRect>().content = rawImageObj.GetComponent<RectTransform>();
+        }
+    }
+
+    // Use this for initialization
+    void OnEnable()
 	{
 		tabButton.SetActive(false);
 		rawImageObj.SetActive(false);
@@ -130,52 +159,48 @@ public class PatientBriefing : MonoBehaviour
 
 	private void showHTML(Patient.AdditionalInformation info)
 	{
-		textObj.SetActive(false);
-		rawImageObj.SetActive(true);
-		//Set scroll content
-		scrollView.GetComponent<ScrollRect>().content = rawImageObj.GetComponent<RectTransform>();
+        html = info.content;
+        widthOfStrechedRawImage = (int)rawImageObj.GetComponent<RawImage>().rectTransform.rect.width - 17;
+        int widthBody = findBodyWidth(info.content);
+        if (widthBody > widthOfStrechedRawImage)
+        {
+            html = rewriteBodyWidth(info.content, widthOfStrechedRawImage);
+        }
 
-		string html = info.content;
-		int widthOfStrechedRawImage = (int)rawImageObj.GetComponent<RawImage>().rectTransform.rect.width - 17;
-		int widthBody = findBodyWidth(info.content);
-		if (widthBody > widthOfStrechedRawImage) {
-			html = rewriteBodyWidth (info.content, widthOfStrechedRawImage);
-		}
+        ThreadUtil t = new ThreadUtil(this.showHTMLWorker, this.showHTMLCallback);
+        t.Run();
 
-		System.Drawing.Bitmap image = (System.Drawing.Bitmap)TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.RenderToImageGdiPlus(html, new System.Drawing.Size(widthOfStrechedRawImage, 1500));//, System.Drawing.Text.TextRenderingHint.AntiAliasGridFit);
-		// Create a new widthOfStrechedRawImagex1500 texture ARGB32 (32 bit with alpha) and no mipmaps
-		Texture2D texture = new Texture2D(widthOfStrechedRawImage, 1500, TextureFormat.ARGB32, false);
-
-		/*
-        // set the pixel values
-		Color[] colorArray = new Color[image.Width * image.Height];
-		for (int i = image.Height - 1; i >= 0; i--)
-		{
-			for (int j = image.Width - 1; j >= 0 ; j--)
-			{   //Make no debug logs here!
-				System.Drawing.Color colPixel = image.GetPixel(j, i);
-				//colorArray[i * image.Width + j] = new UnityEngine.Color(colPixel.R, colPixel.G, colPixel.B, colPixel.A);
-				texture.SetPixel(j, image.Height - i, new UnityEngine.Color(colPixel.R, colPixel.G, colPixel.B, colPixel.A));
-			}
-		}
-		//texture.SetPixels(colorArray);
-		*/
-
-		//Save image with MemoryStream and load it into texture
-		using (MemoryStream ms = new MemoryStream())
-		{
-			image.Save(ms, image.RawFormat);
-			texture.LoadImage(ms.ToArray());
-		}
-		// Apply all SetPixel calls
-		texture.Apply();
-
-		// connect texture to material of GameObject this script is attached to
-		rawImageObj.GetComponent<RawImage>().material.mainTexture = texture;
 		return;
 	}
 
-	private int findBodyWidth(string input){
+    private void showHTMLCallback(object sender, RunWorkerCompletedEventArgs e)
+    {
+        if (e.Cancelled)
+        {
+            Debug.Log("[PatientBriefing.cs] HTML Rendering cancelled");
+        }
+        else if (e.Error != null)
+        {
+            Debug.LogError("[PatientBriefing.cs] HTML Rendering Error");
+        }
+        else
+        {
+            htmlRendered = true;
+        }
+        return;
+    }
+
+    private void showHTMLWorker(object sender, DoWorkEventArgs e)
+    {
+        System.Drawing.Bitmap image = (System.Drawing.Bitmap)TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.RenderToImageGdiPlus(html, new System.Drawing.Size(widthOfStrechedRawImage, 1500));//, System.Drawing.Text.TextRenderingHint.AntiAliasGridFit);
+        using (MemoryStream ms = new MemoryStream())
+        {
+            image.Save(ms, image.RawFormat);
+            imageArray = ms.ToArray();
+        }
+    }
+
+    private int findBodyWidth(string input){
 		//Find first width:??px;
 		string pattern = "width:\\s*\\d+px\\s*;";
 		Regex rgx = new Regex(pattern);
