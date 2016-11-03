@@ -57,7 +57,6 @@ public class LoadingScreen : MonoBehaviour {
 			
 		string msg = obj as string;
 		if (msg != null) {
-			//Debug.Log ("Adding: " + msg);
 			activeJobs.Add (msg);
 		}
 		updateInfo ();
@@ -69,7 +68,6 @@ public class LoadingScreen : MonoBehaviour {
 		
 		string msg = obj as string;
 		if (msg != null) {
-			//Debug.Log ("Removing: " + msg);
 			if (activeJobs.Contains (msg)) {
 				activeJobs.Remove (msg);
 			}

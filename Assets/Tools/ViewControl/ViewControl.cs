@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -17,16 +18,12 @@ public class ViewControl : MonoBehaviour {
 	public Button buttoPrev, buttonNext;
 	public GameObject viewCountElement;
 
-	private Shader meshShader, meshShaderTransparent;
 	public GameObject meshViewerScaleNode, meshViewerRotationNode;
 
 	private int currentViewIndex = 0;
 
 	// Use this for initialization
 	void Start () {
-
-		meshShader = Shader.Find("Custom/MeshShader");
-		meshShaderTransparent = Shader.Find("Custom/MeshShaderTransparent");
 		viewCountElement.SetActive (false);
 
 		//meshViewerScaleNode = GameObject.Find ("MeshViewerBase/MeshViewerScale");
@@ -59,12 +56,8 @@ public class ViewControl : MonoBehaviour {
 
 	public void meshLoaded( object obj = null )
 	{
-		currentViewIndex = 0;
-		setView (currentViewIndex);
-
-		deleteButton.interactable = true;
 		newButton.interactable = true;
-
+		currentViewIndex = 0;
 		setView (currentViewIndex);
 	}
 	public void patientClosed( object obj = null )
@@ -146,32 +139,36 @@ public class ViewControl : MonoBehaviour {
 		Patient p = Patient.getLoadedPatient ();
 		if (p != null) {
 
-			if (p.getViewCount() == 0) {
+			if (p.getViewCount () == 0) {
 				viewNameText.text = "No views configured.";
-				return;
-			}
+			} else {
 
-			View view = p.getView (index);
-			if (view != null) {
-				viewNameText.text = (index + 1).ToString();
-				viewNameText.text += ": ";
-				viewNameText.text += view.name;
+				View view = p.getView (index);
+				if (view != null) {
+					viewNameText.text = (index + 1).ToString ();
+					viewNameText.text += ": ";
+					viewNameText.text += view.name;
 
-				// Slowly zoom and rotate towards the target:
-				meshViewerScaleNode.GetComponent<ModelZoomer> ().setTargetZoom (view.scale, 0.6f);
-				meshViewerRotationNode.GetComponent<ModelRotator> ().setTargetOrientation (view.orientation, 0.6f );
+					// Slowly zoom and rotate towards the target:
+					meshViewerScaleNode.GetComponent<ModelZoomer> ().setTargetZoom (view.scale, 0.6f);
+					meshViewerRotationNode.GetComponent<ModelRotator> ().setTargetOrientation (view.orientation, 0.6f);
 
-				foreach(KeyValuePair<string, double> entry in view.opacities)
-				{
-					setMeshOpacity( entry.Key, (float)entry.Value );
+					foreach (KeyValuePair<string, double> entry in view.opacities) {
+						setMeshOpacity (entry.Key, (float)entry.Value);
+					}
+
+					currentViewIndex = index;
 				}
-
-				currentViewIndex = index;
 			}
 
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.MESH_Opacity_Changed);
 
 			updateViewCount ();
+
+			if( p.getViewCount () > 0 )
+				deleteButton.interactable = true;
+			else
+				deleteButton.interactable = false;
 		}
 	}
 
@@ -199,18 +196,20 @@ public class ViewControl : MonoBehaviour {
 	{
 		Patient p = Patient.getLoadedPatient ();
 		if (p != null) {
-			if (viewCountElement.transform.parent.childCount < p.getViewCount () + 1) {
-				int toCreate = p.getViewCount () - (viewCountElement.transform.parent.childCount - 1);
+			int elementsToShow = Math.Max( p.getViewCount (), 1 );
+
+			if (viewCountElement.transform.parent.childCount < elementsToShow + 1 ) {
+				int toCreate = elementsToShow - (viewCountElement.transform.parent.childCount - 1);
 				for (int i = 0; i < toCreate; i++) {
 					GameObject newElem = Instantiate (viewCountElement);
 					newElem.transform.SetParent (viewCountElement.transform.parent, false);
 					newElem.SetActive (true);
 				}
-			} else if( viewCountElement.transform.parent.childCount > p.getViewCount () + 1) {
+			} else if( viewCountElement.transform.parent.childCount > elementsToShow + 1 ) {
 				// Remove the last element until we have the correct amount of elements:
-				int toRemove = (viewCountElement.transform.parent.childCount - 1) - p.getViewCount();
+				int toRemove = (viewCountElement.transform.parent.childCount - 1) - elementsToShow;
 				for (int i = 0; i < toRemove; i++) {
-					Transform tf = viewCountElement.transform.parent.GetChild (viewCountElement.transform.parent.childCount - 1);
+					Transform tf = viewCountElement.transform.parent.GetChild (viewCountElement.transform.parent.childCount - 1 - i);
 					if( tf != null )
 						Destroy( tf.gameObject );
 				}

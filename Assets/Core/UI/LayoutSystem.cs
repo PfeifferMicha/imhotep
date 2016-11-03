@@ -38,7 +38,6 @@ namespace UI
 
 	public class LayoutSystem
 	{
-		Camera UICamera;
 
 		// Maximal dimensions of UI:
 		public Rect sizeOfUIScene { private set; get; }
@@ -56,10 +55,8 @@ namespace UI
 
 		public int statusBarHeight = 60;
 
-		public void setCamera( Camera cam )
+		public void updateDimensions()
 		{
-			UICamera = cam;
-
 			Vector2 max = new Vector2 (1f * UI.Core.instance.aspectRatio, 1f) / UI.Core.instance.UIScale;
 			Vector2 min = -max;
 			//min = min + new Vector2 (0, statusBarHeight);	// leave space for status bar

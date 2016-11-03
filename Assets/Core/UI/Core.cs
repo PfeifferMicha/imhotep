@@ -88,7 +88,7 @@ namespace UI
 		{
 			UICamera = cam;
 			aspectRatio = (float)UICamera.targetTexture.width / (float)UICamera.targetTexture.height;
-			layoutSystem.setCamera (cam);
+			layoutSystem.updateDimensions ();
 
 			// Adjust position/size of the statusbar:
 			Rect newRect = layoutSystem.getStatusBarPosition ();

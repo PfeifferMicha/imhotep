@@ -36,7 +36,6 @@ public class PatientDirectoryLoader {
 				// Attempt to load the directorie's contents as a patient:
 				PatientMeta newPatient = PatientMeta.createFromFolder (folder);
 				if (newPatient != null) {
-					//Debug.Log (newPatient.ToString ());
 					mPatientEntries.Add (newPatient);
 
 					// Let listeners know there's a new patient entry by firing an event:

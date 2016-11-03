@@ -20,17 +20,12 @@ public class LeftController : Controller {
 		InputDeviceManager.instance.registerLeftController (this);
 	}
 
-	public void shake( ushort milliseconds )
-	{
-		SteamVR_Controller.Input( (int)controllerIndex ).TriggerHapticPulse( milliseconds );
-	}
-
 	public Vector2 getScrollDelta()
 	{
 		return touchpadDelta*100;
 	}
 
-	void Update()
+	new void Update()
 	{
 		base.Update();
 		UpdateTouchpad ();
@@ -64,6 +59,9 @@ public class LeftController : Controller {
 			zooming = false;
 		}
 
+
+		// -----------------------------------------
+		// Scaling:
 		if (zooming) {
 
 			float dist = (this.transform.position - scalingNode.transform.position).magnitude;
@@ -74,8 +72,5 @@ public class LeftController : Controller {
 
 			scalingNode.GetComponent<ModelZoomer>().setTargetZoom( newScale );	// Make sure it doesn't auto-rotate back.	// TODO: fix?
 		}
-
-		// -----------------------------------------
-		// Scaling:
 	}
 }

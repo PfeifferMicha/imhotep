@@ -62,4 +62,66 @@ Custom events added by us:
 - IPointerHoverHandler - void OnPointerHover( PointerEventData data )
 	Called whenever the mouse is over an object.
 
+Get Raw Input
+------------------------------------
+The interface above abstracts the events so that in many cases, you don't need to worry about whether the mouse or the controllers are active. However, there are some times when you do need to handle the mouse and the controllers differently. For this, you can retrieve the current input device:
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cs}
+	InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+First, you should check which type of input we're currently getting:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cs}
+	if (inputDevice.getDeviceType () == InputDeviceManager.InputDeviceType.ViveController) 
+	{
+		// ...
+	} else if(inputDevice.getDeviceType () == InputDeviceManager.InputDeviceType.Mouse) {
+		// ...
+	}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In case the mouse is active, you can use Unity's standard Input class to get the Mouse Position and speed etc. For example:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cs}
+	Input.GetAxis("Mouse X")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If the Vive controllers are active, you can cast the input device to a Controller:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cs}
+	Controller c = inputDevice as Controller;
+	if (c != null) {
+		// ...
+	}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If the Vive controller is active then the other controller can be accessed by (Note: always check if ``lc`` is not null - it might not be set if the controller is currently not tracked!)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cs}
+	LeftController lc = InputDeviceManager.instance.leftController;
+	if (lc != null) {
+		Controller c = inputDevice as Controller;
+		if (c != null) {
+			// ...
+		}
+	}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In both cases, you can check whether the trigger is pressed, where the controller is, how it's oriented etc. (see Controller for details):
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cs}
+	// Check if trigger is pressed all the way:
+	if( c.triggerPressed() ) {
+		// ...
+	}
+	
+	// Check how much the trigger is pressed down:
+	float pressAmount = c.triggerValue();
+
+	// Let the controller shake briefly (please don't overuse!)
+	c.shake( 1000 );
+
+	// Get the world position of the controller:
+	Vector3 pos = c.transform.position;
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -47,8 +47,17 @@ public class MeshMaterialControl : MonoBehaviour {
 			//Material mat = mr.material;
 			//mat.color = new Color(mat.color.r, mat.color.g, mat.color.b, f);
 
+
 			mat.color = new Color (materialColor.r, materialColor.g, materialColor.b, f);
-			mr.material = new Material(mat); 
+			mr.material = mat;
 		}
+	}
+
+	public void SetLoadingEffectAmount( float amount )
+	{
+		if( materialTransparent != null )
+			materialTransparent.SetFloat ("_amount", amount);
+		if( materialOpaque != null )
+			materialOpaque.SetFloat ("_amount", amount);
 	}
 }

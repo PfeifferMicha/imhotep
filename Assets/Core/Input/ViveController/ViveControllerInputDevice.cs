@@ -11,7 +11,6 @@ public class ViveControllerInputDevice : Controller, InputDevice {
 	}
 
 	private Vector2 texCoordDelta;
-	private Vector3 positionDelta;
 
 	private ButtonInfo buttonInfo = new ButtonInfo();
 	private Camera fakeCamera;
@@ -85,8 +84,5 @@ public class ViveControllerInputDevice : Controller, InputDevice {
 
 	public void setTexCoordDelta( Vector2 delta ) {
 		texCoordDelta = delta;
-	}
-	public void set3DDelta( Vector2 delta ) {
-		positionDelta = delta;
 	}
 }

@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: Scene-ShinyBlack2
-  m_Shader: {fileID: 4800000, guid: bc10e6a9aa803427190eb653a813c3d4, type: 3}
+  m_Shader: {fileID: 4800000, guid: 28295137452b2400db0bb432cafc6047, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_CustomRenderQueue: -1
@@ -19,7 +19,7 @@ Material:
         first:
           name: _MainTex
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 2800000, guid: 18b30082c2f0049afae3a7b14b6c66d3, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -31,6 +31,13 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
+          name: _NormalMap
+        second:
+          m_Texture: {fileID: 2800000, guid: 245be58d0804141a79d5592492512c8f, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
           name: _DetailNormalMap
         second:
           m_Texture: {fileID: 0}
@@ -38,9 +45,9 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _MetallicGlossMap
+          name: _Detail
         second:
-          m_Texture: {fileID: 0}
+          m_Texture: {fileID: 2800000, guid: 18b30082c2f0049afae3a7b14b6c66d3, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -80,9 +87,9 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _Noise
+          name: _MetallicGlossMap
         second:
-          m_Texture: {fileID: 2800000, guid: bb84478e073ac4dbab6e06b28d3c72b7, type: 3}
+          m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -90,6 +97,27 @@ Material:
           name: _SpecGlossMap
         second:
           m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Noise
+        second:
+          m_Texture: {fileID: 2800000, guid: bb84478e073ac4dbab6e06b28d3c72b7, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Texture
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Border
+        second:
+          m_Texture: {fileID: 2800000, guid: d7d28a01338614e2d91608a65bff73c8, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -111,6 +139,10 @@ Material:
         second: 20
       data:
         first:
+          name: _Parallax
+        second: 0.02
+      data:
+        first:
           name: _ZWrite
         second: 1
       data:
@@ -119,16 +151,8 @@ Material:
         second: 0.5
       data:
         first:
-          name: _Metallic
-        second: 0
-      data:
-        first:
           name: _BumpScale
         second: 1
-      data:
-        first:
-          name: _Parallax
-        second: 0.02
       data:
         first:
           name: _OcclusionStrength
@@ -147,6 +171,18 @@ Material:
         second: 0
       data:
         first:
+          name: _Metallic
+        second: 0
+      data:
+        first:
+          name: _AppearAmount
+        second: 0
+      data:
+        first:
+          name: _EdgeEffectHeight
+        second: 0.4
+      data:
+        first:
           name: _burnOffset
         second: 0.1
       data:
@@ -155,8 +191,8 @@ Material:
         second: 0.2
       data:
         first:
-          name: _EdgeEffectHeight
-        second: 0.4
+          name: _NumSegments
+        second: 50
     m_Colors:
       data:
         first:
@@ -169,7 +205,7 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 0.019607844, g: 0.019607844, b: 0.019607844, a: 1}
+        second: {r: 0.27735728, g: 0.27735728, b: 0.33088237, a: 1}
       data:
         first:
           name: _SpecColor
@@ -180,21 +216,21 @@ Material:
         second: {r: 0.14901961, g: 0.15294118, b: 0.16078432, a: 1}
       data:
         first:
+          name: _EdgeColor
+        second: {r: 0.19999996, g: 0.19999996, b: 0.39999998, a: 1}
+      data:
+        first:
+          name: _TriangleBorderColor
+        second: {r: 0.09803922, g: 0.09803922, b: 0.09803922, a: 1}
+      data:
+        first:
           name: _BorderColor
-        second: {r: 0.28070936, g: 0.35405055, b: 0.64705884, a: 1}
+        second: {r: 0.56087804, g: 0.58254707, b: 0.6691177, a: 1}
       data:
         first:
           name: _NoiseColor
         second: {r: 0.28625926, g: 0.28625926, b: 0.506096, a: 1}
       data:
         first:
-          name: _EdgeColor
-        second: {r: 0.19999996, g: 0.19999996, b: 0.39999998, a: 1}
-      data:
-        first:
           name: _EdgeColorInner
         second: {r: 0.20058392, g: 0.53989685, b: 0.7794118, a: 1}
-      data:
-        first:
-          name: _TriangleBorderColor
-        second: {r: 0.09803922, g: 0.09803922, b: 0.09803922, a: 1}

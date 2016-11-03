@@ -28,18 +28,20 @@ public class ModelEffectHandler : MonoBehaviour {
 	}
 
 	void Update () {
-		
+
 		if (loadingEffectActive) {
 			bool allMeshesFinishedAnimation = true;
 			foreach (LoadObject lObj in loadingObjects) {
-				if (lObj.amount >= 0f) {
-					lObj.amount += Time.deltaTime * 0.25f;
-				}
+
+				lObj.amount += Time.deltaTime * 0.25f;
 					
 				if (lObj.amount < 1.3) {
 					allMeshesFinishedAnimation = false;
 				}
-				lObj.gameObject.GetComponent<Renderer> ().material.SetFloat ("_amount", lObj.amount);
+				MeshMaterialControl matControl = lObj.gameObject.transform.parent.GetComponent<MeshMaterialControl> ();
+				if (matControl != null) {
+					matControl.SetLoadingEffectAmount (lObj.amount );
+				}
 
 				/*foreach (Transform child in lObj.gameObject.transform) {
 					Material mat = child.gameObject.GetComponent<Renderer> ().material;
@@ -49,11 +51,10 @@ public class ModelEffectHandler : MonoBehaviour {
 			if (!currentlyLoadingNewMeshes && allMeshesFinishedAnimation) {
 				loadingEffectActive = false;
 				foreach (LoadObject lObj in loadingObjects) {
-					lObj.gameObject.GetComponent<Renderer> ().material.SetFloat ("_amount", 1.5f);
-					/*foreach (Transform child in lObj.gameObject.transform) {
-						Material mat = child.gameObject.GetComponent<Renderer> ().material;
-						mat.SetFloat ("_amount", 1.5f);
-					}*/
+					MeshMaterialControl matControl = lObj.gameObject.transform.parent.GetComponent<MeshMaterialControl> ();
+					if (matControl != null) {
+						matControl.SetLoadingEffectAmount ( 1.5f );
+					}
 				}
 			}
 		}
@@ -67,7 +68,7 @@ public class ModelEffectHandler : MonoBehaviour {
 	}
 
 	// Called when a new mesh-part has been fully loaded.
-	// Resets the shader loading animation for the parent of this mesh:
+	// Resets the shader loading animation for this mesh:
 	void eventFinishLoadingMesh( object obj )
 	{
 		GameObject gameObject = obj as GameObject;
