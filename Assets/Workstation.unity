@@ -23,7 +23,7 @@ RenderSettings:
   m_AmbientSkyColor: {r: 0.6544118, g: 0.6544118, b: 0.6544118, a: 0.0625}
   m_AmbientEquatorColor: {r: 0.007125, g: 0.0078125, b: 0.0083125, a: 0.0625}
   m_AmbientGroundColor: {r: 0.0029375, g: 0.0026875, b: 0.0021875, a: 0.0625}
-  m_AmbientIntensity: 0.25
+  m_AmbientIntensity: 0.1
   m_AmbientMode: 0
   m_SkyboxMaterial: {fileID: 2100000, guid: 71f14a2d79f732f4d9893ef1b911f4ff, type: 2}
   m_HaloStrength: 0.5
@@ -14765,6 +14765,18 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.y
       value: -360
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 818f81acb7d0c4781973cff23f7b814c, type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 818f81acb7d0c4781973cff23f7b814c, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 818f81acb7d0c4781973cff23f7b814c, type: 3}
+      propertyPath: m_UseLightProbes
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 9500000, guid: 818f81acb7d0c4781973cff23f7b814c, type: 3}
   m_ParentPrefab: {fileID: 100100000, guid: 818f81acb7d0c4781973cff23f7b814c, type: 3}
@@ -15110,7 +15122,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1560682047
 Transform:
   m_ObjectHideFlags: 0
@@ -15134,14 +15146,14 @@ Light:
   serializedVersion: 6
   m_Type: 1
   m_Color: {r: 1, g: 0.9306288, b: 0.86764705, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.9
   m_Range: 72.37087
   m_SpotAngle: 30
   m_CookieSize: 20
   m_Shadows:
     m_Type: 2
     m_Resolution: 3
-    m_Strength: 0.25
+    m_Strength: 0.75
     m_Bias: 0
     m_NormalBias: 0
     m_NearPlane: 0.1
@@ -15153,7 +15165,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967263
   m_Lightmapping: 4
-  m_BounceIntensity: 1
+  m_BounceIntensity: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
   m_AreaSize: {x: 1, y: 1}
@@ -18131,7 +18143,6 @@ MeshRenderer:
   m_ReceiveShadows: 1
   m_Materials:
   - {fileID: 2100000, guid: d006e6a9a0cf346ca81e1a1139480ae1, type: 2}
-  - {fileID: 2100000, guid: 46187aaa7b9ab4599857845c9efebdff, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1

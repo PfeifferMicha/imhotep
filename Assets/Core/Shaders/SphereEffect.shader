@@ -11,11 +11,12 @@
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
+		Cull Off
 		LOD 200
 		
 		CGPROGRAM
 		// Physically based Standard lighting model, and enable shadows on all light types
-		#pragma surface surf Standard fullforwardshadows nofog vertex:vert
+		#pragma surface surf Standard fullforwardshadows nofog vertex:vert addshadow
 
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
@@ -27,13 +28,17 @@
 		struct Input {
 			float2 uv_MainTex;
 			float3 worldPos;
-            float3 objPos;
+            float3 localPos;
+			float3 viewDir;
+			float3 tangentSpaceNormal;
 		};
 
 
         void vert (inout appdata_full v, out Input o) {
             UNITY_INITIALIZE_OUTPUT(Input,o);
-            o.objPos = v.vertex;
+
+			// Remember the object space position:
+			o.localPos = v.vertex.xyz;
         }
 
         static float pi = 3.14159;
@@ -50,12 +55,12 @@
             float angleStep = pi/50;
             float heightAngleDiscrete = floor( heightAngle/angleStep ) * angleStep;
             float heightDiscrete = -cos( heightAngleDiscrete );
-			clip( heightDiscrete - IN.objPos.z );
+			clip( heightDiscrete - IN.localPos.z );
 
             float height = -cos( heightAngle );
 
             float border = pow(tex2D (_Border, IN.uv_MainTex).r, 5);
-            float borderEffect = max(1 - (height - IN.objPos.z),0)*border;
+            float borderEffect = max(1 - (height - IN.localPos.z),0)*border;
             o.Emission = borderEffect*_BorderEffectColor;
 
 			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
