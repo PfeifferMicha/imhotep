@@ -169,7 +169,7 @@ Material:
       data:
         first:
           name: _AppearAmount
-        second: 0.809
+        second: 0
       data:
         first:
           name: _EdgeEffectHeight
@@ -234,4 +234,4 @@ Material:
       data:
         first:
           name: _BorderEffectColor
-        second: {r: 1, g: 1, b: 1, a: 1}
+        second: {r: 0.24605323, g: 0.5786261, b: 0.9044118, a: 1}
