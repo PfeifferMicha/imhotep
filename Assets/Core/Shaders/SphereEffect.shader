@@ -80,7 +80,7 @@
             border = pow( border, 2 );
 
             float borderEffect = 1-(height - IN.localPos.z);
-            borderEffect = pow( max( 0, borderEffect ), 5f);
+            borderEffect = pow( max( 0, borderEffect ), 5.0 );
             o.Emission = borderEffect*border*_BorderEffectColor + borderEffect*pow(border, 10)*0.5;
 
 			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
