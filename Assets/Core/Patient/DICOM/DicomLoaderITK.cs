@@ -216,7 +216,7 @@ public class DicomLoaderITK
 
 		int origTexWidth = (int)image.GetWidth ();
 		int origTexHeight = (int)image.GetHeight ();
-		int origTexDepth = (int)image.GetDepth ();
+		//int origTexDepth = (int)image.GetDepth ();
 		int texWidth = Mathf.NextPowerOfTwo ((int)image.GetWidth ());
 		int texHeight = Mathf.NextPowerOfTwo ((int)image.GetHeight ());
 		int texDepth = 1;

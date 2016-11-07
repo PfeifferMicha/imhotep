@@ -3,6 +3,7 @@
 
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ModelRotator : MonoBehaviour
 {
@@ -13,6 +14,9 @@ public class ModelRotator : MonoBehaviour
 	private float rotationStartTime = 0;
 	private float rotationTime = 0.3f;
 
+	private Vector3 previousVivePos;
+	private bool rotating = false;
+
 	void Start()
 	{
 		targetRotation = transform.localRotation;
@@ -21,16 +25,42 @@ public class ModelRotator : MonoBehaviour
 	private void Update()
 	{
 		if (UI.Core.instance.pointerIsOverPlatformUIObject == false) {
-			if (Input.GetMouseButton (1) || Input.GetKey (KeyCode.M)) {
-				float inputH = -Input.GetAxis ("Mouse X");
-				float inputV = -Input.GetAxis ("Mouse Y");
+			InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;
+			if (inputDevice.getDeviceType() == InputDeviceManager.InputDeviceType.Mouse) {
+				// Let mouse handle rotation:
+				if (Input.GetMouseButton (1) || Input.GetKey (KeyCode.M)) {
+					float inputH = -Input.GetAxis ("Mouse X");
+					float inputV = -Input.GetAxis ("Mouse Y");
 
-				Vector3 upVector = Camera.main.transform.up;
-				Vector3 rightVector = Camera.main.transform.right;
-				transform.RotateAround (transform.position, upVector, inputH * rotationSpeed);
-				transform.RotateAround (transform.position, rightVector, -inputV * rotationSpeed);
+					Vector3 upVector = Camera.main.transform.up;
+					Vector3 rightVector = Camera.main.transform.right;
+					transform.RotateAround (transform.position, upVector, inputH * rotationSpeed);
+					transform.RotateAround (transform.position, rightVector, -inputV * rotationSpeed);
 
-				targetRotation = transform.localRotation;
+					targetRotation = transform.localRotation;	// Make sure it doesn't auto-rotate back.
+				}
+			} else if( inputDevice.getDeviceType() == InputDeviceManager.InputDeviceType.ViveController ) {
+				// Let left Vive controller handle rotation:
+				LeftController lc = InputDeviceManager.instance.leftController;
+				if (lc != null) {
+					UnityEngine.EventSystems.PointerEventData.FramePressState triggerState = lc.triggerButtonState;
+					if (triggerState == UnityEngine.EventSystems.PointerEventData.FramePressState.Pressed) {
+						rotating = true;
+						previousVivePos = lc.transform.localPosition;
+
+					} else if (triggerState == UnityEngine.EventSystems.PointerEventData.FramePressState.Released) {
+						rotating = false;
+						previousVivePos = new Vector3 (0, 0, 0);
+					}
+					if (rotating) {
+						Vector3 upVector = Camera.main.transform.up;
+						Vector3 rightVector = Camera.main.transform.right;
+						transform.RotateAround (transform.position, upVector, (previousVivePos.x - lc.transform.localPosition.x) * rotationSpeed);
+						transform.RotateAround (transform.position, rightVector, -(previousVivePos.y - lc.transform.localPosition.y) * rotationSpeed);
+						targetRotation = transform.localRotation;	// Make sure it doesn't auto-rotate back.
+						previousVivePos = this.transform.localPosition;
+					}
+				}
 			}
 		}
 

@@ -36,7 +36,20 @@ public class Controller : MonoBehaviour {
 	protected Vector2 touchpadValue = Vector2.zero;
 	protected Vector2 touchpadDelta = Vector2.zero;
 
-	protected PointerEventData.FramePressState triggerButtonState = PointerEventData.FramePressState.NotChanged;
+	/*! The state of the trigger, i.e. is someone clicking the trigger or not? */
+	protected PointerEventData.FramePressState m_triggerButtonState = PointerEventData.FramePressState.NotChanged;
+	public PointerEventData.FramePressState triggerButtonState {
+		get {
+			return m_triggerButtonState;
+		}
+	}
+	/*! The state of the touchpad-click, i.e. is someone clicking on the touchpad or not? */
+	protected PointerEventData.FramePressState m_touchpadButtonState = PointerEventData.FramePressState.NotChanged;
+	public PointerEventData.FramePressState touchpadButtonState {
+		get {
+			return m_touchpadButtonState;
+		}
+	}
 	//-----------------------------------------------------
 
 	//! The movement of the controller since the previous frame in world space:
@@ -54,6 +67,10 @@ public class Controller : MonoBehaviour {
 	public void Update() {
 		positionDelta = transform.position - previousPosition;
 		previousPosition = transform.position;
+
+		UpdateTriggerState ();
+		UpdateTouchpadButton ();
+		UpdateTouchpad ();
 	}
 
 	/*! Returns true if the trigger is pressed down all the way. */
@@ -77,6 +94,14 @@ public class Controller : MonoBehaviour {
 		return controller.GetAxis (triggerButton).x;
 	}
 
+	/*! Returns true if the touchpad is pressed down. */
+	public bool touchpadPressed() {
+		if( controller == null )
+			return false;
+
+		return controller.GetPressDown (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad);
+	}
+
 	protected void UpdateTouchpad() {
 		touchpadValue = controller.GetAxis (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad);
 		if( touchpadValue.sqrMagnitude < 0.01f || previousTouchpad.sqrMagnitude < 0.01f )
@@ -90,17 +115,17 @@ public class Controller : MonoBehaviour {
 
 	protected PointerEventData.FramePressState UpdateTriggerState() {
 
-		switch (triggerButtonState) {
+		switch (m_triggerButtonState) {
 		case PointerEventData.FramePressState.NotChanged:
 			if (triggerPressed () && !triggerPressedDown) {
-				triggerButtonState = PointerEventData.FramePressState.Pressed;
+				m_triggerButtonState = PointerEventData.FramePressState.Pressed;
 			}
 			if (!triggerPressed () && triggerPressedDown) {
 				if (helpState == false) {
-					triggerButtonState = PointerEventData.FramePressState.Pressed;
+					m_triggerButtonState = PointerEventData.FramePressState.Pressed;
 					helpState = true;
 				} else {
-					triggerButtonState = PointerEventData.FramePressState.Released;
+					m_triggerButtonState = PointerEventData.FramePressState.Released;
 				}
 			}
 			break;
@@ -108,13 +133,13 @@ public class Controller : MonoBehaviour {
 		case PointerEventData.FramePressState.Pressed:
 			if (helpState) {
 				helpState = false;
-				triggerButtonState = PointerEventData.FramePressState.Released;
+				m_triggerButtonState = PointerEventData.FramePressState.Released;
 			} else {
 				triggerPressedDown = true;
 				if (triggerPressed () && triggerPressedDown) {
-					triggerButtonState = PointerEventData.FramePressState.NotChanged;
+					m_triggerButtonState = PointerEventData.FramePressState.NotChanged;
 				} else if (!triggerPressed () && triggerPressedDown) {
-					triggerButtonState = PointerEventData.FramePressState.Released;
+					m_triggerButtonState = PointerEventData.FramePressState.Released;
 				}
 			}
 			break;
@@ -124,15 +149,31 @@ public class Controller : MonoBehaviour {
 
 		case PointerEventData.FramePressState.Released:
 			if (!triggerPressed ()) {
-				triggerButtonState = PointerEventData.FramePressState.NotChanged;
+				m_triggerButtonState = PointerEventData.FramePressState.NotChanged;
 			} else {
-				triggerButtonState = PointerEventData.FramePressState.Pressed;
+				m_triggerButtonState = PointerEventData.FramePressState.Pressed;
 			}
 			triggerPressedDown = false;
 			break;			
 		}
 
-		return triggerButtonState;
+		return m_triggerButtonState;
+	}
+
+	protected PointerEventData.FramePressState UpdateTouchpadButton() {
+
+		if (controller == null)
+			return m_touchpadButtonState;
+
+		if (controller.GetPressDown (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad)) {
+			m_touchpadButtonState = PointerEventData.FramePressState.Pressed;
+		} else if (controller.GetPressUp (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad)) {
+			m_touchpadButtonState = PointerEventData.FramePressState.Released;
+		} else {
+			m_touchpadButtonState = PointerEventData.FramePressState.NotChanged;
+		}
+
+		return m_touchpadButtonState;
 	}
 
 

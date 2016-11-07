@@ -24,7 +24,7 @@ AnimationClip:
         inSlope: 0.29175687
         outSlope: 0.29175687
         tangentMode: 0
-      - time: 6
+      - time: 8
         value: 1
         inSlope: 0
         outSlope: 0
@@ -56,7 +56,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 6
+    m_StopTime: 8
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -80,7 +80,7 @@ AnimationClip:
         inSlope: 0.29175687
         outSlope: 0.29175687
         tangentMode: 0
-      - time: 6
+      - time: 8
         value: 1
         inSlope: 0
         outSlope: 0
@@ -97,7 +97,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_GenerateMotionCurves: 0
   m_Events:
-  - time: 1.5
+  - time: 3
     functionName: activateLogo
     data: 
     objectReferenceParameter: {fileID: 0}

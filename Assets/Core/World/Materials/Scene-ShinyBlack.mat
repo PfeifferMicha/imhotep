@@ -45,13 +45,6 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _Detail
-        second:
-          m_Texture: {fileID: 2800000, guid: 18b30082c2f0049afae3a7b14b6c66d3, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
           name: _ParallaxMap
         second:
           m_Texture: {fileID: 0}
@@ -90,6 +83,13 @@ Material:
           name: _MetallicGlossMap
         second:
           m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Detail
+        second:
+          m_Texture: {fileID: 2800000, guid: 18b30082c2f0049afae3a7b14b6c66d3, type: 3}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
       data:
@@ -169,7 +169,7 @@ Material:
       data:
         first:
           name: _AppearAmount
-        second: 1
+        second: 0
       data:
         first:
           name: _EdgeEffectHeight
@@ -186,6 +186,10 @@ Material:
         first:
           name: _NumSegments
         second: 50
+      data:
+        first:
+          name: _AlphaCut
+        second: 0.4
     m_Colors:
       data:
         first:
@@ -227,3 +231,7 @@ Material:
         first:
           name: _EdgeColorInner
         second: {r: 1, g: 1, b: 1, a: 1}
+      data:
+        first:
+          name: _BorderEffectColor
+        second: {r: 0.24605323, g: 0.5786261, b: 0.9044118, a: 1}
