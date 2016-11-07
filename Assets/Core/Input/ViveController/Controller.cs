@@ -36,7 +36,12 @@ public class Controller : MonoBehaviour {
 	protected Vector2 touchpadValue = Vector2.zero;
 	protected Vector2 touchpadDelta = Vector2.zero;
 
-	protected PointerEventData.FramePressState triggerButtonState = PointerEventData.FramePressState.NotChanged;
+	protected PointerEventData.FramePressState m_triggerButtonState = PointerEventData.FramePressState.NotChanged;
+	public PointerEventData.FramePressState triggerButtonState {
+		get {
+			return m_triggerButtonState;
+		}
+	}
 	//-----------------------------------------------------
 
 	//! The movement of the controller since the previous frame in world space:
@@ -90,17 +95,17 @@ public class Controller : MonoBehaviour {
 
 	protected PointerEventData.FramePressState UpdateTriggerState() {
 
-		switch (triggerButtonState) {
+		switch (m_triggerButtonState) {
 		case PointerEventData.FramePressState.NotChanged:
 			if (triggerPressed () && !triggerPressedDown) {
-				triggerButtonState = PointerEventData.FramePressState.Pressed;
+				m_triggerButtonState = PointerEventData.FramePressState.Pressed;
 			}
 			if (!triggerPressed () && triggerPressedDown) {
 				if (helpState == false) {
-					triggerButtonState = PointerEventData.FramePressState.Pressed;
+					m_triggerButtonState = PointerEventData.FramePressState.Pressed;
 					helpState = true;
 				} else {
-					triggerButtonState = PointerEventData.FramePressState.Released;
+					m_triggerButtonState = PointerEventData.FramePressState.Released;
 				}
 			}
 			break;
@@ -108,13 +113,13 @@ public class Controller : MonoBehaviour {
 		case PointerEventData.FramePressState.Pressed:
 			if (helpState) {
 				helpState = false;
-				triggerButtonState = PointerEventData.FramePressState.Released;
+				m_triggerButtonState = PointerEventData.FramePressState.Released;
 			} else {
 				triggerPressedDown = true;
 				if (triggerPressed () && triggerPressedDown) {
-					triggerButtonState = PointerEventData.FramePressState.NotChanged;
+					m_triggerButtonState = PointerEventData.FramePressState.NotChanged;
 				} else if (!triggerPressed () && triggerPressedDown) {
-					triggerButtonState = PointerEventData.FramePressState.Released;
+					m_triggerButtonState = PointerEventData.FramePressState.Released;
 				}
 			}
 			break;
@@ -124,15 +129,15 @@ public class Controller : MonoBehaviour {
 
 		case PointerEventData.FramePressState.Released:
 			if (!triggerPressed ()) {
-				triggerButtonState = PointerEventData.FramePressState.NotChanged;
+				m_triggerButtonState = PointerEventData.FramePressState.NotChanged;
 			} else {
-				triggerButtonState = PointerEventData.FramePressState.Pressed;
+				m_triggerButtonState = PointerEventData.FramePressState.Pressed;
 			}
 			triggerPressedDown = false;
 			break;			
 		}
 
-		return triggerButtonState;
+		return m_triggerButtonState;
 	}
 
 

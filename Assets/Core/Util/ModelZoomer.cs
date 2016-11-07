@@ -18,6 +18,10 @@ public class ModelZoomer : MonoBehaviour
 	public float autoZoomSpeed = 0.5f;
 	private float scaleTime = 0.3f;
 
+	private bool zooming = false;
+	private float originalDist = 0;
+	private Vector3 mOriginalZoom;
+
     private void Start()
     {
 		targetZoom = transform.localScale;
@@ -27,18 +31,46 @@ public class ModelZoomer : MonoBehaviour
     private void Update()
     {
 		if (UI.Core.instance.pointerIsOverPlatformUIObject == false) {
-			if (Input.GetAxis ("Mouse ScrollWheel") != 0) {
-				
 
-				float inputScroll = Input.GetAxis ("Mouse ScrollWheel");
+			InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;
+			if (inputDevice.getDeviceType () == InputDeviceManager.InputDeviceType.Mouse) {
+				if (Input.GetAxis ("Mouse ScrollWheel") != 0) {
+					
+					float inputScroll = Input.GetAxis ("Mouse ScrollWheel");
 
-				float zoom = transform.localScale.x + inputScroll / (1 / zoomingSpeed);
+					float zoom = transform.localScale.x + inputScroll / (1 / zoomingSpeed);
 
-				zoom = Mathf.Clamp (zoom, minZoom, maxZoom);
+					zoom = Mathf.Clamp (zoom, minZoom, maxZoom);
 
-				transform.localScale = new Vector3 (zoom, zoom, zoom);
-				targetZoom = transform.localScale;
-				//setTargetZoom ( new Vector3(zoom, zoom, zoom), 0.02f );
+					transform.localScale = new Vector3 (zoom, zoom, zoom);
+					targetZoom = transform.localScale;
+				}
+			} else if ( inputDevice.getDeviceType() == InputDeviceManager.InputDeviceType.ViveController ) {
+				// Let left Vive controller handle zooming:
+
+				LeftController lc = InputDeviceManager.instance.leftController;
+				if (lc != null) {
+					UnityEngine.EventSystems.PointerEventData.FramePressState triggerState = lc.triggerButtonState;
+					if (triggerState == UnityEngine.EventSystems.PointerEventData.FramePressState.Pressed && zooming == false) {
+						zooming = true;
+						originalDist = (lc.transform.position - transform.position).magnitude;
+						mOriginalZoom = transform.localScale;
+					} else if (triggerState == UnityEngine.EventSystems.PointerEventData.FramePressState.Released && zooming == true) {
+						zooming = false;
+					}
+
+					if (zooming) {
+
+						float dist = (lc.transform.position - transform.position).magnitude;
+
+						float distDiff = dist - originalDist;
+
+						Vector3 newScale = mOriginalZoom + mOriginalZoom * distDiff;
+
+						setTargetZoom (newScale);
+					}
+				}
+
 			}
 		}
 
