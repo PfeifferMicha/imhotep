@@ -7,7 +7,8 @@ using UnityEngine.EventSystems;
 
 public class ModelRotator : MonoBehaviour
 {
-	public float rotationSpeed = 2.0f;
+	public float rotationSpeedMouse = 2.0f;
+	public float rotationSpeedVive = 200.0f;
 
 	private Quaternion targetRotation;
 	public float autoRotateSpeed = 720f;
@@ -34,8 +35,8 @@ public class ModelRotator : MonoBehaviour
 
 					Vector3 upVector = Camera.main.transform.up;
 					Vector3 rightVector = Camera.main.transform.right;
-					transform.RotateAround (transform.position, upVector, inputH * rotationSpeed);
-					transform.RotateAround (transform.position, rightVector, -inputV * rotationSpeed);
+					transform.RotateAround (transform.position, upVector, inputH * rotationSpeedMouse);
+					transform.RotateAround (transform.position, rightVector, -inputV * rotationSpeedMouse);
 
 					targetRotation = transform.localRotation;	// Make sure it doesn't auto-rotate back.
 				}
@@ -47,7 +48,6 @@ public class ModelRotator : MonoBehaviour
 					if (triggerState == UnityEngine.EventSystems.PointerEventData.FramePressState.Pressed) {
 						rotating = true;
 						previousVivePos = lc.transform.localPosition;
-
 					} else if (triggerState == UnityEngine.EventSystems.PointerEventData.FramePressState.Released) {
 						rotating = false;
 						previousVivePos = new Vector3 (0, 0, 0);
@@ -55,10 +55,10 @@ public class ModelRotator : MonoBehaviour
 					if (rotating) {
 						Vector3 upVector = Camera.main.transform.up;
 						Vector3 rightVector = Camera.main.transform.right;
-						transform.RotateAround (transform.position, upVector, (previousVivePos.x - lc.transform.localPosition.x) * rotationSpeed);
-						transform.RotateAround (transform.position, rightVector, -(previousVivePos.y - lc.transform.localPosition.y) * rotationSpeed);
+						transform.RotateAround (transform.position, upVector, (previousVivePos.x - lc.transform.localPosition.x) * rotationSpeedVive);
+						transform.RotateAround (transform.position, rightVector, -(previousVivePos.y - lc.transform.localPosition.y) * rotationSpeedVive);
 						targetRotation = transform.localRotation;	// Make sure it doesn't auto-rotate back.
-						previousVivePos = this.transform.localPosition;
+						previousVivePos = lc.transform.localPosition;
 					}
 				}
 			}
