@@ -5,7 +5,8 @@ using System.Collections;
 public class LeftController : Controller {
 
 	// Use this for initialization
-	void Start () {
+	new public void Start () {
+		base.Start ();
 		InputDeviceManager.instance.registerLeftController (this);
 	}
 

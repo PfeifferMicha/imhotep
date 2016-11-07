@@ -57,11 +57,55 @@ public class Controller : MonoBehaviour {
 
 	private Vector3 previousPosition;
 
+	//! Sprite
+	private GameObject spriteTouchpadCenter;
+	private GameObject spriteTouchpadLeft;
+	private GameObject spriteTouchpadRight;
+	private GameObject spriteTouchpadUp;
+	private GameObject spriteTouchpadDown;
+
 	// Use this for initialization
-	void Start () {
+	public void Start () {
 		//trackedObj = this.GetComponent<SteamVR_TrackedObject> ();
 		positionDelta = Vector3.zero;
 		previousPosition = Vector3.zero;
+
+
+		// Add Icons for later usage:
+		spriteTouchpadCenter = new GameObject("SpriteTouchpadCenter");
+		spriteTouchpadCenter.transform.SetParent( transform );
+		spriteTouchpadCenter.AddComponent<SpriteRenderer> ();
+		spriteTouchpadCenter.transform.localPosition = new Vector3 (0f, 0.0068f, -0.0488f);
+		spriteTouchpadCenter.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
+		spriteTouchpadCenter.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
+
+		spriteTouchpadLeft = new GameObject("SpriteTouchpadLeft");
+		spriteTouchpadLeft.transform.SetParent( transform );
+		spriteTouchpadLeft.AddComponent<SpriteRenderer> ();
+		spriteTouchpadLeft.transform.localPosition = new Vector3 (-0.025f, 0.0086f, -0.049f);
+		spriteTouchpadLeft.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
+		spriteTouchpadLeft.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
+
+		spriteTouchpadRight = new GameObject("SpriteTouchpadRight");
+		spriteTouchpadRight.transform.SetParent( transform );
+		spriteTouchpadRight.AddComponent<SpriteRenderer> ();
+		spriteTouchpadRight.transform.localPosition = new Vector3 (0.025f, 0.0086f, -0.049f);
+		spriteTouchpadRight.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
+		spriteTouchpadRight.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
+
+		spriteTouchpadUp = new GameObject("SpriteTouchpadUp");
+		spriteTouchpadUp.transform.SetParent( transform );
+		spriteTouchpadUp.AddComponent<SpriteRenderer> ();
+		spriteTouchpadUp.transform.localPosition = new Vector3 (0f, 0.0115f, -0.0243f);
+		spriteTouchpadUp.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
+		spriteTouchpadUp.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
+
+		spriteTouchpadDown = new GameObject("SpriteTouchpadDown");
+		spriteTouchpadDown.transform.SetParent( transform );
+		spriteTouchpadDown.AddComponent<SpriteRenderer> ();
+		spriteTouchpadDown.transform.localPosition = new Vector3 (0f, 0.0067f, -0.0738f);
+		spriteTouchpadDown.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
+		spriteTouchpadDown.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
 	}
 
 	public void Update() {
@@ -184,5 +228,10 @@ public class Controller : MonoBehaviour {
 
 	public void set3DDelta( Vector2 delta ) {
 		positionDelta = delta;
+	}
+
+	public void setTouchpadCentralIcon( Sprite s )
+	{
+		
 	}
 }

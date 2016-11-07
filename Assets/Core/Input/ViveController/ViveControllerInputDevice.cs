@@ -49,7 +49,8 @@ public class ViveControllerInputDevice : Controller, InputDevice {
 	}
 
 	// Use this for initialization
-	void Start () {
+	new public void Start () {
+		base.Start ();
 
 		//register device
 		if (InputDeviceManager.instance != null)
