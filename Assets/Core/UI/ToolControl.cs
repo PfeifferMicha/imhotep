@@ -149,6 +149,7 @@ public class ToolControl : MonoBehaviour {
 			activeTool = null;
 			activeToolChoise.SetActive (true);		// make choosable again
 			activeToolChoise = null;
+			InputDeviceManager.instance.resetToolIcons ();
 		}
 	}
 

@@ -234,4 +234,12 @@ public class Controller : MonoBehaviour {
 	{
 		
 	}
+
+	public void setTouchpadDirectionIcons( Sprite l, Sprite r, Sprite u, Sprite d )
+	{
+		spriteTouchpadLeft.GetComponent<SpriteRenderer> ().sprite = l;
+		spriteTouchpadRight.GetComponent<SpriteRenderer> ().sprite = r;
+		spriteTouchpadUp.GetComponent<SpriteRenderer> ().sprite = u;
+		spriteTouchpadDown.GetComponent<SpriteRenderer> ().sprite = d;
+	}
 }

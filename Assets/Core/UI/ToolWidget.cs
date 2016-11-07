@@ -4,6 +4,15 @@ using System.Collections;
 
 public class ToolWidget : MonoBehaviour {
 
+	public Sprite iconLeftControllerLeft;
+	public Sprite iconLeftControllerRight;
+	public Sprite iconLeftControllerUp;
+	public Sprite iconLeftControllerDown;
+	public Sprite iconRightControllerLeft;
+	public Sprite iconRightControllerRight;
+	public Sprite iconRightControllerUp;
+	public Sprite iconRightControllerDown;
+
 	// Use this for initialization
 	void Start () {
 
@@ -35,6 +44,12 @@ public class ToolWidget : MonoBehaviour {
 	{
 		// Move the object to the current anchor (to "helmet" or to controller)
 		Invoke ("MoveToUIAnchor",0.0001f);
+
+		InputDeviceManager.instance.setLeftControllerTouchpadIcons (
+			iconLeftControllerLeft, iconLeftControllerRight, iconLeftControllerUp, iconLeftControllerDown);
+
+		InputDeviceManager.instance.setRightControllerTouchpadIcons (
+			iconRightControllerLeft, iconRightControllerRight, iconRightControllerUp, iconRightControllerDown);
 	}
 
 	public void OnDisable()
