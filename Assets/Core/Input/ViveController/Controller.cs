@@ -36,10 +36,18 @@ public class Controller : MonoBehaviour {
 	protected Vector2 touchpadValue = Vector2.zero;
 	protected Vector2 touchpadDelta = Vector2.zero;
 
+	/*! The state of the trigger, i.e. is someone clicking the trigger or not? */
 	protected PointerEventData.FramePressState m_triggerButtonState = PointerEventData.FramePressState.NotChanged;
 	public PointerEventData.FramePressState triggerButtonState {
 		get {
 			return m_triggerButtonState;
+		}
+	}
+	/*! The state of the touchpad-click, i.e. is someone clicking on the touchpad or not? */
+	protected PointerEventData.FramePressState m_touchpadButtonState = PointerEventData.FramePressState.NotChanged;
+	public PointerEventData.FramePressState touchpadButtonState {
+		get {
+			return m_touchpadButtonState;
 		}
 	}
 	//-----------------------------------------------------
@@ -59,6 +67,10 @@ public class Controller : MonoBehaviour {
 	public void Update() {
 		positionDelta = transform.position - previousPosition;
 		previousPosition = transform.position;
+
+		UpdateTriggerState ();
+		UpdateTouchpadButton ();
+		UpdateTouchpad ();
 	}
 
 	/*! Returns true if the trigger is pressed down all the way. */
@@ -80,6 +92,14 @@ public class Controller : MonoBehaviour {
 			return 0f;
 
 		return controller.GetAxis (triggerButton).x;
+	}
+
+	/*! Returns true if the touchpad is pressed down. */
+	public bool touchpadPressed() {
+		if( controller == null )
+			return false;
+
+		return controller.GetPressDown (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad);
 	}
 
 	protected void UpdateTouchpad() {
@@ -138,6 +158,22 @@ public class Controller : MonoBehaviour {
 		}
 
 		return m_triggerButtonState;
+	}
+
+	protected PointerEventData.FramePressState UpdateTouchpadButton() {
+
+		if (controller == null)
+			return m_touchpadButtonState;
+
+		if (controller.GetPressDown (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad)) {
+			m_touchpadButtonState = PointerEventData.FramePressState.Pressed;
+		} else if (controller.GetPressUp (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad)) {
+			m_touchpadButtonState = PointerEventData.FramePressState.Released;
+		} else {
+			m_touchpadButtonState = PointerEventData.FramePressState.NotChanged;
+		}
+
+		return m_touchpadButtonState;
 	}
 
 

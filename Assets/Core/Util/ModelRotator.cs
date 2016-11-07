@@ -16,7 +16,6 @@ public class ModelRotator : MonoBehaviour
 
 	private Vector3 previousVivePos;
 	private bool rotating = false;
-	private bool zooming = false;
 
 	void Start()
 	{

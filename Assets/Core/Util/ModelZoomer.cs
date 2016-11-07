@@ -34,6 +34,7 @@ public class ModelZoomer : MonoBehaviour
 
 			InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;
 			if (inputDevice.getDeviceType () == InputDeviceManager.InputDeviceType.Mouse) {
+				// Let mouse handle zooming:
 				if (Input.GetAxis ("Mouse ScrollWheel") != 0) {
 					
 					float inputScroll = Input.GetAxis ("Mouse ScrollWheel");
@@ -47,7 +48,6 @@ public class ModelZoomer : MonoBehaviour
 				}
 			} else if ( inputDevice.getDeviceType() == InputDeviceManager.InputDeviceType.ViveController ) {
 				// Let left Vive controller handle zooming:
-
 				LeftController lc = InputDeviceManager.instance.leftController;
 				if (lc != null) {
 					UnityEngine.EventSystems.PointerEventData.FramePressState triggerState = lc.triggerButtonState;

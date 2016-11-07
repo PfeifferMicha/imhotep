@@ -24,12 +24,14 @@ public class ViveControllerInputDevice : Controller, InputDevice {
 
 	public PointerEventData.FramePressState getMiddleButtonState()
 	{
-		return PointerEventData.FramePressState.NotChanged; //TODO?
+		// Return "not changed", because we don't have a middle button.
+		return PointerEventData.FramePressState.NotChanged;
 	}
 
 	public PointerEventData.FramePressState getRightButtonState()
 	{
-		return PointerEventData.FramePressState.NotChanged; //TODO?
+		// Return "not changed", because we don't have a right button.
+		return PointerEventData.FramePressState.NotChanged;
 	}
 
 	public Vector2 getScrollDelta()
@@ -63,9 +65,7 @@ public class ViveControllerInputDevice : Controller, InputDevice {
 
 	public ButtonInfo updateButtonInfo ()
 	{
-		UpdateTouchpad ();
-
-		buttonInfo.buttonStates [ButtonType.Trigger] = UpdateTriggerState ();
+		buttonInfo.buttonStates [ButtonType.Trigger] = triggerButtonState;
 
 		return buttonInfo;
 	}
