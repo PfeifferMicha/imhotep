@@ -147,7 +147,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 					float dZ = -movement.z*2f*currentViewSettings.zoom;
 					currentViewSettings.zoom = Mathf.Clamp (currentViewSettings.zoom + dZ, 0.1f, 5f);
 
-					float dX = -movement.x;
+					float dX = movement.x;
 					float dY = movement.y;
 					currentViewSettings.panX += dX*currentViewSettings.zoom;
 					currentViewSettings.panY += dY*currentViewSettings.zoom;
