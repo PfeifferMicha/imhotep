@@ -33,10 +33,12 @@ public class InputDeviceManager : MonoBehaviour {
 	private Sprite iconLeftControllerRight;
 	private Sprite iconLeftControllerUp;
 	private Sprite iconLeftControllerDown;
+	private Sprite iconLeftControllerCenter;
 	private Sprite iconRightControllerLeft;
 	private Sprite iconRightControllerRight;
 	private Sprite iconRightControllerUp;
 	private Sprite iconRightControllerDown;
+	private Sprite iconRightControllerCenter;
 
 
 	public InputDeviceManager()
@@ -52,6 +54,7 @@ public class InputDeviceManager : MonoBehaviour {
 		if (device.getDeviceType () == InputDeviceType.ViveController) {
 			Controller c = device as Controller;
 			c.setTouchpadDirectionIcons (iconLeftControllerLeft, iconLeftControllerRight, iconLeftControllerUp, iconLeftControllerDown);
+			c.setTouchpadCentralIcon (iconRightControllerCenter);
 		}
     }
 
@@ -59,6 +62,7 @@ public class InputDeviceManager : MonoBehaviour {
 	{
 		leftController = left;
 		left.setTouchpadDirectionIcons (iconLeftControllerLeft, iconLeftControllerRight, iconLeftControllerUp, iconLeftControllerDown);
+		left.setTouchpadCentralIcon (iconLeftControllerCenter);
 	}
 
 	public void shakeLeftController( ushort milliseconds )
@@ -90,6 +94,22 @@ public class InputDeviceManager : MonoBehaviour {
 		if (currentInputDevice != null && currentInputDevice.getDeviceType() == InputDeviceType.ViveController) {
 			Controller c = currentInputDevice as Controller;
 			c.setTouchpadDirectionIcons (left, right, up, down);
+		}
+	}
+
+	public void setRightControllerTouchpadIconCentral( Sprite center )
+	{
+		iconRightControllerCenter = center;
+		if (currentInputDevice != null && currentInputDevice.getDeviceType() == InputDeviceType.ViveController) {
+			Controller c = currentInputDevice as Controller;
+			c.setTouchpadCentralIcon (center);
+		}
+	}
+	public void setLeftControllerTouchpadIconCentral( Sprite center )
+	{
+		iconLeftControllerCenter = center;
+		if (leftController != null) {
+			leftController.setTouchpadCentralIcon (iconLeftControllerCenter);
 		}
 	}
 

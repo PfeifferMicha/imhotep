@@ -33,8 +33,8 @@ public class Controller : MonoBehaviour {
 	protected bool helpState = false; //Before releasing the button press it again to avoid scrolling in lists
 
 	protected Vector2 previousTouchpad = Vector2.zero;
-	protected Vector2 touchpadValue = Vector2.zero;
-	protected Vector2 touchpadDelta = Vector2.zero;
+	public Vector2 touchpadValue { protected set; get; }
+	public Vector2 touchpadDelta { protected set; get; }
 
 	/*! The state of the trigger, i.e. is someone clicking the trigger or not? */
 	protected PointerEventData.FramePressState m_triggerButtonState = PointerEventData.FramePressState.NotChanged;
@@ -72,12 +72,15 @@ public class Controller : MonoBehaviour {
 
 
 		// Add Icons for later usage:
+		Color spriteColor = new Color( 0.7f, 0.85f, 1.0f );
+
 		spriteTouchpadCenter = new GameObject("SpriteTouchpadCenter");
 		spriteTouchpadCenter.transform.SetParent( transform );
 		spriteTouchpadCenter.AddComponent<SpriteRenderer> ();
 		spriteTouchpadCenter.transform.localPosition = new Vector3 (0f, 0.0068f, -0.0488f);
 		spriteTouchpadCenter.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
 		spriteTouchpadCenter.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
+		spriteTouchpadCenter.GetComponent<SpriteRenderer> ().color = spriteColor;
 
 		spriteTouchpadLeft = new GameObject("SpriteTouchpadLeft");
 		spriteTouchpadLeft.transform.SetParent( transform );
@@ -85,6 +88,7 @@ public class Controller : MonoBehaviour {
 		spriteTouchpadLeft.transform.localPosition = new Vector3 (-0.025f, 0.0086f, -0.049f);
 		spriteTouchpadLeft.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
 		spriteTouchpadLeft.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
+		spriteTouchpadCenter.GetComponent<SpriteRenderer> ().color = spriteColor;
 
 		spriteTouchpadRight = new GameObject("SpriteTouchpadRight");
 		spriteTouchpadRight.transform.SetParent( transform );
@@ -92,6 +96,7 @@ public class Controller : MonoBehaviour {
 		spriteTouchpadRight.transform.localPosition = new Vector3 (0.025f, 0.0086f, -0.049f);
 		spriteTouchpadRight.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
 		spriteTouchpadRight.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
+		spriteTouchpadCenter.GetComponent<SpriteRenderer> ().color = spriteColor;
 
 		spriteTouchpadUp = new GameObject("SpriteTouchpadUp");
 		spriteTouchpadUp.transform.SetParent( transform );
@@ -99,6 +104,7 @@ public class Controller : MonoBehaviour {
 		spriteTouchpadUp.transform.localPosition = new Vector3 (0f, 0.0115f, -0.0243f);
 		spriteTouchpadUp.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
 		spriteTouchpadUp.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
+		spriteTouchpadCenter.GetComponent<SpriteRenderer> ().color = spriteColor;
 
 		spriteTouchpadDown = new GameObject("SpriteTouchpadDown");
 		spriteTouchpadDown.transform.SetParent( transform );
@@ -106,6 +112,7 @@ public class Controller : MonoBehaviour {
 		spriteTouchpadDown.transform.localPosition = new Vector3 (0f, 0.0067f, -0.0738f);
 		spriteTouchpadDown.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
 		spriteTouchpadDown.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
+		spriteTouchpadCenter.GetComponent<SpriteRenderer> ().color = spriteColor;
 	}
 
 	public void Update() {
@@ -232,7 +239,7 @@ public class Controller : MonoBehaviour {
 
 	public void setTouchpadCentralIcon( Sprite s )
 	{
-		
+		spriteTouchpadCenter.GetComponent<SpriteRenderer> ().sprite = s;
 	}
 
 	public void setTouchpadDirectionIcons( Sprite l, Sprite r, Sprite u, Sprite d )

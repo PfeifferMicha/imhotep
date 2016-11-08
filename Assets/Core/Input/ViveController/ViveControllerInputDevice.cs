@@ -34,11 +34,6 @@ public class ViveControllerInputDevice : Controller, InputDevice {
 		return PointerEventData.FramePressState.NotChanged;
 	}
 
-	public Vector2 getScrollDelta()
-	{
-		return touchpadDelta*100;
-	}
-
 	public Vector2 getTexCoordMovement()
 	{
 		return texCoordDelta;
@@ -85,5 +80,8 @@ public class ViveControllerInputDevice : Controller, InputDevice {
 
 	public void setTexCoordDelta( Vector2 delta ) {
 		texCoordDelta = delta;
+	}
+	public Vector2 getScrollDelta() {
+		return touchpadDelta;
 	}
 }

@@ -4,6 +4,8 @@ using System.Collections;
 
 public class ToolWidget : MonoBehaviour {
 
+	public Sprite ToolIcon;
+
 	public Sprite iconLeftControllerLeft;
 	public Sprite iconLeftControllerRight;
 	public Sprite iconLeftControllerUp;

@@ -9,9 +9,4 @@ public class LeftController : Controller {
 		base.Start ();
 		InputDeviceManager.instance.registerLeftController (this);
 	}
-
-	public Vector2 getScrollDelta()
-	{
-		return touchpadDelta*100;
-	}
 }

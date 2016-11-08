@@ -198,6 +198,8 @@ public class HierarchicalInputModule : BaseInputModule {
 		// ----------------------------------
 		// Fill the EventData with current information from the last hit:
 		eventData.scrollDelta = idm.currentInputDevice.getScrollDelta();
+		if (InputDeviceManager.instance.currentInputDevice.getDeviceType () == InputDeviceManager.InputDeviceType.ViveController)
+			eventData.scrollDelta *= 100;
 		//eventData.position = fakeUIScreenPosition;
 		// Because we're interested in the 3D positions only, copy it over to the 2D UI hit result:
 		raycastResult.worldPosition = raycastHit.point;
