@@ -64,39 +64,39 @@ public class Controller : MonoBehaviour {
 	private GameObject spriteTouchpadUp;
 	private GameObject spriteTouchpadDown;
 
+	public Color iconColor = new Color( 0.7f, 0.85f, 1.0f );
+	public Color iconColorHighlight = new Color( 0.85f, 1.0f, 0.85f );
+
 	// Use this for initialization
 	public void Start () {
 		//trackedObj = this.GetComponent<SteamVR_TrackedObject> ();
 		positionDelta = Vector3.zero;
 		previousPosition = Vector3.zero;
 
-
 		// Add Icons for later usage:
-		Color spriteColor = new Color( 0.7f, 0.85f, 1.0f );
-
 		spriteTouchpadCenter = new GameObject("SpriteTouchpadCenter");
 		spriteTouchpadCenter.transform.SetParent( transform );
 		spriteTouchpadCenter.AddComponent<SpriteRenderer> ();
 		spriteTouchpadCenter.transform.localPosition = new Vector3 (0f, 0.0068f, -0.0488f);
 		spriteTouchpadCenter.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
 		spriteTouchpadCenter.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
-		spriteTouchpadCenter.GetComponent<SpriteRenderer> ().color = spriteColor;
+		spriteTouchpadCenter.GetComponent<SpriteRenderer> ().color = iconColor;
 
 		spriteTouchpadLeft = new GameObject("SpriteTouchpadLeft");
 		spriteTouchpadLeft.transform.SetParent( transform );
 		spriteTouchpadLeft.AddComponent<SpriteRenderer> ();
-		spriteTouchpadLeft.transform.localPosition = new Vector3 (-0.025f, 0.0086f, -0.049f);
-		spriteTouchpadLeft.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
+		spriteTouchpadLeft.transform.localPosition = new Vector3 (-0.015f, 0.0086f, -0.049f);
+		spriteTouchpadLeft.transform.localEulerAngles = new Vector3 (85f, -90f, 0f);
 		spriteTouchpadLeft.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
-		spriteTouchpadCenter.GetComponent<SpriteRenderer> ().color = spriteColor;
+		spriteTouchpadLeft.GetComponent<SpriteRenderer> ().color = iconColor;
 
 		spriteTouchpadRight = new GameObject("SpriteTouchpadRight");
 		spriteTouchpadRight.transform.SetParent( transform );
 		spriteTouchpadRight.AddComponent<SpriteRenderer> ();
-		spriteTouchpadRight.transform.localPosition = new Vector3 (0.025f, 0.0086f, -0.049f);
-		spriteTouchpadRight.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
+		spriteTouchpadRight.transform.localPosition = new Vector3 (0.015f, 0.0086f, -0.049f);
+		spriteTouchpadRight.transform.localEulerAngles = new Vector3 (85f, 90f, 0f);
 		spriteTouchpadRight.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
-		spriteTouchpadCenter.GetComponent<SpriteRenderer> ().color = spriteColor;
+		spriteTouchpadRight.GetComponent<SpriteRenderer> ().color = iconColor;
 
 		spriteTouchpadUp = new GameObject("SpriteTouchpadUp");
 		spriteTouchpadUp.transform.SetParent( transform );
@@ -104,15 +104,15 @@ public class Controller : MonoBehaviour {
 		spriteTouchpadUp.transform.localPosition = new Vector3 (0f, 0.0115f, -0.0243f);
 		spriteTouchpadUp.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
 		spriteTouchpadUp.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
-		spriteTouchpadCenter.GetComponent<SpriteRenderer> ().color = spriteColor;
+		spriteTouchpadUp.GetComponent<SpriteRenderer> ().color = iconColor;
 
 		spriteTouchpadDown = new GameObject("SpriteTouchpadDown");
 		spriteTouchpadDown.transform.SetParent( transform );
 		spriteTouchpadDown.AddComponent<SpriteRenderer> ();
 		spriteTouchpadDown.transform.localPosition = new Vector3 (0f, 0.0067f, -0.0738f);
-		spriteTouchpadDown.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
+		spriteTouchpadDown.transform.localEulerAngles = new Vector3 (85f, 180f, 0f);
 		spriteTouchpadDown.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
-		spriteTouchpadCenter.GetComponent<SpriteRenderer> ().color = spriteColor;
+		spriteTouchpadDown.GetComponent<SpriteRenderer> ().color = iconColor;
 	}
 
 	public void Update() {
@@ -122,6 +122,31 @@ public class Controller : MonoBehaviour {
 		UpdateTriggerState ();
 		UpdateTouchpadButton ();
 		UpdateTouchpad ();
+
+		spriteTouchpadCenter.GetComponent<SpriteRenderer> ().color = iconColor;
+		spriteTouchpadLeft.GetComponent<SpriteRenderer> ().color = iconColor;
+		spriteTouchpadRight.GetComponent<SpriteRenderer> ().color = iconColor;
+		spriteTouchpadUp.GetComponent<SpriteRenderer> ().color = iconColor;
+		spriteTouchpadDown.GetComponent<SpriteRenderer> ().color = iconColor;
+
+		if( controller.GetTouch(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad) )
+		{
+			if (touchpadValue.magnitude < 0.5) {
+				spriteTouchpadCenter.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
+			} else if (Mathf.Abs (touchpadValue.y) < 0.5) {
+				if (touchpadValue.x < -0.3f) {	// left
+					spriteTouchpadLeft.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
+				} else if (touchpadValue.x > 0.3f) {
+					spriteTouchpadRight.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
+				}
+			} else if (Mathf.Abs (touchpadValue.x) < 0.5) {
+				if (touchpadValue.y < -0.3f) {	// left
+					spriteTouchpadUp.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
+				} else if (touchpadValue.y > 0.3f) {
+					spriteTouchpadDown.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
+				}
+			}
+		}
 	}
 
 	/*! Returns true if the trigger is pressed down all the way. */

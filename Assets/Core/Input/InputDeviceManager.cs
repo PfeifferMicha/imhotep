@@ -53,7 +53,7 @@ public class InputDeviceManager : MonoBehaviour {
 
 		if (device.getDeviceType () == InputDeviceType.ViveController) {
 			Controller c = device as Controller;
-			c.setTouchpadDirectionIcons (iconLeftControllerLeft, iconLeftControllerRight, iconLeftControllerUp, iconLeftControllerDown);
+			c.setTouchpadDirectionIcons (iconRightControllerLeft, iconRightControllerRight, iconRightControllerUp, iconRightControllerDown);
 			c.setTouchpadCentralIcon (iconRightControllerCenter);
 		}
     }

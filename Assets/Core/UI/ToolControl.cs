@@ -2,12 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/*! This class handles the tool options and how tools are selected/deselected.
+ * For every Tool, this class automatically generates an entry in the ToolRing, which is placed around the
+ * left controller to be chosen by the user. The class also handles the ToolRing movement and enabling/disabling.
+ * 
+ * Legacy: Before the last update, this class handled the creation of the tool stands instead - some code
+ * is still left from this stage for backwards-compatability reasons. */
 public class ToolControl : MonoBehaviour {
 
 	public GameObject ToolStandPrefab;
 	public GameObject ControllerPrefab;
 	public Platform platform;
 	public Sprite ToolSelectSprite;
+	public Sprite ToolAcceptSprite;
+	public Sprite Arrow;
 
 	List<GameObject> toolStands = new List<GameObject>();
 	List<GameObject> controllerChoises = new List<GameObject>();
@@ -24,6 +32,15 @@ public class ToolControl : MonoBehaviour {
 	private float rotationStartTime = 0f;
 	private float toolRingTargetAngle = 0.0f;
 	private float rotationTime = 0.3f;
+
+	private bool toolRingActive = false;
+	private bool closingToolRing = false;
+	private float movingStartTime = 0f;
+	private Vector3 targetPosition;
+	private float movingTime = 0.3f;
+	private float toolRingY = 0.1f;
+
+	public Color iconColor = new Color( 0.7f, 0.85f, 1.0f );
 
 	public ToolControl() {
 		instance = this;
@@ -90,15 +107,20 @@ public class ToolControl : MonoBehaviour {
 					}
 				}
 			}
-				
+
+
 			if( lc != null )
 			{
 				if( lc.touchpadButtonState == UnityEngine.EventSystems.PointerEventData.FramePressState.Released ) {
-					if (Mathf.Abs (lc.touchpadValue.y) < 0.5) {
-						if (lc.touchpadValue.x < -0.3f) {	// left
-							toolRingPrev ();
-						} else if (lc.touchpadValue.x > 0.3f) {
-							toolRingNext ();
+					if (lc.touchpadValue.magnitude < 0.5) {
+						toggleToolRing ();
+					} else if (Mathf.Abs (lc.touchpadValue.y) < 0.5) {
+						if (toolRingActive) {
+							if (lc.touchpadValue.x < -0.3f) {	// left
+								toolRingPrev ();
+							} else if (lc.touchpadValue.x > 0.3f) {
+								toolRingNext ();
+							}
 						}
 					}
 				}
@@ -107,9 +129,15 @@ public class ToolControl : MonoBehaviour {
 		}
 
 		if (toolRing != null) {
+			// Rotate the tool ring if left/right was pressed:
 			Quaternion targetRotation = Quaternion.AngleAxis (toolRingTargetAngle, Vector3.up);
 			toolRing.transform.localRotation = Quaternion.Slerp (toolRing.transform.localRotation,
 				targetRotation, (Time.time - rotationStartTime) / rotationTime);
+
+			// Move the tool ring up or down when it's being activated or deactivated:
+			toolRing.transform.localPosition = Vector3.Slerp( toolRing.transform.localPosition,
+				targetPosition, (Time.time - movingStartTime) / movingTime);
+
 			updateToolRingIcons ();
 		}
 	}
@@ -123,29 +151,31 @@ public class ToolControl : MonoBehaviour {
 			string toolName = child.name;
 
 			GameObject go = platform.toolStandPosition (i, (uint)transform.childCount);
-			GameObject newToolStand = Object.Instantiate( ToolStandPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+			GameObject newToolStand = Object.Instantiate (ToolStandPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 			newToolStand.name = "ToolStand (" + toolName + ")";
 			newToolStand.transform.SetParent (go.transform, false);
-			StartCoroutine (activateToolStand (newToolStand, Random.value*0.25f + 0.3f*Mathf.Abs(transform.childCount*0.5f - i)));
+			StartCoroutine (activateToolStand (newToolStand, Random.value * 0.25f + 0.3f * Mathf.Abs (transform.childCount * 0.5f - i)));
 
 			toolStands.Add (newToolStand);
 
 			GameObject controllerChoise = Object.Instantiate (ControllerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 			controllerChoise.transform.localRotation = Quaternion.Euler (new Vector3 (0f, 270f, 270f));
-			controllerChoise.transform.localPosition = new Vector3 ( 0.2f, 0f, 0.13f );
+			controllerChoise.transform.localPosition = new Vector3 (0.2f, 0f, 0.13f);
 			ToolChoise tc = controllerChoise.GetComponent<ToolChoise> ();
 			tc.toolName = toolName;
 			tc.toolControl = this;
 			Transform tableBone = newToolStand.transform.Find ("ToolStandArmature/BoneArm/BoneRotate/BoneSlide");
-			controllerChoise.transform.SetParent( tableBone, false );
+			controllerChoise.transform.SetParent (tableBone, false);
 			controllerChoise.SetActive (true);
 			controllerChoises.Add (controllerChoise);
-			i ++;
+			i++;
 		}
 
+	}
 
-		//////////////////////////////////////////////////
-		/// Create Tool Ring:
+	/*! Create a new Tool Ring and add an entry for each available Tool.*/
+	public void generateToolRing()
+	{
 		Controller lc = InputDeviceManager.instance.leftController;
 		if (lc != null) {
 			// If there's already a tool ring element, delete it:
@@ -156,13 +186,18 @@ public class ToolControl : MonoBehaviour {
 			// Create new Tool Ring:
 			GameObject anchor = new GameObject ("ToolRingAnchor");	// Anchor object for rotation/positon only.
 			anchor.transform.SetParent (lc.transform, false);
-			anchor.transform.localPosition = new Vector3 (0f, 0f, 0.1f);
+			anchor.transform.localPosition = new Vector3 (0f, -0.025f, 0f);
 			anchor.transform.localRotation = Quaternion.AngleAxis (85f, Vector3.right);
 			toolRing = new GameObject ("ToolRing");		// Actual tool ring. Will only be rotated around its local Y axis.
 			toolRing.transform.SetParent (anchor.transform, false);
 
+			// Ease the ring in:
+			targetPosition = new Vector3 (0f, toolRingY, 0f);
+			movingTime = 1f;
+			movingStartTime = Time.time;
+
 			// Add a choice for each tool to the ring:
-			i = 0;
+			int i = 0;
 			int numTools = transform.childCount;
 			float radius = 0.07f;
 			foreach (Transform child in transform) {
@@ -183,6 +218,29 @@ public class ToolControl : MonoBehaviour {
 				i ++;
 			}
 			updateToolRingIcons ();
+		}
+	}
+
+	public void removeToolRing()
+	{
+		targetPosition = new Vector3 (0f, 0f, 0.0f);
+		movingTime = 0.5f;
+		movingStartTime = Time.time;
+	}
+
+	public void toggleToolRing()
+	{
+		if( toolRingActive )
+		{
+			removeToolRing ();
+			InputDeviceManager.instance.setLeftControllerTouchpadIconCentral (ToolSelectSprite);
+			InputDeviceManager.instance.setLeftControllerTouchpadIcons (null, null, null, null);
+			toolRingActive = false;
+		} else {
+			generateToolRing ();
+			InputDeviceManager.instance.setLeftControllerTouchpadIconCentral (ToolAcceptSprite);
+			InputDeviceManager.instance.setLeftControllerTouchpadIcons (Arrow, Arrow, null, null);
+			toolRingActive = true;
 		}
 	}
 
@@ -215,19 +273,48 @@ public class ToolControl : MonoBehaviour {
 		toolRingTargetAngle = angle;
 		rotationStartTime = Time.time;
 		rotationTime = 0.3f;
-		Debug.Log ("New goal angle: " + toolRingTargetAngle);
 	}
 
 	public void updateToolRingIcons()
 	{
 		if (toolRing != null) {
+
+			// Make the tool ring become less transparent as it eases in:
+			float alpha = Mathf.Pow (toolRing.transform.localPosition.y / toolRingY, 2f);
+
+			float scale = 0.75f + 0.25f * alpha;
+			Vector3 scaleVec = 0.045f*(new Vector3( scale, scale, scale ));
+			//toolRing.transform.localScale = new Vector3 (scale, scale, scale);
+
+			float smallestAngleDiff = float.MaxValue;
+			SpriteRenderer foremostSprite = null;
+
 			foreach (Transform tf in toolRing.transform) {
-				float angleDiff = Mathf.Abs(-toolRing.transform.localEulerAngles.y - tf.localEulerAngles.y);
-				angleDiff = angleDiff % 360f;		// Just to make sure...
-				if (angleDiff > 180f)
-					angleDiff = 360f - angleDiff;
-				Color col = (1f - angleDiff / 360f)*(Color.white);
-				tf.GetComponent<SpriteRenderer> ().color = col;
+				if (alpha > 0) {
+					tf.gameObject.SetActive (true);
+
+					float angleDiff = Mathf.Abs(-toolRing.transform.localEulerAngles.y - tf.localEulerAngles.y);
+					angleDiff = angleDiff % 360f;		// Just to make sure...
+					if (angleDiff > 180f)
+						angleDiff = 360f - angleDiff;
+					Color col = (1f - angleDiff / 360f)*(iconColor);
+					// Make the tool ring become less transparent as 
+					col.a *= alpha;
+					tf.localScale = scaleVec;
+					tf.GetComponent<SpriteRenderer> ().color = col;
+
+					if (angleDiff < smallestAngleDiff) {
+						smallestAngleDiff = angleDiff;
+						foremostSprite = tf.GetComponent<SpriteRenderer>();
+					}
+				} else {
+					tf.gameObject.SetActive (false);
+				}
+			}
+			if (foremostSprite != null) {
+				Color col = Color.white;
+				col.a *= alpha;
+				foremostSprite.color = col;
 			}
 		}
 	}
