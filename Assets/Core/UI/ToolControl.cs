@@ -15,7 +15,9 @@ public class ToolControl : MonoBehaviour {
 	public Platform platform;
 	public Sprite ToolSelectSprite;
 	public Sprite ToolAcceptSprite;
-	public Sprite Arrow;
+	public Sprite ArrowL;
+	public Sprite ArrowR;
+	public Sprite Cancel;
 
 	List<GameObject> toolStands = new List<GameObject>();
 	List<GameObject> controllerChoises = new List<GameObject>();
@@ -41,6 +43,9 @@ public class ToolControl : MonoBehaviour {
 	private float toolRingY = 0.1f;
 
 	public Color iconColor = new Color( 0.7f, 0.85f, 1.0f );
+
+	//! The tool ring entry which is currently rotated towards the user
+	private ToolRingEntry selectedToolEntry = null;
 
 	public ToolControl() {
 		instance = this;
@@ -114,13 +119,13 @@ public class ToolControl : MonoBehaviour {
 				if( lc.touchpadButtonState == UnityEngine.EventSystems.PointerEventData.FramePressState.Released ) {
 					if (lc.touchpadValue.magnitude < 0.5) {
 						toggleToolRing ();
-					} else if (Mathf.Abs (lc.touchpadValue.y) < 0.5) {
-						if (toolRingActive) {
-							if (lc.touchpadValue.x < -0.3f) {	// left
-								toolRingPrev ();
-							} else if (lc.touchpadValue.x > 0.3f) {
-								toolRingNext ();
-							}
+					} else if (toolRingActive) {
+						if (Mathf.Abs (lc.touchpadValue.y) < 0.5 && lc.touchpadValue.x < -0.3f) {	// left
+							toolRingPrev ();
+						} else if (Mathf.Abs (lc.touchpadValue.y) < 0.5 && lc.touchpadValue.x > 0.3f) {
+							toolRingNext ();
+						} else if (Mathf.Abs (lc.touchpadValue.x) < 0.5 && lc.touchpadValue.y < -0.3f) {
+							toolRingCancel ();
 						}
 					}
 				}
@@ -215,6 +220,10 @@ public class ToolControl : MonoBehaviour {
 				SpriteRenderer sr = go.AddComponent<SpriteRenderer> ();
 				sr.sprite = tool.ToolIcon;
 
+				ToolRingEntry entry = go.AddComponent<ToolRingEntry> ();
+				entry.Tool = tool;
+				entry.name = child.name;
+
 				i ++;
 			}
 			updateToolRingIcons ();
@@ -232,16 +241,35 @@ public class ToolControl : MonoBehaviour {
 	{
 		if( toolRingActive )
 		{
+			closeActiveTool ();
+			// Select the current tool:
+			//selectedToolEntry.select
+			if( selectedToolEntry != null )
+			{
+				activeTool = selectedToolEntry.Tool.gameObject;
+				// Move the active tool to the tool anchor:
+				activeTool.SetActive (true);
+				InputDeviceManager.instance.shakeLeftController( 3000 );
+			}
 			removeToolRing ();
 			InputDeviceManager.instance.setLeftControllerTouchpadIconCentral (ToolSelectSprite);
 			InputDeviceManager.instance.setLeftControllerTouchpadIcons (null, null, null, null);
 			toolRingActive = false;
 		} else {
+			closeActiveTool ();
 			generateToolRing ();
 			InputDeviceManager.instance.setLeftControllerTouchpadIconCentral (ToolAcceptSprite);
-			InputDeviceManager.instance.setLeftControllerTouchpadIcons (Arrow, Arrow, null, null);
+			InputDeviceManager.instance.setLeftControllerTouchpadIcons (ArrowL, ArrowR, Cancel, Cancel);
 			toolRingActive = true;
 		}
+	}
+
+	public void toolRingCancel()
+	{
+		removeToolRing ();
+		InputDeviceManager.instance.setLeftControllerTouchpadIconCentral (ToolSelectSprite);
+		InputDeviceManager.instance.setLeftControllerTouchpadIcons (null, null, null, null);
+		toolRingActive = false;
 	}
 
 	/*! Rotate the ring of tools to the next tool */
@@ -287,7 +315,7 @@ public class ToolControl : MonoBehaviour {
 			//toolRing.transform.localScale = new Vector3 (scale, scale, scale);
 
 			float smallestAngleDiff = float.MaxValue;
-			SpriteRenderer foremostSprite = null;
+			selectedToolEntry = null;
 
 			foreach (Transform tf in toolRing.transform) {
 				if (alpha > 0) {
@@ -305,16 +333,16 @@ public class ToolControl : MonoBehaviour {
 
 					if (angleDiff < smallestAngleDiff) {
 						smallestAngleDiff = angleDiff;
-						foremostSprite = tf.GetComponent<SpriteRenderer>();
+						selectedToolEntry = tf.GetComponent<ToolRingEntry> ();
 					}
 				} else {
 					tf.gameObject.SetActive (false);
 				}
 			}
-			if (foremostSprite != null) {
+			if (selectedToolEntry != null) {
 				Color col = Color.white;
 				col.a *= alpha;
-				foremostSprite.color = col;
+				selectedToolEntry.GetComponent<SpriteRenderer>().color = col;
 			}
 		}
 	}
@@ -351,7 +379,10 @@ public class ToolControl : MonoBehaviour {
 			Debug.Log ("Closing tool: " + activeTool.name);
 			activeTool.SetActive (false);
 			activeTool = null;
-			activeToolChoise.SetActive (true);		// make choosable again
+			if( activeToolChoise != null )
+			{
+				activeToolChoise.SetActive (true);		// make choosable again
+			}
 			activeToolChoise = null;
 			InputDeviceManager.instance.resetToolIcons ();
 		}

@@ -14,8 +14,8 @@
    id="svg4293"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="ToolIconAnnotation.svg"
-   inkscape:export-filename="Z:\IMHOTEP\imhotep_unity\Assets\Core\UI\Images\Icons\ToolIconAnnotation.png"
+   sodipodi:docname="ToolIconOpacityControl.svg"
+   inkscape:export-filename="Z:\IMHOTEP\imhotep_unity\Assets\Core\UI\Images\Icons\ToolIconOpacityControl.png"
    inkscape:export-xdpi="200"
    inkscape:export-ydpi="200">
   <defs
@@ -46,13 +46,13 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2"
-     inkscape:cx="56.145686"
-     inkscape:cy="57.884546"
+     inkscape:zoom="9.1444444"
+     inkscape:cx="45"
+     inkscape:cy="42.345705"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:snap-global="false"
+     inkscape:snap-global="true"
      inkscape:window-width="1385"
      inkscape:window-height="1021"
      inkscape:window-x="115"
@@ -79,7 +79,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -103,39 +103,54 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-962.3622)">
+    <circle
+       r="15"
+       cy="1025.3622"
+       cx="63"
+       id="circle3412"
+       style="fill:none;stroke:#ffffff;stroke-width:2.5;stroke-miterlimit:4;stroke-dasharray:none" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#808080;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 43.504408,1008.7246 -3.732015,-20.16864 -4.922034,-0.0228"
+       d="m 2.0044076,1071.9746 -3.732015,-20.1686 -4.922034,-0.023"
        id="path5521"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#808080;stroke-width:2.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 46.395888,1015.5136 3.455624,16.6118 5.743412,0.067"
+       d="m 4.8958876,1078.7636 3.455624,16.6118 5.7434124,0.067"
        id="path5538"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />
-    <circle
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.65094262;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path5515"
-       cx="45.327343"
-       cy="1012.0247"
-       r="4.6531301" />
     <rect
        style="opacity:1;fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect5519-3"
        width="29.9893"
        height="15.947388"
-       x="55.318035"
-       y="1028.9891"
+       x="13.818035"
+       y="1092.2391"
        ry="1.5111462" />
     <rect
        style="opacity:1;fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect5519-1"
        width="30.671276"
        height="14.179513"
-       x="4.1037278"
-       y="977.43054"
+       x="-37.396271"
+       y="1040.6805"
        ry="1.5111462" />
+    <circle
+       style="fill:#c8c8c8;stroke:#ffffff;stroke-width:2.5;stroke-miterlimit:4;stroke-dasharray:none;opacity:1;fill-opacity:0.78431374"
+       id="path3393"
+       cx="45"
+       cy="1007.3622"
+       r="15"
+       inkscape:export-filename="Z:\IMHOTEP\imhotep_unity\Assets\Core\UI\Images\Icons\path3393.png"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <circle
+       r="15"
+       cy="989.36218"
+       cx="27"
+       id="circle3410"
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:2.5;stroke-miterlimit:4;stroke-dasharray:none" />
   </g>
 </svg>

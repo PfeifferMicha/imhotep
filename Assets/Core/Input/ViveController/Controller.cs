@@ -85,23 +85,23 @@ public class Controller : MonoBehaviour {
 		spriteTouchpadLeft = new GameObject("SpriteTouchpadLeft");
 		spriteTouchpadLeft.transform.SetParent( transform );
 		spriteTouchpadLeft.AddComponent<SpriteRenderer> ();
-		spriteTouchpadLeft.transform.localPosition = new Vector3 (-0.015f, 0.0086f, -0.049f);
-		spriteTouchpadLeft.transform.localEulerAngles = new Vector3 (85f, -90f, 0f);
+		spriteTouchpadLeft.transform.localPosition = new Vector3 (-0.015f, 0.0068f, -0.049f);
+		spriteTouchpadLeft.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
 		spriteTouchpadLeft.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
 		spriteTouchpadLeft.GetComponent<SpriteRenderer> ().color = iconColor;
 
 		spriteTouchpadRight = new GameObject("SpriteTouchpadRight");
 		spriteTouchpadRight.transform.SetParent( transform );
 		spriteTouchpadRight.AddComponent<SpriteRenderer> ();
-		spriteTouchpadRight.transform.localPosition = new Vector3 (0.015f, 0.0086f, -0.049f);
-		spriteTouchpadRight.transform.localEulerAngles = new Vector3 (85f, 90f, 0f);
+		spriteTouchpadRight.transform.localPosition = new Vector3 (0.015f, 0.0068f, -0.049f);
+		spriteTouchpadRight.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
 		spriteTouchpadRight.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
 		spriteTouchpadRight.GetComponent<SpriteRenderer> ().color = iconColor;
 
 		spriteTouchpadUp = new GameObject("SpriteTouchpadUp");
 		spriteTouchpadUp.transform.SetParent( transform );
 		spriteTouchpadUp.AddComponent<SpriteRenderer> ();
-		spriteTouchpadUp.transform.localPosition = new Vector3 (0f, 0.0115f, -0.0243f);
+		spriteTouchpadUp.transform.localPosition = new Vector3 (0f, 0.0068f, -0.035f);
 		spriteTouchpadUp.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
 		spriteTouchpadUp.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
 		spriteTouchpadUp.GetComponent<SpriteRenderer> ().color = iconColor;
@@ -109,8 +109,8 @@ public class Controller : MonoBehaviour {
 		spriteTouchpadDown = new GameObject("SpriteTouchpadDown");
 		spriteTouchpadDown.transform.SetParent( transform );
 		spriteTouchpadDown.AddComponent<SpriteRenderer> ();
-		spriteTouchpadDown.transform.localPosition = new Vector3 (0f, 0.0067f, -0.0738f);
-		spriteTouchpadDown.transform.localEulerAngles = new Vector3 (85f, 180f, 0f);
+		spriteTouchpadDown.transform.localPosition = new Vector3 (0f, 0.0068f, -0.064f);
+		spriteTouchpadDown.transform.localEulerAngles = new Vector3 (85f, 0f, 0f);
 		spriteTouchpadDown.transform.localScale = new Vector3 (0.015f, 0.015f, 0.015f);
 		spriteTouchpadDown.GetComponent<SpriteRenderer> ().color = iconColor;
 	}
@@ -140,9 +140,9 @@ public class Controller : MonoBehaviour {
 					spriteTouchpadRight.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
 				}
 			} else if (Mathf.Abs (touchpadValue.x) < 0.5) {
-				if (touchpadValue.y < -0.3f) {	// left
+				if (touchpadValue.y > 0.3f) {	// left
 					spriteTouchpadUp.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
-				} else if (touchpadValue.y > 0.3f) {
+				} else if (touchpadValue.y < -0.3f) {
 					spriteTouchpadDown.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
 				}
 			}
