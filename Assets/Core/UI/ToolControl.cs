@@ -36,11 +36,11 @@ public class ToolControl : MonoBehaviour {
 	private float rotationTime = 0.3f;
 
 	private bool toolRingActive = false;
-	private bool closingToolRing = false;
 	private float movingStartTime = 0f;
 	private Vector3 targetPosition;
 	private float movingTime = 0.3f;
 	private float toolRingY = 0.1f;
+	private TextMesh ActiveToolName;
 
 	public Color iconColor = new Color( 0.7f, 0.85f, 1.0f );
 
@@ -60,7 +60,8 @@ public class ToolControl : MonoBehaviour {
 
 		clearAllToolStands ();
 		InputDeviceManager.instance.setLeftControllerTouchpadIconCentral (ToolSelectSprite);
-		//generateAvailableTools (null);
+
+		generateToolRing ();
 	}
 
 	void Update() {
@@ -117,14 +118,14 @@ public class ToolControl : MonoBehaviour {
 			if( lc != null )
 			{
 				if( lc.touchpadButtonState == UnityEngine.EventSystems.PointerEventData.FramePressState.Released ) {
-					if (lc.touchpadValue.magnitude < 0.5) {
+					if (lc.hoverTouchpadCenter()) {
 						toggleToolRing ();
 					} else if (toolRingActive) {
-						if (Mathf.Abs (lc.touchpadValue.y) < 0.5 && lc.touchpadValue.x < -0.3f) {	// left
+						if (lc.hoverTouchpadLeft()) {
 							toolRingPrev ();
-						} else if (Mathf.Abs (lc.touchpadValue.y) < 0.5 && lc.touchpadValue.x > 0.3f) {
+						} else if (lc.hoverTouchpadRight()) {
 							toolRingNext ();
-						} else if (Mathf.Abs (lc.touchpadValue.x) < 0.5 && lc.touchpadValue.y < -0.3f) {
+						} else if (lc.hoverTouchpadDown()) {
 							toolRingCancel ();
 						}
 					}
@@ -142,6 +143,8 @@ public class ToolControl : MonoBehaviour {
 			// Move the tool ring up or down when it's being activated or deactivated:
 			toolRing.transform.localPosition = Vector3.Slerp( toolRing.transform.localPosition,
 				targetPosition, (Time.time - movingStartTime) / movingTime);
+
+			ActiveToolName.transform.localPosition = toolRing.transform.localPosition + new Vector3 ( 0f, -0.06f, -0.07f );
 
 			updateToolRingIcons ();
 		}
@@ -196,37 +199,41 @@ public class ToolControl : MonoBehaviour {
 			toolRing = new GameObject ("ToolRing");		// Actual tool ring. Will only be rotated around its local Y axis.
 			toolRing.transform.SetParent (anchor.transform, false);
 
-			// Ease the ring in:
-			targetPosition = new Vector3 (0f, toolRingY, 0f);
-			movingTime = 1f;
-			movingStartTime = Time.time;
-
 			// Add a choice for each tool to the ring:
 			int i = 0;
 			int numTools = transform.childCount;
 			float radius = 0.07f;
-			foreach (Transform child in transform) {
-				//string toolName = child.name;
+			foreach( Transform child in transform ) {
 
 				ToolWidget tool = child.GetComponent<ToolWidget> ();
+				if( tool != null ) {
+					float currentAngle = (float)i * (2f*Mathf.PI) / (float)numTools;
 
-				float currentAngle = (float)i * (2f*Mathf.PI) / (float)numTools;
+					GameObject go = new GameObject (i.ToString ());
+					go.transform.SetParent (toolRing.transform);
+					go.transform.localPosition = radius*(new Vector3 ( -Mathf.Sin( currentAngle ), 0f, -Mathf.Cos( currentAngle ) ));
+					go.transform.localRotation = Quaternion.AngleAxis (currentAngle*180f/Mathf.PI, Vector3.up);
+					go.transform.localScale = new Vector3 (0.045f, 0.045f, 0.045f);
+					SpriteRenderer sr = go.AddComponent<SpriteRenderer> ();
+					sr.sprite = tool.ToolIcon;
 
-				GameObject go = new GameObject (i.ToString ());
-				go.transform.SetParent (toolRing.transform);
-				go.transform.localPosition = radius*(new Vector3 ( -Mathf.Sin( currentAngle ), 0f, -Mathf.Cos( currentAngle ) ));
-				go.transform.localRotation = Quaternion.AngleAxis (currentAngle*180f/Mathf.PI, Vector3.up);
-				go.transform.localScale = new Vector3 (0.045f, 0.045f, 0.045f);
-				SpriteRenderer sr = go.AddComponent<SpriteRenderer> ();
-				sr.sprite = tool.ToolIcon;
-
-				ToolRingEntry entry = go.AddComponent<ToolRingEntry> ();
-				entry.Tool = tool;
-				entry.name = child.name;
-
+					ToolRingEntry entry = go.AddComponent<ToolRingEntry> ();
+					entry.Tool = tool;
+					entry.name = tool.name;
+				}
 				i ++;
 			}
-			updateToolRingIcons ();
+
+			GameObject text = new GameObject ("ToolNameText");
+			text.transform.SetParent (anchor.transform);
+			text.transform.localPosition = new Vector3 ( 0f, -0.06f, -radius );
+			text.transform.localRotation = Quaternion.AngleAxis (0f*180f/Mathf.PI, Vector3.up);
+			text.transform.localScale = new Vector3 (0.02f, 0.02f, 0.02f);
+			ActiveToolName = text.AddComponent<TextMesh> ();
+			ActiveToolName.text = "";
+			ActiveToolName.fontSize = 40;
+			ActiveToolName.alignment = TextAlignment.Center;
+			ActiveToolName.anchor = TextAnchor.MiddleCenter;
 		}
 	}
 
@@ -237,13 +244,32 @@ public class ToolControl : MonoBehaviour {
 		movingStartTime = Time.time;
 	}
 
+	public void activateToolRing()
+	{
+		if (toolRing == null)
+			generateToolRing ();
+
+		InputDeviceManager.instance.setLeftControllerTouchpadIconCentral (ToolAcceptSprite);
+		InputDeviceManager.instance.setLeftControllerTouchpadIcons (ArrowL, ArrowR, null, Cancel);
+		toolRingActive = true;
+
+		// Start animation: (ease the ring in)
+		targetPosition = new Vector3 (0f, toolRingY, 0f);
+		movingTime = 1f;
+		movingStartTime = Time.time;
+	}
+
 	public void toggleToolRing()
 	{
 		if( toolRingActive )
 		{
 			closeActiveTool ();
+			removeToolRing ();
+			InputDeviceManager.instance.setLeftControllerTouchpadIconCentral (ToolSelectSprite);
+			InputDeviceManager.instance.setLeftControllerTouchpadIcons (null, null, null, null);
+			toolRingActive = false;
+
 			// Select the current tool:
-			//selectedToolEntry.select
 			if( selectedToolEntry != null )
 			{
 				activeTool = selectedToolEntry.Tool.gameObject;
@@ -251,16 +277,9 @@ public class ToolControl : MonoBehaviour {
 				activeTool.SetActive (true);
 				InputDeviceManager.instance.shakeLeftController( 3000 );
 			}
-			removeToolRing ();
-			InputDeviceManager.instance.setLeftControllerTouchpadIconCentral (ToolSelectSprite);
-			InputDeviceManager.instance.setLeftControllerTouchpadIcons (null, null, null, null);
-			toolRingActive = false;
 		} else {
 			closeActiveTool ();
-			generateToolRing ();
-			InputDeviceManager.instance.setLeftControllerTouchpadIconCentral (ToolAcceptSprite);
-			InputDeviceManager.instance.setLeftControllerTouchpadIcons (ArrowL, ArrowR, Cancel, Cancel);
-			toolRingActive = true;
+			activateToolRing ();
 		}
 	}
 
@@ -284,7 +303,7 @@ public class ToolControl : MonoBehaviour {
 		//toolRing.transform.localRotation *= Quaternion.AngleAxis (angle, Vector3.up);
 	}
 
-	/*! Rotate the ring of tools to the current tool */
+	/*! Rotate the ring of tools to the previous tool */
 	public void toolRingPrev()
 	{
 		if (toolRing == null)
@@ -329,7 +348,9 @@ public class ToolControl : MonoBehaviour {
 					// Make the tool ring become less transparent as 
 					col.a *= alpha;
 					tf.localScale = scaleVec;
-					tf.GetComponent<SpriteRenderer> ().color = col;
+
+					if(tf.GetComponent<SpriteRenderer> () != null)
+						tf.GetComponent<SpriteRenderer> ().color = col;
 
 					if (angleDiff < smallestAngleDiff) {
 						smallestAngleDiff = angleDiff;
@@ -343,7 +364,12 @@ public class ToolControl : MonoBehaviour {
 				Color col = Color.white;
 				col.a *= alpha;
 				selectedToolEntry.GetComponent<SpriteRenderer>().color = col;
+				ActiveToolName.text = selectedToolEntry.name;
 			}
+			Color textCol = ActiveToolName.color;
+			textCol.a = alpha*alpha;
+			ActiveToolName.color = textCol;
+			ActiveToolName.transform.localScale = scaleVec * 0.1f;
 		}
 	}
 

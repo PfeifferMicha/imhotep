@@ -106,9 +106,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.1468388"
-     inkscape:cx="-33.168723"
-     inkscape:cy="11.856999"
+     inkscape:zoom="2.2936776"
+     inkscape:cx="26.852407"
+     inkscape:cy="26.686545"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -139,7 +139,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -164,17 +164,17 @@
      id="layer1"
      transform="translate(0,-972.3622)">
     <circle
-       style="fill:none;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:3.75892067;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path3411"
+       style="fill:none;fill-rule:evenodd;stroke:#4d4d4d;stroke-width:2.8329432;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path3411-3"
        cx="40.125"
        cy="1012.2372"
-       r="29.977394"
+       r="22.592724"
        inkscape:export-filename="H:\IMHOTEP\imhotep_unity\Assets\Core\UI\Images\Icons\path3411.png"
        inkscape:export-xdpi="200"
        inkscape:export-ydpi="200" />
     <path
        style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;baseline-shift:baseline;text-anchor:start;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
-       d="m 63.324377,987.11427 c -1.392415,-0.0631 -2.741776,0.49116 -3.687767,1.51483 -10.228046,10.75652 -19.691989,25.1075 -23.465933,30.943 -3.19044,-2.9549 -7.461797,-6.9988 -12.016996,-11.779 -4.347084,-4.6881 -11.320832,1.9587 -6.846732,6.5257 7.74645,8.1292 16.575327,19.1377 16.575327,19.1377 2.180365,1.9454 5.585695,1.468 7.146925,-1.0021 0,0 14.266271,-25.5333 25.461069,-37.30654 2.859565,-2.92088 0.917522,-7.84886 -3.165893,-8.03359 z"
+       d="m 58.283003,992.69611 c -1.065426,-0.0483 -2.09791,0.37583 -2.821749,1.1591 -7.826138,8.23059 -15.067612,19.21139 -17.9553,23.67649 -2.441212,-2.261 -5.709503,-5.3553 -9.19498,-9.0129 -3.326235,-3.5871 -8.662299,1.4987 -5.238877,4.9933 5.92731,6.2202 12.682853,14.6434 12.682853,14.6434 1.668338,1.4886 4.273976,1.1233 5.468574,-0.7667 0,0 10.916045,-19.5372 19.481908,-28.54567 2.188038,-2.23495 0.702055,-6.00566 -2.422429,-6.14702 z"
        id="path3370"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccccccc" />

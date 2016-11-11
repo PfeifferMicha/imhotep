@@ -131,22 +131,49 @@ public class Controller : MonoBehaviour {
 
 		if( controller.GetTouch(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad) )
 		{
-			if (touchpadValue.magnitude < 0.5) {
+			if (hoverTouchpadCenter ()) {
 				spriteTouchpadCenter.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
-			} else if (Mathf.Abs (touchpadValue.y) < 0.5) {
-				if (touchpadValue.x < -0.3f) {	// left
-					spriteTouchpadLeft.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
-				} else if (touchpadValue.x > 0.3f) {
-					spriteTouchpadRight.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
-				}
-			} else if (Mathf.Abs (touchpadValue.x) < 0.5) {
-				if (touchpadValue.y > 0.3f) {	// left
-					spriteTouchpadUp.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
-				} else if (touchpadValue.y < -0.3f) {
-					spriteTouchpadDown.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
-				}
+			} else if (hoverTouchpadLeft()) {
+				spriteTouchpadLeft.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
+			} else if (hoverTouchpadRight()) {
+				spriteTouchpadRight.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
+			} else if (hoverTouchpadUp()) {
+				spriteTouchpadUp.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
+			} else if (hoverTouchpadDown()) {
+				spriteTouchpadDown.GetComponent<SpriteRenderer> ().color = iconColorHighlight;
 			}
 		}
+	}
+
+	public bool hoverTouchpadCenter()
+	{
+		if (!controller.GetTouch (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad))
+			return false;
+		return touchpadValue.magnitude < 0.4;
+	}
+	public bool hoverTouchpadLeft()
+	{
+		if (!controller.GetTouch (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad))
+			return false;
+		return Mathf.Abs (touchpadValue.y) < 0.5 && touchpadValue.x < -0.6f;
+	}
+	public bool hoverTouchpadRight()
+	{
+		if (!controller.GetTouch (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad))
+			return false;
+		return Mathf.Abs (touchpadValue.y) < 0.5 && touchpadValue.x > 0.6f;
+	}
+	public bool hoverTouchpadUp()
+	{
+		if (!controller.GetTouch (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad))
+			return false;
+		return Mathf.Abs (touchpadValue.x) < 0.5 && touchpadValue.y > 0.6f;
+	}
+	public bool hoverTouchpadDown()
+	{
+		if (!controller.GetTouch (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad))
+			return false;
+		return Mathf.Abs (touchpadValue.x) < 0.5 && touchpadValue.y < -0.6f;
 	}
 
 	/*! Returns true if the trigger is pressed down all the way. */

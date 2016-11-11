@@ -9,13 +9,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="45"
-   height="45"
+   width="60"
+   height="60"
    id="svg4293"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="ArrowL.svg"
-   inkscape:export-filename="Z:\IMHOTEP\imhotep_unity\Assets\Core\UI\Images\Icons\ArrowR.png"
+   sodipodi:docname="ArrowRContrast.svg"
+   inkscape:export-filename="Z:\IMHOTEP\imhotep_unity\Assets\Core\UI\Images\Icons\ArrowRContrast.png"
    inkscape:export-xdpi="200"
    inkscape:export-ydpi="200">
   <defs
@@ -27,13 +27,13 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.6055556"
-     inkscape:cx="18.987121"
-     inkscape:cy="3.097524"
+     inkscape:zoom="7.8166667"
+     inkscape:cx="30.136133"
+     inkscape:cy="17.845859"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:snap-global="false"
+     inkscape:snap-global="true"
      inkscape:window-width="1600"
      inkscape:window-height="1137"
      inkscape:window-x="-8"
@@ -60,7 +60,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -69,7 +69,7 @@
      id="layer2"
      inkscape:label="Background"
      style="display:none"
-     transform="translate(0,-315)">
+     transform="translate(0,-300)">
     <rect
        style="opacity:0.9;fill:#1a1a1a;fill-opacity:0.88235294;fill-rule:nonzero;stroke:#a42e00;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect3771"
@@ -83,7 +83,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-1007.3622)">
+     transform="translate(0,-992.3622)">
     <g
        id="g5326"
        transform="translate(38.467502,-68.38667)">
@@ -180,8 +180,29 @@
     </g>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:5.5676918;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 30.561354,1043.1013 c -0.834894,0 -14.611182,-14.1428 -14.611182,-14.1428 l 14.819906,-13.1503"
+       d="m 23.412627,1036.193 c 0.834894,0 14.611182,-14.1428 14.611182,-14.1428 l -14.819906,-13.1503"
        id="path4188"
        inkscape:connector-curvature="0" />
+    <g
+       id="g4736"
+       transform="matrix(-0.54030172,0,0,0.54030172,56.367055,448.94747)">
+      <circle
+         r="13.569213"
+         cy="1029.8373"
+         cx="17.24408"
+         id="path4162"
+         style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:#ffffff;stroke-width:2.5;stroke-miterlimit:4;stroke-dasharray:none" />
+      <path
+         d="m 17.244078,1043.4065 a 13.569213,13.569213 0 0 1 -11.7512833,-6.7846 13.569213,13.569213 0 0 1 -1e-7,-13.5692 13.569213,13.569213 0 0 1 11.7512834,-6.7846 l 0,13.5692 z"
+         sodipodi:end="4.712389"
+         sodipodi:start="1.5707963"
+         sodipodi:ry="13.569213"
+         sodipodi:rx="13.569213"
+         sodipodi:cy="1029.8373"
+         sodipodi:cx="17.244078"
+         sodipodi:type="arc"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+         id="circle4166" />
+    </g>
   </g>
 </svg>
