@@ -15,6 +15,7 @@ public class PatientBriefing : MonoBehaviour
 	public GameObject tabButton;
 	public GameObject rawImageObj;
 	public GameObject scrollView;
+    public GameObject viewPort;
 	private Text text;
 
     //True if HTML Renderer has finished
@@ -22,7 +23,8 @@ public class PatientBriefing : MonoBehaviour
 
     //Variables for thread
     string html = "";
-    int widthOfStrechedRawImage = 0;
+    int imageWidth = 1;
+    int imageHeight = 1;
     byte[] imageArray;
 
     void Update()
@@ -31,12 +33,16 @@ public class PatientBriefing : MonoBehaviour
         {
             htmlRendered = false;
 
-            // Create a new widthOfStrechedRawImagex1500 texture ARGB32 (32 bit with alpha) and no mipmaps
-            Texture2D texture = new Texture2D(widthOfStrechedRawImage, 1500, TextureFormat.ARGB32, false);           
+            // Create a new texture ARGB32 (32 bit with alpha) and no mipmaps
+            Texture2D texture = new Texture2D(imageWidth, imageHeight, TextureFormat.ARGB32, false);           
             texture.LoadImage(imageArray);
             texture.Apply();
             // connect texture to material of GameObject this script is attached to
             rawImageObj.GetComponent<RawImage>().material.mainTexture = texture;
+
+            //Resize rect transform component of raw image
+            rawImageObj.GetComponent<RectTransform>().sizeDelta = new Vector2(imageWidth, imageHeight);
+            rawImageObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(imageWidth / 2, -imageHeight / 2);
 
             textObj.SetActive(false);
             rawImageObj.SetActive(true);
@@ -161,11 +167,16 @@ public class PatientBriefing : MonoBehaviour
 	{
         rawImageObj.SetActive(false);
         html = info.content;
-        widthOfStrechedRawImage = (int)rawImageObj.GetComponent<RawImage>().rectTransform.rect.width - 17;
+        //The width of the viewport (can be resized) 
+        int widthOfViewport = (int)viewPort.GetComponent<RectTransform>().rect.width - 17;
+        //int widthOfStretchedRawImage = (int)rawImageObj.GetComponent<RawImage>().rectTransform.rect.width;
+        widthOfViewport = Math.Max(1, widthOfViewport); //prevent widthOfStrechedRawImage to be less then 1
         int widthBody = findBodyWidth(info.content);
-        if (widthBody > widthOfStrechedRawImage)
+
+        //If body with in html file is taller the space in the viewport, the body width attribute in html file is set to widthOfStretchedRawImage
+        if (widthBody > widthOfViewport)
         {
-            html = rewriteBodyWidth(info.content, widthOfStrechedRawImage);
+            html = rewriteBodyWidth(info.content, widthOfViewport);
         }
 
         ThreadUtil t = new ThreadUtil(this.showHTMLWorker, this.showHTMLCallback);
@@ -193,7 +204,9 @@ public class PatientBriefing : MonoBehaviour
 
     private void showHTMLWorker(object sender, DoWorkEventArgs e)
     {
-        System.Drawing.Bitmap image = (System.Drawing.Bitmap)TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.RenderToImageGdiPlus(html, new System.Drawing.Size(widthOfStrechedRawImage, 1500));//, System.Drawing.Text.TextRenderingHint.AntiAliasGridFit);
+        System.Drawing.Bitmap image = (System.Drawing.Bitmap)TheArtOfDev.HtmlRenderer.WinForms.HtmlRender.RenderToImageGdiPlus(html);
+        imageWidth = image.Width;
+        imageHeight = image.Height;
         using (MemoryStream ms = new MemoryStream())
         {
             image.Save(ms, image.RawFormat);
@@ -202,7 +215,7 @@ public class PatientBriefing : MonoBehaviour
     }
 
     private int findBodyWidth(string input){
-		//Find first width:??px;
+		//Find first "width:??px";
 		string pattern = "width:\\s*\\d+px\\s*;";
 		Regex rgx = new Regex(pattern);
 		if(!rgx.IsMatch(input)){
