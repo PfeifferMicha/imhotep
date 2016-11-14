@@ -159,6 +159,7 @@ public class PatientBriefing : MonoBehaviour
 
 	private void showHTML(Patient.AdditionalInformation info)
 	{
+        rawImageObj.SetActive(false);
         html = info.content;
         widthOfStrechedRawImage = (int)rawImageObj.GetComponent<RawImage>().rectTransform.rect.width - 17;
         int widthBody = findBodyWidth(info.content);
