@@ -107,17 +107,23 @@ public class ToolControl : MonoBehaviour {
 			}
 		}
 
-		foreach (Transform child in ToolUIAnchor.instance.transform) {
-			ToolWidget tool = child.GetComponent<ToolWidget> ();
-			if (tool != null) {
-				// Only show the tool if it's currently available:
-				if (tool.displayTime == ToolWidget.ToolDisplayTime.Always ||
-					(tool.displayTime == ToolWidget.ToolDisplayTime.WhenPatientIsLoaded && Patient.getLoadedPatient () != null) ||
-					(tool.displayTime == ToolWidget.ToolDisplayTime.WhenNoPatientIsLoaded && Patient.getLoadedPatient () == null)) {
-					availableTools.Add (tool);
-				}
-			}
-		}
+        if (ToolUIAnchor.instance != null)
+        {
+            foreach (Transform child in ToolUIAnchor.instance.transform)
+            {
+                ToolWidget tool = child.GetComponent<ToolWidget>();
+                if (tool != null)
+                {
+                    // Only show the tool if it's currently available:
+                    if (tool.displayTime == ToolWidget.ToolDisplayTime.Always ||
+                        (tool.displayTime == ToolWidget.ToolDisplayTime.WhenPatientIsLoaded && Patient.getLoadedPatient() != null) ||
+                        (tool.displayTime == ToolWidget.ToolDisplayTime.WhenNoPatientIsLoaded && Patient.getLoadedPatient() == null))
+                    {
+                        availableTools.Add(tool);
+                    }
+                }
+            }
+        }
 	}
 
 	/*! Create a new Tool Ring and add an entry for each available Tool.*/
@@ -177,7 +183,10 @@ public class ToolControl : MonoBehaviour {
 			r.sortingLayerID = SortingLayer.NameToID ("Sprites");
 		} else {
 			// If no controller is active, let the RiftToolRing handle the display of available tools:
-			RiftToolRing.instance.setAvailableTools (availableTools);
+            if(RiftToolRing.instance != null)
+            {
+			    RiftToolRing.instance.setAvailableTools (availableTools);
+            }
 		}
 	}
 
