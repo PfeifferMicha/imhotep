@@ -62,7 +62,8 @@ public class ToolWidget : MonoBehaviour {
 
 	private void MoveToUIAnchor()
 	{
-		transform.SetParent (ToolUIAnchor.instance.transform, false);
+		if( ToolUIAnchor.instance != null )
+			transform.SetParent (ToolUIAnchor.instance.transform, false);
 	}
 	private void MoveBackToToolControl()
 	{

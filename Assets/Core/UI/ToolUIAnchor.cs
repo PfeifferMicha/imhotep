@@ -14,4 +14,11 @@ public class ToolUIAnchor : MonoBehaviour {
 		}
 		instance = this;
 	}
+	public void OnDisable()
+	{
+		if( this == instance )
+		{
+			instance = null;
+		}
+	}
 }
