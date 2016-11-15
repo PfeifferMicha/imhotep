@@ -72,14 +72,43 @@ public class Platform : MonoBehaviour {
 		initialBaseDepth = rectBase.GetComponent<Renderer>().bounds.size.z;
 
 		if (viveRig.activeInHierarchy) {
-			Mesh roomMesh = viveRig.GetComponent<MeshFilter>().mesh;
+			// Default values:
 			float width = 3f;
 			float depth = 2f;
+			// Try to get the room size from the mesh:
+			SteamVR_PlayArea playArea = viveRig.GetComponent<SteamVR_PlayArea>();
+			if (playArea != null) {
+				Valve.VR.HmdQuad_t rect = new Valve.VR.HmdQuad_t();
+				if (SteamVR_PlayArea.GetBounds (playArea.size, ref rect)) {
+					var corners = new Valve.VR.HmdVector3_t[] { rect.vCorners0, rect.vCorners1, rect.vCorners2, rect.vCorners3 };
+
+					Vector2 min = new Vector2 (float.MaxValue, float.MaxValue);
+					Vector2 max = new Vector2 (float.MinValue, float.MinValue);
+					for (int i = 0; i < corners.Length; i++)
+					{
+						if (corners [i].v0 < min.x)
+							min.x = corners [i].v0;
+						if (corners [i].v2 < min.y)
+							min.y = corners [i].v2;
+
+						if (corners [i].v0 > max.x)
+							max.x = corners [i].v0;
+						if (corners [i].v2 > max.y)
+							max.y = corners [i].v2;
+					}
+
+					Vector2 size = max - min;
+					width = size.x;
+					depth = size.y;
+				}
+			}
+			/*Mesh roomMesh = viveRig.GetComponent<MeshFilter>().mesh;
 			if (roomMesh != null) {
 				width = roomMesh.bounds.size.x;
 				depth = roomMesh.bounds.size.z;
+				SteamVR_PlayArea playArea.
 				Debug.Log ("Room mesh found. Setting room size to " + width + "x" + depth + "m.");
-			}
+			}*/
 			setRectangular (width, depth);
 		} else {
 			setRounded ();

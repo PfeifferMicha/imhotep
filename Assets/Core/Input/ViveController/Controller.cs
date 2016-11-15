@@ -149,31 +149,31 @@ public class Controller : MonoBehaviour {
 	{
 		if (!controller.GetTouch (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad))
 			return false;
-		return touchpadValue.magnitude < 0.4;
+		return touchpadValue.magnitude < 0.5;
 	}
 	public bool hoverTouchpadLeft()
 	{
 		if (!controller.GetTouch (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad))
 			return false;
-		return Mathf.Abs (touchpadValue.y) < 0.5 && touchpadValue.x < -0.6f;
+		return Mathf.Abs (touchpadValue.y) < 0.7 && touchpadValue.x < -0.55f;
 	}
 	public bool hoverTouchpadRight()
 	{
 		if (!controller.GetTouch (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad))
 			return false;
-		return Mathf.Abs (touchpadValue.y) < 0.5 && touchpadValue.x > 0.6f;
+		return Mathf.Abs (touchpadValue.y) < 0.7 && touchpadValue.x > 0.55f;
 	}
 	public bool hoverTouchpadUp()
 	{
 		if (!controller.GetTouch (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad))
 			return false;
-		return Mathf.Abs (touchpadValue.x) < 0.5 && touchpadValue.y > 0.6f;
+		return Mathf.Abs (touchpadValue.x) < 0.7 && touchpadValue.y > 0.55f;
 	}
 	public bool hoverTouchpadDown()
 	{
 		if (!controller.GetTouch (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad))
 			return false;
-		return Mathf.Abs (touchpadValue.x) < 0.5 && touchpadValue.y < -0.6f;
+		return Mathf.Abs (touchpadValue.x) < 0.7 && touchpadValue.y < -0.55f;
 	}
 
 	/*! Returns true if the trigger is pressed down all the way. */

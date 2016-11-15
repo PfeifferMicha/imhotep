@@ -29,7 +29,7 @@ public class ToolWidget : MonoBehaviour {
 
 		// Set material for all texts:
 		Material mat = new Material(Shader.Find("Custom/TextShader"));
-		mat.renderQueue += 1;	// overlay!
+		mat.renderQueue += 2;	// overlay!
 		Component[] texts;
 		texts = GetComponentsInChildren( typeof(Text), true );
 
@@ -40,7 +40,7 @@ public class ToolWidget : MonoBehaviour {
 		}
 
 		Material material = new Material(Shader.Find("Custom/UIObject"));
-		material.renderQueue += 1;	// overlay!
+		material.renderQueue += 2;	// overlay!
 		Component[] images;
 		images = GetComponentsInChildren( typeof(Image), true );
 

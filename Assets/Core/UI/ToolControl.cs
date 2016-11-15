@@ -154,6 +154,7 @@ public class ToolControl : MonoBehaviour {
 					go.transform.localScale = new Vector3 (0.045f, 0.045f, 0.045f);
 					SpriteRenderer sr = go.AddComponent<SpriteRenderer> ();
 					sr.sprite = tool.ToolIcon;
+					sr.sortingLayerID = SortingLayer.NameToID ("Sprites");
 
 					ToolRingEntry entry = go.AddComponent<ToolRingEntry> ();
 					entry.Tool = tool;
@@ -172,6 +173,9 @@ public class ToolControl : MonoBehaviour {
 			ActiveToolName.fontSize = 40;
 			ActiveToolName.alignment = TextAlignment.Center;
 			ActiveToolName.anchor = TextAnchor.MiddleCenter;
+
+			Renderer r = text.GetComponent<Renderer> ();
+			r.sortingLayerID = SortingLayer.NameToID ("Sprites");
 		} else {
 			// If no controller is active, let the RiftToolRing handle the display of available tools:
 			RiftToolRing.instance.setAvailableTools (availableTools);
