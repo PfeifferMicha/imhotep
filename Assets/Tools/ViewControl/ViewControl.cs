@@ -45,6 +45,8 @@ public class ViewControl : MonoBehaviour {
 		PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Closed, patientClosed);
 
 		mMeshLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
+
+		activate ();
 	}
 
 	void OnDisable()
@@ -55,6 +57,10 @@ public class ViewControl : MonoBehaviour {
 	}
 
 	public void meshLoaded( object obj = null )
+	{
+		activate ();
+	}
+	public void activate()
 	{
 		newButton.interactable = true;
 		currentViewIndex = 0;
