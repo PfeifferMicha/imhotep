@@ -94,17 +94,15 @@ public class ToolControl : MonoBehaviour {
 	public void updateAvailableTools( object obj = null )
 	{
 		availableTools = new List<ToolWidget> ();
-		// Let the Rift version of the tool ring know how many tools to generate:
-		if (RiftToolRing.instance != null) {
-			foreach (Transform child in transform) {
-				ToolWidget tool = child.GetComponent<ToolWidget> ();
-				if (tool != null) {
-					// Only show the tool if it's currently available:
-					if (tool.displayTime == ToolWidget.ToolDisplayTime.Always ||
-					   (tool.displayTime == ToolWidget.ToolDisplayTime.WhenPatientIsLoaded && Patient.getLoadedPatient () != null) ||
-					   (tool.displayTime == ToolWidget.ToolDisplayTime.WhenNoPatientIsLoaded && Patient.getLoadedPatient () == null)) {
-						availableTools.Add (tool);
-					}
+
+		foreach (Transform child in transform) {
+			ToolWidget tool = child.GetComponent<ToolWidget> ();
+			if (tool != null) {
+				// Only show the tool if it's currently available:
+				if (tool.displayTime == ToolWidget.ToolDisplayTime.Always ||
+				   (tool.displayTime == ToolWidget.ToolDisplayTime.WhenPatientIsLoaded && Patient.getLoadedPatient () != null) ||
+				   (tool.displayTime == ToolWidget.ToolDisplayTime.WhenNoPatientIsLoaded && Patient.getLoadedPatient () == null)) {
+					availableTools.Add (tool);
 				}
 			}
 		}
@@ -133,6 +131,7 @@ public class ToolControl : MonoBehaviour {
 			int numTools = availableTools.Count;
 			float radius = 0.07f;
 			foreach (ToolWidget tool in availableTools) {
+				Debug.Log ("Tool: " + tool);
 				if (tool != null) {
 					float currentAngle = (float)i * (2f * Mathf.PI) / (float)numTools;
 
@@ -177,6 +176,8 @@ public class ToolControl : MonoBehaviour {
 	public void activateToolRing()
 	{
 		updateAvailableTools ();
+
+		Debug.Log ("TOols: " + availableTools.Count);
 
 		generateToolRing ();
 
