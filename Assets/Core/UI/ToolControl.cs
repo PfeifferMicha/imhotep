@@ -143,7 +143,6 @@ public class ToolControl : MonoBehaviour {
 			int numTools = availableTools.Count;
 			float radius = 0.07f;
 			foreach (ToolWidget tool in availableTools) {
-				Debug.Log ("Tool: " + tool);
 				if (tool != null) {
 					float currentAngle = (float)i * (2f * Mathf.PI) / (float)numTools;
 
@@ -192,8 +191,6 @@ public class ToolControl : MonoBehaviour {
 	public void activateToolRing()
 	{
 		updateAvailableTools ();
-
-		Debug.Log ("TOols: " + availableTools.Count);
 
 		generateToolRing ();
 
@@ -341,7 +338,6 @@ public class ToolControl : MonoBehaviour {
 	public void closeActiveTool()
 	{
 		if (activeTool != null) {
-			Debug.Log ("Closing tool: " + activeTool.name);
 			activeTool.SetActive (false);
 			activeTool = null;
 			InputDeviceManager.instance.resetToolIcons ();
