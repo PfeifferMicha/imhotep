@@ -7662,6 +7662,7 @@ GameObject:
   - 114: {fileID: 795904948}
   - 114: {fileID: 795904949}
   - 120: {fileID: 795904951}
+  - 114: {fileID: 795904946}
   m_Layer: 0
   m_Name: GlobalScript
   m_TagString: Untagged
@@ -7738,6 +7739,17 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a5500ba31f8b954bb6f99f1bff9ed05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &795904946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 795904939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 679468e1475c55e4a8c3c1adc62e8ec5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &795904947
@@ -10409,7 +10421,7 @@ Prefab:
       objectReference: {fileID: 1869214367}
     - target: {fileID: 146900, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11463128, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: index
@@ -14663,7 +14675,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &1508808261
 AudioListener:
   m_ObjectHideFlags: 0

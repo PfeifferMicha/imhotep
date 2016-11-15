@@ -3,18 +3,31 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
-public class ObjectEvent : UnityEvent<object> {} //empty class; just needs to exist
+public class ObjectEvent : UnityEvent<object> { } //empty class; just needs to exist
 
+
+public class EventTupel
+{
+    public ObjectEvent objEvent;
+    public object obj;
+
+    public EventTupel(ObjectEvent objEvent, object obj)
+    {
+        this.objEvent = objEvent;
+        this.obj = obj;
+    }
+}
 /*! Event system for all patient-related events.
  * Listeners can register for specific events and will be notified from now on.
  * This class is a (static) signleton. */
 public class PatientEventSystem
 {
 	private Dictionary< Event, ObjectEvent> mEventDictionary;
+    private static List<EventTupel> savedEvents = new List<EventTupel>();
 	private static PatientEventSystem mInstance = null;
 
-	/*! All possible events: */
-	public enum Event {
+    /*! All possible events: */
+    public enum Event {
 		/*! Called when we start loading a new Patient. */
 		PATIENT_StartLoading,
 		/*! Called when we have loaded a new Patient.
@@ -114,10 +127,33 @@ public class PatientEventSystem
 		// thisEvent will be filled and the if will evaluate to true:
 		if (instance.mEventDictionary.TryGetValue(eventType, out thisEvent))
 		{
-			//Debug.Log("Triggering Event: " + eventType);
-			thisEvent.Invoke( obj );
-		}
+            //Debug.Log("Triggering Event: " + eventType);
+            //thisEvent.Invoke( obj );
+
+            //save event and execute them in main thread, because events can be called form other thread (e.g. PATIENT_Loaded)
+            savedEvents.Add(new EventTupel(thisEvent, obj));
+
+        }
 	}
+
+    /*
+     *  Executes all saved events since the last call 
+     */
+    public static void executeSavedEvents()
+    {
+        if (savedEvents.Count == 0)
+        {
+            return;
+        }
+
+        List<EventTupel> savedEventsCopy = new List<EventTupel>(savedEvents);
+        savedEvents.Clear();
+
+        foreach(EventTupel e in savedEventsCopy)
+        {
+            e.objEvent.Invoke(e.obj);
+        }
+    }
 
 	private PatientEventSystem()
 	{

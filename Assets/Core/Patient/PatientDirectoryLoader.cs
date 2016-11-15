@@ -11,7 +11,22 @@ public class PatientDirectoryLoader {
 	private static List<PatientMeta> mPatientEntries = new List<PatientMeta>();
 	private static bool currentlyLoading = false;
 
-	/*! Starts processing the new path, by searching the subfolders for patients. */
+    //Variable used for thread
+    private static PatientMeta entry;
+    private static bool loadingLock = false;
+
+
+    static PatientDirectoryLoader()
+    {
+        PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Loaded, loadPatientFinish);
+    }
+
+    ~PatientDirectoryLoader()
+    {
+        PatientEventSystem.stopListening(PatientEventSystem.Event.PATIENT_Loaded, loadPatientFinish);
+    }
+
+    /*! Starts processing the new path, by searching the subfolders for patients. */
     public static void setPath(string newPath)
     {
         //Debug.Log( "Current working directory:\n" + Directory.GetCurrentDirectory() );
@@ -63,29 +78,23 @@ public class PatientDirectoryLoader {
         throw (new System.Exception("Could not find entry with index " + index.ToString()));
     }
 
-    public static Patient loadPatient( int index )
+    public static void loadPatient( int index )
     {
+        if (loadingLock)
+        {
+            Debug.LogWarning("[PatientDirectoryLoader.cs] Loading aborted. Still loading other patient");
+            return;
+        }
+
+        loadingLock = true;
         if (index >= 0 && index < mPatientEntries.Count)
 		{
-			PatientMeta entry = mPatientEntries[index];
+			entry = mPatientEntries[index];
 
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_StartLoading, entry);
 
 			Patient p = new Patient (entry);
 
-			// Let other widgets know the patient information is now available:
-			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_Loaded, p);
-
-			// Start parsing the DICOM directory:
-            PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
-            mPatientDICOMLoader.loadDirectory (entry.dicomPath);
-
-			// Load model in the directory:
-			MeshLoader mModelLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
-			mModelLoader.LoadFile(entry.meshPath);
-
-
-            return p;
         }
         else
         {
@@ -93,6 +102,21 @@ public class PatientDirectoryLoader {
         }
     }
 
-	private static PatientDirectoryLoader mInstance;
+    /*
+     * loadPatient() starts the loading of a patient. The event Event.PATIENT_Loaded calls this methode and the loading will be finished
+     */
+    private static void loadPatientFinish(object obj = null)
+    {
+        // Start parsing the DICOM directory:
+        PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
+        mPatientDICOMLoader.loadDirectory(entry.dicomPath);
+
+        // Load model in the directory:
+        MeshLoader mModelLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
+        mModelLoader.LoadFile(entry.meshPath);      
+        loadingLock = false;
+    }
+
+    private static PatientDirectoryLoader mInstance;
 
 }

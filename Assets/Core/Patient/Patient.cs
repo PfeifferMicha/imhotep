@@ -8,6 +8,7 @@ using System.IO;
 using itk.simple;
 using LitJson;
 using UI;
+using System.ComponentModel;
 
 public class Patient : PatientMeta
 {
@@ -28,80 +29,17 @@ public class Patient : PatientMeta
 
 	public Patient( PatientMeta meta ) : base(meta)
     {
+        PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_FinishedLoading, finishedLoading);
 
-		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_FinishedLoading, finishedLoading);
-
-        string metaFile = Path.Combine( base.path, "meta.json" );
-		string raw = File.ReadAllText(metaFile);
-		JsonData data;
-		try{
-			data = JsonMapper.ToObject(raw);
-		} catch {
-			throw new System.Exception("Cannot parse meta.json. Invalid syntax?");
-		}
-
-		if (data.Keys.Contains("additional information"))
-		{
-			JsonData infoArray = data ["additional information"];
-
-			// Set up default tab:
-			additionalInformationTabs.Add ("General");
-			string c = "";
-			c += bold ("Patient Name: ") + name + "\n";
-			c += bold ("Date of Birth: ") + birthDate + "\n";
-			c += bold ("Date of Operation: ") + operationDate + "\n";
-            AdditionalInformation info = new AdditionalInformation {
-                name = "Patient Information",
-                type = "Plaintext",
-				content = c,
-				tabName = "General"
-			};
-			additionalInformation.Add (info);
-
-			// Find other information in files (which are given in meta.json) and add them to the tabs:
-			for (int i = 0; i < infoArray.Count; i++) {
-				JsonData entry = infoArray [i];
-				if (entry.Keys.Contains ("Name") && entry.Keys.Contains ("File"))
-                {  //TODO use JsonMapper.ToObject to load this
-
-                    if ( System.IO.File.Exists( base.path + "/" + entry ["File"] ) )
-					{
-						string content = System.IO.File.ReadAllText ( base.path + "/" + entry ["File"]);
-						string title = entry ["Name"].ToString();
-						string type = "plainText";
-						if( entry.Keys.Contains("Type") )
-							type = entry["Type"].ToString();
-						string tabName = "General";
-						if (entry.Keys.Contains ("Tab")) {
-							tabName = entry ["Tab"].ToString();
-						}
-						if (name.Length > 0 && content.Length > 0) {
-							info = new AdditionalInformation {
-								name = title,
-                                type = type,
-								content = content,
-								tabName = tabName
-							};
-                            if(info.type == "HTML")
-                            {
-                                info.content = rewritePathInHTML(info.content, entry ["File"].ToString());
-                                
-                            }
-                            additionalInformation.Add (info);
-							if (!additionalInformationTabs.Contains (tabName)) {
-								additionalInformationTabs.Add (tabName);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		readViews ();
-		readDicomInfo ();
-
-		loadedPatient = this;
+        ThreadUtil t = new ThreadUtil(this.PatientLoaderWorker, this.PatientLoaderCallback);
+        t.Run();
     }
+    ~Patient()
+	{
+		PatientEventSystem.stopListening (PatientEventSystem.Event.PATIENT_FinishedLoading, finishedLoading);
+
+    }
+
 
     private string rewritePathInHTML(string content, string filePath)
     {
@@ -119,11 +57,6 @@ public class Patient : PatientMeta
         c = c.Replace("href=\".", "href=\"./" + path + "/" + folderHTMLSources);
         return c;
     }
-
-    ~Patient()
-	{
-		PatientEventSystem.stopListening (PatientEventSystem.Event.PATIENT_FinishedLoading, finishedLoading);
-	}
 
 
 	public static Patient getLoadedPatient()
@@ -313,11 +246,115 @@ public class Patient : PatientMeta
 	}
 
 
-	///////////////////////////////////////////////////////
-	// Misc:
 
-	public void finishedLoading( object obj = null )
-	{
-		setupDefaultWidgets ();
-	}
+
+    private void PatientLoaderWorker(object sender, DoWorkEventArgs e)
+    {
+        string metaFile = Path.Combine(base.path, "meta.json");
+        string raw = File.ReadAllText(metaFile);
+        JsonData data;
+        try
+        {
+            data = JsonMapper.ToObject(raw);
+        }
+        catch
+        {
+            throw new System.Exception("Cannot parse meta.json. Invalid syntax?");
+        }
+
+        if (data.Keys.Contains("additional information"))
+        {
+            JsonData infoArray = data["additional information"];
+
+            // Set up default tab:
+            additionalInformationTabs.Add("General");
+            string c = "";
+            c += bold("Patient Name: ") + name + "\n";
+            c += bold("Date of Birth: ") + birthDate + "\n";
+            c += bold("Date of Operation: ") + operationDate + "\n";
+            AdditionalInformation info = new AdditionalInformation
+            {
+                name = "Patient Information",
+                type = "Plaintext",
+                content = c,
+                tabName = "General"
+            };
+            additionalInformation.Add(info);
+
+            // Find other information in files (which are given in meta.json) and add them to the tabs:
+            for (int i = 0; i < infoArray.Count; i++)
+            {
+                JsonData entry = infoArray[i];
+                if (entry.Keys.Contains("Name") && entry.Keys.Contains("File"))
+                {  //TODO use JsonMapper.ToObject to load this
+
+                    if (System.IO.File.Exists(base.path + "/" + entry["File"]))
+                    {
+                        string content = System.IO.File.ReadAllText(base.path + "/" + entry["File"]);
+                        string title = entry["Name"].ToString();
+                        string type = "plainText";
+                        if (entry.Keys.Contains("Type"))
+                            type = entry["Type"].ToString();
+                        string tabName = "General";
+                        if (entry.Keys.Contains("Tab"))
+                        {
+                            tabName = entry["Tab"].ToString();
+                        }
+                        if (name.Length > 0 && content.Length > 0)
+                        {
+                            info = new AdditionalInformation
+                            {
+                                name = title,
+                                type = type,
+                                content = content,
+                                tabName = tabName
+                            };
+                            if (info.type == "HTML")
+                            {
+                                info.content = rewritePathInHTML(info.content, entry["File"].ToString());
+
+                            }
+                            additionalInformation.Add(info);
+                            if (!additionalInformationTabs.Contains(tabName))
+                            {
+                                additionalInformationTabs.Add(tabName);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        readViews();
+        readDicomInfo();
+    }
+
+    private void PatientLoaderCallback(object sender, RunWorkerCompletedEventArgs e)
+    {
+        //BackgroundWorker worker = sender as BackgroundWorker;
+        if (e.Cancelled)
+        {
+            Debug.Log("[Patient.cs] Patient Loading cancelled"); //Not implemented in worker yet
+        }
+        else if (e.Error != null)
+        {
+            Debug.LogError("[Patient.cs] Error while loading the patient");
+        }
+        else
+        {
+            loadedPatient = this;
+
+            // Let other widgets know the patient information is now available:
+            PatientEventSystem.triggerEvent(PatientEventSystem.Event.PATIENT_Loaded, this);
+        }
+        return;
+    }
+    
+    ///////////////////////////////////////////////////////
+    // Misc:
+
+    public void finishedLoading(object obj = null)
+    {
+        setupDefaultWidgets();
+    }
 }
