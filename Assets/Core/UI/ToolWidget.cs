@@ -15,6 +15,15 @@ public class ToolWidget : MonoBehaviour {
 	public Sprite iconRightControllerUp;
 	public Sprite iconRightControllerDown;
 
+	/*! Lets you handle when a tool should be available */
+	public enum ToolDisplayTime {
+		WhenPatientIsLoaded,
+		WhenNoPatientIsLoaded,
+		Always
+	};
+
+	public ToolDisplayTime displayTime = ToolDisplayTime.WhenPatientIsLoaded;
+
 	// Use this for initialization
 	void Start () {
 

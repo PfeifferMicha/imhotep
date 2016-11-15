@@ -19,7 +19,7 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
 
     private LineRenderer lineRenderer;
 
-	private const float mouseSpeed = 0.4f;
+	public float mouseSpeed = 1.4f;
 
 	private Vector2 texCoordDelta;
 	private Vector3 positionDelta;
@@ -30,10 +30,6 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
 
     public Ray createRay()
     {
-
-		if (!developmentMode) {
-			Cursor.lockState = CursorLockMode.Locked;
-		}
 
         Ray ray;
 		if(developmentMode){
@@ -53,19 +49,28 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
         return Input.mouseScrollDelta*20f;
     }
 
-    // Use this for initialization
     void Start () {
-        lineRenderer = this.GetComponent<LineRenderer>();
-        if (lineRenderer == null)
-        {
-            Debug.LogError("[MouseInput.cs] Line renderer not set");
-        }
+		lineRenderer = this.GetComponent<LineRenderer> ();
+		if (lineRenderer == null) {
+			Debug.LogError ("[MouseInput.cs] Line renderer not set");
+		}
 
-		if (InputDeviceManager.instance != null)
-        {
-			InputDeviceManager.instance.registerInputDevice(this);
-            Debug.Log("Mouse registered");
-        }
+		if (InputDeviceManager.instance != null) {
+			InputDeviceManager.instance.registerInputDevice (this);
+			Debug.Log ("Mouse registered");
+		}
+	}
+
+	public void Update() {
+		if (!developmentMode && Input.GetKey ("escape")) {
+			Cursor.lockState = CursorLockMode.None;
+		}
+	}
+
+	public void OnEnable() {
+		if (!developmentMode) {
+			Cursor.lockState = CursorLockMode.Locked;
+		}
     }
 
 	public ButtonInfo updateButtonInfo ()
@@ -136,10 +141,15 @@ public class MouseInputDeviceEditor : Editor
 
 		mid.developmentMode = GUILayout.Toggle(mid.developmentMode, "Development Mode");
 
-		if ( ! mid.developmentMode )
-			mid.rayOriginOffset = EditorGUILayout.Vector3Field ("Ray Origin Offset", new Vector3( 0.2f, -0.3f,  0f ));
-		else
+		if (!mid.developmentMode) {
+			mid.rayOriginOffset = EditorGUILayout.Vector3Field ("Ray Origin Offset", new Vector3 (0.2f, -0.3f, 0f));
+			mid.mouseSpeed = EditorGUILayout.FloatField ("Mouse Speed", 1.5f);
+			Cursor.lockState = CursorLockMode.Locked;
+		} else {
 			mid.rayOriginOffset = Vector3.zero;
+			mid.mouseSpeed = 1.5f;
+			Cursor.lockState = CursorLockMode.None;
+		}
 	}
 }
 #endif

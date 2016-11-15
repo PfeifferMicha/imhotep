@@ -5,13 +5,9 @@ using System.Collections.Generic;
 /*! This class handles the tool options and how tools are selected/deselected.
  * For every Tool, this class automatically generates an entry in the ToolRing, which is placed around the
  * left controller to be chosen by the user. The class also handles the ToolRing movement and enabling/disabling.
- * 
- * Legacy: Before the last update, this class handled the creation of the tool stands instead - some code
- * is still left from this stage for backwards-compatability reasons. */
+ * \note If the Rift Camera is enabled, the RiftToolRing will be used to display an array of available tools. */
 public class ToolControl : MonoBehaviour {
 
-	public GameObject ToolStandPrefab;
-	public GameObject ControllerPrefab;
 	public Platform platform;
 	public Sprite ToolSelectSprite;
 	public Sprite ToolAcceptSprite;
@@ -19,15 +15,9 @@ public class ToolControl : MonoBehaviour {
 	public Sprite ArrowR;
 	public Sprite Cancel;
 
-	List<GameObject> toolStands = new List<GameObject>();
-	List<GameObject> controllerChoises = new List<GameObject>();
-
 	private GameObject activeTool = null;
-	private GameObject activeToolChoise = null;
 
 	public static ToolControl instance { private set; get; }
-
-	public float controllerPickupDist = 0.3f;
 
 	private GameObject toolRing;
 
@@ -47,74 +37,26 @@ public class ToolControl : MonoBehaviour {
 	//! The tool ring entry which is currently rotated towards the user
 	private ToolRingEntry selectedToolEntry = null;
 
+	private List<ToolWidget> availableTools = new List<ToolWidget> ();
+
 	public ToolControl() {
 		instance = this;
 	}
 
 	void Start () {
-		ToolStandPrefab.SetActive (false);
-
 		// Register event callbacks for all Patient events:
-		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Loaded, generateAvailableTools );
+		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_FinishedLoading, patientLoaded );
 		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, patientClosed );
 
-		clearAllToolStands ();
 		InputDeviceManager.instance.setLeftControllerTouchpadIconCentral (ToolSelectSprite);
-
-		generateToolRing ();
 	}
 
 	void Update() {
 
-		// If the input device is a controller, handle picking up and highlighting:
+		// If the input device is a controller, handle the touch-pad-selection:
 		InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;
 		if (inputDevice.getDeviceType() == InputDeviceManager.InputDeviceType.ViveController) {
-			Controller rc = inputDevice as Controller;
-
-			// Check which tool choise is closest:
-			float minDist = controllerPickupDist;
-			GameObject closestController = null;
-			foreach (GameObject controllerChoise in controllerChoises) {
-					float dist = Vector3.Distance (
-						            controllerChoise.transform.position,
-							rc.transform.position);
-					if (dist < minDist) {
-						minDist = dist;
-						closestController = controllerChoise;
-					}
-					controllerChoise.GetComponent<ToolChoise> ().UnHighlight ();
-			}
-
-			// Also check left controller:
 			Controller lc = InputDeviceManager.instance.leftController;
-			if (lc != null) {
-				foreach (GameObject controllerChoise in controllerChoises) {
-					float dist = Vector3.Distance (
-						             controllerChoise.transform.position,
-						             lc.transform.position);
-					if (dist < minDist) {
-						minDist = dist;
-						closestController = controllerChoise;
-					}
-					//controllerChoise.GetComponent<ToolChoise> ().UnHighlight ();
-				}
-			}
-
-
-			// If a tool choise controller was close enough, highlight it:
-			if (closestController != null) {
-				if (closestController.activeSelf) {
-					ToolChoise tc = closestController.GetComponent<ToolChoise> ();
-					tc.Highlight ();
-
-					// If the user pressed the trigger, choose the tool:
-					if (rc.triggerPressed() || lc.triggerPressed ()) {
-						chooseTool (tc);
-					}
-				}
-			}
-
-
 			if( lc != null )
 			{
 				if( lc.touchpadButtonState == UnityEngine.EventSystems.PointerEventData.FramePressState.Released ) {
@@ -131,7 +73,6 @@ public class ToolControl : MonoBehaviour {
 					}
 				}
 			}
-
 		}
 
 		if (toolRing != null) {
@@ -150,42 +91,30 @@ public class ToolControl : MonoBehaviour {
 		}
 	}
 
-	public void generateAvailableTools( object obj = null )
+	public void updateAvailableTools( object obj = null )
 	{
-		//////////////////////////////////////////////////
-		/// Old, Tool Stands:
-		uint i = 0;
-		foreach (Transform child in transform) {
-			string toolName = child.name;
-
-			GameObject go = platform.toolStandPosition (i, (uint)transform.childCount);
-			GameObject newToolStand = Object.Instantiate (ToolStandPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-			newToolStand.name = "ToolStand (" + toolName + ")";
-			newToolStand.transform.SetParent (go.transform, false);
-			StartCoroutine (activateToolStand (newToolStand, Random.value * 0.25f + 0.3f * Mathf.Abs (transform.childCount * 0.5f - i)));
-
-			toolStands.Add (newToolStand);
-
-			GameObject controllerChoise = Object.Instantiate (ControllerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-			controllerChoise.transform.localRotation = Quaternion.Euler (new Vector3 (0f, 270f, 270f));
-			controllerChoise.transform.localPosition = new Vector3 (0.2f, 0f, 0.13f);
-			ToolChoise tc = controllerChoise.GetComponent<ToolChoise> ();
-			tc.toolName = toolName;
-			tc.toolControl = this;
-			Transform tableBone = newToolStand.transform.Find ("ToolStandArmature/BoneArm/BoneRotate/BoneSlide");
-			controllerChoise.transform.SetParent (tableBone, false);
-			controllerChoise.SetActive (true);
-			controllerChoises.Add (controllerChoise);
-			i++;
+		availableTools = new List<ToolWidget> ();
+		// Let the Rift version of the tool ring know how many tools to generate:
+		if (RiftToolRing.instance != null) {
+			foreach (Transform child in transform) {
+				ToolWidget tool = child.GetComponent<ToolWidget> ();
+				if (tool != null) {
+					// Only show the tool if it's currently available:
+					if (tool.displayTime == ToolWidget.ToolDisplayTime.Always ||
+					   (tool.displayTime == ToolWidget.ToolDisplayTime.WhenPatientIsLoaded && Patient.getLoadedPatient () != null) ||
+					   (tool.displayTime == ToolWidget.ToolDisplayTime.WhenNoPatientIsLoaded && Patient.getLoadedPatient () == null)) {
+						availableTools.Add (tool);
+					}
+				}
+			}
 		}
-
 	}
 
 	/*! Create a new Tool Ring and add an entry for each available Tool.*/
 	public void generateToolRing()
 	{
 		Controller lc = InputDeviceManager.instance.leftController;
-		if (lc != null) {
+		if (lc != null) {			
 			// If there's already a tool ring element, delete it:
 			Transform oldToolRing = lc.transform.Find ("ToolRingAnchor");
 			if (oldToolRing != null)
@@ -201,18 +130,16 @@ public class ToolControl : MonoBehaviour {
 
 			// Add a choice for each tool to the ring:
 			int i = 0;
-			int numTools = transform.childCount;
+			int numTools = availableTools.Count;
 			float radius = 0.07f;
-			foreach( Transform child in transform ) {
-
-				ToolWidget tool = child.GetComponent<ToolWidget> ();
-				if( tool != null ) {
-					float currentAngle = (float)i * (2f*Mathf.PI) / (float)numTools;
+			foreach (ToolWidget tool in availableTools) {
+				if (tool != null) {
+					float currentAngle = (float)i * (2f * Mathf.PI) / (float)numTools;
 
 					GameObject go = new GameObject (i.ToString ());
 					go.transform.SetParent (toolRing.transform);
-					go.transform.localPosition = radius*(new Vector3 ( -Mathf.Sin( currentAngle ), 0f, -Mathf.Cos( currentAngle ) ));
-					go.transform.localRotation = Quaternion.AngleAxis (currentAngle*180f/Mathf.PI, Vector3.up);
+					go.transform.localPosition = radius * (new Vector3 (-Mathf.Sin (currentAngle), 0f, -Mathf.Cos (currentAngle)));
+					go.transform.localRotation = Quaternion.AngleAxis (currentAngle * 180f / Mathf.PI, Vector3.up);
 					go.transform.localScale = new Vector3 (0.045f, 0.045f, 0.045f);
 					SpriteRenderer sr = go.AddComponent<SpriteRenderer> ();
 					sr.sprite = tool.ToolIcon;
@@ -221,19 +148,22 @@ public class ToolControl : MonoBehaviour {
 					entry.Tool = tool;
 					entry.name = tool.name;
 				}
-				i ++;
+				i++;
 			}
 
 			GameObject text = new GameObject ("ToolNameText");
 			text.transform.SetParent (anchor.transform);
-			text.transform.localPosition = new Vector3 ( 0f, -0.06f, -radius );
-			text.transform.localRotation = Quaternion.AngleAxis (0f*180f/Mathf.PI, Vector3.up);
+			text.transform.localPosition = new Vector3 (0f, -0.06f, -radius);
+			text.transform.localRotation = Quaternion.AngleAxis (0f * 180f / Mathf.PI, Vector3.up);
 			text.transform.localScale = new Vector3 (0.02f, 0.02f, 0.02f);
 			ActiveToolName = text.AddComponent<TextMesh> ();
 			ActiveToolName.text = "";
 			ActiveToolName.fontSize = 40;
 			ActiveToolName.alignment = TextAlignment.Center;
 			ActiveToolName.anchor = TextAnchor.MiddleCenter;
+		} else {
+			// If no controller is active, let the RiftToolRing handle the display of available tools:
+			RiftToolRing.instance.setAvailableTools (availableTools);
 		}
 	}
 
@@ -246,8 +176,9 @@ public class ToolControl : MonoBehaviour {
 
 	public void activateToolRing()
 	{
-		if (toolRing == null)
-			generateToolRing ();
+		updateAvailableTools ();
+
+		generateToolRing ();
 
 		InputDeviceManager.instance.setLeftControllerTouchpadIconCentral (ToolAcceptSprite);
 		InputDeviceManager.instance.setLeftControllerTouchpadIcons (ArrowL, ArrowR, null, Cancel);
@@ -373,30 +304,21 @@ public class ToolControl : MonoBehaviour {
 		}
 	}
 
-	public IEnumerator activateToolStand( GameObject newToolStand, float delayTime )
+	public void patientLoaded( object obj = null )
 	{
-		yield return new WaitForSeconds(delayTime);
-		newToolStand.SetActive (true);
+		updateAvailableTools ();
+		generateToolRing ();
 	}
 
-	public void patientClosed( object obj )
+	public void patientClosed( object obj = null )
 	{
-		closeActiveTool ();
-		clearAllToolStands ();
-	}
-
-	public void clearAllToolStands()
-	{
-		foreach( GameObject controllerChoise in controllerChoises )
-		{
-			GameObject.Destroy (controllerChoise);
+		if (activeTool != null) {
+			if (activeTool.GetComponent<ToolWidget> ().displayTime == ToolWidget.ToolDisplayTime.WhenPatientIsLoaded) {
+				closeActiveTool ();
+			}
 		}
-		controllerChoises.Clear ();
-		foreach( GameObject toolStand in toolStands )
-		{
-			GameObject.Destroy (toolStand);
-		}
-		toolStands.Clear ();
+		updateAvailableTools ();
+		generateToolRing ();
 	}
 
 	public void closeActiveTool()
@@ -405,31 +327,16 @@ public class ToolControl : MonoBehaviour {
 			Debug.Log ("Closing tool: " + activeTool.name);
 			activeTool.SetActive (false);
 			activeTool = null;
-			if( activeToolChoise != null )
-			{
-				activeToolChoise.SetActive (true);		// make choosable again
-			}
-			activeToolChoise = null;
 			InputDeviceManager.instance.resetToolIcons ();
 		}
 	}
 
-	public void chooseTool( ToolChoise tool )
+	public void chooseTool( ToolWidget tool )
 	{
 		closeActiveTool ();
-
-		Debug.Log ("Activating tool: " + tool.toolName);
-		foreach (Transform child in transform) {
-			if (child.name == tool.toolName) {
-				activeTool = child.gameObject;
-				// Move the active tool to the tool anchor:
-				activeTool.SetActive (true);
-				activeToolChoise = tool.gameObject;
-				activeToolChoise.SetActive (false);		// Hide toolchoise
-				InputDeviceManager.instance.shakeLeftController( 3000 );
-				return;
-			}
-		}
-		Debug.LogWarning ("\tTool '" + tool.toolName + "' not found!");
+		activeTool = tool.gameObject;
+		// Move the active tool to the tool anchor:
+		activeTool.SetActive (true);
+		InputDeviceManager.instance.shakeLeftController( 3000 );
 	}
 }
