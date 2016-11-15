@@ -106,6 +106,18 @@ public class ToolControl : MonoBehaviour {
 				}
 			}
 		}
+
+		foreach (Transform child in ToolUIAnchor.instance.transform) {
+			ToolWidget tool = child.GetComponent<ToolWidget> ();
+			if (tool != null) {
+				// Only show the tool if it's currently available:
+				if (tool.displayTime == ToolWidget.ToolDisplayTime.Always ||
+					(tool.displayTime == ToolWidget.ToolDisplayTime.WhenPatientIsLoaded && Patient.getLoadedPatient () != null) ||
+					(tool.displayTime == ToolWidget.ToolDisplayTime.WhenNoPatientIsLoaded && Patient.getLoadedPatient () == null)) {
+					availableTools.Add (tool);
+				}
+			}
+		}
 	}
 
 	/*! Create a new Tool Ring and add an entry for each available Tool.*/
