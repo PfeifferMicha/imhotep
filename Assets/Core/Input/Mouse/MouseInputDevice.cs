@@ -24,7 +24,7 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
 	private Vector2 texCoordDelta;
 	private Vector3 positionDelta;
 
-	private Vector3 rayDir = new Vector3( 0, 0, 1 );
+	private Vector3 rayAngle = new Vector3( 0, 0, 0 );
 
 	private ButtonInfo buttonInfo = new ButtonInfo();
 
@@ -35,9 +35,9 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
 		if(developmentMode){
         	ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		}
-		else{ //TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			rayDir = Quaternion.AngleAxis( Input.GetAxis("Mouse X") * mouseSpeed, Vector3.up ) * rayDir;
-			rayDir = Quaternion.AngleAxis ( -Input.GetAxis ("Mouse Y") * mouseSpeed, Vector3.right) * rayDir;
+		else{
+			rayAngle = rayAngle + new Vector3 ( -Input.GetAxis("Mouse Y") * mouseSpeed, Input.GetAxis("Mouse X") * mouseSpeed, 0f );
+			Vector3 rayDir = Quaternion.Euler (rayAngle) * Vector3.forward;
 
 			ray = new Ray(Camera.main.transform.position + rayOriginOffset, rayDir); 
 		}
