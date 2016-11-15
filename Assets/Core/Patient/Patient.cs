@@ -131,6 +131,11 @@ public class Patient : PatientMeta
 		return loadedPatient;
 	}
 
+	public static void close()
+	{
+		loadedPatient = null;
+	}
+
 	public List<string> getAdditionalInfoTabs()
 	{
 		return additionalInformationTabs;

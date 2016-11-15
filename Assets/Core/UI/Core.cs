@@ -208,6 +208,7 @@ namespace UI
 
 		public void closePatient()
 		{
+			Patient.close ();
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_Closed);
 			layoutSystem.closeAllWidgets ();
 			closePatientButton.SetActive (false);
