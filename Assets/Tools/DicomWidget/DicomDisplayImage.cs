@@ -107,6 +107,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 				// Calculate which pixel in the dicom was hit:
 				Vector3 pixel = uvToPixel (cEventData.textureCoord);
+				//pixel = Vector3.zero;
 				Debug.Log ("Pixel: " + pixel);
 				// Calculate which 3D-Position (in the patient coordinate system) this pixel represents:
 				Vector3 pos3D = pixelTo3DPos (pixel);
@@ -141,13 +142,13 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		DICOMHeader header = currentDICOM.getHeader ();
 
 		Vector3 positionDICOM = Vector3.Scale (pixel, currentDICOM.getHeader ().getSpacing ());
-		Vector3 positionUnity = -header.getDirectionCosineX () * positionDICOM.x
-		                        + header.getDirectionCosineY () * positionDICOM.y
+		Vector3 positionUnity = header.getDirectionCosineX () * positionDICOM.x
+		                        - header.getDirectionCosineY () * positionDICOM.y
 								- header.getDirectionCosineZ () * positionDICOM.z;
 		Debug.Log ("positionUnity: " + positionUnity);
 		Vector3 origin = header.getOrigin ();
 		Debug.Log ("origin: " + origin);
-		positionUnity += new Vector3 (-origin.x, origin.y, -origin.z);
+		positionUnity += new Vector3 (+origin.x, -origin.y, -origin.z);
 		return positionUnity;
 	}
 

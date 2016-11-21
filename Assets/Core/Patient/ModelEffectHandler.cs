@@ -53,7 +53,7 @@ public class ModelEffectHandler : MonoBehaviour {
 				foreach (LoadObject lObj in loadingObjects) {
 					MeshMaterialControl matControl = lObj.gameObject.transform.parent.GetComponent<MeshMaterialControl> ();
 					if (matControl != null) {
-						matControl.SetLoadingEffectAmount ( 1.5f );
+						matControl.SetLoadingEffectAmount ( 15f );
 					}
 				}
 			}
