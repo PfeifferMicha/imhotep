@@ -130,9 +130,15 @@ public class DICOMHeader : ICloneable
 		return vec;
 	}
 
+	public Vector3 getDirectionCosineZ()
+	{
+		Vector3 vec = new Vector3 ((float)Direction [6], (float)Direction [7], (float)Direction [8]);
+		return vec;
+	}
+
+
 	public Vector3 getFrameNormal()
 	{
-
 		/*frame_vec[2, 0] = frame_vec[0, 1] * frame_vec[1, 2] - frame_vec[0, 2] * frame_vec[1, 1];
 		frame_vec[2, 1] = frame_vec[0, 2] * frame_vec[1, 0] - frame_vec[0, 0] * frame_vec[1, 2];
 		frame_vec[2, 2] = frame_vec[0, 0] * frame_vec[1, 1] - frame_vec[0, 1] * frame_vec[1, 0];*/
@@ -142,6 +148,31 @@ public class DICOMHeader : ICloneable
 				(float)(Direction [0] * Direction [4] - Direction [1] * Direction [3]));
 
 		return vec;
+	}
+
+	/*! Returns the pixel spacing as a unity vector.*/
+	public Vector3 getSpacing()
+	{
+		Vector3 s = new Vector3 ();
+		if (Spacing.Count > 0)
+			s.x = (float)Spacing [0];
+		if (Spacing.Count > 1)
+			s.y = (float)Spacing [1];
+		if (Spacing.Count > 2)
+			s.z = (float)Spacing [2];
+		return s;
+	}
+	/*! Returns the pixel spacing as a unity vector.*/
+	public Vector3 getOrigin()
+	{
+		Vector3 o = new Vector3 ();
+		if (Origin.Count > 0)
+			o.x = (float)Origin [0];
+		if (Origin.Count > 1)
+			o.y = (float)Origin [1];
+		if (Origin.Count > 2)
+			o.z = (float)Origin [2];
+		return o;
 	}
 
 	public DateTime getSeriesDateTime()

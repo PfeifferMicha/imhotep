@@ -231,10 +231,12 @@ public class MeshLoader : MonoBehaviour {
 
     public void RemoveMesh(object obj = null)
     {
-        //Destroy current game objectes attached to mesh node
+        //Destroy current game objects attached to mesh node
         for (int i = 0; i < meshNode.transform.childCount; i++)
         {
-            Destroy(meshNode.transform.GetChild(i).gameObject);
+			if (meshNode.transform.GetChild (i).name != "3DPointer") {
+				Destroy (meshNode.transform.GetChild (i).gameObject);
+			}
         }
     }
 

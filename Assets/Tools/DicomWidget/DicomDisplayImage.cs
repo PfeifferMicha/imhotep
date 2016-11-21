@@ -4,8 +4,9 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using UI;
 
-public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHandler, IPointerUpHandler {
+public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHandler, IPointerUpHandler, IPointerHoverHandler {
 
 	private Material mMaterial;
 	//private float mMinValue;
@@ -95,6 +96,71 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		else if( eventData.button == PointerEventData.InputButton.Middle )
 			dragZoom = false;
 	}
+
+	public void OnPointerHover( PointerEventData eventData )
+	{
+		if(currentDICOM != null)
+		{
+			// Cast event data to CustomEventData:
+			CustomEventData cEventData = eventData as CustomEventData;
+			if (cEventData != null) {	// Just in case
+
+				// Calculate which pixel in the dicom was hit:
+				Vector3 pixel = uvToPixel (cEventData.textureCoord);
+				Debug.Log ("Pixel: " + pixel);
+				// Calculate which 3D-Position (in the patient coordinate system) this pixel represents:
+				Vector3 pos3D = pixelTo3DPos (pixel);
+				Debug.Log ("pos3D: " + pos3D);
+
+				// Display the current position:
+				Text t = transform.FindChild ("PositionText").GetComponent<Text> ();
+				t.text = "(" + (int)Mathf.Round(pixel.x) + ", " + (int)Mathf.Round(pixel.y) + ", " + pixel.z + ")";
+
+				GameObject pointer = GameObject.Find ("3DPointer");
+				if (pointer != null)
+					pointer.transform.localPosition = pos3D;
+			}
+		}
+	}
+
+	public Vector3 uvToPixel( Vector2 uv )
+	{
+		// Transfer the uv-coordinate in the space of the full DICOM window to
+		// uv-coordinates for the current layer:
+		Vector2 dicomUV = imageUVtoLayerUV (uv);
+		// Calculate which pixel this uv represents:
+		Vector3 pixel = new Vector3 (dicomUV.x * currentDICOM.getTexture2D ().width,
+			dicomUV.y * currentDICOM.getTexture2D ().height,
+			mLayer);
+
+		return pixel;
+	}
+
+	public Vector3 pixelTo3DPos( Vector3 pixel )
+	{
+		DICOMHeader header = currentDICOM.getHeader ();
+
+		Vector3 positionDICOM = Vector3.Scale (pixel, currentDICOM.getHeader ().getSpacing ());
+		Vector3 positionUnity = -header.getDirectionCosineX () * positionDICOM.x
+		                        + header.getDirectionCosineY () * positionDICOM.y
+								- header.getDirectionCosineZ () * positionDICOM.z;
+		Debug.Log ("positionUnity: " + positionUnity);
+		Vector3 origin = header.getOrigin ();
+		Debug.Log ("origin: " + origin);
+		positionUnity += new Vector3 (-origin.x, origin.y, -origin.z);
+		return positionUnity;
+	}
+
+	public Vector2 imageUVtoLayerUV( Vector2 imageUV )
+	{
+		Rect uvRect = GetComponent<RawImage> ().uvRect;
+		Vector2 uv = imageUV;
+		//uv.Scale (uvRect.size);
+		uv = uv + new Vector2( uvRect.min.x/uvRect.width, uvRect.min.y/uvRect.height );
+		uv.Scale (uvRect.size);
+		return uv;
+	}
+
 	public void Update()
 	{
 		InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;

@@ -83,6 +83,14 @@ public class HierarchicalInputModule : BaseInputModule {
 						hitWorldPos = raycastResult.worldPosition;
 						isPointerOverUI = true;
 						isPointerOverPlatformUI = true;
+						Vector2 localPoint;
+						RectTransform rt = activeGameObject.GetComponent<RectTransform> ();
+						RectTransformUtility.ScreenPointToLocalPointInRectangle ( rt,
+							raycastResult.screenPosition, UI.Core.instance.UICamera, out localPoint);
+
+						hitTextureCoord = new Vector2 ((localPoint.x - rt.rect.min.x) / rt.rect.width,
+							(localPoint.y - rt.rect.min.y) / rt.rect.height);
+
 					} else {
 						// 3. If no UI element was hit, raycast again but ignore the UIMesh:
 						layerMask = ~ ( 1 << LayerMask.NameToLayer( "UIMesh" ) );
@@ -98,9 +106,9 @@ public class HierarchicalInputModule : BaseInputModule {
 					}
 				}
 
-				if (raycastHit.transform != null) {
+				if (raycastHit.transform != null) {		// If any 3D object was hit
 					if (raycastHit.transform.gameObject.layer == LayerMask.NameToLayer ("UITool") ||
-						raycastHit.transform.gameObject.layer == LayerMask.NameToLayer ("UIOrgans") ) {
+						raycastHit.transform.gameObject.layer == LayerMask.NameToLayer ("UIOrgans") ) {		// If the hit Object was a UI element
 						if (raycastHit.transform.GetComponent<CanvasRaycaster> () != null) {
 							RectTransform tf = raycastHit.transform.GetComponent<RectTransform> ();
 							PointerEventData data = new PointerEventData (EventSystem.current);
@@ -146,6 +154,8 @@ public class HierarchicalInputModule : BaseInputModule {
 
 		lastTextureCoord = hitTextureCoord;
 		lastHitWorldPos = hitWorldPos;
+
+		eventData.textureCoord = hitTextureCoord;
 	}
 
 	//! Check into UI scene to see if the ray at rayOrigin would hit anything:
@@ -155,16 +165,12 @@ public class HierarchicalInputModule : BaseInputModule {
 		fakeUIScreenPosition = new Vector2 (
 			screenPoint.x * uiCamera.targetTexture.width,
 			screenPoint.y * uiCamera.targetTexture.height);
-		Vector3 rayOrigin = new Vector3 (
-			fakeUIScreenPosition.x,
-			fakeUIScreenPosition.y,
-			0 );
 		//Ray uiRay = UI.Core.instance.UICamera.ScreenPointToRay ( rayOrigin );
 
 		//int uiLayer = LayerMask.NameToLayer ("UI");
 
 		PointerEventData data = new PointerEventData (EventSystem.current);
-		data.position = new Vector2 (rayOrigin.x, rayOrigin.y);
+		data.position = new Vector2 (fakeUIScreenPosition.x, fakeUIScreenPosition.y);
 		List<RaycastResult> raycastResults = new List<RaycastResult> ();
 		EventSystem.current.RaycastAll( data, raycastResults );
 		if (raycastResults.Count > 0) {
@@ -463,6 +469,7 @@ public class HierarchicalInputModule : BaseInputModule {
 		@to.scrollDelta = @from.scrollDelta;
 		@to.pointerCurrentRaycast = @from.pointerCurrentRaycast;
 		@to.pointerEnter = @from.pointerEnter;
+		@to.textureCoord = @from.textureCoord;
 	}
 
 	protected void DeselectIfSelectionChanged(GameObject currentOverGo, BaseEventData pointerEvent)
