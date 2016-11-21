@@ -114,7 +114,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 				Vector3 pos3D = pixelTo3DPos (pixel);
 				Debug.Log ("pos3D: " + pos3D);
 
-				VectorInt64 index = new VectorInt64();
+				/*VectorInt64 index = new VectorInt64();
 				index.Add( (int)pixel.x );
 				index.Add( (int)pixel.y );
 				index.Add( (int)pixel.z );
@@ -122,7 +122,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 				pos3D.x = -(float)pos [0];
 				pos3D.y = -(float)pos [1];
 				pos3D.z = -(float)pos [2];
-				Debug.Log ("pos3D 2: " + pos3D);
+				Debug.Log ("pos3D 2: " + pos3D);*/
 
 				// Display the current position:
 				Text t = transform.FindChild ("PositionText").GetComponent<Text> ();
@@ -152,7 +152,10 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	{
 		DICOMHeader header = currentDICOM.getHeader ();
 
-		Vector3 positionDICOM = Vector3.Scale (pixel, header.getSpacing ());
+		Vector3 spacing = header.getSpacing ();
+		spacing.z = 2.0f;	// DEBUG!!
+
+		Vector3 positionDICOM = Vector3.Scale (pixel, spacing);
 		Vector3 positionUnity = - header.getDirectionCosineX () * positionDICOM.x
 		                        - header.getDirectionCosineY () * positionDICOM.y
 								- header.getDirectionCosineZ () * positionDICOM.z;
