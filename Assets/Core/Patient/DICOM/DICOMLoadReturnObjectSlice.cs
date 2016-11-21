@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using itk.simple;
 
 
 public class DICOMLoadReturnObjectSlice {
@@ -12,13 +13,16 @@ public class DICOMLoadReturnObjectSlice {
     public DICOMHeader header { get; set; }
 	public int slice;
 
-	public DICOMLoadReturnObjectSlice (int texWidth, int texHeight, int texDepth, Color32[] colors, DICOMHeader header, int slice = -1 )
+	public Image itkImage;
+
+	public DICOMLoadReturnObjectSlice (int texWidth, int texHeight, int texDepth, Color32[] colors, DICOMHeader header, Image image, int slice = -1 )
     {
         this.texWidth = texWidth;
         this.texHeight = texHeight;
         this.texDepth = texDepth;
 		this.colors = colors;
 		this.header = header;
+		this.itkImage = image;
 		this.slice = slice;
     }
 }

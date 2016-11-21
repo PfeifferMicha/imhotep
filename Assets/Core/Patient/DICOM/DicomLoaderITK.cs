@@ -290,7 +290,7 @@ public class DicomLoaderITK
 		//Debug.Log ("Direction cos Y: " + header.getDirectionCosineY ());
 		//Debug.Log ("Normal: " + header.getFrameNormal ());
 
-		return new DICOMLoadReturnObjectSlice (texWidth, texHeight, texDepth, colors, header, slice);
+		return new DICOMLoadReturnObjectSlice (texWidth, texHeight, texDepth, colors, header, image, slice);
 	}
 
 	private int indexForSeriesUID( string seriesUID )

@@ -8,8 +8,11 @@ public class DICOMSlice
 	private Texture2D mTexture2D;
 	public int slice;
 
-	public DICOMSlice ()
+	public Image image { get; private set; }
+
+	public DICOMSlice ( Image img )
 	{
+		image = img;
 	}
 
 	public DICOMHeader getHeader()

@@ -192,7 +192,7 @@ public class PatientDICOMLoader : MonoBehaviour
 
 			if(returnObjectSlice != null) {
 
-				DICOMSlice dicom = new DICOMSlice();
+				DICOMSlice dicom = new DICOMSlice( returnObjectSlice.itkImage );
 
 				Texture2D tex = new Texture2D (returnObjectSlice.texWidth, returnObjectSlice.texHeight, TextureFormat.ARGB32, false, true);
 				tex.SetPixels32 (returnObjectSlice.colors);
@@ -223,9 +223,8 @@ public class PatientDICOMLoader : MonoBehaviour
 			}
 			if (returnObjectVolume != null) {
 
-				DICOMVolume dicom = new DICOMVolume();
+				DICOMVolume dicom = new DICOMVolume (returnObjectVolume.itkImage);
 				dicom.setHeader(returnObjectVolume.header);
-				dicom.setImage(returnObjectVolume.itkImage);
 
 				mCurrentDICOMVolume = dicom;
 

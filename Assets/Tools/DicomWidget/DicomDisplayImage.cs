@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UI;
+using itk.simple;
 
 public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHandler, IPointerUpHandler, IPointerHoverHandler {
 
@@ -113,6 +114,16 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 				Vector3 pos3D = pixelTo3DPos (pixel);
 				Debug.Log ("pos3D: " + pos3D);
 
+				VectorInt64 index = new VectorInt64();
+				index.Add( (int)pixel.x );
+				index.Add( (int)pixel.y );
+				index.Add( (int)pixel.z );
+				VectorDouble pos = currentDICOM.image.TransformIndexToPhysicalPoint (index);
+				pos3D.x = -(float)pos [0];
+				pos3D.y = -(float)pos [1];
+				pos3D.z = -(float)pos [2];
+				Debug.Log ("pos3D 2: " + pos3D);
+
 				// Display the current position:
 				Text t = transform.FindChild ("PositionText").GetComponent<Text> ();
 				t.text = "(" + (int)Mathf.Round(pixel.x) + ", " + (int)Mathf.Round(pixel.y) + ", " + pixel.z + ")";
@@ -141,14 +152,15 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	{
 		DICOMHeader header = currentDICOM.getHeader ();
 
-		Vector3 positionDICOM = Vector3.Scale (pixel, currentDICOM.getHeader ().getSpacing ());
-		Vector3 positionUnity = header.getDirectionCosineX () * positionDICOM.x
+		Vector3 positionDICOM = Vector3.Scale (pixel, header.getSpacing ());
+		Vector3 positionUnity = - header.getDirectionCosineX () * positionDICOM.x
 		                        - header.getDirectionCosineY () * positionDICOM.y
 								- header.getDirectionCosineZ () * positionDICOM.z;
 		Debug.Log ("positionUnity: " + positionUnity);
 		Vector3 origin = header.getOrigin ();
 		Debug.Log ("origin: " + origin);
-		positionUnity += new Vector3 (+origin.x, -origin.y, -origin.z);
+		Debug.Log ("Spacing: " + header.getSpacing ());
+		positionUnity += new Vector3 (-origin.x, -origin.y, -origin.z);
 		return positionUnity;
 	}
 
@@ -208,7 +220,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 					// Transform the movement into the local space of the screen's Transform, to see if we're
 					// moving away from, towards, left, right, up or down relative to the screen:
-					Transform tf = Platform.instance.getCenterTransformForScreen (widget.layoutPosition.screen);
+					UnityEngine.Transform tf = Platform.instance.getCenterTransformForScreen (widget.layoutPosition.screen);
 					movement = tf.InverseTransformDirection (movement);
 
 					float dZ = -movement.z*2f*currentViewSettings.zoom;

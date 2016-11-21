@@ -5,10 +5,11 @@ using UnityEngine;
 public class DICOMVolume
 {
 	private DICOMHeader mHeader;
-	private Image itkImage;
+	public Image itkImage { get; private set; }
 
-	public DICOMVolume ()
+	public DICOMVolume ( Image image )
 	{
+		itkImage = image;
 	}
 	public DICOMHeader getHeader()
 	{
@@ -21,10 +22,6 @@ public class DICOMVolume
 	public Image getImage()
 	{
 		return itkImage;
-	}
-	public void setImage( Image image )
-	{
-		itkImage = image;
 	}
 	public UInt32 getMaximum() {
 		return (UInt32)mHeader.MaxPixelValue;

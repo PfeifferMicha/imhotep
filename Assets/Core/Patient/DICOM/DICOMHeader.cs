@@ -23,6 +23,9 @@ public class DICOMHeader : ICloneable
 	public int RescaleSlope{ get; private set; }
 	public int MaxPixelValue{ get; private set; }
 	public int MinPixelValue{ get; private set; }
+	public float SliceThickness{ get; private set; }
+
+	public Image mImage{ get; private set; }
 
 	public DICOMHeader ( Image image, VectorString fileNames )
 	{
@@ -35,6 +38,7 @@ public class DICOMHeader : ICloneable
 		RescaleIntercept = 0;
 		MinPixelValue = UInt16.MinValue;
 		MaxPixelValue = UInt16.MaxValue;
+		SliceThickness = 0f;
 
 		// Study and Series UID should always be present:
 		StudyUID = image.GetMetaData ("0020|000d");
@@ -73,6 +77,9 @@ public class DICOMHeader : ICloneable
 		try {
 			MaxPixelValue = Int32.Parse( image.GetMetaData("0028|0107") );
 		} catch(System.Exception e ) { Debug.LogWarning ("Could not find or interpret DICOM tag: (0028|0107) Exception: " + e.Message );}
+		try {
+			SliceThickness = float.Parse( image.GetMetaData( "0018|0050" ) );
+		} catch { Debug.LogWarning ("Could not find or interpret DICOM tag: (0018|0050)");}
 
 		if (MaxPixelValue == UInt16.MaxValue) {
 			
@@ -91,6 +98,7 @@ public class DICOMHeader : ICloneable
 
 		FileNames = fileNames;
 		NumberOfImages = (uint)fileNames.Count;
+
 		/*Debug.Log ("New DICOM Header:");
 		Debug.Log (Origin[0] + " " + Origin[1] + " " + Origin[2]);
 		Debug.Log (Dimension);
@@ -158,8 +166,7 @@ public class DICOMHeader : ICloneable
 			s.x = (float)Spacing [0];
 		if (Spacing.Count > 1)
 			s.y = (float)Spacing [1];
-		if (Spacing.Count > 2)
-			s.z = (float)Spacing [2];
+		s.z = SliceThickness;
 		return s;
 	}
 	/*! Returns the pixel spacing as a unity vector.*/
