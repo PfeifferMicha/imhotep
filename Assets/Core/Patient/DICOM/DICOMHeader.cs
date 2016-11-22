@@ -24,6 +24,7 @@ public class DICOMHeader : ICloneable
 	public int MaxPixelValue{ get; private set; }
 	public int MinPixelValue{ get; private set; }
 	public float SliceThickness{ get; private set; }
+	public float SliceLocation{ get; private set; }
 
 	public Image mImage{ get; private set; }
 
@@ -39,6 +40,7 @@ public class DICOMHeader : ICloneable
 		MinPixelValue = UInt16.MinValue;
 		MaxPixelValue = UInt16.MaxValue;
 		SliceThickness = 0f;
+		SliceLocation = 0f;
 
 		// Study and Series UID should always be present:
 		StudyUID = image.GetMetaData ("0020|000d");
@@ -80,6 +82,9 @@ public class DICOMHeader : ICloneable
 		try {
 			SliceThickness = float.Parse( image.GetMetaData( "0018|0050" ) );
 		} catch { Debug.LogWarning ("Could not find or interpret DICOM tag: (0018|0050)");}
+		try {
+			SliceLocation = float.Parse( image.GetMetaData( "0020|1041" ) );
+		} catch { Debug.LogWarning ("Could not find or interpret DICOM tag: (0020|1041)");}
 
 		if (MaxPixelValue == UInt16.MaxValue) {
 			

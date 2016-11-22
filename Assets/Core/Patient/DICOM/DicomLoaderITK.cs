@@ -214,6 +214,9 @@ public class DicomLoaderITK
 		// Read the Dicom image:
 		Image image = SimpleITK.ReadImage( fileNames[slice] );
 
+
+		DICOMHeader newHeader = new DICOMHeader (image, fileNames);
+
 		int origTexWidth = (int)image.GetWidth ();
 		int origTexHeight = (int)image.GetHeight ();
 		//int origTexDepth = (int)image.GetDepth ();
@@ -225,8 +228,8 @@ public class DicomLoaderITK
 		//UInt16 minCol = UInt16.MaxValue;
 		//UInt16 maxCol = UInt16.MinValue;
 
-		int slope = header.RescaleSlope;
-		int intercept = header.RescaleIntercept;
+		int slope = newHeader.RescaleSlope;
+		int intercept = newHeader.RescaleIntercept;
 
 
 		if (image.GetDimension () != 2 && image.GetDimension () != 3)
@@ -290,7 +293,7 @@ public class DicomLoaderITK
 		//Debug.Log ("Direction cos Y: " + header.getDirectionCosineY ());
 		//Debug.Log ("Normal: " + header.getFrameNormal ());
 
-		return new DICOMLoadReturnObjectSlice (texWidth, texHeight, texDepth, colors, header, image, slice);
+		return new DICOMLoadReturnObjectSlice (texWidth, texHeight, texDepth, colors, newHeader, image, slice);
 	}
 
 	private int indexForSeriesUID( string seriesUID )

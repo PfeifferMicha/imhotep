@@ -107,12 +107,9 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			if (cEventData != null) {	// Just in case
 
 				// Calculate which pixel in the dicom was hit:
-				Vector3 pixel = uvToPixel (cEventData.textureCoord);
-				//pixel = Vector3.zero;
-				Debug.Log ("Pixel: " + pixel);
+				Vector2 pixel = uvToPixel (cEventData.textureCoord);
 				// Calculate which 3D-Position (in the patient coordinate system) this pixel represents:
 				Vector3 pos3D = pixelTo3DPos (pixel);
-				Debug.Log ("pos3D: " + pos3D);
 
 				/*VectorInt64 index = new VectorInt64();
 				index.Add( (int)pixel.x );
@@ -126,7 +123,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 				// Display the current position:
 				Text t = transform.FindChild ("PositionText").GetComponent<Text> ();
-				t.text = "(" + (int)Mathf.Round(pixel.x) + ", " + (int)Mathf.Round(pixel.y) + ", " + pixel.z + ")";
+				t.text = "(" + (int)Mathf.Round(pixel.x) + ", " + (int)Mathf.Round(pixel.y) + ", " + mLayer + ")";
 
 				GameObject pointer = GameObject.Find ("3DPointer");
 				if (pointer != null)
@@ -135,36 +132,37 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		}
 	}
 
-	public Vector3 uvToPixel( Vector2 uv )
+	/*! Given a uv coordinate on the DicomDisplayImage (for example a mouse position), calculate which pixel was hit.
+	 * This uses the Dicom's current displacement and zooming to calculate the pixel */
+	public Vector2 uvToPixel( Vector2 uv )
 	{
 		// Transfer the uv-coordinate in the space of the full DICOM window to
 		// uv-coordinates for the current layer:
 		Vector2 dicomUV = imageUVtoLayerUV (uv);
 		// Calculate which pixel this uv represents:
-		Vector3 pixel = new Vector3 (dicomUV.x * currentDICOM.getTexture2D ().width,
-			dicomUV.y * currentDICOM.getTexture2D ().height,
-			mLayer);
+		Vector2 pixel = new Vector3 (dicomUV.x * currentDICOM.getTexture2D ().width,
+			                dicomUV.y * currentDICOM.getTexture2D ().height);
 
 		return pixel;
 	}
 
-	public Vector3 pixelTo3DPos( Vector3 pixel )
+	/*! Transform 2D pixel on current slice to 3D position
+	 * \note This only works on slices at the moment, not in volumes.*/
+	public Vector3 pixelTo3DPos( Vector2 pixel )
 	{
 		DICOMHeader header = currentDICOM.getHeader ();
 
+		// Transform 2d pixel to 2d continuous pos on slice
 		Vector3 spacing = header.getSpacing ();
-		spacing.z = 2.0f;	// DEBUG!!
+		Vector2 slicePosition = Vector2.Scale (pixel, spacing);
 
-		Vector3 positionDICOM = Vector3.Scale (pixel, spacing);
-		Vector3 positionUnity = - header.getDirectionCosineX () * positionDICOM.x
-		                        - header.getDirectionCosineY () * positionDICOM.y
-								- header.getDirectionCosineZ () * positionDICOM.z;
-		Debug.Log ("positionUnity: " + positionUnity);
+		// Take into account the orientation of the slice:
+		Vector3 position = - header.getDirectionCosineX () * slicePosition.x
+								- header.getDirectionCosineY () * slicePosition.y;
+		// Add the image's origin (i.e. the position of the lower left pixel in 3D space):
 		Vector3 origin = header.getOrigin ();
-		Debug.Log ("origin: " + origin);
-		Debug.Log ("Spacing: " + header.getSpacing ());
-		positionUnity += new Vector3 (-origin.x, -origin.y, -origin.z);
-		return positionUnity;
+		position += new Vector3 (-origin.x, -origin.y, -origin.z);
+		return position;
 	}
 
 	public Vector2 imageUVtoLayerUV( Vector2 imageUV )
