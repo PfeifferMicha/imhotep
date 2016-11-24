@@ -164,14 +164,13 @@ public class DICOMHeader : ICloneable
 	}
 
 	/*! Returns the pixel spacing as a unity vector.*/
-	public Vector3 getSpacing()
+	public Vector2 getSpacing()
 	{
-		Vector3 s = new Vector3 ();
+		Vector2 s = new Vector2 ();
 		if (Spacing.Count > 0)
 			s.x = (float)Spacing [0];
 		if (Spacing.Count > 1)
 			s.y = (float)Spacing [1];
-		s.z = SliceThickness;
 		return s;
 	}
 	/*! Returns the pixel spacing as a unity vector.*/
