@@ -26,13 +26,6 @@ public class NotificationControl : MonoBehaviour {
         }
 	}
 
-    public void test()
-    {
-        System.Random rnd = new System.Random();
-        Notification n = new Notification("Notification " + rnd.Next(1, 99), TimeSpan.Zero);// TimeSpan.FromSeconds(5));
-        createNotification(n);
-    }
-
     public void createNotification(Notification n)
     {
         notitficationList.Add(n);
