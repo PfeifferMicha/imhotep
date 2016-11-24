@@ -13,6 +13,7 @@ public class PatientBriefing : MonoBehaviour
 
 	public GameObject textObj;
 	public GameObject tabButton;
+	public GameObject emptyFiller;
 	public GameObject rawImageObj;
 	public GameObject scrollView;
     public GameObject viewPort;
@@ -99,7 +100,10 @@ public class PatientBriefing : MonoBehaviour
 				b.onClick.AddListener(() => selectTab(b));
 			}
 
-			if (tabButton.transform.parent.childCount > 1)
+			// Move the empty filler to the back of the list:
+			emptyFiller.transform.SetAsLastSibling ();
+
+			if (tabButton.transform.parent.childCount > 2)
 			{
 				// Select the first tab which is not the tabButton prefab:
 				selectTab(tabButton.transform.parent.GetChild(1).GetComponent<Button>());
@@ -111,7 +115,8 @@ public class PatientBriefing : MonoBehaviour
 	{
 		foreach (Transform child in tabButton.transform.parent)
 		{
-			UI.Core.instance.unselectTab(child.GetComponent<Button>());
+			if( child.gameObject != emptyFiller )
+				UI.Core.instance.unselectTab(child.GetComponent<Button>());
 		}
 		UI.Core.instance.selectTab(b);
 
@@ -258,7 +263,7 @@ public class PatientBriefing : MonoBehaviour
 	{
 		foreach (Transform child in tabButton.transform.parent)
 		{
-			if (child.gameObject != tabButton)
+			if (child.gameObject != tabButton && child.gameObject != emptyFiller)
 			{
 				UnityEngine.Object.Destroy(child.gameObject);
 			}

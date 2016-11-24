@@ -27,6 +27,7 @@ namespace UI
 
 		public Color TabHighlightColor;
 		public Color ButtonBaseColor;
+		public Color ButtonHighlightColor;
 
 		public Sprite normalTabImage;
 		public Sprite selectedTabImage;
@@ -113,6 +114,7 @@ namespace UI
 		{
 			ColorBlock colors = b.colors;
 			colors.normalColor = TabHighlightColor;
+			colors.highlightedColor = TabHighlightColor;
 			b.colors = colors;
 			b.image.sprite = selectedTabImage;
 		}
@@ -121,6 +123,7 @@ namespace UI
 		{
 			ColorBlock colors = b.colors;
 			colors.normalColor = ButtonBaseColor;
+			colors.highlightedColor = ButtonBaseColor;
 			b.colors = colors;
 			b.image.sprite = normalTabImage;
 		}
