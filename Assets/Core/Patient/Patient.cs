@@ -17,7 +17,6 @@ public class Patient : PatientMeta
 	private List<AdditionalInformation> additionalInformation = new List<AdditionalInformation> ();
 	private List<string> additionalInformationTabs = new List<string> ();
 	private List<View> mViews = new List<View> ();
-	private List<DICOMCustomInfo> mCustomDicomInfo = new List<DICOMCustomInfo> ();
 
 	public class AdditionalInformation
 	{
@@ -174,59 +173,6 @@ public class Patient : PatientMeta
 	}
 
 	///////////////////////////////////////////////////////
-	// Additional DIOCM settings:
-	private void readDicomInfo()
-	{
-		string dcmFile = Path.Combine (base.path, "DICOMS.json");		// TODO: Read from base path?
-		mCustomDicomInfo.Clear ();
-		Debug.Log ("Loading custom DICOM info: " + dcmFile);
-		if (File.Exists (dcmFile)) {
-			string raw = File.ReadAllText(dcmFile);
-
-			JsonData data;
-			data = JsonMapper.ToObject(raw);
-			if (data.Keys.Contains ("DICOMS")) {
-
-				JsonData array = data ["DICOMS"];
-
-				for (int i = 0; i < array.Count; i++) {
-					JsonData entry = array [i];
-					DICOMCustomInfo info = new DICOMCustomInfo ();
-					if (entry.Keys.Contains ("seriesUID")) {
-						info.seriesUID = entry ["seriesUID"].ToString ();
-					}
-					if (entry.Keys.Contains ("name")) {
-						info.customName = entry ["name"].ToString ();
-					}
-					mCustomDicomInfo.Add (info);
-				}
-			}
-		}
-		Debug.Log ("\tLoaded: " + mCustomDicomInfo.Count);
-	}
-
-	public string getDICOMNameForSeriesUID( string seriesUID )
-	{
-		foreach (DICOMCustomInfo info in mCustomDicomInfo) {
-			if (info.seriesUID == seriesUID) {
-				return info.customName;
-			}
-		}
-		return seriesUID;	// if no name was found
-	}
-
-	public string getDICOMSeriesUIDForName( string customName )
-	{
-		foreach (DICOMCustomInfo info in mCustomDicomInfo) {
-			if (info.customName == customName) {
-				return info.seriesUID;
-			}
-		}
-		return customName;	// if no series UID was found
-	}
-
-
-	///////////////////////////////////////////////////////
 	// UI:
 
 	public void setupDefaultWidgets()
@@ -326,7 +272,6 @@ public class Patient : PatientMeta
         }
 
         readViews();
-        readDicomInfo();
     }
 
     private void PatientLoaderCallback(object sender, RunWorkerCompletedEventArgs e)
