@@ -55,8 +55,8 @@ public class DicomDisplay : MonoBehaviour {
         DICOMSlice dicom = mPatientDICOMLoader.getCurrentDicom();
 		if( dicom != null )
 		{
-			DicomImage.gameObject.SetActive (true);
 			DicomImage.SetDicom (dicom);
+			DicomImage.gameObject.SetActive (true);
 			StatusText.gameObject.SetActive (false);
 			ImageScreen.SetActive (true);
 			ListScreen.SetActive (false);
@@ -119,7 +119,7 @@ public class DicomDisplay : MonoBehaviour {
 	public void selectedNewDicom( int id )
 	{
         PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
-		mPatientDICOMLoader.loadDicomSlice ( id, 5 );
+		mPatientDICOMLoader.loadDicomSlice ( id, 0 );
 
 		StatusText.gameObject.SetActive (true);
 		StatusText.text = "Loading DICOM ...";

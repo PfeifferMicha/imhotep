@@ -12,7 +12,6 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	private Material mMaterial;
 	//private float mMinValue;
 	//private float mMaxValue;
-	private int mLayer;
 
 	// Positioning:
 	ViewSettings currentViewSettings = new ViewSettings();
@@ -35,6 +34,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		public float window;
 		public float panX;
 		public float panY;
+		public int layer;
 		public float zoom;
 		public bool flipHorizontal;
 		public bool flipVertical;
@@ -44,27 +44,17 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	public UI.Widget widget;
 
-	// Use this for initialization
-	void Awake () {
-		//mMinValue = 0.0f;
-		//mMaxValue = 1.0f;
-		currentViewSettings = new ViewSettings {
-			level = 0.5f,
-			window = 1f,
-			panX = 0f,
-			panY = 0f,
-			zoom = 1f,
-			flipHorizontal = false,
-			flipVertical = true
-		};
-
-		mLayer = 0;
+	public void OnEnable()
+	{
 		dragLevelWindow = false;
+		dragPan = false;
+		dragZoom = false;
+		LoadViewSettings ();
+	}
 
-		mMaterial = new Material (Shader.Find ("Unlit/DICOM2D"));
-		GetComponent<RawImage> ().material = mMaterial;
-
-		//clear ();
+	public void OnDisable()
+	{
+		currentDICOM = null;
 	}
 
 	public void OnScroll(PointerEventData eventData)
@@ -74,7 +64,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			int scrollAmount = Mathf.RoundToInt( eventData.scrollDelta.y*0.2f );
 			if( Mathf.Abs(scrollAmount) > 0 )
 			{
-				LayerChanged (mLayer + scrollAmount);
+				LayerChanged (currentViewSettings.layer + scrollAmount);
 			}
 		}
 		//mLayerSlider.value = mLayer;
@@ -123,7 +113,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 				// Display the current position:
 				Text t = transform.FindChild ("PositionText").GetComponent<Text> ();
-				t.text = "(" + (int)Mathf.Round(pixel.x) + ", " + (int)Mathf.Round(pixel.y) + ", " + mLayer + ")";
+				t.text = "(" + (int)Mathf.Round(pixel.x) + ", " + (int)Mathf.Round(pixel.y) + ", " + currentViewSettings.layer + ")";
 
 				GameObject pointer = GameObject.Find ("3DPointer");
 				if (pointer != null)
@@ -300,12 +290,14 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 				window = 1f,
 				panX = 0f,
 				panY = 0f,
+				layer = 0,
 				zoom = 1f,
 				flipHorizontal = false,
 				flipVertical = true
 			};
 		}
 
+		LayerChanged (currentViewSettings.layer);
 		UpdateLevelWindow ();
 		ApplyScaleAndPosition ();
 	}
@@ -331,11 +323,11 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		if (currentDICOM != null) {
 			int numLayers = (int)currentDICOM.getHeader ().NumberOfImages;
 			//mMaterial.SetFloat ("layer", mLayer*mFilledPartOfTexture);
-			mLayer = (int)Mathf.Clamp (newVal, 0, numLayers - 1);
+			currentViewSettings.layer = (int)Mathf.Clamp (newVal, 0, numLayers - 1);
 			//Debug.Log ("Layer: " + mLayer + "/" + (int)currentDICOM.getHeader ().NumberOfImages);
 
 			PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
-			mPatientDICOMLoader.loadDicomSlice ( mLayer );
+			mPatientDICOMLoader.loadDicomSlice ( currentViewSettings.layer );
 		}
 	}
 
@@ -346,11 +338,17 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	public void SetDicom( DICOMSlice dicom )
 	{
-		if (mMaterial == null)
-			return;
+		Debug.Log ("SetDICOM 1");
+		if (mMaterial == null) {
+			mMaterial = new Material (Shader.Find ("Unlit/DICOM2D"));
+			GetComponent<RawImage> ().material = mMaterial;
+		}
+
+		Debug.Log ("SetDICOM 2");
+
 		Texture2D tex = dicom.getTexture2D ();
 
-		mLayer = dicom.slice;
+		currentViewSettings.layer = dicom.slice;
 		//GetComponent<RectTransform> ().sizeDelta = new Vector2 (newWidth, newHeight);
 		/*Debug.LogWarning("Min, max: " + dicom.getMinimum () + " " + dicom.getMaximum () );
 		mMaterial.SetFloat ("globalMaximum", (float)dicom.getMaximum ());
@@ -362,13 +360,23 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 		GetComponent<RawImage> ().texture = tex;
 
-		currentDICOM = dicom;
+		// If this is a new DICOM series, make sure to re-load the View Settings:
+		if (currentDICOM == null || currentDICOM.getHeader ().SeriesUID != dicom.getHeader ().SeriesUID) {
+			currentDICOM = dicom;
+			LoadViewSettings ();
+		} else {
+			UpdateLevelWindow ();
+			ApplyScaleAndPosition ();
+		}
 
-		LoadViewSettings ();
+		currentDICOM = dicom;
 	}
 
 	public void ApplyScaleAndPosition()
 	{
+		if (currentDICOM == null)
+			return;
+		
 		Texture2D tex = GetComponent<RawImage> ().texture as Texture2D;
 
 		float scaleW = 1f;
