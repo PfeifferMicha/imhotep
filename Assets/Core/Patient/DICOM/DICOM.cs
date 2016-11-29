@@ -17,18 +17,21 @@ public class DICOM {
 	public Texture2D texture2D { private set; get; }
 	public Image image { private set; get; }
 
-	public DICOM( DICOMSeries seriesInfo, int slice ) {
-
-		// Make sure that 'slice' is a valid slice number:
-		slice = Mathf.Clamp (slice, 0, seriesInfo.filenames.Count - 1);
-
+	public DICOM( DICOMSeries seriesInfo, int slice = -1 ) {
+		
 		// Remember, we will need it later:
 		this.seriesInfo = seriesInfo;
 		this.slice = slice;
 
-		dimensions = 2;
-
-		loadImageData (slice);
+		if (slice == -1) {	// load the entire volume:
+			dimensions = 3;
+			loadVolumeData ();
+		} else {
+			// Make sure that 'slice' is a valid slice number:
+			slice = Mathf.Clamp (slice, 0, seriesInfo.filenames.Count - 1);
+			dimensions = 2;
+			loadImageData (slice);
+		}
 	}
 
 	private void loadImageData( int slice )
@@ -99,6 +102,21 @@ public class DICOM {
 		} else {
 			throw(new System.Exception ("Cannot read DICOM. Unsupported pixel format: " + image.GetPixelID()));
 		}
+
+		// Make the loaded image accessable from elsewhere:
+		this.image = image;
+	}
+
+	private void loadVolumeData()
+	{
+		// Get all file names for the series:
+		VectorString fileNames = seriesInfo.filenames;
+
+		// Create a reader which will read the whole series:
+		ImageSeriesReader reader = new ImageSeriesReader ();
+		reader.SetFileNames (fileNames);
+		// Load the entire image into a series:
+		Image image = reader.Execute();
 
 		// Make the loaded image accessable from elsewhere:
 		this.image = image;

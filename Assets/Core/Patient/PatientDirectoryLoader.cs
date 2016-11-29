@@ -93,8 +93,7 @@ public class PatientDirectoryLoader {
 
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_StartLoading, entry);
 
-			//Patient p = new Patient (entry);
-
+			new Patient (entry);
         }
         else
         {

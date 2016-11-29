@@ -8166,6 +8166,7 @@ GameObject:
   - 114: {fileID: 795904949}
   - 120: {fileID: 795904951}
   - 114: {fileID: 795904946}
+  - 114: {fileID: 795904952}
   m_Layer: 0
   m_Name: GlobalScript
   m_TagString: Untagged
@@ -8184,6 +8185,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aa51322074f64615a0258227db91d35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isLoading: 0
+  PathForThread: 
+  DicomIDForThread: 0
+  DicomSliceForThread: 0
+  loadingFinished: 0
+  loadingDirectoryFinished: 0
 --- !u!4 &795904941
 Transform:
   m_ObjectHideFlags: 0
@@ -8342,6 +8349,17 @@ LineRenderer:
       serializedVersion: 2
       rgba: 4294967295
   m_UseWorldSpace: 1
+--- !u!114 &795904952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 795904939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9112386c44b9c1e42a522fa8ed820f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &795904953
 MonoBehaviour:
   m_ObjectHideFlags: 0

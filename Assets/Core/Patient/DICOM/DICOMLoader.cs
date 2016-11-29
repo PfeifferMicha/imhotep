@@ -123,10 +123,11 @@ public class DICOMLoader : MonoBehaviour {
 	// DICOM Loading:
 
 	/*! Starts loading the given DICOM, if available.
-	* \return true if loading process is started, false if the loader is currently busy. */
+	 * \note If slice is negative, this loads the entire volume!
+	 * \return true if loading process is started, false if the loader is currently busy. */
 	public bool startLoading (DICOMSeries toLoad, int slice = 0 )
 	{
-		if (!isBusy) {
+		if (!isBusy && toLoad != null) {
 
 			// Lock:
 			isBusy = true;
@@ -145,31 +146,65 @@ public class DICOMLoader : MonoBehaviour {
 			return false;
 		}
 	}
-	/*! Starts loading the given DICOM, if available (overload for convenience)
+	/*! Starts loading the given DICOM slice, if available (overload for convenience)
 	* \return true if loading process is started, false if the loader is currently busy
 	* 		or if no series with the given index is available. */
-	public bool startLoading ( int index, int slice = 0 )
+	public bool startLoadingSlice ( int index, int slice = 0 )
 	{
 		if (index >= 0 && index < availableSeries.Count) {
-			return startLoading (availableSeries [index]);
+			return startLoading (availableSeries [index], slice);
 		} else {
 			return false;
 		}
 	}
-	/*! Starts loading the given DICOM, if available (overload for convenience)
+	/*! Starts loading the given DICOM slice, if available (overload for convenience)
 	* \return true if loading process is started, false if the loader is currently busy
 	* 		or if no series with the given series UID is available. */
-	public bool startLoading ( string seriesUID, int slice = 0 )
+	public bool startLoadingSlice ( string seriesUID, int slice = 0 )
 	{
 		foreach (DICOMSeries i in availableSeries) {
 			if (i.seriesUID == seriesUID) {
-				return startLoading (i);
+				return startLoading (i, slice);
 			}
 		}
 		return false;
 	}
 
-	/*! Loads a DICOM. Called in thread!*/
+	/*! Starts loading the given DICOM volume, if available.
+	* \return true if loading process is started, false if the loader is currently busy. */
+	public bool startLoadingVolume( DICOMSeries toLoad )
+	{
+		return startLoading (toLoad, -1);
+	}
+
+	/*! Starts loading the given DICOM volume, if available (overload for convenience)
+	* \return true if loading process is started, false if the loader is currently busy
+	* 		or if no series with the given index is available. */
+	public bool startLoadingVolume ( int index )
+	{
+		if (index >= 0 && index < availableSeries.Count) {
+			return startLoading (availableSeries [index], -1);
+		} else {
+			return false;
+		}
+	}
+	/*! Starts loading the given DICOM volume, if available (overload for convenience)
+	* \return true if loading process is started, false if the loader is currently busy
+	* 		or if no series with the given series UID is available. */
+	public bool startLoadingVolume ( string seriesUID )
+	{
+		foreach (DICOMSeries i in availableSeries) {
+			if (i.seriesUID == seriesUID) {
+				return startLoading (i, -1);
+			}
+		}
+		return false;
+	}
+
+
+
+	/*! Loads a DICOM. Called in thread!
+	 * \note if sliceToLoad is negative, this will load the whole volume. */
 	public void load(object sender, DoWorkEventArgs e)
 	{
 		try {
@@ -201,14 +236,15 @@ public class DICOMLoader : MonoBehaviour {
 				"DICOM directory parsing");
 		}
 		if (newDICOMLoaded) {
-			// Let Listeners know that we've loaded a new DICOM:
-			PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_NewLoaded,
-				"DICOM directory parsing");
 			newDICOMLoaded = false;
 			if (newlyLoadedDICOM.dimensions == 2) {
 				currentDICOM = newlyLoadedDICOM;
+				// Let Listeners know that we've loaded a new DICOM:
+				PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_NewLoaded, currentDICOM);
 			} else {
 				currentDICOMVolume = newlyLoadedDICOM;
+				// Let Listeners know that we've loaded a new DICOM:
+				PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_NewLoadedVolume, currentDICOMVolume);
 			}
 		}
 	}
