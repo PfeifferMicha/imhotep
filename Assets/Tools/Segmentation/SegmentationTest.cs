@@ -5,9 +5,6 @@ using itk.simple;
 public class SegmentationTest : MonoBehaviour {
 	void OnEnable() {
 		PatientEventSystem.startListening (PatientEventSystem.Event.DICOM_NewLoadedVolume, OnDICOMLoaded );
-
-		// Start loading the first volume, if possible:
-		PatientDICOMLoader.instance.loadDicom( 0 );
 	}
 
 	void OnDisable() {
@@ -16,15 +13,11 @@ public class SegmentationTest : MonoBehaviour {
 
 	public void OnDICOMLoaded( object obj = null )
 	{
-		DICOMVolume dicom = obj as DICOMVolume;
+		DICOM dicom = obj as DICOM;
 		if (dicom == null)
 			return;
 
-		DICOMHeader header = dicom.getHeader ();
-
-		Debug.Log ("DICOM Volume loaded for: " + header.getPatientName ());
-
-		Image volume = dicom.getImage ();
+		Image volume = dicom.image;
 		Debug.Log ("Width: " + volume.GetWidth () + ", height: " + volume.GetHeight () + ", depth: " + volume.GetDepth ());
 
 		VectorUInt32 position = new VectorUInt32 {

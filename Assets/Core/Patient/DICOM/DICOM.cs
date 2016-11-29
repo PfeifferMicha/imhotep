@@ -15,7 +15,7 @@ public class DICOM {
 	public int texHeight { private set; get; }
 	public int texDepth { private set; get; }
 	public Texture2D texture2D { private set; get; }
-
+	public Image image { private set; get; }
 
 	public DICOM( SeriesInfo seriesInfo, int slice ) {
 
@@ -101,6 +101,9 @@ public class DICOM {
 		} else {
 			throw(new System.Exception ("Cannot read DICOM. Unsupported pixel format: " + image.GetPixelID()));
 		}
+
+		// Make the loaded image accessable from elsewhere:
+		this.image = image;
 	}
 
 	/*! Returns the image as a texture.
