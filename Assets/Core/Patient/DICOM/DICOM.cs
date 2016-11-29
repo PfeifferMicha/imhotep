@@ -51,13 +51,20 @@ public class DICOM {
 
 		int intercept = 0;
 		int slope = 1;
-		intercept = Int32.Parse( image.GetMetaData("0028|1052") );
-		slope = Int32.Parse( image.GetMetaData("0028|1053") );
+		try {
+			intercept = Int32.Parse( image.GetMetaData("0028|1052") );
+			slope = Int32.Parse( image.GetMetaData("0028|1053") );
+		} catch {
+		}
 
 		if (image.GetDimension () != 2 && image.GetDimension () != 3)
 		{
-			throw( new System.Exception( "Cannot read DICOM. Only 2D and 3D images are currently supported. Dimensions of image: " + image.GetDimension()));
+			throw( new System.Exception( "Only 2D and 3D images are currently supported. Dimensions of image: " + image.GetDimension()));
 		}
+
+
+		int min = int.MaxValue;
+		int max = int.MinValue;
 
 		// Copy the image into a colors array:
 		IntPtr bufferPtr;
@@ -73,7 +80,14 @@ public class DICOM {
 				for (UInt32 x = 0; x < texWidth; x++) {
 					if( x < origTexWidth && y < origTexHeight )// && z < origTexDepth )
 					{
-						colors[ x + y*texWidth ] = F2C( (UInt16)((colorsTmp[index] - intercept)/slope));
+						UInt16 pixelValue = (UInt16)((colorsTmp [index] - intercept) / slope);
+						colors [ x + y * texWidth] = F2C(pixelValue);
+
+						if (pixelValue > max)
+							max = pixelValue;
+						if (pixelValue < min)
+							min = pixelValue;
+						
 						index ++;
 					}
 				}
@@ -90,19 +104,27 @@ public class DICOM {
 				for (UInt32 x = 0; x < texWidth; x++) {
 					if( x < origTexWidth && y < origTexHeight )// && z < origTexDepth )
 					{
-						UInt16 pixelValue = (UInt16)((colorsTmp[index] - intercept)/slope);
-						// Mask out unused high bits:
-						//pixelValue &= unchecked((UInt16)~(1 << 15 | 1 << 14 | 1 << 13 | 1 << 12));
-						colors[ x + y*texWidth ] = F2C( pixelValue );
+						UInt16 pixelValue = (UInt16)((colorsTmp [index] - intercept) / slope);
+						colors [ x + y * texWidth] = F2C(pixelValue);
+
+						if (pixelValue > max)
+							max = pixelValue;
+						if (pixelValue < min)
+							min = pixelValue;
 
 						index ++;
 					}
 				}
 			}
 		} else {
-			throw(new System.Exception ("Cannot read DICOM. Unsupported pixel format: " + image.GetPixelID()));
+			throw(new System.Exception ("Unsupported pixel format: " + image.GetPixelID()));
 		}
 
+		// If the DICOM header did not contain info about the minimum/maximum values and no one
+		// has manually set them yet, set the min/max values found for this slice:
+		if (!seriesInfo.foundMinMaxPixelValues) {
+			seriesInfo.setMinMaxPixelValues (min, max);
+		}
 		// Make the loaded image accessable from elsewhere:
 		this.image = image;
 	}

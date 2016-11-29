@@ -30,6 +30,8 @@ public class DICOMSeries {
 	/*! maxPixelValue of first slice: */
 	public int maxPixelValue { private set; get; }
 
+	public bool foundMinMaxPixelValues { private set; get; }
+
 	public DICOMSeries( string directory, string seriesUID )
 	{
 		// Get the file names for the series:
@@ -119,13 +121,14 @@ public class DICOMSeries {
 
 
 		// Read the minimum and maximum values which are stored in this image:
-		minPixelValue = Int16.MinValue;
-		maxPixelValue = Int16.MaxValue;
+		minPixelValue = UInt16.MinValue;
+		maxPixelValue = UInt16.MaxValue;
+		foundMinMaxPixelValues = false;
 		try {
 			minPixelValue = Int32.Parse( firstSlice.GetMetaData("0028|0106") );
 			maxPixelValue = Int32.Parse( firstSlice.GetMetaData("0028|0107") );
-		} catch (System.Exception e ) {
-			Debug.LogWarning ("Cannot find minimum/maximum pixel values in DICOM. " + e.Message);
+			foundMinMaxPixelValues = true;
+		} catch {
 		}
 	}
 
@@ -171,5 +174,12 @@ public class DICOMSeries {
 	public string getDescription()
 	{
 		return seriesUID + " (" + numberOfSlices + " images)";
+	}
+
+	public void setMinMaxPixelValues( int min, int max )
+	{
+		minPixelValue = min;
+		maxPixelValue = max;
+		foundMinMaxPixelValues = true;
 	}
 }

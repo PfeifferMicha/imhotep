@@ -102,9 +102,6 @@ public class DICOMLoader : MonoBehaviour {
 
 			// Debug log:
 			string str = "[DICOM] Found " + series.Count + " series.";
-			for (int i = 0; i < series.Count; i++)
-				str += "\n\t" + series [i];
-			Debug.Log (str);
 
 		} catch( System.Exception err ) {
 			Debug.LogError( err.Message );
@@ -211,7 +208,7 @@ public class DICOMLoader : MonoBehaviour {
 			DICOM newDICOM = new DICOM( seriesToLoad, sliceToLoad );
 			newlyLoadedDICOM = newDICOM;
 		} catch( System.Exception err ) {
-			Debug.LogError( err.Message );
+			Debug.LogError( "[DICOM] " + err.Message );
 		}
 	}
 	/*! Called when loader has finished parsing a directory. */
