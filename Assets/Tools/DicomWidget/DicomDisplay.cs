@@ -75,7 +75,7 @@ public class DicomDisplay : MonoBehaviour {
 			return;
 		}
 		// Make sure at least one series was found:
-		List<SeriesInfo> series = DICOMLoader.instance.availableSeries;
+		List<DICOMSeries> series = DICOMLoader.instance.availableSeries;
 		if (series.Count <= 0) {
 			Text newEntryText = ListEntryButton.transform.GetComponentInChildren<Text> ();
 			newEntryText.text = "No series found.";
@@ -86,7 +86,7 @@ public class DicomDisplay : MonoBehaviour {
 		// Deactivate default button:
 		ListEntryButton.SetActive (false);
 
-		foreach (SeriesInfo s in series) {
+		foreach (DICOMSeries s in series) {
 			//customNames.Add (p.getDICOMNameForSeriesUID (uid));
 			GameObject newEntry = Instantiate (ListEntryButton) as GameObject;
 			newEntry.SetActive (true);
@@ -97,7 +97,7 @@ public class DicomDisplay : MonoBehaviour {
 
 			// Make the button load the DICOM:
 			Button newButton = newEntry.GetComponent<Button> ();
-			SeriesInfo captured = s;
+			DICOMSeries captured = s;
 			newButton.onClick.AddListener(() => selectedNewDicom( captured ));
 		}
 
@@ -120,7 +120,7 @@ public class DicomDisplay : MonoBehaviour {
 	{
 		//DicomImage.gameObject.SetActive (false);
 	}
-	public void selectedNewDicom( SeriesInfo series )
+	public void selectedNewDicom( DICOMSeries series )
 	{
 		// Check if we previously loaded an image from this series. If so, figure out what
 		// the last shown layer was:

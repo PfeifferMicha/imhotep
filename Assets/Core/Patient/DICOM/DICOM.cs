@@ -7,7 +7,7 @@ using System.Collections.Generic;
 /*! Represents a DICOM Image (2D, single slice) or Volume (3D, multi slice). */
 public class DICOM {
 
-	public SeriesInfo seriesInfo { private set; get; }
+	public DICOMSeries seriesInfo { private set; get; }
 	public int slice { private set; get; }
 	public Color32[] colors;
 	public int dimensions { private set; get; }
@@ -17,7 +17,7 @@ public class DICOM {
 	public Texture2D texture2D { private set; get; }
 	public Image image { private set; get; }
 
-	public DICOM( SeriesInfo seriesInfo, int slice ) {
+	public DICOM( DICOMSeries seriesInfo, int slice ) {
 
 		// Make sure that 'slice' is a valid slice number:
 		slice = Mathf.Clamp (slice, 0, seriesInfo.filenames.Count - 1);

@@ -7,7 +7,7 @@ using System;
  * \note This class assumes that a single series is made up of a single volume (or single slice).
  * 		This means that the direction cosines for each image in the volume are assumed to be the same.
  * \note This class assumes that the spacing in the series is the same between each pair of adjacent slices.*/
-public class SeriesInfo {
+public class DICOMSeries {
 
 	public int numberOfSlices { private set; get; }
 	public VectorString filenames { private set; get; }
@@ -30,7 +30,7 @@ public class SeriesInfo {
 	/*! maxPixelValue of first slice: */
 	public int maxPixelValue { private set; get; }
 
-	public SeriesInfo( string directory, string seriesUID )
+	public DICOMSeries( string directory, string seriesUID )
 	{
 		// Get the file names for the series:
 		filenames = ImageSeriesReader.GetGDCMSeriesFileNames( directory, seriesUID );
@@ -125,7 +125,7 @@ public class SeriesInfo {
 			minPixelValue = Int32.Parse( firstSlice.GetMetaData("0028|0106") );
 			maxPixelValue = Int32.Parse( firstSlice.GetMetaData("0028|0107") );
 		} catch (System.Exception e ) {
-			Debug.LogWarning ("Cannot find minimum/maximum pixel values in DICOM.");
+			Debug.LogWarning ("Cannot find minimum/maximum pixel values in DICOM. " + e.Message);
 		}
 	}
 

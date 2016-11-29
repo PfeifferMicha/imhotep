@@ -22,7 +22,7 @@ public class DICOMLoader : MonoBehaviour {
 	/*! The DICOM volume which has been loaded */
 	public DICOM currentDICOMVolume { private set; get; }
 	/*! The DICOM series which has been loaded */
-	public SeriesInfo currentDICOMSeries { private set; get; }
+	public DICOMSeries currentDICOMSeries { private set; get; }
 
 	/*! Can be used to check if the loader is currently working on something. */
 	public bool isBusy { private set; get; }
@@ -31,7 +31,7 @@ public class DICOMLoader : MonoBehaviour {
 	private string directoryToLoad;
 
 	/*! Temporary value to pass the directory to the thread */
-	private SeriesInfo seriesToLoad;
+	private DICOMSeries seriesToLoad;
 	/*! Temporary value to pass the slice number to the thread */
 	private int sliceToLoad;
 
@@ -40,7 +40,7 @@ public class DICOMLoader : MonoBehaviour {
 	/*! The directory which has been set: */
 	private string currentDirectory;
 
-	public List<SeriesInfo> availableSeries { private set; get; }
+	public List<DICOMSeries> availableSeries { private set; get; }
 
 	/*! Set to true when a directory has been parsed. */
 	private bool newDirectoryParsed = false;
@@ -52,7 +52,7 @@ public class DICOMLoader : MonoBehaviour {
 		if (instance != null)
 			throw( new System.Exception( "Error: Only one Instance of DICOMLoader may exist!" ) );
 
-		availableSeries = new List<SeriesInfo>();
+		availableSeries = new List<DICOMSeries>();
 
 		instance = this;
 		isBusy = false;
@@ -95,7 +95,7 @@ public class DICOMLoader : MonoBehaviour {
 			if (series.Count > 0) {
 
 				foreach (string s in series) {
-					SeriesInfo info = new SeriesInfo ( directoryToLoad, s );
+					DICOMSeries info = new DICOMSeries ( directoryToLoad, s );
 					availableSeries.Add(info);
 				}
 			}
@@ -124,7 +124,7 @@ public class DICOMLoader : MonoBehaviour {
 
 	/*! Starts loading the given DICOM, if available.
 	* \return true if loading process is started, false if the loader is currently busy. */
-	public bool startLoading (SeriesInfo toLoad, int slice = 0 )
+	public bool startLoading (DICOMSeries toLoad, int slice = 0 )
 	{
 		if (!isBusy) {
 
@@ -161,7 +161,7 @@ public class DICOMLoader : MonoBehaviour {
 	* 		or if no series with the given series UID is available. */
 	public bool startLoading ( string seriesUID, int slice = 0 )
 	{
-		foreach (SeriesInfo i in availableSeries) {
+		foreach (DICOMSeries i in availableSeries) {
 			if (i.seriesUID == seriesUID) {
 				return startLoading (i);
 			}
