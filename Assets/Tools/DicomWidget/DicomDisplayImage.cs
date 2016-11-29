@@ -103,16 +103,6 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 				// Calculate which 3D-Position (in the patient coordinate system) this pixel represents:
 				Vector3 pos3D = pixelTo3DPos (pixel);
 
-				/*VectorInt64 index = new VectorInt64();
-				index.Add( (int)pixel.x );
-				index.Add( (int)pixel.y );
-				index.Add( (int)pixel.z );
-				VectorDouble pos = currentDICOM.image.TransformIndexToPhysicalPoint (index);
-				pos3D.x = -(float)pos [0];
-				pos3D.y = -(float)pos [1];
-				pos3D.z = -(float)pos [2];
-				Debug.Log ("pos3D 2: " + pos3D);*/
-
 				// Display the current position:
 				Text t = transform.FindChild ("PositionText").GetComponent<Text> ();
 				t.text = "(" + (int)Mathf.Round(pixel.x) + ", " + (int)Mathf.Round(pixel.y) + ", " + currentViewSettings.layer + ")";
@@ -281,10 +271,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	private void LoadViewSettings()
 	{
-		Debug.Log ("Loading");
 		if (currentDICOM == null)
 			return;
-		Debug.Log ("Loading2");
 
 		string seriesUID = currentDICOM.seriesInfo.seriesUID;
 		if (savedViewSettings.ContainsKey (seriesUID)) {
@@ -352,16 +340,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		}
 
 		Texture2D tex = dicom.getTexture2D ();
-		Debug.Log ("layer: " + currentViewSettings.layer);
 		currentViewSettings.layer = dicom.slice;
-		Debug.Log ("new layer: " + currentViewSettings.layer);
-		//GetComponent<RectTransform> ().sizeDelta = new Vector2 (newWidth, newHeight);
-		/*Debug.LogWarning("Min, max: " + dicom.getMinimum () + " " + dicom.getMaximum () );
-		mMaterial.SetFloat ("globalMaximum", (float)dicom.getMaximum ());
-		mMaterial.SetFloat ("globalMinimum", (float)dicom.getMinimum ());
-		mMaterial.SetFloat ("range", (float)(dicom.getMaximum () - dicom.getMinimum ()));*/
-
-		Debug.Log ("Min, max: " + dicom.seriesInfo.minPixelValue + " " + dicom.seriesInfo.maxPixelValue);
 		mMaterial.SetFloat ("globalMinimum", (float)dicom.seriesInfo.minPixelValue);
 		mMaterial.SetFloat ("globalMaximum", (float)dicom.seriesInfo.maxPixelValue);
 
@@ -378,8 +357,6 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		
 		UpdateLevelWindow ();
 		ApplyScaleAndPosition ();
-
-		Debug.Log ("level, window: " + currentViewSettings.level + " " + currentViewSettings.window);
 	}
 
 	public void ApplyScaleAndPosition()

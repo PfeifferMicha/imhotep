@@ -21,7 +21,6 @@ public class DICOM {
 
 		// Make sure that 'slice' is a valid slice number:
 		slice = Mathf.Clamp (slice, 0, seriesInfo.filenames.Count - 1);
-		Debug.Log ("New dicom slice: " + slice);
 
 		// Remember, we will need it later:
 		this.seriesInfo = seriesInfo;
@@ -65,7 +64,6 @@ public class DICOM {
 
 			Int16[] colorsTmp = new Int16[ numberOfPixels ];
 			Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
-			Debug.Log ("Slope, Intercept: " + slope + " " + intercept);
 			int index = 0;
 			//for (UInt32 z = 0; z < texDepth; z++) {
 			for (UInt32 y = 0; y < texHeight; y++) {
