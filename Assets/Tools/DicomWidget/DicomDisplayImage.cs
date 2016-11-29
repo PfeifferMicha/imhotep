@@ -26,7 +26,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	// When dragZoom is true, moving the mouse will modify the position:
 	private bool dragZoom = false;
 
-	private DICOMSlice currentDICOM;
+	private DICOM currentDICOM;
 
 	private struct ViewSettings
 	{
@@ -50,6 +50,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		dragPan = false;
 		dragZoom = false;
 		LoadViewSettings ();
+
+		//LayerChanged (currentViewSettings.layer);
 	}
 
 	public void OnDisable()
@@ -61,7 +63,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	{
 		if (currentDICOM != null) {
 			//int numLayers = (int)currentDICOM.getHeader ().NumberOfImages;
-			int scrollAmount = Mathf.RoundToInt( eventData.scrollDelta.y*0.2f );
+			int scrollAmount = Mathf.RoundToInt( eventData.scrollDelta.y*0.05f );
 			if( Mathf.Abs(scrollAmount) > 0 )
 			{
 				LayerChanged (currentViewSettings.layer + scrollAmount);
@@ -140,7 +142,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	 * \note This only works on slices at the moment, not in volumes.*/
 	public Vector3 pixelTo3DPos( Vector2 pixel )
 	{
-		DICOMHeader header = currentDICOM.getHeader ();
+		/*DICOMHeader header = currentDICOM.getHeader ();
 
 		// Transform 2d pixel to 2d continuous pos on slice
 		Vector3 spacing = header.getSpacing ();
@@ -152,7 +154,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		// Add the image's origin (i.e. the position of the lower left pixel in 3D space):
 		Vector3 origin = header.getOrigin ();
 		position += new Vector3 (-origin.x, -origin.y, -origin.z);
-		return position;
+		return position;*/
+		return currentDICOM.seriesInfo.transformPixelToPatientPos (pixel, currentViewSettings.layer);
 	}
 
 	public Vector2 imageUVtoLayerUV( Vector2 imageUV )
@@ -268,7 +271,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		if (currentDICOM == null)
 			return;
 
-		string seriesUID = currentDICOM.getHeader ().SeriesUID;
+		string seriesUID = currentDICOM.seriesInfo.seriesUID;
 		if (savedViewSettings.ContainsKey (seriesUID)) {
 			savedViewSettings [seriesUID] = currentViewSettings;
 		} else {
@@ -278,10 +281,12 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	private void LoadViewSettings()
 	{
+		Debug.Log ("Loading");
 		if (currentDICOM == null)
 			return;
+		Debug.Log ("Loading2");
 
-		string seriesUID = currentDICOM.getHeader ().SeriesUID;
+		string seriesUID = currentDICOM.seriesInfo.seriesUID;
 		if (savedViewSettings.ContainsKey (seriesUID)) {
 			currentViewSettings = savedViewSettings [seriesUID];
 		} else {
@@ -296,10 +301,16 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 				flipVertical = true
 			};
 		}
+	}
 
-		LayerChanged (currentViewSettings.layer);
-		UpdateLevelWindow ();
-		ApplyScaleAndPosition ();
+	/*! If a series was previously loaded, reload the last shown layer: */
+	public int savedLayerForSeriesUID( string seriesUID )
+	{
+		if (savedViewSettings.ContainsKey (seriesUID)) {
+			return savedViewSettings [seriesUID].layer;
+		} else {
+			return 0;
+		}
 	}
 
 	/*public void MinChanged( float newVal )
@@ -321,13 +332,10 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	public void LayerChanged( float newVal )
 	{
 		if (currentDICOM != null) {
-			int numLayers = (int)currentDICOM.getHeader ().NumberOfImages;
-			//mMaterial.SetFloat ("layer", mLayer*mFilledPartOfTexture);
+			int numLayers = (int)currentDICOM.seriesInfo.numberOfSlices;
 			currentViewSettings.layer = (int)Mathf.Clamp (newVal, 0, numLayers - 1);
-			//Debug.Log ("Layer: " + mLayer + "/" + (int)currentDICOM.getHeader ().NumberOfImages);
 
-			PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
-			mPatientDICOMLoader.loadDicomSlice ( currentViewSettings.layer );
+			DICOMLoader.instance.startLoading( currentDICOM.seriesInfo, currentViewSettings.layer );
 		}
 	}
 
@@ -336,40 +344,42 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		return val - Mathf.Floor (val);
 	}
 
-	public void SetDicom( DICOMSlice dicom )
+	public void SetDicom( DICOM dicom )
 	{
-		Debug.Log ("SetDICOM 1");
 		if (mMaterial == null) {
 			mMaterial = new Material (Shader.Find ("Unlit/DICOM2D"));
 			GetComponent<RawImage> ().material = mMaterial;
 		}
 
-		Debug.Log ("SetDICOM 2");
-
 		Texture2D tex = dicom.getTexture2D ();
-
+		Debug.Log ("layer: " + currentViewSettings.layer);
 		currentViewSettings.layer = dicom.slice;
+		Debug.Log ("new layer: " + currentViewSettings.layer);
 		//GetComponent<RectTransform> ().sizeDelta = new Vector2 (newWidth, newHeight);
 		/*Debug.LogWarning("Min, max: " + dicom.getMinimum () + " " + dicom.getMaximum () );
 		mMaterial.SetFloat ("globalMaximum", (float)dicom.getMaximum ());
 		mMaterial.SetFloat ("globalMinimum", (float)dicom.getMinimum ());
 		mMaterial.SetFloat ("range", (float)(dicom.getMaximum () - dicom.getMinimum ()));*/
 
-		mMaterial.SetFloat ("globalMinimum", (float)dicom.getHeader().MinPixelValue);
-		mMaterial.SetFloat ("globalMaximum", (float)dicom.getHeader().MaxPixelValue);
+		Debug.Log ("Min, max: " + dicom.seriesInfo.minPixelValue + " " + dicom.seriesInfo.maxPixelValue);
+		mMaterial.SetFloat ("globalMinimum", (float)dicom.seriesInfo.minPixelValue);
+		mMaterial.SetFloat ("globalMaximum", (float)dicom.seriesInfo.maxPixelValue);
 
 		GetComponent<RawImage> ().texture = tex;
 
 		// If this is a new DICOM series, make sure to re-load the View Settings:
-		if (currentDICOM == null || currentDICOM.getHeader ().SeriesUID != dicom.getHeader ().SeriesUID) {
-			currentDICOM = dicom;
-			LoadViewSettings ();
-		} else {
-			UpdateLevelWindow ();
-			ApplyScaleAndPosition ();
-		}
+		bool seriesChanged = false;
+		if (currentDICOM == null || currentDICOM.seriesInfo.seriesUID != dicom.seriesInfo.seriesUID)
+			seriesChanged = true;
 
 		currentDICOM = dicom;
+		if( seriesChanged )
+			LoadViewSettings ();
+		
+		UpdateLevelWindow ();
+		ApplyScaleAndPosition ();
+
+		Debug.Log ("level, window: " + currentViewSettings.level + " " + currentViewSettings.window);
 	}
 
 	public void ApplyScaleAndPosition()
@@ -383,8 +393,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		float scaleH = 1f;
 		// Get the pixel-spacing from the DICOM header:
 		Vector3 spacing = new Vector3 ();
-		spacing.x = (float)currentDICOM.getHeader ().Spacing [0];
-		spacing.y = (float)currentDICOM.getHeader ().Spacing [1];
+		spacing.x = (float)currentDICOM.seriesInfo.pixelSpacing.x;
+		spacing.y = (float)currentDICOM.seriesInfo.pixelSpacing.y;
 		//spacing.z = (float)currentDICOM.getHeader ().Spacing [2];
 		// Number of pixels multiplied with the spacing of a pixel gives the texture width/height:
 		float effectiveWidth = tex.width * spacing.x;

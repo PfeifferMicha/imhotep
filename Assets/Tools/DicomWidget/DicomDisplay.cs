@@ -51,8 +51,7 @@ public class DicomDisplay : MonoBehaviour {
 	//! Called when a new DICOM was loaded:
 	void eventDisplayCurrentDicom( object obj = null )
 	{
-        PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();        
-        DICOMSlice dicom = mPatientDICOMLoader.getCurrentDicom();
+		DICOM dicom = DICOMLoader.instance.currentDICOM;
 		if( dicom != null )
 		{
 			DicomImage.SetDicom (dicom);
@@ -65,36 +64,41 @@ public class DicomDisplay : MonoBehaviour {
 
 	void eventNewDicomList( object obj = null )
 	{
-        PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
 		eventClear ();	// Clear the list
 
-		List<DICOMHeader> series = mPatientDICOMLoader.getAvailableSeries ();
+		// Make sure a patient is loaded:
 		Patient p = Patient.getLoadedPatient ();
-		if( p != null )
-		{
-			int i = 0;
-			foreach (DICOMHeader header in series) {
-				//customNames.Add (p.getDICOMNameForSeriesUID (uid));
-				GameObject newEntry = Instantiate (ListEntryButton) as GameObject;
-				newEntry.SetActive (true);
-
-				Text newEntryText = newEntry.transform.GetComponentInChildren<Text> ();
-				newEntryText.text = header.toDescription ();
-				newEntry.transform.SetParent (ListEntryButton.transform.parent, false);
-
-				// Make the button load the DICOM:
-				Button newButton = newEntry.GetComponent<Button> ();
-				int capturedID = i;
-				newButton.onClick.AddListener(() => selectedNewDicom( capturedID ));
-				i++;
-			}
+		if (p == null) {
+			Text newEntryText = ListEntryButton.transform.GetComponentInChildren<Text> ();
+			newEntryText.text = "No patient loaded.";
+			ListEntryButton.SetActive (true);
+			return;
 		}
-		if (series.Count == 0) {
+		// Make sure at least one series was found:
+		List<SeriesInfo> series = DICOMLoader.instance.availableSeries;
+		if (series.Count <= 0) {
 			Text newEntryText = ListEntryButton.transform.GetComponentInChildren<Text> ();
 			newEntryText.text = "No series found.";
 			ListEntryButton.SetActive (true);
-		} else {
-			ListEntryButton.SetActive (false);
+			return;
+		}
+
+		// Deactivate default button:
+		ListEntryButton.SetActive (false);
+
+		foreach (SeriesInfo s in series) {
+			//customNames.Add (p.getDICOMNameForSeriesUID (uid));
+			GameObject newEntry = Instantiate (ListEntryButton) as GameObject;
+			newEntry.SetActive (true);
+
+			Text newEntryText = newEntry.transform.GetComponentInChildren<Text> ();
+			newEntryText.text = s.getDescription ();
+			newEntry.transform.SetParent (ListEntryButton.transform.parent, false);
+
+			// Make the button load the DICOM:
+			Button newButton = newEntry.GetComponent<Button> ();
+			SeriesInfo captured = s;
+			newButton.onClick.AddListener(() => selectedNewDicom( captured ));
 		}
 
 		DicomImage.gameObject.SetActive (false);
@@ -116,10 +120,13 @@ public class DicomDisplay : MonoBehaviour {
 	{
 		//DicomImage.gameObject.SetActive (false);
 	}
-	public void selectedNewDicom( int id )
+	public void selectedNewDicom( SeriesInfo series )
 	{
-        PatientDICOMLoader mPatientDICOMLoader = GameObject.Find("GlobalScript").GetComponent<PatientDICOMLoader>();
-		mPatientDICOMLoader.loadDicomSlice ( id, 0 );
+		// Check if we previously loaded an image from this series. If so, figure out what
+		// the last shown layer was:
+		int previousLayer = DicomImage.GetComponent<DicomDisplayImage> ().savedLayerForSeriesUID (series.seriesUID);
+		// Load this layer:
+		DICOMLoader.instance.startLoading (series, previousLayer);
 
 		StatusText.gameObject.SetActive (true);
 		StatusText.text = "Loading DICOM ...";
