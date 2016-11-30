@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 /*! Represents a DICOM Image (2D, single slice) or Volume (3D, multi slice). */
 public class DICOM {
-
+	
 	public DICOMSeries seriesInfo { private set; get; }
 	public int slice { private set; get; }
 	public Color32[] colors;

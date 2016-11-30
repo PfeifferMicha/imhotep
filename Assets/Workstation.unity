@@ -8185,12 +8185,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aa51322074f64615a0258227db91d35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLoading: 0
-  PathForThread: 
-  DicomIDForThread: 0
-  DicomSliceForThread: 0
-  loadingFinished: 0
-  loadingDirectoryFinished: 0
 --- !u!4 &795904941
 Transform:
   m_ObjectHideFlags: 0
@@ -11789,6 +11783,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1120745102}
   - 114: {fileID: 1120745103}
+  - 114: {fileID: 1120745104}
   m_Layer: 9
   m_Name: MeshPositionNode
   m_TagString: Untagged
@@ -11823,6 +11818,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smoothTime: 0.3
   targetPosition: {x: 0, y: 0, z: 0}
+--- !u!114 &1120745104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1120745101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce2f1f6232561b14f822bcdcb944957a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1132063641
 GameObject:
   m_ObjectHideFlags: 0
