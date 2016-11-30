@@ -102,6 +102,7 @@ public class DICOMLoader : MonoBehaviour {
 
 			// Debug log:
 			string str = "[DICOM] Found " + series.Count + " series.";
+			Debug.Log( str );
 
 		} catch( System.Exception err ) {
 			Debug.LogError( err.Message );

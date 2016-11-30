@@ -9,29 +9,66 @@ using System;
  * \note This class assumes that the spacing in the series is the same between each pair of adjacent slices.*/
 public class DICOMSeries {
 
+	/*! The number of slices (i.e. number of files) for this series.*/
 	public int numberOfSlices { private set; get; }
+	/*! All files associated with this series. */
 	public VectorString filenames { private set; get; }
+	/*! A unique ID (see the DICOM standard) which identifies this series.*/
 	public string seriesUID { private set; get; }
 
+	/*! The first image in the series.*/
 	public Image firstSlice { private set; get; }
+	/*! The last image in the series.*/
 	public Image lastSlice { private set; get; }
 
+	/*! Matrix to transform from a pixel/layer coordinate to the patient coordinate system.
+	 * \sa patientToPixel */
 	public Matrix4x4 pixelToPatient { private set; get; }
+
+	/*! Matrix to transform from the patient coordinate system to a pixel/layer coordinate.
+	 * Inverse of pixelToPatient.
+	 * \sa pixelToPatient */
 	public Matrix4x4 patientToPixel { private set; get; }
 
+	/*! The direction cosine of a row of this image.
+	 * This can be thought of as a unit-length vector pointing into the direction in which the 
+	 * row lies inside the patient coordinate system (i.e. when you walk along the row in 2D,
+	 * in which direction would you walk in the patient coordinate system).
+	 * See the DICOM standard for more information, or search online for "direction cosine". */
 	public Vector3 directionCosineX { private set; get; }
+	/*! The direction cosine of a column of this image.
+	 * This can be thought of as a unit-length vector pointing into the direction in which the 
+	 * column lies inside the patient coordinate system (i.e. when you walk along the column in 2D,
+	 * in which direction would you walk in the patient coordinate system).
+	 * See the DICOM standard for more information, or search online for "direction cosine". */
 	public Vector3 directionCosineY { private set; get; }
 
+	/*! Position of center of first voxel in this series*/
 	public Vector3 origin { private set; get; }
+	/*! Distance between rows and columns in images of this series.*/
 	public Vector2 pixelSpacing { private set; get; }
 
-	/*! minPixelValue of first slice: */
+	/*! Minimal pixel value of first slice
+	 * \note If possible, this is read from the DICOM header of the first slice.
+	 *		However, this value may not be present, in which case this is filled when a slice is
+	 *		first loaded (by checking all pixel values and finding the minimum).*/
 	public int minPixelValue { private set; get; }
-	/*! maxPixelValue of first slice: */
+	/*! Maximal pixel value of first slice
+	 * \note If possible, this is read from the DICOM header of the first slice.
+	 *		However, this value may not be present, in which case this is filled when a slice is
+	 *		first loaded (by checking all pixel values and finding the maximum).*/
 	public int maxPixelValue { private set; get; }
 
+	/*! True if the minPixelValue and maxPixelValue have been found or calculated, false otherwise. */
 	public bool foundMinMaxPixelValues { private set; get; }
 
+	/*! Cached human-readable description string.*/
+	private string description = null;
+
+	/*! Constructor, fills most of the attributes of the DICOMSeries class.
+	 * \note This does some heavy file/directory parsing to determine the files which are part of
+	 * 		this series and their order. This is why the DICOMSeries should be constructed in a
+	 * 		background thread and then passed to the main thread. */
 	public DICOMSeries( string directory, string seriesUID )
 	{
 		// Get the file names for the series:
@@ -154,7 +191,7 @@ public class DICOMSeries {
 	 * \note The returned position is continuous, i.e. to get an actual pixel value,
 	 * 		one must round the result.
 	 * \sa transformPatientPosToDiscretePixel
-			transformPixelToPatientPos */
+	 *		transformPixelToPatientPos */
 	public Vector3 transformPatientPosToPixel( Vector3 pos )
 	{
 		Vector4 p = new Vector4 (pos.x, pos.y, pos.z, 1f);
@@ -166,7 +203,7 @@ public class DICOMSeries {
 	 * The z component of the returned vector is the slice number.
 	 * \note The returned position is rounded to the nearest pixel/slice.
 	 * \sa transformPatientPosToPixel
-			transformPixelToPatientPos */
+	 *		transformPixelToPatientPos */
 	public Vector3 transformPatientPosToDiscretePixel( Vector3 pos )
 	{
 		Vector3 pixel = transformPatientPosToPixel( pos );
@@ -180,9 +217,48 @@ public class DICOMSeries {
 	/*! Get a human readable description of this series */
 	public string getDescription()
 	{
-		return seriesUID + " (" + numberOfSlices + " images)";
+		// If the description was already generated earlier, re-use it:
+		if (description != null && description.Length > 0)
+			return description;
+
+		description = "";
+
+		string modality = "";
+		string acquisitionContextDescription = "";
+		string seriesDescription = "";
+		string imageComment = "";
+
+		try{
+			modality = firstSlice.GetMetaData("0008|0060");
+		} catch {}
+		try{
+			acquisitionContextDescription = firstSlice.GetMetaData("0040|0556");
+		} catch {}
+		try{
+			seriesDescription = firstSlice.GetMetaData("0008|103E");
+		} catch {}
+		try{
+			imageComment = firstSlice.GetMetaData("0020|4000");
+		} catch {}
+
+
+		if( modality.Length > 0 )
+			description += modality + ":";
+		
+		description += " (" + numberOfSlices + " images)";
+
+		if (imageComment.Length > 0)
+			description += " " + imageComment;
+		else if (seriesDescription.Length > 0)
+			description += " " + seriesDescription;
+		else if (acquisitionContextDescription.Length > 0)
+			description += " " + acquisitionContextDescription;	
+
+		return description; 
 	}
 
+	/*! If header did not contain information about minimum/maximum pixel values, this can be used to set them.
+	 * \note Should only be called once. Will be called when the first slice of this series is loaded. */
 	public void setMinMaxPixelValues( int min, int max )
 	{
 		minPixelValue = min;

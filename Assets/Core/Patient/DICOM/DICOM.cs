@@ -33,6 +33,13 @@ public class DICOM {
 	 * This can also be used to access header information through image.GetMetaData().*/
 	public Image image { private set; get; }
 
+	/*! Constructor, loads the DICOM image data from file.
+	 * The constructor starts the loading of pixel data from the files (filenames are
+	 * taken from the seriesInfo). If slice is zero or positive, only the single file
+	 * will be read. If slice is negative, the entire volume (i.e. all files - and thus
+	 * all slices) will be read.
+	 * \note Since the constructor does so much work, the Object should be created in
+	 * 		a background thread and then passed to the main thread. */
 	public DICOM( DICOMSeries seriesInfo, int slice = -1 ) {
 		
 		// Remember, we will need it later:
@@ -50,6 +57,8 @@ public class DICOM {
 		}
 	}
 
+	/*! Loads a single file and creates an array of colors from the pixels.
+	 * The array of colors can later be used to generate a texture, see getTexture2D() */
 	private void loadImageData( int slice )
 	{
 		VectorString fileNames = seriesInfo.filenames;
@@ -145,6 +154,9 @@ public class DICOM {
 		this.image = image;
 	}
 
+	/*! Load the entire series (i.e. the entire volume).
+	 * Unlike loadImageData(), this function does not create a colors array or texture. To
+	 * access volume data, simply get the image (DICOM.image) and read pixel values from it. */
 	private void loadVolumeData()
 	{
 		// Get all file names for the series:
