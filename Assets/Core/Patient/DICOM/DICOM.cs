@@ -6,15 +6,31 @@ using System.Collections.Generic;
 
 /*! Represents a DICOM Image (2D, single slice) or Volume (3D, multi slice). */
 public class DICOM {
-	
+
+	/*! A reference to the DICOM series this DICOM is part of.
+	 * This can be thought of as a header for the entire series and can be
+	 * used to transform from 2D to 3D positions and vice versa. */
 	public DICOMSeries seriesInfo { private set; get; }
+	/*! The slice this DICOM image represents. Negative if this is a volume. */
 	public int slice { private set; get; }
+	/*! Raw color values (in case of a 2D DICOM). */
 	public Color32[] colors;
+	/*! Number of dimensions in this DICOM (2 for slice, 3 for volume).
+	 * \note If dimensions == 2, this does not mean that there aren't any other
+	 * 		slices, it only means that this image represents a single slice.
+	 * 		To get access to the number of slices in the series, see the seriesInfo.*/
 	public int dimensions { private set; get; }
 	public int texWidth { private set; get; }
 	public int texHeight { private set; get; }
 	public int texDepth { private set; get; }
+	/*! Texture of the slice. The texture will be generated when this is first called.
+	 * \note This may only be called if dimension == 2, otherwise it will throw an error.*/
 	public Texture2D texture2D { private set; get; }
+	/*! The ITK image.
+	 * Can be used to access the raw pixel data as it is in the file.
+	 * Make sure to read the SimpleITK (or the normal ITK) documentation for details on
+	 * pixel value types, number of bits etc.
+	 * This can also be used to access header information through image.GetMetaData().*/
 	public Image image { private set; get; }
 
 	public DICOM( DICOMSeries seriesInfo, int slice = -1 ) {
