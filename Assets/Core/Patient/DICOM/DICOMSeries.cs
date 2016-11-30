@@ -264,6 +264,7 @@ public class DICOMSeries {
 		string acquisitionContextDescription = "";
 		string seriesDescription = "";
 		string imageComment = "";
+		string bodyPartExamined = "";
 
 		try{
 			modality = firstSlice.GetMetaData("0008|0060");
@@ -277,20 +278,25 @@ public class DICOMSeries {
 		try{
 			imageComment = firstSlice.GetMetaData("0020|4000");
 		} catch {}
+		try{
+			bodyPartExamined = firstSlice.GetMetaData("0018|0015");
+		} catch {}
 
 
 		if( modality.Length > 0 )
-			description += modality + ":";
-		
-		description += " (" + numberOfSlices + " images)";
+			description += "[" + modality + "]";
+
+		if (bodyPartExamined.Length > 0)
+			description += " " + bodyPartExamined;
 		description += " " + sliceOrientation;
+		description += " (" + numberOfSlices + " images)";
 
 		if (imageComment.Length > 0)
-			description += " " + imageComment;
+			description += "\n<color=#dddddd>\t" + imageComment + "</color>";
 		else if (seriesDescription.Length > 0)
-			description += " " + seriesDescription;
+			description += "\n<color=#dddddd>\t" + seriesDescription + "</color>";
 		else if (acquisitionContextDescription.Length > 0)
-			description += " " + acquisitionContextDescription;	
+			description += "\n<color=#dddddd>\t" + acquisitionContextDescription + "</color>";
 
 		return description; 
 	}
