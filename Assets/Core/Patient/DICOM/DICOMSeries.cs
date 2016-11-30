@@ -9,6 +9,14 @@ using System;
  * \note This class assumes that the spacing in the series is the same between each pair of adjacent slices.*/
 public class DICOMSeries {
 
+	public enum SliceOrientation
+	{
+		Transverse,
+		Saggital,
+		Coronal,
+		Unknown
+	}
+
 	/*! The number of slices (i.e. number of files) for this series.*/
 	public int numberOfSlices { private set; get; }
 	/*! All files associated with this series. */
@@ -42,6 +50,19 @@ public class DICOMSeries {
 	 * in which direction would you walk in the patient coordinate system).
 	 * See the DICOM standard for more information, or search online for "direction cosine". */
 	public Vector3 directionCosineY { private set; get; }
+
+	/*! The plane normal of the slices in this series (result of cross vector of the direction cosines). */
+	public Vector3 sliceNormal { private set; get; }
+
+	/*! Approximate slice orientation of the slices in this series.
+	 * Returns coronal, saggital or transverse depending on which way the normal of the slices
+	 * is facing.
+	 * \note This is only an approximation. "Intermediate" orientations are "rounded" to the nearest
+	 * 		orientation.
+	 *		This means that, for example, if a series is a transverse series then this function will
+	 *		correctly return "transverse". However, if it is slightly tilted away from the transverse
+	 *		orientation, this will still return transverse. */
+	public SliceOrientation sliceOrientation { private set; get; }
 
 	/*! Position of center of first voxel in this series*/
 	public Vector3 origin { private set; get; }
@@ -117,6 +138,22 @@ public class DICOMSeries {
 		directionCosineX = new Vector3 ((float)direction [0], (float)direction [1], (float)direction [2]);
 		directionCosineY = new Vector3 ((float)direction [3], (float)direction [4], (float)direction [5]);
 
+		sliceNormal = Vector3.Cross (directionCosineX, directionCosineY);
+
+		// Calculate the which direction the normal is facing to determine the orienation (Transverse,
+		// Coronal or Saggital).
+		float absX = Mathf.Abs (sliceNormal.x);
+		float absY = Mathf.Abs (sliceNormal.y);
+		float absZ = Mathf.Abs (sliceNormal.z);
+		if (absX > absY && absX > absZ) {
+			sliceOrientation = SliceOrientation.Saggital;
+		} else if (absY > absX && absY > absZ) {
+			sliceOrientation = SliceOrientation.Coronal;
+		} else if (absZ > absX && absZ > absY) {
+			sliceOrientation = SliceOrientation.Transverse;
+		} else {
+			sliceOrientation = SliceOrientation.Unknown;
+		}
 
 		// Load the direction cosines:
 		// NOTE: It seems that the the first value is the spacing between rows (i.e. y direction),
@@ -246,6 +283,7 @@ public class DICOMSeries {
 			description += modality + ":";
 		
 		description += " (" + numberOfSlices + " images)";
+		description += " " + sliceOrientation;
 
 		if (imageComment.Length > 0)
 			description += " " + imageComment;
