@@ -114,7 +114,14 @@ public class DICOMSeries {
 		transformMatrix [2, 3] = origin.z;
 		transformMatrix [3, 3] = 1f;
 
-		pixelToPatient = transformMatrix;
+		// Convert to a the left-hand-side coordinate system which Unity uses:
+		Matrix4x4 rightHandToLeftHand = new Matrix4x4 ();
+		rightHandToLeftHand [0, 0] = -1f;
+		rightHandToLeftHand [1, 1] = -1f;
+		rightHandToLeftHand [2, 2] = -1f;
+		rightHandToLeftHand [3, 3] = 1f;
+
+		pixelToPatient = rightHandToLeftHand*transformMatrix;
 
 		// Inverse transformation:
 		patientToPixel = pixelToPatient.inverse;
