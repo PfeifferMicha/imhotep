@@ -140,6 +140,7 @@ ModelImporter:
     100264: ToolStand_002
     100266: RingOuter
     100268: Stairs
+    100270: Skyring
     400000: Back
     400002: Back_0
     400004: BezierCurve_000
@@ -275,6 +276,7 @@ ModelImporter:
     400264: ToolStand_002
     400266: RingOuter
     400268: Stairs
+    400270: Skyring
     2300000: BezierCurve_000
     2300002: BezierCurve_001
     2300004: BezierCurve_002
@@ -323,6 +325,7 @@ ModelImporter:
     2300090: FootPrints
     2300092: RingOuter
     2300094: Stairs
+    2300096: Skyring
     3300000: BezierCurve_000
     3300002: BezierCurve_001
     3300004: BezierCurve_002
@@ -371,6 +374,7 @@ ModelImporter:
     3300090: FootPrints
     3300092: RingOuter
     3300094: Stairs
+    3300096: Skyring
     4300000: Circle_004
     4300002: HumanMale_001
     4300004: Chair_001_MeshPart0
@@ -423,6 +427,7 @@ ModelImporter:
     4300098: ToolStand_001
     4300100: RingOuter
     4300102: Stairs
+    4300104: Skyring
     7400000: Default Take
     7400002: Charge-Punch-M
     7400004: Idle-M
