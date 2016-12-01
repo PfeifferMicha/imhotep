@@ -26,6 +26,9 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	// When dragZoom is true, moving the mouse will modify the position:
 	private bool dragZoom = false;
 
+	// Slice which is currently being loaded:
+	private bool loadingSlice = false;
+
 	private DICOM currentDICOM;
 
 	private struct ViewSettings
@@ -34,7 +37,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		public float window;
 		public float panX;
 		public float panY;
-		public int layer;
+		public int slice;
 		public float zoom;
 		public bool flipHorizontal;
 		public bool flipVertical;
@@ -66,7 +69,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			int scrollAmount = Mathf.RoundToInt( eventData.scrollDelta.y*0.05f );
 			if( Mathf.Abs(scrollAmount) > 0 )
 			{
-				LayerChanged (currentViewSettings.layer + scrollAmount);
+				LayerChanged (currentViewSettings.slice + scrollAmount);
 			}
 		}
 		//mLayerSlider.value = mLayer;
@@ -105,7 +108,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 				// Display the current position:
 				Text t = transform.FindChild ("PositionText").GetComponent<Text> ();
-				t.text = "(" + (int)Mathf.Round(pixel.x) + ", " + (int)Mathf.Round(pixel.y) + ", " + currentViewSettings.layer + ")";
+				t.text = "(" + (int)Mathf.Round(pixel.x) + ", " + (int)Mathf.Round(pixel.y) + ", " + currentViewSettings.slice + ")";
 
 				GameObject pointer = GameObject.Find ("3DPointer");
 				if (pointer != null)
@@ -145,7 +148,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		Vector3 origin = header.getOrigin ();
 		position += new Vector3 (-origin.x, -origin.y, -origin.z);
 		return position;*/
-		return currentDICOM.seriesInfo.transformPixelToPatientPos (pixel, currentViewSettings.layer);
+		return currentDICOM.seriesInfo.transformPixelToPatientPos (pixel, currentViewSettings.slice);
 	}
 
 	public Vector2 imageUVtoLayerUV( Vector2 imageUV )
@@ -283,7 +286,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 				window = 1f,
 				panX = 0f,
 				panY = 0f,
-				layer = 0,
+				slice = 0,
 				zoom = 1f,
 				flipHorizontal = false,
 				flipVertical = true
@@ -295,7 +298,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	public int savedLayerForSeriesUID( string seriesUID )
 	{
 		if (savedViewSettings.ContainsKey (seriesUID)) {
-			return savedViewSettings [seriesUID].layer;
+			return savedViewSettings [seriesUID].slice;
 		} else {
 			return 0;
 		}
@@ -320,16 +323,16 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	public void LayerChanged( float newVal )
 	{
 		if (currentDICOM != null) {
-			int numLayers = (int)currentDICOM.seriesInfo.numberOfSlices;
-			currentViewSettings.layer = (int)Mathf.Clamp (newVal, 0, numLayers - 1);
+			// Only allow loading a new slice when the last slice-loading command has been finished:
+			if (loadingSlice == false) {
+				int numLayers = (int)currentDICOM.seriesInfo.numberOfSlices;
+				int tmpSlice = (int)Mathf.Clamp (newVal, 0, numLayers - 1);
 
-			DICOMLoader.instance.startLoading( currentDICOM.seriesInfo, currentViewSettings.layer );
+				if (DICOMLoader.instance.startLoading (currentDICOM.seriesInfo, tmpSlice)) {
+					loadingSlice = true;
+				}
+			}
 		}
-	}
-
-	public float frac( float val )
-	{
-		return val - Mathf.Floor (val);
 	}
 
 	public void SetDicom( DICOM dicom )
@@ -340,7 +343,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		}
 
 		Texture2D tex = dicom.getTexture2D ();
-		currentViewSettings.layer = dicom.slice;
+		currentViewSettings.slice = dicom.slice;
 		mMaterial.SetFloat ("globalMinimum", (float)dicom.seriesInfo.minPixelValue);
 		mMaterial.SetFloat ("globalMaximum", (float)dicom.seriesInfo.maxPixelValue);
 
@@ -352,6 +355,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 			seriesChanged = true;
 
 		currentDICOM = dicom;
+		loadingSlice = false;		// Allow loading a new slice
 		if( seriesChanged )
 			LoadViewSettings ();
 		
