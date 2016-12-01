@@ -62,6 +62,28 @@ Custom events added by us:
 - IPointerHoverHandler - void OnPointerHover( PointerEventData data )
 	Called whenever the mouse is over an object.
 
+Note:
+When you've clicked on (or hovered over) an object, the texture coordinates are passed along as well.
+However, since Unity does not pass these along, the PointerEventData which we send to the above events
+is actually a CustomEventData, which holds this extra information (it inherits from PointerEventData.
+To access the texture coordinate of the hit position, you can cast the PointerEventData to a 
+CustomEventData:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cs}
+	public class MyClass : MonoBehaviour, IPointerClickHandler {
+
+		public void OnPointerClick( PointerEventData eventData )
+		{
+			CustomEventData cEventData = eventData as CustomEventData;
+			if( cEventData != null )
+			{
+				Debug.Log("u,v coordinates: " + cEventData.textureCoord );
+			}
+		}	
+	}
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See also CustomEventData.
+
 Get Raw Input
 ------------------------------------
 The interface above abstracts the events so that in many cases, you don't need to worry about whether the mouse or the controllers are active. However, there are some times when you do need to handle the mouse and the controllers differently. For this, you can retrieve the current input device:
