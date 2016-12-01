@@ -211,6 +211,9 @@ public class MeshLoader : MonoBehaviour {
 				// Make sure the color of the material is set correctly:
 				matControl.changeOpactiyOfChildren (1f);
 
+				// Deactivate for now, let someone else activate the mesh when needed:
+				objToSpawn.SetActive( false );
+
                 yield return null;
             }
 

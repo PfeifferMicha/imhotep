@@ -178,15 +178,16 @@ public class Patient : PatientMeta
 	public void setupDefaultWidgets()
 	{
 		// TODO: Get info about default UI widgets from patient's json:
-		Widget w = UI.Core.instance.getWidgetByName ("PatientBriefing");
+
+		Widget w = UI.Core.instance.getWidgetByName ("ViewControl");
+		if (w)
+			w.gameObject.SetActive (true);
+
+		w = UI.Core.instance.getWidgetByName ("PatientBriefing");
 		if (w)
 			w.gameObject.SetActive (true);
 		
 		w = UI.Core.instance.getWidgetByName ("DICOMViewer");
-		if (w)
-			w.gameObject.SetActive (true);
-
-		w = UI.Core.instance.getWidgetByName ("ViewControl");
 		if (w)
 			w.gameObject.SetActive (true);
 	}
