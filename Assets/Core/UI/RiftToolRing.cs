@@ -29,10 +29,7 @@ public class RiftToolRing : MonoBehaviour {
 	}
 
 	public void setAvailableTools (List<ToolWidget> tools)
-	{		
-		Debug.Log ("Tools: " + tools);
-		if (tools != null)
-			Debug.Log ("Count: " + tools.Count);
+	{
 		// Disable the toolbar if there's no tools to display:
 		Transform toolBar = transform.FindChild ("ToolBar");
 		if (tools == null || tools.Count == 0) {
