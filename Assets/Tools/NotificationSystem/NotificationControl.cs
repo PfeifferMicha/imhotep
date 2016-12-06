@@ -6,14 +6,18 @@ using UnityEngine.UI;
 
 public class NotificationControl : MonoBehaviour {
 
-    public GameObject defaultNotification;
+    public GameObject firstNotification;
+    public GameObject secondNotification;
+    public GameObject thirdNotification;
 
     private List<Notification> notitficationList = new List<Notification>();
     private List<GameObject> gameObjectNotificationList = new List<GameObject>();
 
 	// Use this for initialization
 	void Start () {
-        defaultNotification.SetActive(false);
+        firstNotification.SetActive(false);
+        secondNotification.SetActive(false);
+        thirdNotification.SetActive(false);
         this.gameObject.SetActive(false);
 	}
 	
@@ -26,34 +30,18 @@ public class NotificationControl : MonoBehaviour {
         }
 	}
 
+    public void debug()
+    {
+        System.Random rnd = new System.Random();
+        string s = "Notification " + rnd.Next(1, 99);
+        Notification n = new Notification(s, TimeSpan.FromSeconds(5));
+        createNotification(n);
+    }
+
     public void createNotification(Notification n)
     {
         notitficationList.Add(n);
         updateNotificationCenter();
-    }
-
-    private void createNotificationGameObject(Notification n)
-    {
-        // Create a new instance of the list button:
-        GameObject newEntry = Instantiate(defaultNotification).gameObject;
-        newEntry.SetActive(true);
-
-        // Attach the new Entry to the list:
-        newEntry.transform.SetParent(defaultNotification.transform.parent, false);
-
-        //Set text
-        newEntry.GetComponentInChildren<Text>().text = n.Text;
-
-        //Set Icon
-        if(n.NotificationSprite != null)
-        {
-            newEntry.transform.FindChild("Icon").GetComponent<Image>().sprite = n.NotificationSprite;
-        }
-
-        //Set reference to notification object
-        newEntry.GetComponent<NotificationReference>().notification = n;
-
-        gameObjectNotificationList.Add(newEntry);
     }
 
     private bool deleteNotificationsIfExpired()
@@ -73,29 +61,50 @@ public class NotificationControl : MonoBehaviour {
     //! Called after a notification has been removed or added
     private void updateNotificationCenter()
     {
-        //Remove all notification game objects
-        for (int i = gameObjectNotificationList.Count - 1; i >= 0; i--) 
-        {
-            Destroy(gameObjectNotificationList[i]);           
-        }
-
         if (notitficationList.Count == 0)
         {
             this.gameObject.SetActive(false);
             return;
-        }else
-        {
-            this.gameObject.SetActive(true);
         }
 
-        //Create notification
-        foreach(Notification n in notitficationList)
+        firstNotification.SetActive(false);
+        secondNotification.SetActive(false);
+        thirdNotification.SetActive(false);
+
+        this.gameObject.SetActive(true);
+
+        if(notitficationList.Count > 0)
         {
-            createNotificationGameObject(n);
+            firstNotification.SetActive(true);
+            setTextAndIconInNotifiaction(firstNotification, notitficationList[0]);
+        }
+        if (notitficationList.Count > 1)
+        {
+            secondNotification.SetActive(true);
+            setTextAndIconInNotifiaction(secondNotification, notitficationList[1]);
+        }
+        if (notitficationList.Count > 2)
+        {
+            thirdNotification.SetActive(true);
+            setTextAndIconInNotifiaction(thirdNotification, notitficationList[2]);
         }
     }
 
+    private void setTextAndIconInNotifiaction(GameObject notificationGameObject, Notification n)
+    {
+        //Set text
+        notificationGameObject.GetComponentInChildren<Text>().text = n.Text;
 
+        //Set Icon
+        if (n.NotificationSprite != null)
+        {
+            notificationGameObject.transform.FindChild("Icon").GetComponent<Image>().sprite = n.NotificationSprite;
+        }
+
+        //Set reference to notification object
+        notificationGameObject.GetComponent<NotificationReference>().notification = n;
+
+    }
 
     public void deleteNotoficationPressed(GameObject sender)
     {
