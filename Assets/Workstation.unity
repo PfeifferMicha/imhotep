@@ -21361,6 +21361,8 @@ MonoBehaviour:
   firstNotification: {fileID: 1367946974}
   secondNotification: {fileID: 879252022}
   thirdNotification: {fileID: 1907997909}
+  statusBar: {fileID: 479000249}
+  angle: 45
 --- !u!114 &2011151806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22471,6 +22473,8 @@ MonoBehaviour:
   firstNotification: {fileID: 0}
   secondNotification: {fileID: 0}
   thirdNotification: {fileID: 0}
+  statusBar: {fileID: 0}
+  angle: 45
 --- !u!114 &2086956295
 MonoBehaviour:
   m_ObjectHideFlags: 0

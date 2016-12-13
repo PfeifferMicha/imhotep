@@ -9,26 +9,57 @@ public class NotificationControl : MonoBehaviour {
     public GameObject firstNotification;
     public GameObject secondNotification;
     public GameObject thirdNotification;
+    public GameObject statusBar;
+
+    public int angle = 45;
 
     private List<Notification> notitficationList = new List<Notification>();
     private List<GameObject> gameObjectNotificationList = new List<GameObject>();
 
-	// Use this for initialization
-	void Start () {
+    private int leftPosX = 0;
+    private int centerPosX = 0;
+    private int rightPosX = 0;
+
+    // Use this for initialization
+    void Start () {
         firstNotification.SetActive(false);
         secondNotification.SetActive(false);
         thirdNotification.SetActive(false);
         this.gameObject.SetActive(false);
-	}
-	
-	// Update is called once per frame
-	void Update () {
+
+        //Calculate left, center and right position for notification bar
+        int statusbarWidth = (int)statusBar.GetComponent<RectTransform>().rect.width;
+        centerPosX = 0;
+        leftPosX = -statusbarWidth / 4; //TODO
+        rightPosX = statusbarWidth / 4; //TODO
+    }
+
+    // Update is called once per frame
+    void Update () {
         bool listChanged = deleteNotificationsIfExpired();
         if (listChanged)
         {
             updateNotificationCenter();
         }
-	}
+
+        //Check camera yaw and change x position of notification center
+        float cameraYaw = Camera.main.transform.localRotation.eulerAngles.y; // values between 0 and 360
+        if(cameraYaw > angle && cameraYaw <= 180)
+        {
+            this.GetComponent<RectTransform>().localPosition = new Vector2(rightPosX, this.GetComponent<RectTransform>().localPosition.y);
+        }
+        else if (cameraYaw > 180 && cameraYaw < 360 - angle)
+        {
+            this.GetComponent<RectTransform>().localPosition = new Vector2(leftPosX, this.GetComponent<RectTransform>().localPosition.y);
+        }
+        else
+        {
+            this.GetComponent<RectTransform>().localPosition = new Vector2(centerPosX, this.GetComponent<RectTransform>().localPosition.y);
+        }
+
+    }
+
+
 
     public void debug()
     {
