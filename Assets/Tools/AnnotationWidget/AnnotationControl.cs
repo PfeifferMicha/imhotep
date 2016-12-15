@@ -159,7 +159,7 @@ public class AnnotationControl : MonoBehaviour
 				newColorButton.GetComponent<Button> ().colors.normalColor);
 		}
 
-		saveAnnotationInFile ();
+		updatePatientAnnotationList ();
 	}
 
 	//Click on List Entry to Rotate Organ to Annottion
@@ -301,7 +301,7 @@ public class AnnotationControl : MonoBehaviour
 		currentActiveScreen = ActiveScreen.none;
 
 		//save changes when close screen
-		saveAnnotationInFile ();
+		updatePatientAnnotationList ();
 
 	}
 
@@ -327,7 +327,7 @@ public class AnnotationControl : MonoBehaviour
 	private void changeAnnotationPosition (Quaternion rotation, Vector3 position)
 	{
 		currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().updateAnnotationposition (rotation, position);
-		saveAnnotationInFile ();
+		updatePatientAnnotationList ();
 	}
 
 	//Creates a new AnnotationListEntry, gets the Annotation to this entry, does not add to list
@@ -431,6 +431,12 @@ public class AnnotationControl : MonoBehaviour
 	}
 
 	//################ Other Methods ###################
+	public void updatePatientAnnotationList()
+	{
+		Patient p = Patient.getLoadedPatient ();
+		if (p != null)
+			p.updateAnnotationList (annotationListEntryList);
+	}
 
 	//Called to edit Annotation
 	public void EditAnnotation (GameObject aListEntry)
@@ -449,53 +455,9 @@ public class AnnotationControl : MonoBehaviour
 		removeOneAnnotation (aListEntry);
 
 		//delete in File (save new File)
-		saveAnnotationInFile ();
+		updatePatientAnnotationList ();
 	}
 
-	//Saves all annotations in a file
-	public void saveAnnotationInFile ()
-	{
-
-		if (Patient.getLoadedPatient () == null) {
-			return;
-		}
-
-		Patient currentPatient = Patient.getLoadedPatient ();
-		string path = currentPatient.path + "/annotation.json";
-
-		//Create file if it not exists
-		if (!File.Exists (path)) {
-			using (StreamWriter outputFile = new StreamWriter (path, true)) {
-				outputFile.Close ();
-			}
-		}
-
-		//Write annotations in file
-		using (StreamWriter outputFile = new StreamWriter (path)) {
-			foreach (GameObject apListEntry in annotationListEntryList) {
-				GameObject ap = apListEntry.GetComponent<AnnotationListEntry> ().getAnnotation ();
-				AnnotationJson apj = new AnnotationJson ();
-				apj.Text = ap.GetComponent<Annotation> ().getLabelText ();
-				apj.ColorR = ap.GetComponent<Annotation> ().getColor ().r;
-				apj.ColorG = ap.GetComponent<Annotation> ().getColor ().g;
-				apj.ColorB = ap.GetComponent<Annotation> ().getColor ().b;
-				apj.PositionX = ap.transform.localPosition.x;
-				apj.PositionY = ap.transform.localPosition.y;
-				apj.PositionZ = ap.transform.localPosition.z;
-
-				apj.RotationW = ap.transform.localRotation.w;
-				apj.RotationX = ap.transform.localRotation.x;
-				apj.RotationY = ap.transform.localRotation.y;
-				apj.RotationZ = ap.transform.localRotation.z;
-
-				apj.Creator = ap.GetComponent<Annotation> ().creator;
-				apj.CreationDate = ap.GetComponent<Annotation> ().creationDate;
-				outputFile.WriteLine (JsonUtility.ToJson (apj));
-			}
-			outputFile.Close ();
-		}
-		return;
-	}
 
 	//Called if the patient is closed
 	public void closePatient (object obj = null)

@@ -17,6 +17,7 @@ public class Patient : PatientMeta
 	private List<AdditionalInformation> additionalInformation = new List<AdditionalInformation> ();
 	private List<string> additionalInformationTabs = new List<string> ();
 	private List<View> mViews = new List<View> ();
+	private List<GameObject> mAnnotations = new List<GameObject> ();
 
 	public class AdditionalInformation
 	{
@@ -65,6 +66,12 @@ public class Patient : PatientMeta
 	public static Patient getLoadedPatient()
 	{
 		return loadedPatient;
+	}
+
+	public void save()
+	{
+		saveViews ();
+		saveAnnotation();
 	}
 
 	public static void close()
@@ -301,6 +308,59 @@ public class Patient : PatientMeta
         }
         return;
     }
+
+
+	///////////////////////////////////////////////////////
+	// Annotations:
+
+	public void updateAnnotationList( List<GameObject> list )
+	{
+		mAnnotations = list;
+	}
+
+	//Saves all annotations in a file
+	public void saveAnnotation ()
+	{
+
+		if (loadedPatient == null) {
+			return;
+		}
+
+		string path = loadedPatient.path + "/annotation.json";
+
+		//Create file if it not exists
+		if (!File.Exists (path)) {
+			using (StreamWriter outputFile = new StreamWriter (path, true)) {
+				outputFile.Close ();
+			}
+		}
+
+		//Write annotations in file
+		using (StreamWriter outputFile = new StreamWriter (path)) {
+			foreach (GameObject apListEntry in mAnnotations) {
+				GameObject ap = apListEntry.GetComponent<AnnotationListEntry> ().getAnnotation ();
+				AnnotationJson apj = new AnnotationJson ();
+				apj.Text = ap.GetComponent<Annotation> ().getLabelText ();
+				apj.ColorR = ap.GetComponent<Annotation> ().getColor ().r;
+				apj.ColorG = ap.GetComponent<Annotation> ().getColor ().g;
+				apj.ColorB = ap.GetComponent<Annotation> ().getColor ().b;
+				apj.PositionX = ap.transform.localPosition.x;
+				apj.PositionY = ap.transform.localPosition.y;
+				apj.PositionZ = ap.transform.localPosition.z;
+
+				apj.RotationW = ap.transform.localRotation.w;
+				apj.RotationX = ap.transform.localRotation.x;
+				apj.RotationY = ap.transform.localRotation.y;
+				apj.RotationZ = ap.transform.localRotation.z;
+
+				apj.Creator = ap.GetComponent<Annotation> ().creator;
+				apj.CreationDate = ap.GetComponent<Annotation> ().creationDate;
+				outputFile.WriteLine (JsonUtility.ToJson (apj));
+			}
+			outputFile.Close ();
+		}
+		return;
+	}
     
     ///////////////////////////////////////////////////////
     // Misc:

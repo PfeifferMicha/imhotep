@@ -38,6 +38,7 @@ namespace UI
 		//! A bar on the lower end of the screen (for close button etc.)
 		public GameObject statusBar;
 		private GameObject closePatientButton;
+		private GameObject savePatientButton;
 
 		private List<GameObject> activeIndicators = new List<GameObject> ();
 		private int indicationID = 0;
@@ -65,6 +66,15 @@ namespace UI
 				closePatientButton.SetActive (false);
 			} else {
 				Debug.LogWarning ("ButtonClose not found on Status Bar!");
+			}
+
+			tf = statusBar.transform.Find ("ButtonSave");
+			if (tf != null) {
+				savePatientButton = tf.gameObject;
+				savePatientButton.GetComponent<Button> ().onClick.AddListener (() => savePatient ());
+				savePatientButton.SetActive (false);
+			} else {
+				Debug.LogWarning ("ButtonSave not found on Status Bar!");
 			}
 
 			PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_FinishedLoading, patientLoaded );
@@ -215,12 +225,21 @@ namespace UI
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.PATIENT_Closed);
 			layoutSystem.closeAllWidgets ();
 			closePatientButton.SetActive (false);
+			savePatientButton.SetActive (false);
 			PatientSelector.SetActive (true);
+		}
+		public void savePatient()
+		{
+			if (Patient.getLoadedPatient () != null) {
+				Patient.getLoadedPatient ().save ();
+				NotificationControl.instance.createNotification ("Patient saved.", new System.TimeSpan (0, 0, 5));
+			}
 		}
 
 		public void patientLoaded( object obj = null )
 		{
 			closePatientButton.SetActive (true);
+			savePatientButton.SetActive (true);
 		}
     }
 }

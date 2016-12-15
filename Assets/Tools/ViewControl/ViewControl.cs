@@ -93,7 +93,7 @@ public class ViewControl : MonoBehaviour {
 		setView (currentViewIndex - 1);
 	}
 
-	public void saveNewView()
+	public void insertNewView()
 	{
 		Patient p = Patient.getLoadedPatient ();
 		if (p != null) {
@@ -120,7 +120,7 @@ public class ViewControl : MonoBehaviour {
 				currentViewIndex = p.insertView ( newView, currentViewIndex + 1 );
 				setView (currentViewIndex);
 
-				p.saveViews ();
+				//p.saveViews ();
 		
 				showMainPane ();
 			}
