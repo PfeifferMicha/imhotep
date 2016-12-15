@@ -73,8 +73,20 @@ public class NotificationControl : MonoBehaviour {
     {
         notitficationList.Add(n);
         updateNotificationCenter();
-    }
+	}
 
+	//! Convenience overload
+	public void createNotification( string text, TimeSpan timeToLive, Sprite notificationSprite = null )
+	{
+		Notification n;
+		if (notificationSprite == null) {
+			n = new Notification (text, timeToLive);
+		} else {
+			n = new Notification (text, timeToLive, notificationSprite);
+		}
+		createNotification (n);
+	}
+	
     private bool deleteNotificationsIfExpired()
     {
         bool result = false;
