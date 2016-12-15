@@ -63,9 +63,8 @@
 			float heightAngle = currentHeight*2*pi - pi;
             float angleStep = pi/50;
             float heightAngleDiscrete = floor( heightAngle/angleStep ) * angleStep;
-            float heightDiscrete = -cos( clamp(heightAngleDiscrete,0,pi) );
+            float heightDiscrete = 13*(-cos( clamp(heightAngleDiscrete,0,pi) ));
 			clip( heightDiscrete - IN.localPos.z );
-
 
             float height = -cos( heightAngle );
             // If we've reached the top, make sure the border effect keeps going up
@@ -79,7 +78,8 @@
             float border = tex2D (_Border, IN.uv_MainTex).r;
             border = pow( border, 2 );
 
-            float borderEffect = 1-(height - IN.localPos.z);
+            float borderEffect = 1 - (height - IN.localPos.z/13);
+            borderEffect *= clamp(3 - 4*_AppearAmount, 0, 1);
             borderEffect = pow( max( 0, borderEffect ), 5.0 );
             o.Emission = borderEffect*border*_BorderEffectColor + borderEffect*pow(border, 10)*0.5;
 

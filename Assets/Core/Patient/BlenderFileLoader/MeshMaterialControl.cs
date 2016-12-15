@@ -20,6 +20,15 @@ public class MeshMaterialControl : MonoBehaviour {
 		materialTransparent.SetFloat ("_amount", 0f);
 	}
 
+	private Bounds calculateBoundingBox()
+	{
+		Bounds b = new Bounds ();
+		foreach (MeshFilter mf in this.gameObject.GetComponentsInChildren<MeshFilter>()) {
+			b.Encapsulate (mf.mesh.bounds);
+		}
+		return b;
+	}
+
 	public void changeOpactiyOfChildren(float f){
 		if (f == 0.0f)
 		{
@@ -55,9 +64,17 @@ public class MeshMaterialControl : MonoBehaviour {
 
 	public void SetLoadingEffectAmount( float amount )
 	{
-		if( materialTransparent != null )
+		Bounds b = calculateBoundingBox ();
+
+		if (materialTransparent != null) {
 			materialTransparent.SetFloat ("_amount", amount);
-		if( materialOpaque != null )
+			//materialTransparent.SetVector ("_size", b.size);
+			//materialTransparent.SetVector ("_center", b.center);
+		}
+		if (materialOpaque != null) {
 			materialOpaque.SetFloat ("_amount", amount);
+			materialOpaque.SetVector ("_size", b.size);
+			materialOpaque.SetVector ("_center", b.center);
+		}
 	}
 }

@@ -41,7 +41,7 @@ public class ViewControl : MonoBehaviour {
 	void OnEnable()
 	{
 		// Register event callbacks for MESH events:
-		PatientEventSystem.startListening(PatientEventSystem.Event.MESH_LoadedAll, meshLoaded);
+		PatientEventSystem.startListening(PatientEventSystem.Event.MESH_LoadedSingle, meshLoaded);
 		PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Closed, patientClosed);
 
 		mMeshLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
@@ -52,7 +52,7 @@ public class ViewControl : MonoBehaviour {
 	void OnDisable()
 	{
 		// Unregister myself - no longer receives events (until the next OnEnable() call):
-		PatientEventSystem.stopListening(PatientEventSystem.Event.MESH_LoadedAll, meshLoaded);
+		PatientEventSystem.stopListening(PatientEventSystem.Event.MESH_LoadedSingle, meshLoaded);
 		PatientEventSystem.stopListening(PatientEventSystem.Event.PATIENT_Closed, patientClosed);
 	}
 
@@ -62,6 +62,7 @@ public class ViewControl : MonoBehaviour {
 	}
 	public void activate()
 	{
+		Debug.Log ("Activate View Control");
 		newButton.interactable = true;
 		currentViewIndex = 0;
 		setView (currentViewIndex);
@@ -137,10 +138,10 @@ public class ViewControl : MonoBehaviour {
 				currentViewIndex = p.getViewCount() - 1;
 			}
 		}
-		setView (currentViewIndex);
+		setView (currentViewIndex, false);
 	}
 
-	void setView( int index )
+	void setView( int index, bool animate = true )
 	{
 		Patient p = Patient.getLoadedPatient ();
 		if (p != null) {
@@ -155,9 +156,14 @@ public class ViewControl : MonoBehaviour {
 					viewNameText.text += ": ";
 					viewNameText.text += view.name;
 
-					// Slowly zoom and rotate towards the target:
-					meshViewerScaleNode.GetComponent<ModelZoomer> ().setTargetZoom (view.scale, 0.6f);
-					meshViewerRotationNode.GetComponent<ModelRotator> ().setTargetOrientation (view.orientation, 0.6f);
+					if ( !animate) {
+						// Slowly zoom and rotate towards the target:
+						meshViewerScaleNode.GetComponent<ModelZoomer> ().setTargetZoom (view.scale, 0.6f);
+						meshViewerRotationNode.GetComponent<ModelRotator> ().setTargetOrientation (view.orientation, 0.6f);
+					} else {
+						meshViewerScaleNode.GetComponent<ModelZoomer> ().setTargetZoom (view.scale);
+						meshViewerRotationNode.GetComponent<ModelRotator> ().setTargetOrientation (view.orientation);
+					}
 
 					foreach (KeyValuePair<string, double> entry in view.opacities) {
 						setMeshOpacity (entry.Key, (float)entry.Value);
