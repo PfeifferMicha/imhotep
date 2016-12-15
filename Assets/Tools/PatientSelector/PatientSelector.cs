@@ -37,7 +37,7 @@ public class PatientSelector : MonoBehaviour {
 	}
 	public void OnDisable()
 	{
-		UI.Core.instance.clearNotification (notificationID);
+		UI.Core.instance.clearIndication (notificationID);
 	}
 
     void ChoosePatient( int index )

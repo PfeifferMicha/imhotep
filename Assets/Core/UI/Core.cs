@@ -40,7 +40,7 @@ namespace UI
 		private GameObject closePatientButton;
 
 		private List<GameObject> activeIndicators = new List<GameObject> ();
-		private int notificationID = 0;
+		private int indicationID = 0;
 
 		public GameObject PatientSelector;
 
@@ -131,7 +131,7 @@ namespace UI
 		public int addIndication( UI.Screen screen, string message )
 		{
 			if (activeIndicators.Count > 0) {
-				clearNotification (notificationID);
+				clearIndication (indicationID);
 			}
 
 			if (screen == UI.Screen.left) {
@@ -195,12 +195,12 @@ namespace UI
 				indicator2.transform.SetParent (transform, false);
 				activeIndicators.Add (indicator2);
 			}
-			return (++notificationID);
+			return (++indicationID);
 		}
 
-		public void clearNotification( int id )
+		public void clearIndication( int id )
 		{
-			if (notificationID != id)
+			if (indicationID != id)
 				return;
 
 			foreach (GameObject go in activeIndicators) {
