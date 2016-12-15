@@ -4,6 +4,14 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
 
+/*! Handles Notifications.
+ * How to use the Notification system:
+ * 		// Show notification for 10 seconds:
+ *      NotificationControl.instance.createNotification("test", new TimeSpan(0,0,10));
+ * A notification can also have its own icon:
+ *      public Sprite SpriteUnknown; //Set in editor
+ *      NotificationControl.instance.createNotification("test", new TimeSpan(0,0,10), s);
+*/
 public class NotificationControl : MonoBehaviour {
 
     public GameObject firstNotification;
