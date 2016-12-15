@@ -14,7 +14,7 @@ public class NotificationControl : MonoBehaviour {
     public int angle = 45;
 
     private List<Notification> notitficationList = new List<Notification>();
-    private List<GameObject> gameObjectNotificationList = new List<GameObject>();
+    //private List<GameObject> gameObjectNotificationList = new List<GameObject>();
 
     private int leftPosX = 0;
     private int centerPosX = 0;
