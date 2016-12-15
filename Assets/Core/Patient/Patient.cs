@@ -27,7 +27,8 @@ public class Patient : PatientMeta
 	}
 
 	public Patient( PatientMeta meta ) : base(meta)
-    {
+	{
+		PatientEventSystem.stopListening (PatientEventSystem.Event.PATIENT_FinishedLoading, finishedLoading);	// if we were listening already, stop
         PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_FinishedLoading, finishedLoading);
 
         ThreadUtil t = new ThreadUtil(this.PatientLoaderWorker, this.PatientLoaderCallback);
@@ -35,10 +36,13 @@ public class Patient : PatientMeta
     }
     ~Patient()
 	{
-		PatientEventSystem.stopListening (PatientEventSystem.Event.PATIENT_FinishedLoading, finishedLoading);
-
+		stopListeningToEvents ();
     }
 
+	private void stopListeningToEvents()
+	{
+		PatientEventSystem.stopListening (PatientEventSystem.Event.PATIENT_FinishedLoading, finishedLoading);
+	}
 
     private string rewritePathInHTML(string content, string filePath)
     {
@@ -65,6 +69,8 @@ public class Patient : PatientMeta
 
 	public static void close()
 	{
+		if (loadedPatient != null)
+			loadedPatient.stopListeningToEvents ();
 		loadedPatient = null;
 	}
 
