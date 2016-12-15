@@ -302,5 +302,6 @@ public class Patient : PatientMeta
     public void finishedLoading(object obj = null)
     {
         setupDefaultWidgets();
+		NotificationControl.instance.createNotification ("Patient loaded.", new TimeSpan (0, 0, 5));
     }
 }

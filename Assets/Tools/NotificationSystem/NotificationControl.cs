@@ -20,6 +20,16 @@ public class NotificationControl : MonoBehaviour {
     private int centerPosX = 0;
     private int rightPosX = 0;
 
+	public static NotificationControl instance { get; private set; }
+
+	public NotificationControl()
+	{
+		if (instance != null)
+			throw( new System.Exception("Cannot create NotificationControl: Only one NotificationControl may exist!" ));
+
+		instance = this;
+	}
+
     // Use this for initialization
     void Start () {
         firstNotification.SetActive(false);
