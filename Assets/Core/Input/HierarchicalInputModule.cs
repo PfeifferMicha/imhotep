@@ -218,7 +218,6 @@ public class HierarchicalInputModule : BaseInputModule {
 			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, CustomEvents.pointerHoverHandler);
 		}
 
-
 		CopyFromTo (eventData, leftData);
 		CopyFromTo (eventData, rightData);
 		CopyFromTo (eventData, middleData);
@@ -462,6 +461,7 @@ public class HierarchicalInputModule : BaseInputModule {
 		return true;
 	}
 
+	/*! Copy everything that should be the same for events, no matter which button was pressed:*/
 	protected void CopyFromTo(CustomEventData @from, CustomEventData @to)
 	{
 		@to.position = @from.position;

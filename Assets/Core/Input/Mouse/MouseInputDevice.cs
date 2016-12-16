@@ -73,6 +73,19 @@ public class MouseInputDevice : MonoBehaviour, InputDevice {
 		}
     }
 
+	public bool isLeftButtonDown()
+	{
+		return Input.GetMouseButton (0);
+	}
+	public bool isRightButtonDown()
+	{
+		return Input.GetMouseButton (1);
+	}
+	public bool isMiddleButtonDown()
+	{
+		return Input.GetMouseButton (2);
+	}
+
 	public ButtonInfo updateButtonInfo ()
 	{
 

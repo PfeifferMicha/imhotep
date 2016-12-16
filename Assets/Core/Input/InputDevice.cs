@@ -21,4 +21,8 @@ public interface InputDevice {
 
 	void setTexCoordDelta( Vector2 delta );
 	void set3DDelta( Vector2 delta );
+
+	bool isLeftButtonDown();
+	bool isRightButtonDown();
+	bool isMiddleButtonDown();
 }

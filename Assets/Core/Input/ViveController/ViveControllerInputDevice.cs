@@ -22,18 +22,6 @@ public class ViveControllerInputDevice : Controller, InputDevice {
 		return ray;
 	}
 
-	public PointerEventData.FramePressState getMiddleButtonState()
-	{
-		// Return "not changed", because we don't have a middle button.
-		return PointerEventData.FramePressState.NotChanged;
-	}
-
-	public PointerEventData.FramePressState getRightButtonState()
-	{
-		// Return "not changed", because we don't have a right button.
-		return PointerEventData.FramePressState.NotChanged;
-	}
-
 	public Vector2 getTexCoordMovement()
 	{
 		return texCoordDelta;
@@ -41,6 +29,21 @@ public class ViveControllerInputDevice : Controller, InputDevice {
 	public Vector3 getMovement()
 	{
 		return positionDelta;
+	}
+
+	public bool isLeftButtonDown()
+	{
+		return triggerPressed ();
+	}
+	public bool isRightButtonDown()
+	{
+		// Controller has no right mouse button, so return false:
+		return false;
+	}
+	public bool isMiddleButtonDown()
+	{
+		// Controller has no middle mouse button, so return false:
+		return false;
 	}
 
 	// Use this for initialization
