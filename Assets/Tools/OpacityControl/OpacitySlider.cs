@@ -53,12 +53,10 @@ public class OpacitySlider : MonoBehaviour, IPointerHoverHandler
 
 			//GetComponent<Slider> ().value = currentOpacity;
 
-
 			//Rect r = transform.GetComponent<RectTransform> ().rect;
 			//Debug.Log("sliderFill: " + sliderFill);
 			if (sliderFill != null) {
 				RectTransform fillRT = sliderFill.GetComponent<RectTransform> ();
-				Debug.Log ("fillRT: " + fillRT);
 
 				RectTransform rectTF = transform.GetComponent<RectTransform> ();
 				Rect r = rectTF.rect;
