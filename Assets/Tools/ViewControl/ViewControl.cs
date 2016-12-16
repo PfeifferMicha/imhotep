@@ -156,7 +156,7 @@ public class ViewControl : MonoBehaviour {
 					viewNameText.text += ": ";
 					viewNameText.text += view.name;
 
-					if ( !animate) {
+					if ( animate ) {
 						// Slowly zoom and rotate towards the target:
 						meshViewerScaleNode.GetComponent<ModelZoomer> ().setTargetZoom (view.scale, 0.6f);
 						meshViewerRotationNode.GetComponent<ModelRotator> ().setTargetOrientation (view.orientation, 0.6f);
