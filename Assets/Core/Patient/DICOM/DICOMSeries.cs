@@ -254,55 +254,41 @@ public class DICOMSeries {
 	/*! Get a human readable description of this series */
 	public string getDescription()
 	{
-		Debug.Log (0);
 		// If the description was already generated earlier, re-use it:
 		if (description != null && description.Length > 0)
 			return description;
-		Debug.Log (1);
 		description = "";
-		Debug.Log (2);
 
 		string modality = "";
 		string acquisitionContextDescription = "";
 		string seriesDescription = "";
 		string imageComment = "";
 		string bodyPartExamined = "";
-		Debug.Log (3);
 
 		try{
 			modality = firstSlice.GetMetaData("0008|0060");
-		} catch {
-
-			Debug.Log ("c1");
-		}
+		} catch {}
 		try{
 			acquisitionContextDescription = firstSlice.GetMetaData("0040|0556");
-		} catch {
-			Debug.Log ("c2");}
+		} catch {}
 		try{
 			seriesDescription = firstSlice.GetMetaData("0008|103E");
-		} catch {
-			Debug.Log ("c3");}
+		} catch {}
 		try{
 			imageComment = firstSlice.GetMetaData("0020|4000");
-		} catch {
-			Debug.Log ("c4");}
+		} catch {}
 		try{
 			bodyPartExamined = firstSlice.GetMetaData("0018|0015");
-		} catch {
-			Debug.Log ("c5");}
-		Debug.Log (4);
+		} catch {}
 
 
 		if( modality.Length > 0 )
 			description += "[" + modality + "]";
-		Debug.Log (5);
 
 		if (bodyPartExamined.Length > 0)
 			description += " " + bodyPartExamined;
 		description += " " + sliceOrientation;
 		description += " (" + numberOfSlices + " images)";
-		Debug.Log (6);
 
 		if (imageComment != null && imageComment.Length > 0)
 			description += "\n<color=#dddddd>\t" + imageComment + "</color>";
@@ -310,7 +296,6 @@ public class DICOMSeries {
 			description += "\n<color=#dddddd>\t" + seriesDescription + "</color>";
 		else if (acquisitionContextDescription != null && acquisitionContextDescription.Length > 0)
 			description += "\n<color=#dddddd>\t" + acquisitionContextDescription + "</color>";
-		Debug.Log (7);
 
 		return description; 
 	}
