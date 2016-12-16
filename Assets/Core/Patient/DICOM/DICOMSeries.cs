@@ -254,63 +254,71 @@ public class DICOMSeries {
 	/*! Get a human readable description of this series */
 	public string getDescription()
 	{
-		// If the description was already generated earlier, re-use it:
-		if (description != null && description.Length > 0)
-			return description;
-		description = "";
+		try{
+			// If the description was already generated earlier, re-use it:
+			if (description != null && description.Length > 0)
+				return description;
+			description = "";
 
-		string modality = "";
-		string acquisitionContextDescription = "";
-		string seriesDescription = "";
-		string imageComment = "";
-		string bodyPartExamined = "";
-		string acquisitionDate = "";
+			string modality = "";
+			string acquisitionContextDescription = "";
+			string seriesDescription = "";
+			string imageComment = "";
+			string bodyPartExamined = "";
+			string acquisitionDate = "";
 
-		try{
-			modality = firstSlice.GetMetaData("0008|0060");
-		} catch {}
-		try{
-			acquisitionContextDescription = firstSlice.GetMetaData("0040|0556");
-		} catch {}
-		try{
-			seriesDescription = firstSlice.GetMetaData("0008|103E");
-		} catch {}
-		try{
-			imageComment = firstSlice.GetMetaData("0020|4000");
-		} catch {}
-		try{
-			bodyPartExamined = firstSlice.GetMetaData("0018|0015");
-		} catch {}
-		try{
-			acquisitionDate = firstSlice.GetMetaData("0008|0022");
-			if( acquisitionDate != null )
-			{
-				DateTime time = DateTime.ParseExact(acquisitionDate, "yyyyMMdd",
-					System.Globalization.CultureInfo.InvariantCulture);
-				acquisitionDate = time.ToString("dd MMMM yyyy");
+			try {
+				modality = firstSlice.GetMetaData ("0008|0060");
+			} catch {
 			}
-		} catch {}
+			try {
+				acquisitionContextDescription = firstSlice.GetMetaData ("0040|0556");
+			} catch {
+			}
+			try {
+				seriesDescription = firstSlice.GetMetaData ("0008|103E");
+			} catch {
+			}
+			try {
+				imageComment = firstSlice.GetMetaData ("0020|4000");
+			} catch {
+			}
+			try {
+				bodyPartExamined = firstSlice.GetMetaData ("0018|0015");
+			} catch {
+			}
+			try {
+				acquisitionDate = firstSlice.GetMetaData ("0008|0022");
+				if (acquisitionDate != null) {
+					DateTime time = DateTime.ParseExact (acquisitionDate, "yyyyMMdd",
+						                System.Globalization.CultureInfo.InvariantCulture);
+					acquisitionDate = time.ToString ("dd MMMM yyyy");
+				}
+			} catch {
+			}
 
 
-		if( modality.Length > 0 )
-			description += "[" + modality + "]";
+			if (modality.Length > 0)
+				description += "[" + modality + "]";
 
-		if (bodyPartExamined.Length > 0)
-			description += " " + bodyPartExamined;
-		description += " " + sliceOrientation;
-		if (acquisitionDate != null && acquisitionDate.Length > 0)
-			description += ", " + acquisitionDate;
-		description += " (" + numberOfSlices + " images)";
+			if (bodyPartExamined.Length > 0)
+				description += " " + bodyPartExamined;
+			description += " " + sliceOrientation;
+			if (acquisitionDate != null && acquisitionDate.Length > 0)
+				description += ", " + acquisitionDate;
+			description += " (" + numberOfSlices + " images)";
 
-		if (imageComment != null && imageComment.Length > 0)
-			description += "\n<color=#dddddd>\t" + imageComment + "</color>";
-		else if (seriesDescription != null && seriesDescription.Length > 0)
-			description += "\n<color=#dddddd>\t" + seriesDescription + "</color>";
-		else if (acquisitionContextDescription != null && acquisitionContextDescription.Length > 0)
-			description += "\n<color=#dddddd>\t" + acquisitionContextDescription + "</color>";
+			if (imageComment != null && imageComment.Length > 0)
+				description += "\n<color=#dddddd>\t" + imageComment + "</color>";
+			else if (seriesDescription != null && seriesDescription.Length > 0)
+				description += "\n<color=#dddddd>\t" + seriesDescription + "</color>";
+			else if (acquisitionContextDescription != null && acquisitionContextDescription.Length > 0)
+				description += "\n<color=#dddddd>\t" + acquisitionContextDescription + "</color>";
 
-
-		return description; 
+		} catch {
+			description = "Failed to generate DICOM description (valid DICOM?).";
+		}
+		return description;
 	}
 
 	/*! If header did not contain information about minimum/maximum pixel values, this can be used to set them.
