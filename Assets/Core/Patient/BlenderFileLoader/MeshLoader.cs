@@ -145,7 +145,8 @@ public class MeshLoader : MonoBehaviour {
 
     private IEnumerator LoadFileExecute()
 	{
-		Bounds bounds = new Bounds(Vector3.zero, Vector3.zero);
+		Bounds bounds = new Bounds ();
+		bool boundsInitialized = false;	// set to true when bounds is first set
 
 		//  meshNode
 		//	| - containerObject
@@ -202,8 +203,12 @@ public class MeshLoader : MonoBehaviour {
                 Path = "";
 
 				// Increase the common bounding box to contain this object:
-				bounds.Encapsulate (mesh.bounds.min);
-				bounds.Encapsulate (mesh.bounds.max);
+				if (!boundsInitialized) {
+					bounds = mesh.bounds;
+					boundsInitialized = true;
+				} else {
+					bounds.Encapsulate (mesh.bounds);
+				}
 
 				// Let others know that a new mesh has been loaded:
 				PatientEventSystem.triggerEvent (PatientEventSystem.Event.MESH_LoadedSingle, objToSpawn);
