@@ -30,7 +30,7 @@ public class ModelZoomer : MonoBehaviour
 
     private void Update()
     {
-		if (UI.Core.instance.pointerIsOverPlatformUIObject == false) {
+		//if (UI.Core.instance.pointerIsOverPlatformUIObject == false) {
 
 			InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;
 			if (inputDevice.getDeviceType () == InputDeviceManager.InputDeviceType.Mouse) {
@@ -72,7 +72,7 @@ public class ModelZoomer : MonoBehaviour
 				}
 
 			}
-		}
+		//}
 
 		// Auto-Zoom to target, if given:
 		transform.localScale = Vector3.SmoothDamp(transform.localScale, targetZoom, ref zoomVelocity, scaleTime);
