@@ -24,6 +24,11 @@ public class ToolWidget : MonoBehaviour {
 
 	public ToolDisplayTime displayTime = ToolDisplayTime.WhenPatientIsLoaded;
 
+	public void Awake()
+	{
+		gameObject.SetActive (false);	// Start inactive!
+	}
+
 	// Use this for initialization
 	void Start () {
 
