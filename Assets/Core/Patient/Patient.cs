@@ -339,23 +339,25 @@ public class Patient : PatientMeta
 		using (StreamWriter outputFile = new StreamWriter (path)) {
 			foreach (GameObject apListEntry in mAnnotations) {
 				GameObject ap = apListEntry.GetComponent<AnnotationListEntry> ().getAnnotation ();
-				AnnotationJson apj = new AnnotationJson ();
-				apj.Text = ap.GetComponent<Annotation> ().getLabelText ();
-				apj.ColorR = ap.GetComponent<Annotation> ().getColor ().r;
-				apj.ColorG = ap.GetComponent<Annotation> ().getColor ().g;
-				apj.ColorB = ap.GetComponent<Annotation> ().getColor ().b;
-				apj.PositionX = ap.transform.localPosition.x;
-				apj.PositionY = ap.transform.localPosition.y;
-				apj.PositionZ = ap.transform.localPosition.z;
+				if (ap != null) {
+					AnnotationJson apj = new AnnotationJson ();
+					apj.Text = ap.GetComponent<Annotation> ().getLabelText ();
+					apj.ColorR = ap.GetComponent<Annotation> ().getColor ().r;
+					apj.ColorG = ap.GetComponent<Annotation> ().getColor ().g;
+					apj.ColorB = ap.GetComponent<Annotation> ().getColor ().b;
+					apj.PositionX = ap.transform.localPosition.x;
+					apj.PositionY = ap.transform.localPosition.y;
+					apj.PositionZ = ap.transform.localPosition.z;
 
-				apj.RotationW = ap.transform.localRotation.w;
-				apj.RotationX = ap.transform.localRotation.x;
-				apj.RotationY = ap.transform.localRotation.y;
-				apj.RotationZ = ap.transform.localRotation.z;
+					apj.RotationW = ap.transform.localRotation.w;
+					apj.RotationX = ap.transform.localRotation.x;
+					apj.RotationY = ap.transform.localRotation.y;
+					apj.RotationZ = ap.transform.localRotation.z;
 
-				apj.Creator = ap.GetComponent<Annotation> ().creator;
-				apj.CreationDate = ap.GetComponent<Annotation> ().creationDate;
-				outputFile.WriteLine (JsonUtility.ToJson (apj));
+					apj.Creator = ap.GetComponent<Annotation> ().creator;
+					apj.CreationDate = ap.GetComponent<Annotation> ().creationDate;
+					outputFile.WriteLine (JsonUtility.ToJson (apj));
+				}
 			}
 			outputFile.Close ();
 		}
