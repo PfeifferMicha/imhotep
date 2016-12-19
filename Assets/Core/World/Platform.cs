@@ -13,6 +13,7 @@ public class Platform : MonoBehaviour {
 	public GameObject frontRight;
 	public GameObject rounded;
 	public GameObject chair;
+	public GameObject footPrints;
 
 	public GameObject mainCamera;
 	public Camera UICamera;
@@ -146,6 +147,8 @@ public class Platform : MonoBehaviour {
 
 		mainCamera.transform.localPosition = new Vector3 (0f, 0f, depth * 0.5f);
 
+		footPrints.transform.localPosition = new Vector3 (0f, 0.01f, depth * 0.5f);
+
 		rectWidth = width;
 		rectDepth = depth;
 	}
@@ -169,6 +172,7 @@ public class Platform : MonoBehaviour {
 		right.SetActive (false);
 		frontLeft.SetActive (false);
 		frontRight.SetActive (false);
+		footPrints.SetActive (false);
 
 		// Activate the rounded platform:
 		rounded.SetActive (true);
@@ -189,6 +193,7 @@ public class Platform : MonoBehaviour {
 		right.SetActive (true);
 		frontLeft.SetActive (true);
 		frontRight.SetActive (true);
+		footPrints.SetActive (true);
 
 		// Deactivate the rounded platform:
 		rounded.SetActive (false);
