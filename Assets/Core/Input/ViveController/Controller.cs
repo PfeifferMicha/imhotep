@@ -149,7 +149,7 @@ public class Controller : MonoBehaviour {
 	{
 		if (!controller.GetTouch (Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad))
 			return false;
-		return touchpadValue.magnitude < 0.5;
+		return touchpadValue.magnitude < 0.4;
 	}
 	public bool hoverTouchpadLeft()
 	{
