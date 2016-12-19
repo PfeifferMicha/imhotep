@@ -10,7 +10,7 @@ public class ToolUIAnchor : MonoBehaviour {
 	public void OnEnable()
 	{
 		if (instance != null) {
-			throw(new System.Exception ("Error: Cannot create more than one ToolUIAnchor!"));
+			throw(new System.Exception ("Error: Cannot create more than one instance of ToolUIAnchor!"));
 		}
 		instance = this;
 	}

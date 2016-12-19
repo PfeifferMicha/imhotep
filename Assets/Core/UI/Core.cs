@@ -48,6 +48,8 @@ namespace UI
 
 		public Core()
 		{
+			if( instance != null )
+				throw(new System.Exception ("Error: Cannot create more than one instance of UI.Core!"));
 			instance = this;
 		}
 

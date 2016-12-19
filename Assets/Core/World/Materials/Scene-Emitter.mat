@@ -130,7 +130,7 @@ Material:
       data:
         first:
           name: _LightAmount
-        second: 0.945
+        second: 0
     m_Colors:
       data:
         first:

@@ -13,7 +13,7 @@ public class RiftToolRing : MonoBehaviour {
 	public void OnEnable()
 	{
 		if (instance != null) {
-			throw(new System.Exception ("Error: Cannot create more than one RiftToolRing!"));
+			throw(new System.Exception ("Error: Cannot create more than one instance of RiftToolRing!"));
 		}
 		instance = this;
 

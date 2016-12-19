@@ -44,6 +44,8 @@ public class ToolControl : MonoBehaviour {
 	private GameObject previousTool;
 
 	public ToolControl() {
+		if( instance != null )
+			throw(new System.Exception ("Error: Cannot create more than one instance of ToolControl!"));
 		instance = this;
 	}
 
