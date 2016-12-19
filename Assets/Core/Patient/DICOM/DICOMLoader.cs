@@ -211,6 +211,7 @@ public class DICOMLoader : MonoBehaviour {
 			newlyLoadedDICOM = newDICOM;
 		} catch( System.Exception err ) {
 			Debug.LogError( "[DICOM] " + err.Message );
+			newlyLoadedDICOM = null;
 		}
 	}
 	/*! Called when loader has finished parsing a directory. */
@@ -235,15 +236,18 @@ public class DICOMLoader : MonoBehaviour {
 				"DICOM directory parsing");
 		}
 		if (newDICOMLoaded) {
+			//Debug.Log ("newDICOMLoaded: " + newDICOMLoaded);
 			newDICOMLoaded = false;
-			if (newlyLoadedDICOM.dimensions == 2) {
-				currentDICOM = newlyLoadedDICOM;
-				// Let Listeners know that we've loaded a new DICOM:
-				PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_NewLoaded, currentDICOM);
-			} else {
-				currentDICOMVolume = newlyLoadedDICOM;
-				// Let Listeners know that we've loaded a new DICOM:
-				PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_NewLoadedVolume, currentDICOMVolume);
+			if (newlyLoadedDICOM != null) {
+				if (newlyLoadedDICOM.dimensions == 2) {
+					currentDICOM = newlyLoadedDICOM;
+					// Let Listeners know that we've loaded a new DICOM:
+					PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_NewLoaded, currentDICOM);
+				} else {
+					currentDICOMVolume = newlyLoadedDICOM;
+					// Let Listeners know that we've loaded a new DICOM:
+					PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_NewLoadedVolume, currentDICOMVolume);
+				}
 			}
 		}
 	}

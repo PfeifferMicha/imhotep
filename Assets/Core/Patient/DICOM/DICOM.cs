@@ -88,8 +88,8 @@ public class DICOM {
 		}
 
 
-		int min = int.MaxValue;
-		int max = int.MinValue;
+		Int64 min = int.MaxValue;
+		Int64 max = int.MinValue;
 
 		// Copy the image into a colors array:
 		IntPtr bufferPtr;
@@ -141,6 +141,32 @@ public class DICOM {
 					}
 				}
 			}
+		} else if ( image.GetPixelID() == PixelIDValueEnum.sitkInt32 ) {
+			bufferPtr = image.GetBufferAsInt32 ();
+
+			Int32[] colorsTmp = new Int32[ numberOfPixels ];
+			Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
+
+			int index = 0;
+			//for (UInt32 z = 0; z < texDepth; z++) {
+			for (UInt32 y = 0; y < texHeight; y++) {
+				for (UInt32 x = 0; x < texWidth; x++) {
+					if( x < origTexWidth && y < origTexHeight )// && z < origTexDepth )
+					{
+						UInt32 pixelValue = (UInt32)((colorsTmp [index] - intercept) / slope);
+						colors [ x + y * texWidth] = F2C(pixelValue);
+
+						if (pixelValue > max)
+							max = (Int64)pixelValue;
+						if (pixelValue < min)
+							min = (Int64)pixelValue;
+
+						index ++;
+					}
+				}
+			}
+			Debug.Log ("Image: " + min + " - " + max + " s: " + slope + " i: " + intercept);
+			Debug.Log ("Int min/max: " + Int32.MinValue + " " + Int32.MaxValue);
 		} else {
 			throw(new System.Exception ("Unsupported pixel format: " + image.GetPixelID()));
 		}
@@ -148,7 +174,7 @@ public class DICOM {
 		// If the DICOM header did not contain info about the minimum/maximum values and no one
 		// has manually set them yet, set the min/max values found for this slice:
 		if (!seriesInfo.foundMinMaxPixelValues) {
-			seriesInfo.setMinMaxPixelValues (min, max);
+			seriesInfo.setMinMaxPixelValues ((int)min, (int)max);
 		}
 		// Make the loaded image accessable from elsewhere:
 		this.image = image;
@@ -190,7 +216,7 @@ public class DICOM {
 	}
 
 	/*! Helper function, converts UInt16 to color */
-	private Color32 F2C(UInt16 value)
+	private Color32 F2C(UInt32 value)
 	{
 		Color32 c = new Color32 ();
 
@@ -205,7 +231,7 @@ public class DICOM {
 	/*! Helper function, converts Int16 to color */
 	private Color F2C(Int16 value)
 	{
-		UInt16 valueUInt = (UInt16)((int)value + 32768);
+		UInt32 valueUInt = (UInt32)((int)value + 32768);
 		return F2C (valueUInt);
 	}
 }
