@@ -206,12 +206,16 @@ public class HierarchicalInputModule : BaseInputModule {
 		List<RaycastResult> raycastResults = new List<RaycastResult> ();
 		EventSystem.current.RaycastAll( data, raycastResults );
 		if (raycastResults.Count > 0) {
-			result = raycastResults [0];
-			return true;
-		} else {
-			result = new RaycastResult ();
-			return false;
+			int UILayer = LayerMask.NameToLayer ("UI");
+			foreach (RaycastResult r in raycastResults) {
+				if( r.gameObject != null && r.gameObject.layer == UILayer) {
+					result = r;
+					return true;
+				}
+			}
 		}
+		result = new RaycastResult ();
+		return false;
 	}
 
 	//! Called every frame after UpdateModule (but only if this module is active!)
