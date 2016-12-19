@@ -165,8 +165,6 @@ public class DICOM {
 					}
 				}
 			}
-			Debug.Log ("Image: " + min + " - " + max + " s: " + slope + " i: " + intercept);
-			Debug.Log ("Int min/max: " + Int32.MinValue + " " + Int32.MaxValue);
 		} else {
 			throw(new System.Exception ("Unsupported pixel format: " + image.GetPixelID()));
 		}
