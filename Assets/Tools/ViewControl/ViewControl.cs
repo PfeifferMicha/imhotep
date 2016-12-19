@@ -158,8 +158,8 @@ public class ViewControl : MonoBehaviour {
 
 					if ( animate ) {
 						// Slowly zoom and rotate towards the target:
-						meshViewerScaleNode.GetComponent<ModelZoomer> ().setTargetZoom (view.scale, 0.6f);
-						meshViewerRotationNode.GetComponent<ModelRotator> ().setTargetOrientation (view.orientation, 0.6f);
+						meshViewerScaleNode.GetComponent<ModelZoomer> ().setTargetZoom (view.scale, 0.8f);
+						meshViewerRotationNode.GetComponent<ModelRotator> ().setTargetOrientation (view.orientation, 0.8f);
 					} else {
 						meshViewerScaleNode.GetComponent<ModelZoomer> ().setTargetZoom (view.scale);
 						meshViewerRotationNode.GetComponent<ModelRotator> ().setTargetOrientation (view.orientation);
