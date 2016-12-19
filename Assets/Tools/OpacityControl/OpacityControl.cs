@@ -16,6 +16,12 @@ public class OpacityControl : MonoBehaviour
         PatientEventSystem.startListening(PatientEventSystem.Event.MESH_LoadedAll, createContent);
         PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Closed, clearContent); 
         
+		mMeshLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
+		defaultLine.SetActive(false);
+		if (mMeshLoader.MeshGameObjectContainers.Count != 0)
+		{
+			createContent();
+		}
     }
 
     void OnDisable()
@@ -26,16 +32,6 @@ public class OpacityControl : MonoBehaviour
     }
 
 
-    // Use this for initialization
-    void Start()
-    {
-        mMeshLoader = GameObject.Find("GlobalScript").GetComponent<MeshLoader>();
-        defaultLine.SetActive(false);
-        if (mMeshLoader.MeshGameObjectContainers.Count != 0)
-        {
-            createContent();
-        }
-    }
 
     private void createContent(object obj = null)
     {
