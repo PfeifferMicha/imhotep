@@ -53,6 +53,10 @@ public class ToolControl : MonoBehaviour {
 		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, patientClosed );
 
 		InputDeviceManager.instance.setLeftControllerTouchpadIconCentral (ToolSelectSprite);
+
+		foreach (Transform child in transform) {
+			child.gameObject.SetActive (false);
+		}
 	}
 
 	void Update() {
@@ -230,6 +234,7 @@ public class ToolControl : MonoBehaviour {
 			// Select the current tool:
 			if( selectedToolEntry != null )
 			{
+				Debug.Log ("SelectedToolEntry: " + selectedToolEntry.Tool.name);
 				chooseTool (selectedToolEntry.Tool);
 			}
 		} else {
@@ -350,6 +355,7 @@ public class ToolControl : MonoBehaviour {
 		if (activeTool != null) {
 			activeTool.SetActive (false);
 			activeTool = null;
+
 			InputDeviceManager.instance.resetToolIcons ();
 		}
 	}
@@ -363,7 +369,7 @@ public class ToolControl : MonoBehaviour {
 		activeTool = tool.gameObject;
 		// Move the active tool to the tool anchor:
 		activeTool.SetActive (true);
-		InputDeviceManager.instance.shakeLeftController( 0.5f, 0.25f );
+		InputDeviceManager.instance.shakeLeftController( 0.5f, 0.15f );
 	}
 
 	/*! Forces the tool given by 'name' to be active. */
@@ -384,8 +390,10 @@ public class ToolControl : MonoBehaviour {
 		if (overridingTool != null && overridingTool.name == name) {
 			overridingTool = null;
 			if (previousTool != null) {
-				chooseTool (previousTool.GetComponent<ToolWidget>());
+				chooseTool (previousTool.GetComponent<ToolWidget> ());
 				previousTool = null;
+			} else {
+				closeActiveTool ();
 			}
 		}
 	}
