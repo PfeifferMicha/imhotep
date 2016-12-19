@@ -91,6 +91,7 @@ public class DICOMLoader : MonoBehaviour {
 		try {
 			availableSeries.Clear();
 
+			Debug.Log("[DICOM] Searching directory: " + directoryToLoad ); 
 			VectorString series = ImageSeriesReader.GetGDCMSeriesIDs (directoryToLoad);
 			if (series.Count > 0) {
 

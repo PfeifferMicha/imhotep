@@ -65,10 +65,10 @@ public class InputDeviceManager : MonoBehaviour {
 		left.setTouchpadCentralIcon (iconLeftControllerCenter);
 	}
 
-	public void shakeLeftController( ushort milliseconds )
+	public void shakeLeftController( float seconds, float strength = 1f )
 	{
 		if (leftController != null) {
-			leftController.shake (milliseconds);
+			leftController.shake (seconds, strength );
 		}
 	}
 

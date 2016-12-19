@@ -92,6 +92,7 @@ public class HierarchicalInputModule : BaseInputModule {
 							(localPoint.y - rt.rect.min.y) / rt.rect.height);
 
 					} else {
+
 						// 3. If no UI element was hit, raycast again but ignore the UIMesh:
 						layerMask = ~ ( 1 << LayerMask.NameToLayer( "UIMesh" ) );
 						if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity, layerMask)) {

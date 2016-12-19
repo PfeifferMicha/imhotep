@@ -279,10 +279,10 @@ public class Controller : MonoBehaviour {
 		return m_touchpadButtonState;
 	}
 
-
-	public void shake( ushort milliseconds )
+	public void shake( float seconds, float strength = 1f )
 	{
-		SteamVR_Controller.Input( (int)controllerIndex ).TriggerHapticPulse( milliseconds );
+		//SteamVR_Controller.Input( (int)controllerIndex ).TriggerHapticPulse( milliseconds );
+		StartHapticVibration( seconds, strength );
 	}
 
 	public void set3DDelta( Vector2 delta ) {
@@ -300,5 +300,36 @@ public class Controller : MonoBehaviour {
 		spriteTouchpadRight.GetComponent<SpriteRenderer> ().sprite = r;
 		spriteTouchpadUp.GetComponent<SpriteRenderer> ().sprite = u;
 		spriteTouchpadDown.GetComponent<SpriteRenderer> ().sprite = d;
+	}
+
+	//-----------------------------------------------------
+	// Haptic Functions (adapted from MoBenZ), steamcommunity.com
+
+	protected Coroutine vibrationCoroutine;
+
+	public void StartHapticVibration( float length, float strength) {
+		if (vibrationCoroutine != null)
+			return;
+		
+		Coroutine coroutine = StartCoroutine(HapticVibrationCoroutine(length,strength));
+		vibrationCoroutine = coroutine;
+	}
+
+	public void StopHapticVibration() {
+
+		if( vibrationCoroutine == null ) {
+			return;
+		}
+		StopCoroutine(vibrationCoroutine);
+		vibrationCoroutine = null;
+	}
+
+	protected IEnumerator HapticVibrationCoroutine(float length, float strength) {
+
+		for(float i = 0; i < length; i += Time.deltaTime) {
+			controller.TriggerHapticPulse((ushort)Mathf.Lerp(0, 3999, strength));
+			yield return null;
+		}
+		vibrationCoroutine = null;
 	}
 }

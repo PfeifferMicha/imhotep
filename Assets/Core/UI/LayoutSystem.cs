@@ -49,11 +49,16 @@ namespace UI
 		Rect centerScreen;
 		Rect rightScreen;
 
-		Screen activeScreen = Screen.center;
+		public Screen activeScreen { private set; get; }
 
 		private List<Widget> widgets = new List<Widget>();
 
 		public int statusBarHeight = 60;
+
+		public LayoutSystem()
+		{
+			activeScreen = Screen.center;
+		}
 
 		public void updateDimensions()
 		{

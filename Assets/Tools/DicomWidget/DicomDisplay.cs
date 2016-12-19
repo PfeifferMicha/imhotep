@@ -15,6 +15,8 @@ public class DicomDisplay : MonoBehaviour {
 
 	public Text StatusText;
 
+	bool UserIsLookingAtMe = false;
+
 	void Awake()
 	{
 		//mDicomList = transform.Find ("Canvas/DicomList").GetComponent<Dropdown>();
@@ -142,4 +144,21 @@ public class DicomDisplay : MonoBehaviour {
 		ListScreen.SetActive (true);
 	}
 
+
+	public void Update()
+	{
+		UI.Screen myScreen = GetComponent<UI.Widget> ().layoutPosition.screen;
+		UI.Screen activeScreen = UI.Core.instance.layoutSystem.activeScreen;
+		if (myScreen == activeScreen) {
+			if (!UserIsLookingAtMe) {
+				UserIsLookingAtMe = true;
+				ToolControl.instance.overrideTool ("DICOM");
+			}
+		} else {
+			if (UserIsLookingAtMe) {
+				UserIsLookingAtMe = false;
+				ToolControl.instance.unoverrideTool ("DICOM");
+			}
+		}
+	}
 }

@@ -39,6 +39,10 @@ public class ToolControl : MonoBehaviour {
 
 	private List<ToolWidget> availableTools = new List<ToolWidget> ();
 
+	//! The tool which is currently automatically activated:
+	private GameObject overridingTool;
+	private GameObject previousTool;
+
 	public ToolControl() {
 		instance = this;
 	}
@@ -226,10 +230,7 @@ public class ToolControl : MonoBehaviour {
 			// Select the current tool:
 			if( selectedToolEntry != null )
 			{
-				activeTool = selectedToolEntry.Tool.gameObject;
-				// Move the active tool to the tool anchor:
-				activeTool.SetActive (true);
-				InputDeviceManager.instance.shakeLeftController( 3000 );
+				chooseTool (selectedToolEntry.Tool);
 			}
 		} else {
 			closeActiveTool ();
@@ -355,10 +356,37 @@ public class ToolControl : MonoBehaviour {
 
 	public void chooseTool( ToolWidget tool )
 	{
+		previousTool = activeTool;
+		overridingTool = null;
+
 		closeActiveTool ();
 		activeTool = tool.gameObject;
 		// Move the active tool to the tool anchor:
 		activeTool.SetActive (true);
-		InputDeviceManager.instance.shakeLeftController( 3000 );
+		InputDeviceManager.instance.shakeLeftController( 0.5f, 0.25f );
+	}
+
+	/*! Forces the tool given by 'name' to be active. */
+	public void overrideTool( string name )
+	{
+		foreach (ToolWidget tool in availableTools) {
+			if (tool.name == name) {
+				if (tool.gameObject != activeTool) {
+					chooseTool (tool);
+					overridingTool = tool.gameObject;
+				}
+			}
+		}
+	}
+
+	public void unoverrideTool( string name )
+	{
+		if (overridingTool != null && overridingTool.name == name) {
+			overridingTool = null;
+			if (previousTool != null) {
+				chooseTool (previousTool.GetComponent<ToolWidget>());
+				previousTool = null;
+			}
+		}
 	}
 }
