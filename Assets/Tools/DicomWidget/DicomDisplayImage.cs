@@ -221,18 +221,42 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 					ApplyScaleAndPosition ();
 
 				}
+
+				// Clicking the touch pad scrolls single layers:
+				if( c.touchpadButtonState == UnityEngine.EventSystems.PointerEventData.FramePressState.Released ) {
+					if (c.hoverTouchpadUp()) {
+						LayerChanged (currentViewSettings.slice + 1);
+					} else if (c.hoverTouchpadDown()) {
+						LayerChanged (currentViewSettings.slice - 1);
+					}
+				}
 			}
-		}
 
-		LeftController lc = InputDeviceManager.instance.leftController;
-		if (lc != null) {
-			Vector2 scrollDelta = lc.touchpadDelta * 200;
+			// Clicking the touch pad changes window/level by a fixed amount:
+			Controller lc = InputDeviceManager.instance.leftController;
+			if( lc != null )
+			{
+				if( lc.touchpadButtonState == UnityEngine.EventSystems.PointerEventData.FramePressState.Released ) {
+					if (lc.hoverTouchpadUp()) {
+						SetLevel (currentViewSettings.level - 0.05f);
+					} else if (lc.hoverTouchpadDown()) {
+						SetLevel (currentViewSettings.level + 0.05f);
+					} else if (lc.hoverTouchpadLeft()) {
+						SetWindow (currentViewSettings.window - 0.05f);
+					} else if (lc.hoverTouchpadRight()) {
+						SetWindow (currentViewSettings.window + 0.05f);
+					}
+				}
 
-			float intensityChange = -scrollDelta.y / 2000f;
-			float contrastChange = scrollDelta.x / 2000f;
+				// Scrolling on the controller also changes window/level:
+				Vector2 scrollDelta = lc.touchpadDelta * 200;
 
-			SetLevel (currentViewSettings.level + intensityChange);
-			SetWindow (currentViewSettings.window + contrastChange);
+				float intensityChange = -scrollDelta.y / 2000f;
+				float contrastChange = scrollDelta.x / 2000f;
+
+				SetLevel (currentViewSettings.level + intensityChange);
+				SetWindow (currentViewSettings.window + contrastChange);
+			}
 		}
 	}
 
