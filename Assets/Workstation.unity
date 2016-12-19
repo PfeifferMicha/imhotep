@@ -7979,7 +7979,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be7a4ce3fceed0b41ad252649954230b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skipAnimations: 0
+  skipAnimations: 1
 --- !u!4 &795904941
 Transform:
   m_ObjectHideFlags: 0
@@ -10033,6 +10033,7 @@ GameObject:
   - 114: {fileID: 927162272}
   - 114: {fileID: 927162271}
   - 114: {fileID: 927162270}
+  - 114: {fileID: 927162274}
   m_Layer: 5
   m_Name: Initialize
   m_TagString: Untagged
@@ -10130,6 +10131,17 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &927162274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 927162268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8513e35b6dc69c40b7f00a1c828bda1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &928425692
 GameObject:
   m_ObjectHideFlags: 0
