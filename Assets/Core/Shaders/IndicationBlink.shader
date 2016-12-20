@@ -6,7 +6,7 @@
 	}
 	SubShader
 	{
-		Tags { "RenderType"="Opaque" }
+		Tags { "RenderType"="Transparent" }
 		LOD 100
 
 		Pass
@@ -51,7 +51,9 @@
 
 				float brightAmount = 0.5 + 1.5*max(sin( _Time[3] - length(texCol) ), 0);
 
-				return brightAmount*texCol.a*i.color;
+				fixed4 col = brightAmount*texCol.a*i.color;
+				clip(length(col)-0.5);
+				return col;
 			}
 			ENDCG
 		}

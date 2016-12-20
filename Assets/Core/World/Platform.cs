@@ -398,6 +398,9 @@ public class Platform : MonoBehaviour {
 		mesh.triangles = newTriangles.ToArray();
 		mesh.RecalculateNormals ();
 
+		// Generate an animation:
+		RuntimeAnimatorController animController = Resources.Load("UIMeshController") as RuntimeAnimatorController;
+
 
 		// Generate a new game object:
 		GameObject go = new GameObject("UIMesh");
@@ -407,6 +410,7 @@ public class Platform : MonoBehaviour {
 		go.AddComponent<MeshCollider> ();
 		go.GetComponent<MeshFilter>().mesh = mesh;
 		go.GetComponent<MeshCollider> ().sharedMesh = mesh;
+		go.AddComponent<Animator> ().runtimeAnimatorController = animController;
 
 
 		// Set up the render texture:
@@ -433,6 +437,9 @@ public class Platform : MonoBehaviour {
 
 		UIMesh = go;
 
+		if( ! Config.instance.skipAnimations )
+			UIMesh.SetActive (false);
+
 		// Let the layout system know about the new aspect ratio:
 		UI.Core.instance.setCamera( UICamera );
 
@@ -445,6 +452,13 @@ public class Platform : MonoBehaviour {
 		if( UIMesh != null )
 		{
 			Destroy( UIMesh );
+		}
+	}
+
+	public void activateUIMesh()
+	{
+		if (UIMesh != null) {
+			UIMesh.SetActive (true);
 		}
 	}
 
