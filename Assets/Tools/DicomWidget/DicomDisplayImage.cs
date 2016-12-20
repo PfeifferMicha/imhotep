@@ -31,6 +31,10 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	private DICOM currentDICOM;
 
+	private bool touchpadUpPressed = false;
+	private bool touchpadDownPressed = false;
+	private float nextScrollAt = 0f;
+
 	private struct ViewSettings
 	{
 		public float level;
@@ -228,6 +232,28 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 						LayerChanged (currentViewSettings.slice + 1);
 					} else if (c.hoverTouchpadDown()) {
 						LayerChanged (currentViewSettings.slice - 1);
+					}
+					touchpadDownPressed = false;
+					touchpadUpPressed = false;
+				}
+				// Pressing and holding the touchpad also scrolls:
+				if (c.touchpadButtonState == UnityEngine.EventSystems.PointerEventData.FramePressState.Pressed) {
+					if (c.hoverTouchpadUp ()) {
+						touchpadUpPressed = true;
+					} else if (c.hoverTouchpadDown ()) {
+						touchpadDownPressed = true;
+					}
+					nextScrollAt = Time.time + 0.5f;	// scroll after a delay of half a second
+				}
+				if (touchpadUpPressed) {
+					if (Time.time > nextScrollAt) {
+						LayerChanged (currentViewSettings.slice + 1);
+						nextScrollAt = Time.time + 0.05f;	// scroll again after a shorter delay
+					}
+				} else if (touchpadDownPressed) {
+					if (Time.time > nextScrollAt) {
+						LayerChanged (currentViewSettings.slice - 1);
+						nextScrollAt = Time.time + 0.05f;	// scroll again after a shorter delay
 					}
 				}
 			}
