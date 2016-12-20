@@ -8,7 +8,7 @@ public class SphereEmitters : MonoBehaviour {
 	public void OnEnable()
 	{
 		// Disable the sphere at startup:
-		sphere.SetActive (false);
+		//sphere.SetActive (false);
 	}
 
 	public void activateSphere()

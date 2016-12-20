@@ -551,6 +551,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sphereEmitters: {fileID: 1656483050}
   sphere: {fileID: 1936587625}
+  logo: {fileID: 596485397}
+  PatientSelector: {fileID: 583585060}
 --- !u!1 &32850366
 GameObject:
   m_ObjectHideFlags: 0
@@ -906,10 +908,10 @@ RectTransform:
   - {fileID: 507477487}
   m_Father: {fileID: 1275700519}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 114.8165, y: 0}
-  m_SizeDelta: {x: 229.633, y: 35}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &77547502
 MonoBehaviour:
@@ -2537,10 +2539,10 @@ RectTransform:
   - {fileID: 713131218}
   m_Father: {fileID: 1132063642}
   m_RootOrder: 0
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 88.877495, y: 0}
-  m_SizeDelta: {x: 177.75499, y: 63}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &264464033
 MonoBehaviour:
@@ -20384,7 +20386,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1936587626
 Transform:
   m_ObjectHideFlags: 0

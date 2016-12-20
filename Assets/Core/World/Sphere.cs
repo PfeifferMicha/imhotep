@@ -7,7 +7,7 @@ public class Sphere : MonoBehaviour {
 
 	public void OnEnable()
 	{
-		logo.SetActive (false);
+		//logo.SetActive (false);
 	}
 	public void activateLogo()
 	{

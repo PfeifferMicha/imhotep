@@ -7,6 +7,8 @@ public class SceneAnimation : MonoBehaviour {
 
 	public GameObject sphereEmitters;
 	public GameObject sphere;
+	public GameObject logo;
+	public GameObject PatientSelector;
 
 	public SceneAnimation()
 	{
@@ -18,8 +20,27 @@ public class SceneAnimation : MonoBehaviour {
 
 	// Use this for initialization
 	void OnEnable () {
+
+		// If we're skipping the startup animations...
 		if (Config.instance.skipAnimations) {
-			sphereEmitters.GetComponent<Animator> ().Play ("EnableSphereEmitters");
+
+			// Activate all the objects:
+			sphere.SetActive (true);
+			logo.SetActive (true);
+			PatientSelector.SetActive (true);
+			sphereEmitters.SetActive (true);
+
+			// Start the animations of the objects, and set their normalized time to 1 (the end)
+			sphereEmitters.GetComponent<Animator> ().Play ("EnableSphereEmitters", -1, 1f);
+			sphere.GetComponent<Animator> ().Play ("EnableSphere", -1, 1f);
+			logo.GetComponent<Animator> ().Play ("LogoActivate", -1, 1f);
+
+		} else {
+			sphereEmitters.SetActive (false);
+			sphere.SetActive (false);
+			logo.SetActive (false);
+			PatientSelector.SetActive (false);
 		}
+
 	}
 }
