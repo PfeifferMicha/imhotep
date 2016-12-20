@@ -18,6 +18,7 @@ public class NotificationControl : MonoBehaviour {
     public GameObject secondNotification;
     public GameObject thirdNotification;
     public GameObject statusBar;
+	public GameObject platform;
 
     public int angle = 45;
 
@@ -45,11 +46,23 @@ public class NotificationControl : MonoBehaviour {
         thirdNotification.SetActive(false);
         this.gameObject.SetActive(false);
 
+		//Find Platform script
+		Platform platformScript = platform.GetComponent<Platform>();
+
         //Calculate left, center and right position for notification bar
         int statusbarWidth = (int)statusBar.GetComponent<RectTransform>().rect.width;
-        centerPosX = 0;
-        leftPosX = -statusbarWidth / 4; //TODO
-        rightPosX = statusbarWidth / 4; //TODO
+		centerPosX = 0;
+		//if (platformScript.getIsRounded ()) { 
+			//leftPosX = -statusbarWidth / 4;
+			//rightPosX = statusbarWidth / 4;
+		//} else {
+			int widthCenterScreen = (int)platformScript.getScreenDimensions (UI.Screen.center).x;
+			int widthRightScreen = (int)platformScript.getScreenDimensions (UI.Screen.right).x;
+			int widthLeftScreen = (int)platformScript.getScreenDimensions (UI.Screen.left).x;
+			rightPosX = (widthCenterScreen / 2) + (widthRightScreen / 2);
+			leftPosX = (widthCenterScreen / 2) + (widthLeftScreen / 2);
+		//}
+		Debug.LogWarning(widthRightScreen + " - " + widthLeftScreen);
     }
 
     // Update is called once per frame
@@ -83,7 +96,8 @@ public class NotificationControl : MonoBehaviour {
     {
         System.Random rnd = new System.Random();
         string s = "Notification " + rnd.Next(1, 99);
-        Notification n = new Notification(s, TimeSpan.FromSeconds(5));
+        //Notification n = new Notification(s, TimeSpan.FromSeconds(10));
+		Notification n = new Notification(s, TimeSpan.Zero);
         createNotification(n);
     }
 
