@@ -59,6 +59,7 @@ public class ToolControl : MonoBehaviour {
 		foreach (Transform child in transform) {
 			child.gameObject.SetActive (false);
 		}
+		updateAvailableTools ();
 	}
 
 	void Update() {
@@ -209,7 +210,7 @@ public class ToolControl : MonoBehaviour {
 
 	public void activateToolRing()
 	{
-		updateAvailableTools ();
+		//updateAvailableTools ();
 
 		generateToolRing ();
 
