@@ -132,7 +132,7 @@ public class ViewControl : MonoBehaviour {
 		Patient p = Patient.getLoadedPatient ();
 		if (p != null) {
 			p.deleteView (currentViewIndex);
-			p.saveViews ();
+			//p.saveViews ();
 
 			if (p.getViewCount() <= currentViewIndex) {
 				currentViewIndex = p.getViewCount() - 1;
