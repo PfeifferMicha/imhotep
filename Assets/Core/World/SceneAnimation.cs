@@ -36,7 +36,6 @@ public class SceneAnimation : MonoBehaviour {
 			logo.GetComponent<Animator> ().Play ("LogoActivate", -1, 1f);
 
 		} else {
-			sphereEmitters.SetActive (false);
 			sphere.SetActive (false);
 			logo.SetActive (false);
 			PatientSelector.SetActive (false);
