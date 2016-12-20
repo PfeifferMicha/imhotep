@@ -62,7 +62,7 @@ public class NotificationControl : MonoBehaviour {
 			rightPosX = (widthCenterScreen / 2) + (widthRightScreen / 2);
 			leftPosX = (widthCenterScreen / 2) + (widthLeftScreen / 2);
 		//}
-		Debug.LogWarning(widthRightScreen + " - " + widthLeftScreen);
+		//Debug.LogWarning(widthRightScreen + " - " + widthLeftScreen);
     }
 
     // Update is called once per frame
