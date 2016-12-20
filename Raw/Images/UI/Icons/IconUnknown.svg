@@ -41,22 +41,22 @@
   </defs>
   <sodipodi:namedview
      id="base"
-     pagecolor="#001858"
+     pagecolor="#a1a1a1"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0"
+     inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8284271"
-     inkscape:cx="35.744166"
-     inkscape:cy="15.122863"
+     inkscape:zoom="4"
+     inkscape:cx="57.667952"
+     inkscape:cy="46.967089"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="text8703"
      showgrid="true"
      inkscape:snap-global="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1022"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-width="1600"
+     inkscape:window-height="1137"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      borderlayer="false"
      inkscape:showpageshadow="true"
@@ -110,16 +110,14 @@
            height="82.024384"
            x="14.142136"
            y="15.147185" /></flowRegion><flowPara
-         id="flowPara8701"></flowPara></flowRoot>    <text
-       xml:space="preserve"
+         id="flowPara8701" /></flowRoot>    <g
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:75.7449646px;line-height:125%;font-family:'TeX Gyre Heros';-inkscape-font-specification:'TeX Gyre Heros';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="28.483963"
-       y="1031.1956"
-       id="text8703"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan8705"
-         x="28.483963"
-         y="1031.1956">?</tspan></text>
+       id="text8703">
+      <path
+         d="m 45.94081,1017.844 c 0,0 -0.03699,-1.5533 -0.03699,-1.9972 0,-2.6135 0.369849,-4.8696 1.109546,-6.7682 0.542444,-1.4301 1.417752,-2.8725 2.625924,-4.3272 0.887636,-1.0603 2.477984,-2.6013 4.771045,-4.6231 2.317717,-2.04651 3.821768,-3.67384 4.512151,-4.88201 0.690384,-1.20817 1.035576,-2.5273 1.035576,-3.95738 0,-2.58894 -1.010919,-4.85734 -3.032757,-6.80521 -2.021839,-1.97253 -4.499823,-2.95879 -7.433954,-2.95879 -2.835505,0 -5.202536,0.88764 -7.101091,2.66291 -1.898555,1.77527 -3.143712,4.54914 -3.735469,8.32159 -2.214724,0.12482 -4.400578,0.42287 -6.842197,-0.81367 0.616414,-5.05459 2.441,-8.92567 5.473757,-11.61324 3.057414,-2.68757 7.088762,-4.03135 12.094045,-4.03135 5.301161,0 9.529762,1.44241 12.685802,4.32723 3.15604,2.88482 4.73406,6.37372 4.73406,10.46671 0,2.36703 -0.554773,4.54913 -1.664318,6.54632 -1.109545,1.99719 -3.279323,4.42589 -6.509333,7.28599 -2.169777,1.9232 -3.58753,3.341 -4.253257,4.2533 -0.665727,0.9123 -1.158859,1.9602 -1.479394,3.1437 -0.320535,1.1835 -0.554772,5.7696 -0.554772,5.7696 -2.220087,0.5238 -4.410838,0.8715 -6.398374,0 z m -0.406833,13.3516 c -0.471764,-2.6059 -0.911619,-5.2065 0,-7.5819 2.654604,-0.7638 5.162662,-0.6484 7.581893,0 0.526202,2.4221 0.64958,4.9247 0,7.5819 -2.428043,0.6948 -4.919329,0.9469 -7.581893,0 z"
+         id="path10617"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cscccsscsscccssssccsccccccc" />
+    </g>
   </g>
 </svg>

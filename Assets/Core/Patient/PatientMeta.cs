@@ -13,7 +13,7 @@ public class PatientMeta
 		Liver,
 		Brain,
 		Pancreas,
-		Rectum,
+		Intestine,
 		Unknown
 	}
 

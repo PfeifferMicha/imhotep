@@ -8,6 +8,8 @@ public class PatientSelector : MonoBehaviour {
 	public Sprite SpriteLiver = null;
 	public Sprite SpriteBone = null;
 	public Sprite SpriteBrain = null;
+	public Sprite SpritePancreas = null;
+	public Sprite SpriteIntestine = null;
 	public Sprite SpriteUnknown = null;
 
     private GameObject mScrollView;
@@ -136,6 +138,10 @@ public class PatientSelector : MonoBehaviour {
 			return SpriteBone;
 		} else if (ot == PatientMeta.OperationBodyPart.Brain) {
 			return SpriteBrain;
+		} else if (ot == PatientMeta.OperationBodyPart.Pancreas) {
+			return SpritePancreas;
+		} else if (ot == PatientMeta.OperationBodyPart.Intestine) {
+			return SpriteIntestine;
 		} else {
 			return SpriteUnknown;
 		}
