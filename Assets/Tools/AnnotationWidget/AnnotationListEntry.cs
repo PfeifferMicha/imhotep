@@ -62,4 +62,8 @@ public class AnnotationListEntry : MonoBehaviour {
 	public Vector2 getListPos() {
 		return this.gameObject.GetComponent<RectTransform> ().anchoredPosition;
 	}
+
+	public void setMyAnnotationActive(bool active) {
+		myAnnotation.SetActive (active);
+	}
 }

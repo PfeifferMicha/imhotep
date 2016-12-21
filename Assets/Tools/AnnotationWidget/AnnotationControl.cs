@@ -40,6 +40,10 @@ public class AnnotationControl : MonoBehaviour
 	public GameObject annotationListEntry;
 	public GameObject annotationToolBar;
 
+	//instance
+	public static AnnotationControl instance;
+
+
 	//Screens
 	public GameObject listScreen;
 	public GameObject AddEditScreen;
@@ -74,13 +78,17 @@ public class AnnotationControl : MonoBehaviour
 		list
 	}
 
+	public AnnotationControl()
+	{
+		if( instance != null )
+			throw(new System.Exception ("Error: Cannot create more than one instance of ANNOTATIONCONTROL!"));
+		instance = this;
+
+	}
+
 	void OnEnable ()
 	{
 		// Register event callbacks:
-		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_FinishedLoading, loadAnnotationFromFile);
-		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_Closed, closePatient);
-		loadAnnotationFromFile ();
-
 		AddEditScreen.SetActive (false);
 		listScreen.SetActive (false);
 		currentActiveScreen = ActiveScreen.none;
@@ -98,8 +106,6 @@ public class AnnotationControl : MonoBehaviour
 	void OnDisable ()
 	{
 		// Unregister myself:
-		PatientEventSystem.stopListening (PatientEventSystem.Event.PATIENT_FinishedLoading, loadAnnotationFromFile);
-		PatientEventSystem.stopListening (PatientEventSystem.Event.PATIENT_Closed, closePatient);
 		clearAll ();
 		Destroy (clickNotifier);
 	}
@@ -107,11 +113,11 @@ public class AnnotationControl : MonoBehaviour
 
 	// Use this for initialization
 	void Start ()
-	{
+	{	
+		
 		if (annotationPointObj == null) {
 			Debug.LogError ("No Annotation Point Object is set in Annotation.cs");
 		}
-
 		annotationListEntry.gameObject.SetActive (false);
 	}
 
@@ -160,11 +166,6 @@ public class AnnotationControl : MonoBehaviour
 		}
 
 		updatePatientAnnotationList ();
-	}
-
-	//Click on List Entry to Rotate Organ to Annottion
-	public void HighLightAnnotation(GameObject listEntry) {
-		//TODO
 	}
 
 	//################ Called By Events ################
@@ -235,6 +236,8 @@ public class AnnotationControl : MonoBehaviour
 	}
 
 	//################ Private Methods #################
+
+
 
 	private void jumpToListEntry (GameObject annotation)
 	{
@@ -352,68 +355,26 @@ public class AnnotationControl : MonoBehaviour
 		return null;
 	}
 
-	// Deletes all annotationsMesh from Screen(clears Screen) and out off annotationList
-	private void clearAll ()
-	{
+
+
+
+
+	private void setAllAnnotationActive(bool active) {
+		Debug.LogWarning (annotationListEntryList.Count);
 		foreach (GameObject g in annotationListEntryList) {
 			if (g != null) {
-				removeOneAnnotation (g);
+				setAnnotationActive (g, active);
 			}
 		}
-		//Delete list
-		annotationListEntryList = new List<GameObject> ();
-		currentAnnotationListEntry = null;
-		//Delete hoverAnnotation
-		Destroy (hoverAnnotation);
-		hoverAnnotation = null;
-
-
-
 	}
 
-	//Load all annotations out of File in List
-	private void loadAnnotationFromFile (object obj = null)
-	{	
-		if (Patient.getLoadedPatient () == null) {
-			return;
-		}
+	private void activateAnnotations(object obj = null) {
+		setAllAnnotationActive (true);
+	}
 
-		//Clear Screen
-		clearAll ();
-
-		//get Annotation.json
-		Patient currentPatient = Patient.getLoadedPatient ();
-		string path = currentPatient.path + "/annotation.json"; //TODO read from meta.json??
-
-		if (!File.Exists (path)) {
-			return;
-		}
-
-		List<AnnotationJson> apjList = new List<AnnotationJson> ();
-		// Read the file
-		string line;
-		System.IO.StreamReader file = new System.IO.StreamReader (path);
-		while ((line = file.ReadLine ()) != null) {
-			AnnotationJson apj = JsonUtility.FromJson<AnnotationJson> (line);
-			apjList.Add (apj);
-		}
-		file.Close ();
-
-		//List of Json Objects -> AnnotationList
-		foreach (AnnotationJson apj in apjList) {
-			Quaternion rotation = new Quaternion ((float)apj.RotationX, (float)apj.RotationY, (float)apj.RotationZ, (float)apj.RotationW);
-			Vector3 position = new Vector3 ((float)apj.PositionX, (float)apj.PositionY, (float)apj.PositionZ);
-
-			//setup new Annotation as maesh and in List
-			GameObject newAnnotation = createAnnotationMesh (rotation, position);
-			newAnnotation.GetComponent<Annotation> ().setLabeText (apj.Text);
-			//Color not empty (Black)
-			if (apj.ColorR != 0.0f || apj.ColorG != 0.0f || apj.ColorB != 0.0f) {
-				newAnnotation.GetComponent<Annotation> ().changeColor (new Color (apj.ColorR, apj.ColorG, apj.ColorB));
-			}
-
-			createNewAnnotationListEntry (newAnnotation);
-		}
+	//Deactivates Mesh on Screen
+	private void setAnnotationActive(GameObject aListEntry, bool active) {
+		aListEntry.GetComponent<AnnotationListEntry> ().setMyAnnotationActive (active);
 	}
 
 	//removes a annotation given in self from view
@@ -430,7 +391,55 @@ public class AnnotationControl : MonoBehaviour
 		Destroy (aListEntry);		
 	}
 
-	//################ Other Methods ###################
+	//################ Other Methods ##################
+
+
+	// deleteall Annotations
+	public void deleteAllAnnotations ()
+	{
+		foreach (GameObject g in annotationListEntryList) {
+			if (g != null) {
+				removeOneAnnotation (g);
+			}
+		}
+
+		currentAnnotationListEntry = null;
+		//Delete hoverAnnotation
+		Destroy (hoverAnnotation);
+		hoverAnnotation = null;
+		annotationListEntryList = new List<GameObject> ();
+		updatePatientAnnotationList ();
+	}
+
+	// deactivates all Annotations
+	public void clearAll ()
+	{
+		setAllAnnotationActive (false);
+		currentAnnotationListEntry = null;
+		//Delete hoverAnnotation
+		Destroy (hoverAnnotation);
+		hoverAnnotation = null;
+
+	}
+
+	//Called by load Method in Patient to Create all Annotations in File
+	public void createAnnotation(AnnotationJson annotation) {
+		Quaternion rotation = new Quaternion ((float)annotation.RotationX, (float)annotation.RotationY, (float)annotation.RotationZ, (float)annotation.RotationW);
+		Vector3 position = new Vector3 ((float)annotation.PositionX, (float)annotation.PositionY, (float)annotation.PositionZ);
+
+		//setup new Annotation as maesh and in List
+		GameObject newAnnotation = createAnnotationMesh (rotation, position);
+		newAnnotation.GetComponent<Annotation> ().setLabeText (annotation.Text);
+		//Color not empty (Black)
+		if (annotation.ColorR != 0.0f || annotation.ColorG != 0.0f || annotation.ColorB != 0.0f) {
+			newAnnotation.GetComponent<Annotation> ().changeColor (new Color (annotation.ColorR, annotation.ColorG, annotation.ColorB));
+		}
+
+		createNewAnnotationListEntry (newAnnotation);
+	}
+
+
+	//updates list in Patient ... will be safed in file by Patient class
 	public void updatePatientAnnotationList()
 	{
 		Patient p = Patient.getLoadedPatient ();
@@ -456,12 +465,5 @@ public class AnnotationControl : MonoBehaviour
 
 		//delete in File (save new File)
 		updatePatientAnnotationList ();
-	}
-
-
-	//Called if the patient is closed
-	public void closePatient (object obj = null)
-	{
-		clearAll ();
 	}
 }

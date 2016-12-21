@@ -17,6 +17,7 @@ public class Patient : PatientMeta
 	private List<AdditionalInformation> additionalInformation = new List<AdditionalInformation> ();
 	private List<string> additionalInformationTabs = new List<string> ();
 	private List<View> mViews = new List<View> ();
+	private List<AnnotationJson> rawAnnotation = new List<AnnotationJson> ();
 	private List<GameObject> mAnnotations = new List<GameObject> ();
 
 	public class AdditionalInformation
@@ -31,6 +32,7 @@ public class Patient : PatientMeta
 	{
 		PatientEventSystem.stopListening (PatientEventSystem.Event.PATIENT_FinishedLoading, finishedLoading);	// if we were listening already, stop
         PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_FinishedLoading, finishedLoading);
+		PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_Closed, closePatient);
 
         ThreadUtil t = new ThreadUtil(this.PatientLoaderWorker, this.PatientLoaderCallback);
         t.Run();
@@ -286,6 +288,7 @@ public class Patient : PatientMeta
         }
 
         readViews();
+		loadAnnotationFromFile ();
     }
 
     private void PatientLoaderCallback(object sender, RunWorkerCompletedEventArgs e)
@@ -317,6 +320,46 @@ public class Patient : PatientMeta
 	{
 		mAnnotations = list;
 	}
+
+	//Load all annotations out of File in List
+	private void loadAnnotationFromFile (object obj = null)
+	{	
+
+
+
+		//Clear Screen
+		//clearAll ();
+
+		//get Annotation.json
+
+		string path = this.path + "/annotation.json"; //TODO read from meta.json??
+
+		if (!File.Exists (path)) {
+			return;
+		}
+
+		List<AnnotationJson> apjList = new List<AnnotationJson> ();
+		// Read the file
+		string line;
+		System.IO.StreamReader file = new System.IO.StreamReader (path);
+		while ((line = file.ReadLine ()) != null) {
+			AnnotationJson apj = JsonUtility.FromJson<AnnotationJson> (line);
+			apjList.Add (apj);
+		}
+		file.Close ();
+
+		//List of Json Objects -> AnnotationList
+		rawAnnotation = apjList;
+	}
+
+	public void createAnnotations() {
+		foreach(AnnotationJson aJson in rawAnnotation) {
+			AnnotationControl.instance.createAnnotation (aJson);
+		}
+		AnnotationControl.instance.updatePatientAnnotationList ();
+		AnnotationControl.instance.clearAll ();
+	}
+
 
 	//Saves all annotations in a file
 	public void saveAnnotation ()
@@ -368,8 +411,18 @@ public class Patient : PatientMeta
     // Misc:
 
     public void finishedLoading(object obj = null)
-    {
+    {	
+		//Annotation load
+		createAnnotations();
+
         setupDefaultWidgets();
 		NotificationControl.instance.createNotification ("Patient loaded.", new TimeSpan (0, 0, 5));
     }
+
+	//Called if the patient is closed
+	public void closePatient (object obj = null)
+	{
+		AnnotationControl.instance.deleteAllAnnotations ();
+		PatientEventSystem.stopListening (PatientEventSystem.Event.PATIENT_Closed, closePatient);
+	}
 }
