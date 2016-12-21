@@ -57,9 +57,9 @@ public class NotificationControl : MonoBehaviour {
 			//leftPosX = -statusbarWidth / 4;
 			//rightPosX = statusbarWidth / 4;
 		//} else {
-			int widthCenterScreen = (int)platformScript.getScreenDimensions (UI.Screen.center).x;
-			int widthRightScreen = (int)platformScript.getScreenDimensions (UI.Screen.right).x;
-			int widthLeftScreen = (int)platformScript.getScreenDimensions (UI.Screen.left).x;
+			int widthCenterScreen = (int)platformScript.getScreenDimensions (UI.Screen.center).width;
+			int widthRightScreen = (int)platformScript.getScreenDimensions (UI.Screen.right).width;
+			int widthLeftScreen = (int)platformScript.getScreenDimensions (UI.Screen.left).width;
 			rightPosX = (widthCenterScreen / 2) + (widthRightScreen / 2);
 			leftPosX = (widthCenterScreen / 2) + (widthLeftScreen / 2);
         //}
