@@ -49,6 +49,7 @@ public class NotificationControl : MonoBehaviour {
 		//Find Platform script
 		Platform platformScript = platform.GetComponent<Platform>();
 
+        /*
         //Calculate left, center and right position for notification bar
         int statusbarWidth = (int)statusBar.GetComponent<RectTransform>().rect.width;
 		centerPosX = 0;
@@ -61,8 +62,11 @@ public class NotificationControl : MonoBehaviour {
 			int widthLeftScreen = (int)platformScript.getScreenDimensions (UI.Screen.left).x;
 			rightPosX = (widthCenterScreen / 2) + (widthRightScreen / 2);
 			leftPosX = (widthCenterScreen / 2) + (widthLeftScreen / 2);
-		//}
-		//Debug.LogWarning(widthRightScreen + " - " + widthLeftScreen);
+        //}
+        //Debug.LogWarning(widthRightScreen + " - " + widthLeftScreen);
+        */
+
+        this.GetComponent<RectTransform>().localPosition = new Vector2(0, this.GetComponent<RectTransform>().localPosition.y);
     }
 
     // Update is called once per frame
@@ -73,6 +77,7 @@ public class NotificationControl : MonoBehaviour {
             updateNotificationCenter();
         }
 
+        /*
         //Check camera yaw and change x position of notification center
         float cameraYaw = Camera.main.transform.localRotation.eulerAngles.y; // values between 0 and 360
         if(cameraYaw > angle && cameraYaw <= 180)
@@ -87,7 +92,7 @@ public class NotificationControl : MonoBehaviour {
         {
             this.GetComponent<RectTransform>().localPosition = new Vector2(centerPosX, this.GetComponent<RectTransform>().localPosition.y);
         }
-
+        */
     }
 
 
