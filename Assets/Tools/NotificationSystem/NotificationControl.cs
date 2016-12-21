@@ -18,12 +18,8 @@ public class NotificationControl : MonoBehaviour {
     public GameObject secondNotification;
     public GameObject thirdNotification;
     public GameObject statusBar;
-	public GameObject platform;
-
-    public int angle = 45;
 
     private List<Notification> notitficationList = new List<Notification>();
-    //private List<GameObject> gameObjectNotificationList = new List<GameObject>();
 
     private int leftPosX = 0;
     private int centerPosX = 0;
@@ -46,26 +42,7 @@ public class NotificationControl : MonoBehaviour {
         thirdNotification.SetActive(false);
         this.gameObject.SetActive(false);
 
-		//Find Platform script
-		Platform platformScript = platform.GetComponent<Platform>();
-
-        /*
-        //Calculate left, center and right position for notification bar
-        int statusbarWidth = (int)statusBar.GetComponent<RectTransform>().rect.width;
-		centerPosX = 0;
-		//if (platformScript.getIsRounded ()) { 
-			//leftPosX = -statusbarWidth / 4;
-			//rightPosX = statusbarWidth / 4;
-		//} else {
-			int widthCenterScreen = (int)platformScript.getScreenDimensions (UI.Screen.center).width;
-			int widthRightScreen = (int)platformScript.getScreenDimensions (UI.Screen.right).width;
-			int widthLeftScreen = (int)platformScript.getScreenDimensions (UI.Screen.left).width;
-			rightPosX = (widthCenterScreen / 2) + (widthRightScreen / 2);
-			leftPosX = (widthCenterScreen / 2) + (widthLeftScreen / 2);
-        //}
-        //Debug.LogWarning(widthRightScreen + " - " + widthLeftScreen);
-        */
-
+		//Place notification center in the center
         this.GetComponent<RectTransform>().localPosition = new Vector2(0, this.GetComponent<RectTransform>().localPosition.y);
     }
 
@@ -76,39 +53,20 @@ public class NotificationControl : MonoBehaviour {
         {
             updateNotificationCenter();
         }
-
-        /*
-        //Check camera yaw and change x position of notification center
-        float cameraYaw = Camera.main.transform.localRotation.eulerAngles.y; // values between 0 and 360
-        if(cameraYaw > angle && cameraYaw <= 180)
-        {
-            this.GetComponent<RectTransform>().localPosition = new Vector2(rightPosX, this.GetComponent<RectTransform>().localPosition.y);
-        }
-        else if (cameraYaw > 180 && cameraYaw < 360 - angle)
-        {
-            this.GetComponent<RectTransform>().localPosition = new Vector2(leftPosX, this.GetComponent<RectTransform>().localPosition.y);
-        }
-        else
-        {
-            this.GetComponent<RectTransform>().localPosition = new Vector2(centerPosX, this.GetComponent<RectTransform>().localPosition.y);
-        }
-        */
     }
-
-
 
     public void debug()
     {
         System.Random rnd = new System.Random();
         string s = "Notification " + rnd.Next(1, 99);
-        //Notification n = new Notification(s, TimeSpan.FromSeconds(10));
-		Notification n = new Notification(s, TimeSpan.Zero);
+        Notification n = new Notification(s, TimeSpan.FromSeconds(10));
         createNotification(n);
     }
 
     public void createNotification(Notification n)
     {
         notitficationList.Add(n);
+		orderNotitficationList();
         updateNotificationCenter();
 	}
 
@@ -187,8 +145,7 @@ public class NotificationControl : MonoBehaviour {
     }
 
     public void deleteNotoficationPressed(GameObject sender)
-    {
-        
+    {        
         for (int i = notitficationList.Count - 1; i >= 0; i--)
         {
             if (sender.GetComponent<NotificationReference>().notification == notitficationList[i])
@@ -199,4 +156,15 @@ public class NotificationControl : MonoBehaviour {
         }
         updateNotificationCenter();
     }
+
+	//! First Order by ExpireDate then order by CreationDate
+	private void orderNotitficationList(){
+		notitficationList.Sort((x, y) => {
+			int result = x.ExpireDate.CompareTo(y.ExpireDate);
+			if (result == 0) {
+				result = x.CreationDate.CompareTo(y.CreationDate);
+			}
+			return result;
+		});
+	}
 }
