@@ -13,18 +13,13 @@ public class AnnotationListEntry : MonoBehaviour {
 
 	public void setupListEntry (GameObject annotation) {
 		myAnnotation = annotation;
-		annotation.GetComponent<Annotation>().myAnnotationListEntry = this.gameObject;
+		annotation.GetComponent<Annotation> ().myAnnotationListEntry = this.gameObject;
 		listEntryLabel.text = annotation.GetComponent<Annotation>().getLabelText();
 	}
 
 	public void DestroyAnnotation() {
 		//Destroy Label
-		GameObject label = myAnnotation.GetComponent<Annotation>().getLabel();
-		if (label != null)
-		{
-			Destroy(label);
-		}
-		//Delete points
+		myAnnotation.GetComponent<Annotation>().destroyAnnotation();
 		Destroy(myAnnotation.gameObject);
 		myAnnotation = null;
 	}
@@ -43,12 +38,12 @@ public class AnnotationListEntry : MonoBehaviour {
 
 	//Called if the user pressed Edit Annotation Button (List Screen)
 	public void EditAnnotation() {	
-		this.GetComponentInParent<AnnotationControl> ().EditAnnotation (this.gameObject);
+		AnnotationControl.instance.EditAnnotation (this.gameObject);
 	}
 
 	//Called if the user pressed Delete Annotation Button (List Screen)
 	public void DeleteAnnotation() {	
-		this.GetComponentInParent<AnnotationControl> ().DeleteAnnotation (this.gameObject);
+		AnnotationControl.instance.DeleteAnnotation (this.gameObject);
 	}
 
 	public void changeAnnotationColor(Color newColor) {
@@ -61,6 +56,32 @@ public class AnnotationListEntry : MonoBehaviour {
 
 	public Vector2 getListPos() {
 		return this.gameObject.GetComponent<RectTransform> ().anchoredPosition;
+	}
+
+	public void replaceMyAnnotationMesh (GameObject newAnnotationGroup) {
+		newAnnotationGroup.GetComponent<Annotation> ().transferAnnotationSettings (myAnnotation);
+		DestroyAnnotation ();
+		setupListEntry (newAnnotationGroup);
+	}
+
+	public void setAnnotationMovementActive(bool active) {
+		myAnnotation.GetComponent<Annotation> ().setMovementMeshsActive (active);
+	}
+
+	public AnnotationControl.AnnotationType getMyAnnotationType() {
+		return myAnnotation.GetComponent<Annotation> ().myType;
+	}
+
+	public void makeAnnotationTransparent(float alpha) {
+		myAnnotation.GetComponent<Annotation> ().makeTransperent (alpha);
+	}
+
+	public void resetAnnotationTransparency() {
+		myAnnotation.GetComponent<Annotation> ().setDefaultTransparency ();
+	}
+
+	public void setAnnotationLayer(string layer) {
+		myAnnotation.GetComponent<Annotation> ().changeAnnotationMeshLayer (layer);
 	}
 
 	public void setMyAnnotationActive(bool active) {

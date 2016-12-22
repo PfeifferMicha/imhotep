@@ -22,6 +22,8 @@ public class HierarchicalInputModule : BaseInputModule {
 	CustomEventData middleData;
 	CustomEventData triggerData;
 
+	private LayerMask layerMask;
+
 	private Vector2 lastTextureCoord;
 	private Vector3 lastHitWorldPos;
 	//! Position on UI camera (in pixels!):
@@ -43,6 +45,27 @@ public class HierarchicalInputModule : BaseInputModule {
 		middleData = new CustomEventData (eventSystem);
 		triggerData = new CustomEventData (eventSystem);
 
+		//set Layer Mask on Default
+		resetLayerMask ();
+	}
+
+	public void resetLayerMask() {
+		//Sets every Layer to 1
+		//activates every Layer
+		layerMask = -1;
+
+	}
+
+	public void disableLayer(string layer) {
+		//Disables the Given Layer
+		int l = LayerMask.NameToLayer (layer);
+		layerMask.value &= ~(1 << l);
+	}
+
+	public void enableLayer(string layer) {
+		//Enables the given Layer
+		int l = LayerMask.NameToLayer (layer);
+		layerMask.value |= (1 << l);
 	}
 
 	//! Called every frame by the event system
@@ -52,6 +75,7 @@ public class HierarchicalInputModule : BaseInputModule {
 		activeGameObject = null;
 
 		Vector2 hitTextureCoord = Vector2.zero;
+		int hitTriangleIndex = -1;
 		Vector3 hitWorldPos = Vector3.zero;
 
 		isPointerOverUI = false;
@@ -66,12 +90,16 @@ public class HierarchicalInputModule : BaseInputModule {
 
 
 			// 1. First, cast this ray into the scene:
-			int layerMask = ~ (1 << LayerMask.NameToLayer( "UI" )); // Everything but UI Elements (but UIMesh could be hit!)
-			if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity)) {
+			int layerMaskLocal = ~(1 << LayerMask.NameToLayer ("UI")); // Everything but UI Elements (but UIMesh could be hit!)
+			//apply global layer changes to LayerMask used for raycast
+			layerMaskLocal &= layerMask.value;
+			if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity, layerMaskLocal)) {
 
 				activeGameObject = raycastHit.transform.gameObject;
 				hitTextureCoord = raycastHit.textureCoord;
 				hitWorldPos = raycastHit.point;
+				hitTriangleIndex = raycastHit.triangleIndex;
+			
 				lineRenderer.SetPosition (1, raycastHit.point);
 
 				// 2. If the UI Mesh was hit, check if the mouse is actually over a UI element:
@@ -90,16 +118,18 @@ public class HierarchicalInputModule : BaseInputModule {
 
 						hitTextureCoord = new Vector2 ((localPoint.x - rt.rect.min.x) / rt.rect.width,
 							(localPoint.y - rt.rect.min.y) / rt.rect.height);
+						hitTriangleIndex = raycastHit.triangleIndex;
 
 					} else {
-
 						// 3. If no UI element was hit, raycast again but ignore the UIMesh:
-						layerMask = ~ ( 1 << LayerMask.NameToLayer( "UIMesh" ) );
-						if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity, layerMask)) {
+						layerMaskLocal =  ~(1 << LayerMask.NameToLayer ("UIMesh"));
+						layerMaskLocal &= layerMask.value;
+						if (Physics.Raycast (ray, out raycastHit, Mathf.Infinity, layerMaskLocal)) {
 							activeGameObject = raycastHit.transform.gameObject;
 							lineRenderer.SetPosition (1, raycastHit.point);
 
 							hitTextureCoord = raycastHit.textureCoord;
+							hitTriangleIndex = raycastHit.triangleIndex;
 							hitWorldPos = raycastHit.point;
 						} else {
 							activeGameObject = null;
@@ -109,7 +139,8 @@ public class HierarchicalInputModule : BaseInputModule {
 
 				if (raycastHit.transform != null) {		// If any 3D object was hit
 					if (raycastHit.transform.gameObject.layer == LayerMask.NameToLayer ("UITool") ||
-						raycastHit.transform.gameObject.layer == LayerMask.NameToLayer ("UIOrgans") ) {		// If the hit Object was a UI element
+						raycastHit.transform.gameObject.layer == LayerMask.NameToLayer ("UIOrgans") ||
+						raycastHit.transform.gameObject.layer == LayerMask.NameToLayer ("UIAnnotationEdit") ) {		// If the hit Object was a UI element
 						if (raycastHit.transform.GetComponent<CanvasRaycaster> () != null) {
 							RectTransform tf = raycastHit.transform.GetComponent<RectTransform> ();
 							PointerEventData data = new PointerEventData (EventSystem.current);
@@ -155,8 +186,8 @@ public class HierarchicalInputModule : BaseInputModule {
 
 		lastTextureCoord = hitTextureCoord;
 		lastHitWorldPos = hitWorldPos;
-
 		eventData.textureCoord = hitTextureCoord;
+		eventData.hitTriangleIndex = hitTriangleIndex;
 	}
 
 	//! Check into UI scene to see if the ray at rayOrigin would hit anything:
@@ -175,16 +206,12 @@ public class HierarchicalInputModule : BaseInputModule {
 		List<RaycastResult> raycastResults = new List<RaycastResult> ();
 		EventSystem.current.RaycastAll( data, raycastResults );
 		if (raycastResults.Count > 0) {
-			int UILayer = LayerMask.NameToLayer ("UI");
-			foreach (RaycastResult r in raycastResults) {
-				if( r.gameObject != null && r.gameObject.layer == UILayer) {
-					result = r;
-					return true;
-				}
-			}
+			result = raycastResults [0];
+			return true;
+		} else {
+			result = new RaycastResult ();
+			return false;
 		}
-		result = new RaycastResult ();
-		return false;
 	}
 
 	//! Called every frame after UpdateModule (but only if this module is active!)
@@ -222,6 +249,7 @@ public class HierarchicalInputModule : BaseInputModule {
 		if (activeGameObject != null) {
 			ExecuteEvents.ExecuteHierarchy (activeGameObject, eventData, CustomEvents.pointerHoverHandler);
 		}
+
 
 		CopyFromTo (eventData, leftData);
 		CopyFromTo (eventData, rightData);
@@ -466,7 +494,6 @@ public class HierarchicalInputModule : BaseInputModule {
 		return true;
 	}
 
-	/*! Copy everything that should be the same for events, no matter which button was pressed:*/
 	protected void CopyFromTo(CustomEventData @from, CustomEventData @to)
 	{
 		@to.position = @from.position;
@@ -475,6 +502,7 @@ public class HierarchicalInputModule : BaseInputModule {
 		@to.pointerCurrentRaycast = @from.pointerCurrentRaycast;
 		@to.pointerEnter = @from.pointerEnter;
 		@to.textureCoord = @from.textureCoord;
+		@to.hitTriangleIndex = @from.hitTriangleIndex;
 	}
 
 	protected void DeselectIfSelectionChanged(GameObject currentOverGo, BaseEventData pointerEvent)

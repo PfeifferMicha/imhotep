@@ -384,10 +384,14 @@ public class Patient : PatientMeta
 				GameObject ap = apListEntry.GetComponent<AnnotationListEntry> ().getAnnotation ();
 				if (ap != null) {
 					AnnotationJson apj = new AnnotationJson ();
+					apj.type = ap.GetComponent<Annotation> ().myType;
 					apj.Text = ap.GetComponent<Annotation> ().getLabelText ();
 					apj.ColorR = ap.GetComponent<Annotation> ().getColor ().r;
 					apj.ColorG = ap.GetComponent<Annotation> ().getColor ().g;
 					apj.ColorB = ap.GetComponent<Annotation> ().getColor ().b;
+					apj.ScaleX = ap.GetComponent<Annotation> ().getMeshScale ().x;
+					apj.ScaleY = ap.GetComponent<Annotation> ().getMeshScale ().y;
+					apj.ScaleZ = ap.GetComponent<Annotation> ().getMeshScale ().z;
 					apj.PositionX = ap.transform.localPosition.x;
 					apj.PositionY = ap.transform.localPosition.y;
 					apj.PositionZ = ap.transform.localPosition.z;
@@ -396,6 +400,13 @@ public class Patient : PatientMeta
 					apj.RotationX = ap.transform.localRotation.x;
 					apj.RotationY = ap.transform.localRotation.y;
 					apj.RotationZ = ap.transform.localRotation.z;
+
+
+					apj.MeshRotationW = ap.GetComponent<Annotation> ().myAnnotationMesh.transform.localRotation.w;
+					apj.MeshRotationX = ap.GetComponent<Annotation> ().myAnnotationMesh.transform.localRotation.x;
+					apj.MeshRotationY = ap.GetComponent<Annotation> ().myAnnotationMesh.transform.localRotation.y;
+					apj.MeshRotationZ = ap.GetComponent<Annotation> ().myAnnotationMesh.transform.localRotation.z;
+
 
 					apj.Creator = ap.GetComponent<Annotation> ().creator;
 					apj.CreationDate = ap.GetComponent<Annotation> ().creationDate;
@@ -423,6 +434,7 @@ public class Patient : PatientMeta
 	public void closePatient (object obj = null)
 	{
 		AnnotationControl.instance.deleteAllAnnotations ();
+		AnnotationControl.instance.resetLayers ();
 		PatientEventSystem.stopListening (PatientEventSystem.Event.PATIENT_Closed, closePatient);
 	}
 }

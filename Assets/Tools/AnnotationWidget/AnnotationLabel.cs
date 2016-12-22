@@ -25,29 +25,24 @@ public class AnnotationLabel : MonoBehaviour {
 	}
 
 	//Called when you click on Text Label
-	public void LabelClicked( PointerEventData eventData ) {
-		Debug.Log ("Clicked");
+	public void annotationLabelClicked() {
 		myInputField.gameObject.SetActive (true);
 		myInputField.ActivateInputField ();
-		myInputField.Select();
+		myInputField.Select ();
 		myInputField.MoveTextEnd (true);
 		textBackground.color = new Color (textBackground.color.r, textBackground.color.b, textBackground.color.b, 0.0f);
 		myText.color = new Color (myText.color.r, myText.color.b, myText.color.b, 0.0f);
-
-
 	}
 
 	// called when vlue in input Field changed
 	public void ValueChanged () {
-		Debug.Log ("ValueChanged");
 		myText.text = myInputField.text;
-		this.GetComponentInParent<Annotation> ().saveLabelChanges ();
 		resizeLabel ();
 	}
 
 	//Called when User finishs editing Label
 	public void  EditingFinished () {
-		Debug.LogWarning ("Finished");
+		this.GetComponentInParent<Annotation> ().saveLabelChanges ();
 		myInputField.gameObject.SetActive (false);
 		textBackground.color = new Color (textBackground.color.r, textBackground.color.b, textBackground.color.b, 1.0f);
 		myText.color = new Color (myText.color.r, myText.color.b, myText.color.b, 1.0f);

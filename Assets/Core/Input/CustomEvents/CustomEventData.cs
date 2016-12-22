@@ -21,6 +21,9 @@ public class CustomEventData : PointerEventData {
 	/*! u,v coordinates of the hit point.*/
 	public Vector2 textureCoord;
 
+	//Index of triangle hit by raycast in Mesh
+	public int hitTriangleIndex;
+
 	public ButtonType buttonType;
 
 	public CustomEventData( EventSystem system ) : base( system ) {}

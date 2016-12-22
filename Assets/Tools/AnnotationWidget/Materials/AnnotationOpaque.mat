@@ -38,6 +38,13 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
+          name: _MetallicGlossMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
           name: _ParallaxMap
         second:
           m_Texture: {fileID: 0}
@@ -73,7 +80,21 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _MetallicGlossMap
+          name: _SpecGlossMap
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Noise
+        second:
+          m_Texture: {fileID: 0}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _Noise2
         second:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
@@ -93,8 +114,8 @@ Material:
         second: 0.5
       data:
         first:
-          name: _Parallax
-        second: 0.02
+          name: PixelSnap
+        second: 0
       data:
         first:
           name: _ZWrite
@@ -105,8 +126,16 @@ Material:
         second: 0.5
       data:
         first:
+          name: _Metallic
+        second: 0
+      data:
+        first:
           name: _BumpScale
         second: 1
+      data:
+        first:
+          name: _Parallax
+        second: 0.02
       data:
         first:
           name: _OcclusionStrength
@@ -125,7 +154,55 @@ Material:
         second: 0
       data:
         first:
-          name: _Metallic
+          name: _min
+        second: -1
+      data:
+        first:
+          name: _max
+        second: 1
+      data:
+        first:
+          name: _amount
+        second: 0.5
+      data:
+        first:
+          name: _Stencil
+        second: 0
+      data:
+        first:
+          name: _StencilComp
+        second: 8
+      data:
+        first:
+          name: _StencilOp
+        second: 0
+      data:
+        first:
+          name: _StencilReadMask
+        second: 255
+      data:
+        first:
+          name: _StencilWriteMask
+        second: 255
+      data:
+        first:
+          name: _ColorMask
+        second: 15
+      data:
+        first:
+          name: _UseUIAlphaClip
+        second: 0
+      data:
+        first:
+          name: _EaseInAmount
+        second: 0
+      data:
+        first:
+          name: _fadeIn
+        second: 1
+      data:
+        first:
+          name: _highlight
         second: 0
     m_Colors:
       data:
@@ -135,4 +212,16 @@ Material:
       data:
         first:
           name: _Color
-        second: {r: 0.8561851, g: 0.4852941, b: 1, a: 1}
+        second: {r: 0.8561851, g: 0.48529398, b: 1, a: 1}
+      data:
+        first:
+          name: _SpecColor
+        second: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+      data:
+        first:
+          name: _cuttingPlanePosition
+        second: {r: 9999, g: 0, b: 0, a: 1}
+      data:
+        first:
+          name: _cuttingPlaneNormal
+        second: {r: -1, g: 0, b: 0, a: 1}
