@@ -88,4 +88,8 @@ public class AnnotationListEntry : MonoBehaviour {
 	public void setMyAnnotationActive(bool active) {
 		myAnnotation.SetActive (active);
 	}
+
+	public void enableAllCollider (bool enable) {
+		myAnnotation.GetComponent<Annotation> ().enableAllCollider (enable);
+	}
 }

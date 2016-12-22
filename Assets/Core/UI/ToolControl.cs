@@ -369,6 +369,7 @@ public class ToolControl : MonoBehaviour {
 		overridingTool = null;
 
 		closeActiveTool ();
+		toolRingCancel ();
 		activeTool = tool.gameObject;
 		// Move the active tool to the tool anchor:
 		activeTool.SetActive (true);

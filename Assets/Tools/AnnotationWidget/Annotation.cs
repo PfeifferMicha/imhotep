@@ -166,8 +166,13 @@ public class Annotation : MonoBehaviour,  IPointerHoverHandler{
 	}
 
 	//Disables MeshCollider
-	public void disableCollider () {
+	public void disableMeshCollider () {
 		myCollider.enabled = false;
+	}
+
+	public void enableAllCollider (bool enable) {
+		myCollider.enabled = enable;
+		myAnnotationLabel.GetComponent<AnnotationLabel> ().myBoxCollider.enabled = enable;
 	}
 
 	//Transfers all Settings from old Annotation in this one (Label color etc.)

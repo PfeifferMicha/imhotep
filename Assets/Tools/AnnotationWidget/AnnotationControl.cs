@@ -281,12 +281,30 @@ public class AnnotationControl : MonoBehaviour
 		}
 	}
 
+	private void enableAllAnnotationCollider(bool enable) {
+
+		if(annotationListEntryList == null || annotationListEntryList.Count == 0) {
+			return;
+		}
+		foreach(GameObject g in annotationListEntryList) {
+			if(g!= null) {
+				g.GetComponent<AnnotationListEntry> ().enableAllCollider (enable);
+			}
+		}
+	}
+
+
+
+
+
+
 	private void setAnnotationActive(GameObject aListentry, bool active) {
 		aListentry.GetComponent<AnnotationListEntry> ().setMyAnnotationActive (active);
 	}
 
-	private void setCurrentAnnotation(GameObject anno) {
+	private void setCurrentAnnotationListEntry(GameObject anno) {
 		currentAnnotationListEntry = anno;
+		GetComponent<LabelPositioner> ().forceRecalculate ();
 		currentAnnotationType = anno.GetComponent<AnnotationListEntry> ().getMyAnnotationType ();
 	}
 
@@ -373,7 +391,7 @@ public class AnnotationControl : MonoBehaviour
 		//SetSettings
 		previewAnnotation.SetActive (true);
 		previewAnnotation.GetComponent<Annotation> ().makeTransperent (previewTransparency);
-		previewAnnotation.GetComponent<Annotation> ().disableCollider ();
+		previewAnnotation.GetComponent<Annotation> ().disableMeshCollider ();
 		if(newColor) {
 			previewAnnotation.GetComponent<Annotation> ().changeColor (c);
 		} else {
@@ -500,7 +518,7 @@ public class AnnotationControl : MonoBehaviour
 	private void removeOneAnnotation (GameObject aListEntry)
 	{
 
-		if(currentAnnotationListEntry = aListEntry)
+		if(currentAnnotationListEntry == aListEntry)
 		{
 			resetCurrentAnnotation ();
 		}
@@ -511,6 +529,18 @@ public class AnnotationControl : MonoBehaviour
 	}
 
 	//################ Other Methods ##################
+
+
+
+	public bool isCurrentAnnotation(GameObject annotation) {
+		if(currentAnnotationListEntry == null) {
+			return false;
+		}
+		if(annotation == currentAnnotationListEntry.GetComponent<AnnotationListEntry>().getAnnotation()) {
+			return true;
+		}
+		return false;
+	}
 
 	public void updateListInLabelPositioner() {
 		GetComponent<LabelPositioner> ().updateAnnotationList (getAnnotationList ());
@@ -570,6 +600,7 @@ public class AnnotationControl : MonoBehaviour
 		updatePatientAnnotationList ();
 	}
 
+
 	// deactivates all Annotations
 	public void clearAll ()
 	{
@@ -621,7 +652,7 @@ public class AnnotationControl : MonoBehaviour
 	public void EditAnnotation (GameObject aListEntry)
 	{	
 		if(currentAnnotationListEntry == null) {
-			setCurrentAnnotation (aListEntry);
+			setCurrentAnnotationListEntry (aListEntry);
 		}
 		if(currentAnnotationType == AnnotationType.plane) {
 			//delete preview

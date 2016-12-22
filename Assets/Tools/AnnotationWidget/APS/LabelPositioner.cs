@@ -109,32 +109,8 @@ public class LabelPositioner : MonoBehaviour{
 
     void Start()
     {
-
-        initialPlaneRadius = new float[4];
-
-        pointPlanes = new Plane[4];
-        labelPlanes = new Plane[4];
-
-        pointPlaneVectors = new PlaneVectors[4];
-        labelPlaneVectors = new PlaneVectors[4];
-
-        meshViewerBase = GameObject.Find("MeshViewerBase");
-        meshRotationNode = GameObject.Find("MeshViewerBase/MeshViewerScale/MeshRotationNode");
-        meshNode = GameObject.Find("MeshViewerBase/MeshViewerScale");
-		meshPositionNode = GameObject.Find("MeshViewerBase/MeshViewerScale/MeshRotationNode/MeshPositionNode");
-
-        camPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
-
+		initialize ();
         
-        zoomPlaneDistance = 3f;
-        weightAngleSizeRatio = 0.2f; // wurde experimentell bestimmt
-        iterations = 350;
-        whichMode = 0;
-
-        silhouetteCam = (Camera)Instantiate(silhouetteCamPrefab, Camera.main.transform.position, Camera.main.transform.rotation);
-        silhouetteCam.transform.parent = this.transform;
-
-		annotationList = AnnotationControl.instance.getAnnotationList ();
     }
 
     /**
@@ -161,6 +137,45 @@ public class LabelPositioner : MonoBehaviour{
         }
 
     }
+
+	public void initialize() {
+		initialPlaneRadius = new float[4];
+
+		pointPlanes = new Plane[4];
+		labelPlanes = new Plane[4];
+
+		pointPlaneVectors = new PlaneVectors[4];
+		labelPlaneVectors = new PlaneVectors[4];
+
+		meshViewerBase = GameObject.Find("MeshViewerBase");
+		meshRotationNode = GameObject.Find("MeshViewerBase/MeshViewerScale/MeshRotationNode");
+		meshNode = GameObject.Find("MeshViewerBase/MeshViewerScale");
+		meshPositionNode = GameObject.Find("MeshViewerBase/MeshViewerScale/MeshRotationNode/MeshPositionNode");
+
+		camPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+
+
+		zoomPlaneDistance = 3f;
+		weightAngleSizeRatio = 0.2f; // wurde experimentell bestimmt
+		iterations = 350;
+		whichMode = 0;
+
+		silhouetteCam = (Camera)Instantiate(silhouetteCamPrefab, Camera.main.transform.position, Camera.main.transform.rotation);
+		silhouetteCam.transform.parent = this.transform;
+
+		annotationList = AnnotationControl.instance.getAnnotationList ();
+	}
+
+	public void forceRecalculate() {
+		whichMode = 0;
+		rotationChange = 35;
+		startRepositioning = true;
+		inCalculationOfPlanes = false;
+		inCalculationOfZoomPlane = false;
+		if(meshNode != null) {
+			updateAnnotation();	
+		}
+	}
 
 
 	/// <summary>
@@ -412,61 +427,72 @@ public class LabelPositioner : MonoBehaviour{
 
 
                 p.label = l;
+				//check if annotation is not current
 
-                if (l.annotationLabel != null)
-                {
+					if (l.annotationLabel != null)
+					{
+						if (AnnotationControl.instance.isCurrentAnnotation (p.annotationPoint)) {
+							l.annotationLabel.SetActive(true);
+						}
+						
+						if (zoomPlane)
+						{
 
-                    if (zoomPlane)
-                    {
-
-                        if (planeNumber != 3)
-                        {
-                            l.annotationLabel.SetActive(false);
-                            //l.annotationPoint.SetActive(false);
-                        }
-                        else
-                        {
-                            l.annotationLabel.SetActive(true);
-                            l.annotationPoint.SetActive(true);
-                            labelLists[planeNumber].Add(l);
-                            pointsOnPlane[planeNumber].Add(p);
-                        }
-                    }
-                    else
-                    {
-                        if (middlePlane)
-                        {
-                            if (planeNumber == 0 || planeNumber == 3)
-                            {
-                                l.annotationLabel.SetActive(false);
-                                //l.annotationPoint.SetActive(false);
-                            }
-                            else
-                            {
-                                l.annotationLabel.SetActive(true);
-                                l.annotationPoint.SetActive(true);
-                                labelLists[planeNumber].Add(l);
-                                pointsOnPlane[planeNumber].Add(p);
-                            }
-                        }
-                        else
-                        {
-                            if (planeNumber != 2)
-                            {
-                                l.annotationLabel.SetActive(false);
-                                //l.annotationPoint.SetActive(false);
-                            }
-                            else
-                            {
-                                l.annotationLabel.SetActive(true);
-                                l.annotationPoint.SetActive(true);
-                                labelLists[planeNumber].Add(l);
-                                pointsOnPlane[planeNumber].Add(p);
-                            }
-                        }
-                    }
-                }
-            }
+							if (planeNumber != 3)
+							{
+								if (!AnnotationControl.instance.isCurrentAnnotation (p.annotationPoint)) {
+									l.annotationLabel.SetActive(false);
+								}
+								//l.annotationPoint.SetActive(false);
+							}
+							else
+							{
+								l.annotationLabel.SetActive(true);
+								l.annotationPoint.SetActive(true);
+								labelLists[planeNumber].Add(l);
+								pointsOnPlane[planeNumber].Add(p);
+							}
+						}
+						else
+						{
+							if (middlePlane)
+							{
+								if (planeNumber == 0 || planeNumber == 3)
+								{
+									if (!AnnotationControl.instance.isCurrentAnnotation (p.annotationPoint)) {
+										l.annotationLabel.SetActive(false);
+									}
+									//l.annotationPoint.SetActive(false);
+								}
+								else
+								{
+									l.annotationLabel.SetActive(true);
+									l.annotationPoint.SetActive(true);
+									labelLists[planeNumber].Add(l);
+									pointsOnPlane[planeNumber].Add(p);
+								}
+							}
+							else
+							{
+								if (planeNumber != 2)
+								{
+									if (!AnnotationControl.instance.isCurrentAnnotation (p.annotationPoint)) {
+										l.annotationLabel.SetActive(false);
+									}
+									//l.annotationPoint.SetActive(false);
+								}
+								else
+								{
+									l.annotationLabel.SetActive(true);
+									l.annotationPoint.SetActive(true);
+									labelLists[planeNumber].Add(l);
+									pointsOnPlane[planeNumber].Add(p);
+								}
+							}
+						}
+					}
+				}
+              
         }
         if (zoomPlane)
         {
