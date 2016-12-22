@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: c11a50fd5a4f1874887ce73508f5ddbd
+timeCreated: 1476616379
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - silhouetteCamPrefab: {fileID: 2036054, guid: 0a8042aa53e38534fb2fc592a3dc5804,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

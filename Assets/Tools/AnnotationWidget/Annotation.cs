@@ -23,7 +23,7 @@ public class Annotation : MonoBehaviour,  IPointerHoverHandler{
 	public AnnotationControl.AnnotationType myType;
 	private Color myColor;
 	private Color defaultColor;
-	public float defaultTransperency = 0.5f;
+
 	public Material defaultMaterial, previewMaterial;
 	public Collider myCollider;
 	public float maxDistanceToMeshNode = 12f;
@@ -143,11 +143,11 @@ public class Annotation : MonoBehaviour,  IPointerHoverHandler{
 	/// </summary>
 	public void setDefaultTransparency () {
 		if(myType == AnnotationControl.AnnotationType.sphere) {
-			makeTransperent (defaultTransperency);
+			makeTransperent (AnnotationControl.instance.defaultTransperency);
 			return;
 		}
 		if(myType == AnnotationControl.AnnotationType.plane) {
-			makeTransperent (defaultTransperency);
+			makeTransperent (AnnotationControl.instance.defaultTransperency);
 			return;
 		}
 		if(myType == AnnotationControl.AnnotationType.pin) {
@@ -226,8 +226,7 @@ public class Annotation : MonoBehaviour,  IPointerHoverHandler{
 			Vector3 localEventPos = transform.InverseTransformPoint (eventData.pointerCurrentRaycast.worldPosition);
 			GameObject trans = viveMoveObject.transform.GetChild (0).gameObject;
 			GameObject rot = viveMoveObject.transform.GetChild (1).gameObject;
-			trans.transform.position = eventData.pointerCurrentRaycast.worldPosition;
-			rot.transform.position = eventData.pointerCurrentRaycast.worldPosition;
+			viveMoveObject.transform.position = eventData.pointerCurrentRaycast.worldPosition;
 			if(myType == AnnotationControl.AnnotationType.sphere) {
 				//move or rotate with sphere
 				Vector3 localDevicePos = transform.InverseTransformPoint (inputDevice.getEventCamera().transform.position);

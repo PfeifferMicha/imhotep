@@ -62,6 +62,7 @@ public class AnnotationListEntry : MonoBehaviour {
 		newAnnotationGroup.GetComponent<Annotation> ().transferAnnotationSettings (myAnnotation);
 		DestroyAnnotation ();
 		setupListEntry (newAnnotationGroup);
+		AnnotationControl.instance.updateListInLabelPositioner ();
 	}
 
 	public void setAnnotationMovementActive(bool active) {

@@ -86,8 +86,9 @@ public class AnnotationControl : MonoBehaviour
 	private ClickNotifier clickNotifier;
 
 	//Transparencys
-	public float previewTransparency = 0.1f;
-	public float editAnnotationTransparency = 0.1f;
+	public float previewTransparency = 0.2f;
+	public float editAnnotationTransparency = 0.2f;
+	public float defaultTransperency = 0.4f;
 	public float organTransparency = 0.4f;
 
 
@@ -308,7 +309,7 @@ public class AnnotationControl : MonoBehaviour
 	private void makeAnnotationsTransparent() {
 		foreach(GameObject g in annotationListEntryList) {
 			if(g != currentAnnotationListEntry) {
-				g.GetComponent<AnnotationListEntry> ().resetAnnotationTransparency ();
+				g.GetComponent<AnnotationListEntry> ().makeAnnotationTransparent (editAnnotationTransparency);
 			}
 		}
 	}
@@ -316,7 +317,7 @@ public class AnnotationControl : MonoBehaviour
 	private void resetAnnotationTransparency() {
 		foreach(GameObject g in annotationListEntryList) {
 			if(g != currentAnnotationListEntry) {
-				g.GetComponent<AnnotationListEntry> ().makeAnnotationTransparent (editAnnotationTransparency);
+				g.GetComponent<AnnotationListEntry> ().resetAnnotationTransparency ();
 			}
 		}
 	}
@@ -327,6 +328,7 @@ public class AnnotationControl : MonoBehaviour
 			createPreviewAnnotation ();
 		} else {
 			changeAnnoTypeTo (currentAnnotationListEntry, newType);
+			updateListInLabelPositioner ();
 			EditAnnotation (currentAnnotationListEntry);
 		}
 	}
@@ -486,6 +488,7 @@ public class AnnotationControl : MonoBehaviour
 			newEntry.GetComponent<AnnotationListEntry> ().setupListEntry (annotation);
 
 			annotationListEntryList.Add (newEntry);
+			updateListInLabelPositioner ();
 			return newEntry;
 		} else {
 			Debug.LogAssertion ("Annotation is Null");
@@ -508,6 +511,20 @@ public class AnnotationControl : MonoBehaviour
 	}
 
 	//################ Other Methods ##################
+
+	public void updateListInLabelPositioner() {
+		GetComponent<LabelPositioner> ().updateAnnotationList (getAnnotationList ());
+	}
+
+	public List<GameObject> getAnnotationList() {
+		List<GameObject> returnList = new List<GameObject> ();
+		if(annotationListEntryList != null) {
+			foreach(GameObject g in annotationListEntryList) {
+				returnList.Add (g.GetComponent<AnnotationListEntry> ().getAnnotation ());
+			}
+		}
+		return returnList;
+	}
 
 	public void resetLayers() {
 		GameObject inMod = GameObject.Find ("GlobalScript");
@@ -572,7 +589,10 @@ public class AnnotationControl : MonoBehaviour
 
 		//setup new Annotation as maesh and in List
 		GameObject newAnnotation = createAnnotationGroup (annotation.type, rotation, position);
-		newAnnotation.GetComponent<Annotation> ().myAnnotationMesh.transform.localRotation = meshRotation;
+		if(annotation.type == AnnotationType.plane || annotation.type == AnnotationType.sphere) {
+			newAnnotation.GetComponent<Annotation> ().myAnnotationMesh.transform.localRotation = meshRotation;
+		}
+
 		newAnnotation.GetComponent<Annotation> ().setLabeText (annotation.Text);
 
 		//Color not empty (Black)
@@ -630,9 +650,8 @@ public class AnnotationControl : MonoBehaviour
 	{
 		//delete List Entry
 		annotationListEntryList.Remove (aListEntry);
-
 		removeOneAnnotation (aListEntry);
-
+		updateListInLabelPositioner ();
 		//delete in File (save new File)
 		updatePatientAnnotationList ();
 	}
