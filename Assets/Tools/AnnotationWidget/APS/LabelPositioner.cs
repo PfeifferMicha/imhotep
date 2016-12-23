@@ -60,7 +60,7 @@ public class LabelPositioner : MonoBehaviour{
 
     private Camera silhouetteCam; /**<   Kamera mit der später das silhouetteImage gerendert wird   */
 
-
+	public bool autoHideAnnotations = true;
     
 
     private List<Label>[] labelLists = new List<Label>[4]; /**<   ein Array von Listen für die Labels in den einzelnen Ebenen   */
@@ -441,7 +441,8 @@ public class LabelPositioner : MonoBehaviour{
 							if (planeNumber != 3)
 							{
 								if (!AnnotationControl.instance.isCurrentAnnotation (p.annotationPoint)) {
-									l.annotationLabel.SetActive(false);
+									if( autoHideAnnotations )
+										l.annotationLabel.SetActive(false);
 								}
 								//l.annotationPoint.SetActive(false);
 							}
@@ -460,7 +461,8 @@ public class LabelPositioner : MonoBehaviour{
 								if (planeNumber == 0 || planeNumber == 3)
 								{
 									if (!AnnotationControl.instance.isCurrentAnnotation (p.annotationPoint)) {
-										l.annotationLabel.SetActive(false);
+										if( autoHideAnnotations )
+											l.annotationLabel.SetActive(false);
 									}
 									//l.annotationPoint.SetActive(false);
 								}
@@ -477,7 +479,8 @@ public class LabelPositioner : MonoBehaviour{
 								if (planeNumber != 2)
 								{
 									if (!AnnotationControl.instance.isCurrentAnnotation (p.annotationPoint)) {
-										l.annotationLabel.SetActive(false);
+										if( autoHideAnnotations )
+											l.annotationLabel.SetActive(false);
 									}
 									//l.annotationPoint.SetActive(false);
 								}
