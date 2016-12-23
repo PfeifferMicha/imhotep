@@ -63,7 +63,7 @@ public class AnnotationControl : MonoBehaviour
 
 
 	//Screens
-	public GameObject listScreen;
+	public GameObject ListScreen;
 	public GameObject AddEditScreen;
 
 	//Add Annotation Screen Things
@@ -121,7 +121,8 @@ public class AnnotationControl : MonoBehaviour
 	{
 		// Register event callbacks:
 		AddEditScreen.SetActive (false);
-		listScreen.SetActive (false);
+		ListScreen.SetActive (false);
+		annotationToolBar.SetActive (true);
 		currentActiveScreen = ActiveScreen.none;
 
 		setAllAnnotationsActive (true);
@@ -184,16 +185,16 @@ public class AnnotationControl : MonoBehaviour
 	}
 
 	//Called if the user pressed 'show Annotation' button
-	public void ShowAnnotationsList ()
+	public void ToggleAnnotationsList ()
 	{
 		if (currentActiveScreen == ActiveScreen.list) {
 			// Close AnnotationListScreen
-			listScreen.SetActive (false);
+			ListScreen.SetActive (false);
 			currentActiveScreen = ActiveScreen.none;
 		} else {
 			//Open AnnotationListScreen
 			closeAnnotationScreen ();
-			listScreen.SetActive (true);
+			ListScreen.SetActive (true);
 			currentActiveScreen = ActiveScreen.list;
 		}
 	}
@@ -368,7 +369,7 @@ public class AnnotationControl : MonoBehaviour
 			GameObject listEntry = annotation.GetComponent<Annotation> ().myAnnotationListEntry;
 			Vector2 pos = listEntry.gameObject.GetComponent<AnnotationListEntry> ().getListPos ();
 			listEntry.transform.parent.GetComponent<RectTransform> ().anchoredPosition = 
-				new Vector2 (0.0f, (-(pos.y) - (listScreen.GetComponent<RectTransform> ().rect.height / 3)));
+				new Vector2 (0.0f, (-(pos.y) - (ListScreen.GetComponent<RectTransform> ().rect.height / 3)));
 		}
 	}
 
@@ -451,7 +452,7 @@ public class AnnotationControl : MonoBehaviour
 	}
 
 	//Swap image of Annotation button
-	private void closeAnnotationScreen ()
+	public void closeAnnotationScreen ()
 	{	
 		enableOrgans ();
 		// Reset Screen
@@ -479,7 +480,7 @@ public class AnnotationControl : MonoBehaviour
 	{
 		//open Screen
 		makeAnnotationsTransparent();
-		listScreen.SetActive (false);
+		ListScreen.SetActive (false);
 		AddEditScreen.SetActive (true);
 		currentActiveScreen = ActiveScreen.add;
 	}
