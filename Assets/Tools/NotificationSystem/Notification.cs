@@ -7,6 +7,7 @@ public class Notification {
     private string text;
     private DateTime expireDate;
     private Sprite notificationSprite;
+	private DateTime creationDate;
 
 
     //! A constructor.
@@ -20,6 +21,7 @@ public class Notification {
     {
         this.text = text;
         this.notificationSprite = null;
+		this.creationDate = DateTime.Now;
         if(timeToLive == TimeSpan.Zero)
         {
             this.expireDate = DateTime.MaxValue;
@@ -53,6 +55,11 @@ public class Notification {
     {
         get { return expireDate; }
     }
+
+	public DateTime CreationDate
+	{
+		get { return creationDate; }
+	}
 
     public Sprite NotificationSprite
     {
