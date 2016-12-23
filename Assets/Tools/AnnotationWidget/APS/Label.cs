@@ -53,6 +53,8 @@ public class Label : Point{
 		this.annotationPoint = annoPoint;
 
 		annotationLabel = annotationPoint.GetComponent<Annotation>().getLabel();
+
+		moveToNewPosition ();
     }
 
     

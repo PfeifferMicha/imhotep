@@ -15,6 +15,8 @@ public class CanvasMovement : MonoBehaviour {
     private float[] distances = new float[4];
     public GameObject annotationPoint { get; set; }
 
+	public bool move = true;
+
     public float labelScale = 0.04f; // größe der labels..
 
 
@@ -31,66 +33,70 @@ public class CanvasMovement : MonoBehaviour {
 
         adaptLabelToZooming();
 
-        this.transform.position = Vector3.SmoothDamp(this.transform.position, newPos, ref velocity,  2f);
-
-        //this.transform.position = newPos;
-        if(annotationPoint != null) {
-            this.GetComponent<LineRenderer>().SetPosition(0, annotationPoint.transform.position);
-        }
-
-
-
-        float width = this.GetComponent<RectTransform>().rect.width * this.transform.parent.localScale.x * this.GetComponent<RectTransform>().localScale.x * meshNode.transform.localScale.x * meshPositionNode.transform.localScale.x * meshViewerBase.transform.localScale.x;
-        float height = this.GetComponent<RectTransform>().rect.height * this.transform.parent.localScale.x * this.GetComponent<RectTransform>().localScale.x * meshNode.transform.localScale.x * meshPositionNode.transform.localScale.x * meshViewerBase.transform.localScale.x;
-
-        pointsOnLabel[0] = this.transform.position + this.transform.up * (height / 2) + this.transform.right * (width / 2);
-        pointsOnLabel[1] = this.transform.position + this.transform.up * (height / 2) - this.transform.right * (width / 2);
-        pointsOnLabel[2] = this.transform.position - this.transform.up * (height / 2) + this.transform.right * (width / 2);
-        pointsOnLabel[3] = this.transform.position - this.transform.up * (height / 2) - this.transform.right * (width / 2);
-
-        
-
-        for (int i = 0; i < distances.Length; i++)
-        {
-
-            if(annotationPoint != null)
-            {
-                distances[i] = (pointsOnLabel[i] - annotationPoint.transform.position).magnitude;
-
-            }
-        }
-
-
-        for (int i = 0; i < distances.Length; i++)
-        {
-            bool smallest = false;
-
-            for (int j = i; j < distances.Length; j++)
-            {
-
-                if (distances[i] <= distances[j])
-                {
-                    smallest = true;
-                }
-                else
-                {
-                    smallest = false;
-                }
-
-            }
-
-            if (smallest == true)
-            {
-
-                this.GetComponent<LineRenderer>().SetPosition(1, pointsOnLabel[i]);
-                break;
-            }
-
-        }        
-        
-        this.GetComponent<LineRenderer>().enabled = true;
-
+		if( move )
+        	this.transform.position = Vector3.SmoothDamp(this.transform.position, newPos, ref velocity,  2f);
+		
+		updateConnectionLine ();
     }
+
+	public void updateConnectionLine()
+	{
+		//this.transform.position = newPos;
+		if(annotationPoint != null) {
+			this.GetComponent<LineRenderer>().SetPosition(0, annotationPoint.transform.position);
+		}
+
+
+		float width = this.GetComponent<RectTransform>().rect.width * this.transform.parent.localScale.x * this.GetComponent<RectTransform>().localScale.x * meshNode.transform.localScale.x * meshPositionNode.transform.localScale.x * meshViewerBase.transform.localScale.x;
+		float height = this.GetComponent<RectTransform>().rect.height * this.transform.parent.localScale.x * this.GetComponent<RectTransform>().localScale.x * meshNode.transform.localScale.x * meshPositionNode.transform.localScale.x * meshViewerBase.transform.localScale.x;
+
+		pointsOnLabel[0] = this.transform.position + this.transform.up * (height / 2) + this.transform.right * (width / 2);
+		pointsOnLabel[1] = this.transform.position + this.transform.up * (height / 2) - this.transform.right * (width / 2);
+		pointsOnLabel[2] = this.transform.position - this.transform.up * (height / 2) + this.transform.right * (width / 2);
+		pointsOnLabel[3] = this.transform.position - this.transform.up * (height / 2) - this.transform.right * (width / 2);
+
+
+
+		for (int i = 0; i < distances.Length; i++)
+		{
+
+			if(annotationPoint != null)
+			{
+				distances[i] = (pointsOnLabel[i] - annotationPoint.transform.position).magnitude;
+
+			}
+		}
+
+
+		for (int i = 0; i < distances.Length; i++)
+		{
+			bool smallest = false;
+
+			for (int j = i; j < distances.Length; j++)
+			{
+
+				if (distances[i] <= distances[j])
+				{
+					smallest = true;
+				}
+				else
+				{
+					smallest = false;
+				}
+
+			}
+
+			if (smallest == true)
+			{
+
+				this.GetComponent<LineRenderer>().SetPosition(1, pointsOnLabel[i]);
+				break;
+			}
+
+		}        
+
+		this.GetComponent<LineRenderer>().enabled = true;
+	}
 
     public void adaptLabelToZooming() // die größe der Labels sollten unabhängig vom zoomen sein..
     {                                // war davor am label angeheftet
