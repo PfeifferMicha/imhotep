@@ -26,7 +26,7 @@ public class SceneAnimation : MonoBehaviour {
 
 			// Activate all the objects:
 			sphere.SetActive (true);
-			logo.SetActive (true);
+			logo.SetActive (false);
 			PatientSelector.SetActive (true);
 			sphereEmitters.SetActive (true);
 
