@@ -18,6 +18,7 @@ public class NotificationControl : MonoBehaviour {
     public GameObject secondNotification;
     public GameObject thirdNotification;
     public GameObject statusBar;
+    public GameObject additionalInformation;
 
     private List<Notification> notitficationList = new List<Notification>();
 
@@ -44,6 +45,8 @@ public class NotificationControl : MonoBehaviour {
 
 		//Place notification center in the center
         this.GetComponent<RectTransform>().localPosition = new Vector2(0, this.GetComponent<RectTransform>().localPosition.y);
+
+        hiddeAdditionalInformation();
     }
 
     // Update is called once per frame
@@ -167,4 +170,14 @@ public class NotificationControl : MonoBehaviour {
 			return result;
 		});
 	}
+
+    public void showAdditionalInformation()
+    {
+        additionalInformation.SetActive(true);
+    }
+
+    public void hiddeAdditionalInformation()
+    {
+        additionalInformation.SetActive(false);
+    }
 }
