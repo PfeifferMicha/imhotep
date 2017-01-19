@@ -19,7 +19,8 @@ public class NotificationControl : MonoBehaviour {
     public GameObject thirdNotification;
     public GameObject statusBar;
     public GameObject additionalInformation;
-
+    public GameObject customAdditionalInfoIn; //For debugging
+    public GameObject customAdditionalInfo = null;
     private List<Notification> notitficationList = new List<Notification>();
 
     private int leftPosX = 0;
@@ -46,7 +47,7 @@ public class NotificationControl : MonoBehaviour {
 		//Place notification center in the center
         this.GetComponent<RectTransform>().localPosition = new Vector2(0, this.GetComponent<RectTransform>().localPosition.y);
 
-        hiddeAdditionalInformation();
+        hideAdditionalInformation();
     }
 
     // Update is called once per frame
@@ -54,6 +55,7 @@ public class NotificationControl : MonoBehaviour {
         bool listChanged = deleteNotificationsIfExpired();
         if (listChanged)
         {
+            hideAdditionalInformation();
             updateNotificationCenter();
         }
     }
@@ -61,9 +63,12 @@ public class NotificationControl : MonoBehaviour {
     public void debug()
     {
         System.Random rnd = new System.Random();
-        string s = "Notification " + rnd.Next(1, 99);
-        Notification n = new Notification(s, TimeSpan.FromSeconds(10));
+        Notification i = new Notification("Notification " + rnd.Next(1, 99), TimeSpan.Zero);
+        Notification m = new Notification("Notification " + rnd.Next(1, 99), TimeSpan.Zero, null, new AdditionalInfo("test test \ntest " + rnd.Next(1, 99)));
+        Notification n = new Notification("Notification " + rnd.Next(1, 99), TimeSpan.Zero, null, new AdditionalInfo(customAdditionalInfoIn));
+        createNotification(m);
         createNotification(n);
+        createNotification(i);
     }
 
     public void createNotification(Notification n)
@@ -74,14 +79,9 @@ public class NotificationControl : MonoBehaviour {
 	}
 
 	//! Convenience overload
-	public void createNotification( string text, TimeSpan timeToLive, Sprite notificationSprite = null )
+	public void createNotification( string text, TimeSpan timeToLive, Sprite notificationSprite = null, AdditionalInfo additionalInfo = null )
 	{
-		Notification n;
-		if (notificationSprite == null) {
-			n = new Notification (text, timeToLive);
-		} else {
-			n = new Notification (text, timeToLive, notificationSprite);
-		}
+		Notification n = new Notification (text, timeToLive, notificationSprite, additionalInfo);
 		createNotification (n);
 	}
 	
@@ -117,21 +117,21 @@ public class NotificationControl : MonoBehaviour {
         if(notitficationList.Count > 0)
         {
             firstNotification.SetActive(true);
-            setTextAndIconInNotifiaction(firstNotification, notitficationList[0]);
+            setTextAndIconInNotifiaction(firstNotification, notitficationList[0], true);
         }
         if (notitficationList.Count > 1)
         {
             secondNotification.SetActive(true);
-            setTextAndIconInNotifiaction(secondNotification, notitficationList[1]);
+            setTextAndIconInNotifiaction(secondNotification, notitficationList[1], false);
         }
         if (notitficationList.Count > 2)
         {
             thirdNotification.SetActive(true);
-            setTextAndIconInNotifiaction(thirdNotification, notitficationList[2]);
+            setTextAndIconInNotifiaction(thirdNotification, notitficationList[2], false);
         }
     }
 
-    private void setTextAndIconInNotifiaction(GameObject notificationGameObject, Notification n)
+    private void setTextAndIconInNotifiaction(GameObject notificationGameObject, Notification n, bool firstNotification)
     {
         //Set text
         notificationGameObject.GetComponentInChildren<Text>().text = n.Text;
@@ -145,6 +145,28 @@ public class NotificationControl : MonoBehaviour {
         //Set reference to notification object
         notificationGameObject.GetComponent<NotificationReference>().notification = n;
 
+        //Set additional info text if notification has an additional info text and is the first notification on screen
+        if (firstNotification)
+        {
+            if(n.AdditionalInfo != null)
+            {
+                if (n.AdditionalInfo.Type == AdditionalInfo.AdditionalInfoType.TEXT)
+                {
+                    additionalInformation.GetComponentInChildren<Text>().text = n.AdditionalInfo.AdditionalInfoText;
+                    customAdditionalInfo = null;
+                }
+                if (n.AdditionalInfo.Type == AdditionalInfo.AdditionalInfoType.CUSTOM)
+                {
+                    customAdditionalInfo = n.AdditionalInfo.CustomUIElement;
+                }
+            }
+            else
+            {
+                hideAdditionalInformation();
+            }
+        }
+
+
     }
 
     public void deleteNotoficationPressed(GameObject sender)
@@ -157,6 +179,7 @@ public class NotificationControl : MonoBehaviour {
                 break;
             }
         }
+        hideAdditionalInformation();
         updateNotificationCenter();
     }
 
@@ -173,11 +196,25 @@ public class NotificationControl : MonoBehaviour {
 
     public void showAdditionalInformation()
     {
-        additionalInformation.SetActive(true);
+        if(notitficationList.Count > 0 && notitficationList[0].AdditionalInfo != null)
+        {
+            if (notitficationList[0].AdditionalInfo.Type == AdditionalInfo.AdditionalInfoType.TEXT)
+            {
+                additionalInformation.SetActive(true);
+            } else if (notitficationList[0].AdditionalInfo.Type == AdditionalInfo.AdditionalInfoType.CUSTOM)
+            {
+                customAdditionalInfo.SetActive(true);
+            }
+
+        }
     }
 
-    public void hiddeAdditionalInformation()
+    public void hideAdditionalInformation()
     {
         additionalInformation.SetActive(false);
+        if(customAdditionalInfo != null)
+        {
+            customAdditionalInfo.SetActive(false);
+        }
     }
 }

@@ -8,7 +8,7 @@ public class Notification {
     private DateTime expireDate;
     private Sprite notificationSprite;
 	private DateTime creationDate;
-
+    private AdditionalInfo additionalInfo;
 
     //! A constructor.
     /*!
@@ -21,6 +21,7 @@ public class Notification {
     {
         this.text = text;
         this.notificationSprite = null;
+        this.additionalInfo = null;
 		this.creationDate = DateTime.Now;
         if(timeToLive == TimeSpan.Zero)
         {
@@ -45,6 +46,11 @@ public class Notification {
         this.notificationSprite = notificationSprite;
     }
 
+    public Notification(string text, TimeSpan timeToLive, Sprite notificationSprite, AdditionalInfo additionalInfo) : this(text, timeToLive)
+    {
+        this.additionalInfo = additionalInfo;
+    }
+
     public string Text
     {
         get { return text; }
@@ -64,6 +70,11 @@ public class Notification {
     public Sprite NotificationSprite
     {
         get { return notificationSprite; }
+    }
+
+    public AdditionalInfo AdditionalInfo
+    {
+        get { return additionalInfo; }
     }
 
 
