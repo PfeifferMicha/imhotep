@@ -29,6 +29,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	// Slice which is currently being loaded:
 	private bool loadingSlice = false;
 
+	private Texture2D mDefaultMask = null;
+
 	private DICOM currentDICOM;
 
 	private bool touchpadUpPressed = false;
@@ -59,6 +61,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		LoadViewSettings ();
 
 		//LayerChanged (currentViewSettings.layer);
+		ResetMask();
 	}
 
 	public void OnDisable()
@@ -464,5 +467,27 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		Rect uvRect = GetComponent<RawImage> ().uvRect;
 		uvRect.height = -uvRect.height;
 		GetComponent<RawImage> ().uvRect = uvRect;
+	}
+
+	/*! Set an additional RGB texture which is drawn over the DICOM
+	 * Can be used to draw annotations/labels, additional info etc. on the DICOM*/
+	public void SetMask( Texture2D texture )
+	{
+		if (mMaterial == null) {
+			mMaterial = new Material (Shader.Find ("Unlit/DICOM2D"));
+			GetComponent<RawImage> ().material = mMaterial;
+		}
+		mMaterial.SetTexture ("_OverlayTex", texture);
+	}
+
+	/*! Revert the DICOM mask to an empty mask*/
+	public void ResetMask()
+	{
+		if (mDefaultMask == null) {
+			mDefaultMask = new Texture2D (1, 1, TextureFormat.ARGB32, false);
+			mDefaultMask.SetPixel (0, 0, new Color (0f, 0f, 0f, 0f));
+			mDefaultMask.Apply ();
+		}
+		SetMask( mDefaultMask );
 	}
 }

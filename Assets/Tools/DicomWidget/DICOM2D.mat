@@ -78,6 +78,13 @@ Material:
           m_Texture: {fileID: 0}
           m_Scale: {x: 1, y: 1}
           m_Offset: {x: 0, y: 0}
+      data:
+        first:
+          name: _OverlayTex
+        second:
+          m_Texture: {fileID: 2800000, guid: fe9127e91a39d894b9be6d8af22fb748, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
     m_Floats:
       data:
         first:
@@ -91,22 +98,6 @@ Material:
         first:
           name: _Cutoff
         second: 0.5
-      data:
-        first:
-          name: minValue
-        second: 0.4161448
-      data:
-        first:
-          name: maxValue
-        second: 0.8937185
-      data:
-        first:
-          name: globalMinimum
-        second: 0
-      data:
-        first:
-          name: globalMaximum
-        second: 2131
       data:
         first:
           name: _Parallax
@@ -145,8 +136,32 @@ Material:
         second: 0
       data:
         first:
+          name: minValue
+        second: 0.4161448
+      data:
+        first:
+          name: maxValue
+        second: 0.8937185
+      data:
+        first:
+          name: globalMinimum
+        second: 0
+      data:
+        first:
+          name: globalMaximum
+        second: 2131
+      data:
+        first:
           name: layer
         second: 0
+      data:
+        first:
+          name: level
+        second: 0.5
+      data:
+        first:
+          name: window
+        second: 1
     m_Colors:
       data:
         first:

@@ -748,10 +748,10 @@ Transform:
   m_Children:
   - {fileID: 703851117}
   - {fileID: 1560682047}
-  - {fileID: 596485398}
   - {fileID: 770677304}
-  - {fileID: 851865262}
+  - {fileID: 596485398}
   - {fileID: 595333582}
+  - {fileID: 851865262}
   m_Father: {fileID: 0}
   m_RootOrder: 1
 --- !u!111 &26487850
@@ -7028,7 +7028,7 @@ Transform:
   - {fileID: 304307828}
   - {fileID: 70703604}
   m_Father: {fileID: 26487849}
-  m_RootOrder: 5
+  m_RootOrder: 4
 --- !u!114 &595333583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9594,7 +9594,7 @@ Transform:
   - {fileID: 1656483051}
   - {fileID: 96575063}
   m_Father: {fileID: 26487849}
-  m_RootOrder: 3
+  m_RootOrder: 2
 --- !u!1 &785920033
 GameObject:
   m_ObjectHideFlags: 0
@@ -25077,6 +25077,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 431af2eb804234ee4a134d66ecf1425d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  test: {fileID: 2800000, guid: fe9127e91a39d894b9be6d8af22fb748, type: 3}
   widget: {fileID: 0}
 --- !u!1 &2062577397
 GameObject:
