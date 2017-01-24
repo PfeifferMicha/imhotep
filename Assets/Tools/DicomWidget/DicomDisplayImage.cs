@@ -484,6 +484,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 	public void ResetMask()
 	{
 		if (mDefaultMask == null) {
+			// Generate a simple 1x1 texture and fill it with transparent black:
 			mDefaultMask = new Texture2D (1, 1, TextureFormat.ARGB32, false);
 			mDefaultMask.SetPixel (0, 0, new Color (0f, 0f, 0f, 0f));
 			mDefaultMask.Apply ();
