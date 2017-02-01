@@ -21,11 +21,14 @@ public class NotificationControl : MonoBehaviour {
     public GameObject additionalInformation;
     public GameObject customAdditionalInfoIn; //For debugging
     public GameObject customAdditionalInfo = null;
+
+    [Header("Variables for moving notification center to the viewport")]
+    public bool moveNotificationCenter = true;
+    public int minXPositionNotificationCenter = -650;
+    public int maxXPositionNotificationCenter = 1000;
+
     private List<Notification> notitficationList = new List<Notification>();
 
-    private int leftPosX = 0;
-    private int centerPosX = 0;
-    private int rightPosX = 0;
 
 	public static NotificationControl instance { get; private set; }
 
@@ -57,6 +60,23 @@ public class NotificationControl : MonoBehaviour {
         {
             hideAdditionalInformation();
             updateNotificationCenter();
+        }
+
+        //moving notification center to center of view port
+        if (moveNotificationCenter)
+        {
+            RaycastHit hit;
+            Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+            LayerMask onlyUIMeshLayer = 100000000; // hits only the ui mesh  layer
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, onlyUIMeshLayer)) {
+                float statusbarWidth = statusBar.GetComponent<RectTransform>().rect.width;
+                int newXPos = (int)(statusbarWidth * hit.textureCoord.x);
+                newXPos = newXPos - (int)(statusbarWidth / 2);
+                newXPos = Math.Min(newXPos, maxXPositionNotificationCenter);
+                newXPos = Math.Max(newXPos, minXPositionNotificationCenter);
+                this.GetComponent<RectTransform>().localPosition = new Vector2(newXPos, this.GetComponent<RectTransform>().localPosition.y);
+            }
         }
     }
 

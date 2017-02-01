@@ -20004,11 +20004,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2011151804}
-        m_MethodName: hideAdditionalInformation
-        m_Mode: 1
+        m_MethodName: deleteNotoficationPressed
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 1367946974}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -24440,6 +24440,9 @@ MonoBehaviour:
   additionalInformation: {fileID: 1608494889}
   customAdditionalInfoIn: {fileID: 259778562}
   customAdditionalInfo: {fileID: 0}
+  moveNotificationCenter: 1
+  minXPositionNotificationCenter: -650
+  maxXPositionNotificationCenter: 1000
 --- !u!114 &2011151806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25077,7 +25080,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 431af2eb804234ee4a134d66ecf1425d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  test: {fileID: 2800000, guid: fe9127e91a39d894b9be6d8af22fb748, type: 3}
   widget: {fileID: 0}
 --- !u!1 &2062577397
 GameObject:
