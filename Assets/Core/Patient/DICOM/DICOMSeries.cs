@@ -190,8 +190,8 @@ public class DICOMSeries {
 
 		// Convert to a the left-hand-side coordinate system which Unity uses:
 		Matrix4x4 rightHandToLeftHand = new Matrix4x4 ();
-		rightHandToLeftHand [0, 0] = -1f;
-		rightHandToLeftHand [1, 1] = -1f;
+		rightHandToLeftHand [0, 0] = 1f;
+		rightHandToLeftHand [1, 1] = 1f;
 		rightHandToLeftHand [2, 2] = -1f;
 		rightHandToLeftHand [3, 3] = 1f;
 
@@ -199,7 +199,6 @@ public class DICOMSeries {
 
 		// Inverse transformation:
 		patientToPixel = pixelToPatient.inverse;
-
 
 		// Read the minimum and maximum values which are stored in this image:
 		minPixelValue = UInt16.MinValue;

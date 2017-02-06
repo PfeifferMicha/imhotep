@@ -35,16 +35,18 @@ public class ModelZoomer : MonoBehaviour
 			InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;
 			if (inputDevice.getDeviceType () == InputDeviceManager.InputDeviceType.Mouse) {
 				// Let mouse handle zooming:
-				if (Input.GetAxis ("Mouse ScrollWheel") != 0) {
-					
-					float inputScroll = Input.GetAxis ("Mouse ScrollWheel");
+				if (!UI.Core.instance.pointerIsOverPlatformUIObject) {
+					if (Input.GetAxis ("Mouse ScrollWheel") != 0) {
+						
+						float inputScroll = Input.GetAxis ("Mouse ScrollWheel");
 
-					float zoom = transform.localScale.x + inputScroll / (1 / zoomingSpeed);
+						float zoom = transform.localScale.x + inputScroll / (1 / zoomingSpeed);
 
-					zoom = Mathf.Clamp (zoom, minZoom, maxZoom);
+						zoom = Mathf.Clamp (zoom, minZoom, maxZoom);
 
-					transform.localScale = new Vector3 (zoom, zoom, zoom);
-					targetZoom = transform.localScale;
+						transform.localScale = new Vector3 (zoom, zoom, zoom);
+						targetZoom = transform.localScale;
+					}
 				}
 			} else if ( inputDevice.getDeviceType() == InputDeviceManager.InputDeviceType.ViveController ) {
 				// Let left Vive controller handle zooming:

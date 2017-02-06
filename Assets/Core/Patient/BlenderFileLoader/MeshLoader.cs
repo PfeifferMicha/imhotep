@@ -228,7 +228,6 @@ public class MeshLoader : MonoBehaviour {
 			//containerObject.transform.localPosition = -bounds.center;
 
 			meshNode.GetComponent<ModelMover> ().targetPosition = Vector3.Scale(-bounds.center, meshNode.transform.localScale);
-            
         }
 
 
@@ -242,7 +241,7 @@ public class MeshLoader : MonoBehaviour {
         //Destroy current game objects attached to mesh node
         for (int i = 0; i < meshNode.transform.childCount; i++)
         {
-			if (meshNode.transform.GetChild (i).name != "3DPointer") {
+			if (meshNode.transform.GetChild (i).name != "DICOMBounds") {
 				Destroy (meshNode.transform.GetChild (i).gameObject);
 			}
         }
