@@ -29,6 +29,8 @@ public class DICOMBounds : MonoBehaviour {
 
 	private string currentSeriesUID = "";
 
+	private bool listeningToEvents = false;
+
 	void Start()
 	{
 		Edge1 = gameObject.transform.Find ("Edge (1)").GetComponent<LineRenderer> ();
@@ -47,19 +49,19 @@ public class DICOMBounds : MonoBehaviour {
 		RectXMax = gameObject.transform.Find ("RectXMax").GetComponent<LineRenderer> ();
 		RectYMin = gameObject.transform.Find ("RectYMin").GetComponent<LineRenderer> ();
 		RectYMax = gameObject.transform.Find ("RectYMax").GetComponent<LineRenderer> ();
-	}
 
-	// Use this for initialization
-	void OnEnable () {
-		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewLoaded, eventNewDICOM );
-		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, patientClosed );
+		if (!listeningToEvents) {
+			PatientEventSystem.startListening (PatientEventSystem.Event.DICOM_NewLoaded, eventNewDICOM);
+			PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_Closed, patientClosed);
+			listeningToEvents = true;	// Don't call startListening again when disabling and re-enabling this object.
+		}
 
 		// In case a DICOM is already loaded:
 		eventNewDICOM ();
-
 	}
-	void OnDisable() {
+	void OnDestroy() {
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewLoaded, eventNewDICOM );
+		PatientEventSystem.stopListening( PatientEventSystem.Event.PATIENT_Closed, patientClosed );
 	}
 
 	void eventNewDICOM( object obj = null )
@@ -115,9 +117,9 @@ public class DICOMBounds : MonoBehaviour {
 
 			// Display the position of the current slice:
 			Vector3 p1 = dicom.seriesInfo.transformPixelToPatientPos (Vector2.zero, dicom.slice);
-			Vector3 p2 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2( dicom.texWidth, 0f ), dicom.slice);
-			Vector3 p3 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2( dicom.texWidth, dicom.texHeight ), dicom.slice);
-			Vector3 p4 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2( 0, dicom.texHeight ), dicom.slice);
+			Vector3 p2 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.texWidth, 0f), dicom.slice);
+			Vector3 p3 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.texWidth, dicom.texHeight), dicom.slice);
+			Vector3 p4 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (0, dicom.texHeight), dicom.slice);
 			RectXMin.SetPosition (0, p1);
 			RectXMin.SetPosition (1, p4);
 			RectXMax.SetPosition (0, p2);
@@ -128,6 +130,8 @@ public class DICOMBounds : MonoBehaviour {
 			RectYMax.SetPosition (1, p4);
 
 			gameObject.SetActive (true);
+		} else {
+			gameObject.SetActive (false);
 		}
 	}
 
