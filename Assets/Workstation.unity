@@ -299,7 +299,7 @@ Transform:
   - {fileID: 704322605}
   - {fileID: 861532737}
   m_Father: {fileID: 1120745102}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!114 &7768677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7536,7 +7536,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -14586,7 +14586,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.007, y: 0.007, z: 0.007}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_Children: []
+  m_Children:
+  - {fileID: 7768676}
   m_Father: {fileID: 1416113409}
   m_RootOrder: 0
 --- !u!114 &1120745103

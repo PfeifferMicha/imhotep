@@ -7254,7 +7254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -9778,7 +9778,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6bda6dfb9a6beb4abd0f04e1332053c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  patientFolderName: DICOMTest
+  patientFolderName: OP4_Liver_Anon_B
   toolToLoad: {fileID: 26119098}
   sphere: {fileID: 1936587625}
   sphereEmitters: {fileID: 1656483050}
@@ -24169,6 +24169,9 @@ MonoBehaviour:
   additionalInformation: {fileID: 1608494889}
   customAdditionalInfoIn: {fileID: 259778562}
   customAdditionalInfo: {fileID: 0}
+  moveNotificationCenter: 1
+  minXPositionNotificationCenter: -650
+  maxXPositionNotificationCenter: 1000
 --- !u!114 &2011151806
 MonoBehaviour:
   m_ObjectHideFlags: 0
