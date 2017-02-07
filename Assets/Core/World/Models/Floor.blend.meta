@@ -1,0 +1,162 @@
+fileFormatVersion: 2
+guid: fb677fecb18b54865980f198be501536
+timeCreated: 1486482800
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Center
+    100002: CenterEmitters
+    100004: CenterLigths
+    100006: CenterPlatform
+    100008: CenterRotated_22_5
+    100010: CenterRotated_45
+    100012: CenterRotated_90
+    100014: //RootNode
+    100016: FloorCircle
+    100018: FloorDetail
+    100020: FloorDetail2
+    100022: FloorDetail3
+    100024: FloorDetail4
+    100026: FloorDetail5
+    100028: FloorDetail6
+    100030: FloorDetail7
+    100032: FloorDetail8
+    100034: FloorDetail9
+    100036: FloorRing
+    100038: GroundPlane
+    100040: MainFloorPlates
+    100042: SphereEmitters
+    400000: Center
+    400002: CenterEmitters
+    400004: CenterLigths
+    400006: CenterPlatform
+    400008: CenterRotated_22_5
+    400010: CenterRotated_45
+    400012: CenterRotated_90
+    400014: //RootNode
+    400016: FloorCircle
+    400018: FloorDetail
+    400020: FloorDetail2
+    400022: FloorDetail3
+    400024: FloorDetail4
+    400026: FloorDetail5
+    400028: FloorDetail6
+    400030: FloorDetail7
+    400032: FloorDetail8
+    400034: FloorDetail9
+    400036: FloorRing
+    400038: GroundPlane
+    400040: MainFloorPlates
+    400042: SphereEmitters
+    2300000: CenterPlatform
+    2300002: FloorCircle
+    2300004: FloorDetail
+    2300006: FloorDetail2
+    2300008: FloorDetail3
+    2300010: FloorDetail4
+    2300012: FloorDetail5
+    2300014: FloorDetail6
+    2300016: FloorDetail7
+    2300018: FloorDetail8
+    2300020: FloorDetail9
+    2300022: FloorRing
+    2300024: GroundPlane
+    2300026: MainFloorPlates
+    2300028: SphereEmitters
+    3300000: CenterPlatform
+    3300002: FloorCircle
+    3300004: FloorDetail
+    3300006: FloorDetail2
+    3300008: FloorDetail3
+    3300010: FloorDetail4
+    3300012: FloorDetail5
+    3300014: FloorDetail6
+    3300016: FloorDetail7
+    3300018: FloorDetail8
+    3300020: FloorDetail9
+    3300022: FloorRing
+    3300024: GroundPlane
+    3300026: MainFloorPlates
+    3300028: SphereEmitters
+    4300000: GroundPlane
+    4300002: FloorDetail2
+    4300004: FloorDetail7
+    4300006: CenterPlatform
+    4300008: FloorDetail
+    4300010: FloorDetail9
+    4300012: FloorDetail4
+    4300014: FloorDetail8
+    4300016: FloorDetail6
+    4300018: FloorRing
+    4300020: FloorDetail5
+    4300022: FloorDetail3
+    4300024: SphereEmitters
+    4300026: FloorCircle
+    4300028: MainFloorPlates
+    7400000: Default Take
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
