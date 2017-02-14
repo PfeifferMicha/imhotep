@@ -116,6 +116,13 @@ namespace BlenderMeshReader
         public int pad;
     }
 
+    struct BlenderObjectBlock
+    {
+        public string objectName;
+        public Vector3 location;
+        public Quaternion rotation;
+    }
+
     class BlenderFile
     {
         public static int PointerSize { get; private set; }
@@ -388,6 +395,79 @@ namespace BlenderMeshReader
             return result;
         }
 
+        public List<BlenderObjectBlock> readObject()
+        {
+            List<BlenderObjectBlock> result = new List<BlenderObjectBlock>();
+            
+            int objIndex = 0;
+            int startPositionLoc = 0;
+            int startPositinQuat = 0;
+
+            foreach (Structure s in StructureList)
+            {
+                if (s.Name == "Object") //search index of object structure 
+                {
+                    objIndex = s.Index;
+                    int countLenght = 0;
+                    foreach (Field f in s.Fields)
+                    {
+                        if (f.Name == "loc[3]")
+                        {
+                            startPositionLoc = countLenght;
+                        }
+                        else if (f.Name == "quat[4]")
+                        {
+                            startPositinQuat = countLenght;
+                        }
+                        countLenght += f.getLength();
+                    }
+                }
+                
+            }
+            
+            BinaryReader reader = new BinaryReader(File.Open(Filename, FileMode.Open));            
+            foreach (FileBlock fileBlock in FileBockList)
+            {
+                if (fileBlock.SDNAIndex == objIndex)
+                {
+                    reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + 32;
+                    string name = "";
+                    for (int i = 0; i < 66; i++)
+                    {
+                        char c = reader.ReadChar();
+                        if (c == 0x0)
+                        {
+                            break;
+                        }
+                        name += c;
+                    }
+                    
+                    reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + startPositionLoc;
+                    float[] loc = new float[3];
+                    loc[0] = reader.ReadSingle();
+                    loc[1] = reader.ReadSingle();
+                    loc[2] = reader.ReadSingle();
+
+                    reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + startPositinQuat;
+                    float[] quat = new float[4];
+                    quat[0] = reader.ReadSingle();
+                    quat[1] = reader.ReadSingle();
+                    quat[2] = reader.ReadSingle();
+                    quat[3] = reader.ReadSingle();
+
+
+                    BlenderObjectBlock b = new BlenderObjectBlock();
+                    b.objectName = name;
+                    b.location = new Vector3(loc[0], loc[1], loc[2]);
+                    b.rotation = new Quaternion(quat[0], quat[1], quat[2], quat[3]);
+                    result.Add(b);
+                }
+
+            }
+            reader.Close();
+            return result;
+        }
+
         public List<BlenderMesh> readMesh()
         {
             List<BlenderMesh> result = new List<BlenderMesh>();
@@ -451,7 +531,7 @@ namespace BlenderMeshReader
                 if(fileBlock.SDNAIndex == indexMesh)
                 {
                     //read name
-                    reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + 32;
+                    reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + 32; //32 because name has an offset of 32 in the ID structure 
                     string name = "";
                     for(int i = 0; i < 66; i++)
                     {

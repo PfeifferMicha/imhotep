@@ -14,7 +14,9 @@ public class MeshLoader : MonoBehaviour {
 	public GameObject meshNode;
 
     //List of lists of UnityMeshes with max. 2^16 vertices per mesh
-    private volatile List<List<UnityMesh>> unityMeshes = new List<List<UnityMesh>>();    
+    private volatile List<List<UnityMesh>> unityMeshes = new List<List<UnityMesh>>();
+    //List of blender objects, witch conatins name, location and rotation of all blender objects
+    private volatile List<BlenderObjectBlock> blenderObjects = new List<BlenderObjectBlock>();
     //True if file is loaded
     private bool loaded = false;
 	private bool triggerEvent = false;
@@ -51,6 +53,7 @@ public class MeshLoader : MonoBehaviour {
         {
             StartCoroutine("LoadFileExecute");
             unityMeshes = new List<List<UnityMesh>>();
+            blenderObjects = new List<BlenderObjectBlock>();
             loaded = false;
             Path = "";
 
@@ -120,6 +123,7 @@ public class MeshLoader : MonoBehaviour {
     {
         BlenderFile b = new BlenderFile(Path);
         List<BlenderMesh> blenderMeshes = new List<BlenderMesh>();
+        blenderObjects = b.readObject();
         blenderMeshes = b.readMesh();
         unityMeshes = BlenderFile.createSubmeshesForUnity(blenderMeshes);
         return;
@@ -162,7 +166,7 @@ public class MeshLoader : MonoBehaviour {
 		//	| ...
 
         foreach (List<UnityMesh> um in unityMeshes) {
-
+            
             GameObject containerObject = new GameObject(um[0].Name);
             containerObject.layer = meshNode.layer; //Set same layer as parent
 			containerObject.transform.SetParent( meshNode.transform, false );
@@ -172,6 +176,18 @@ public class MeshLoader : MonoBehaviour {
 			Color col = matColorForMeshName (um[0].Name);
 			matControl.materialColor = col;
             MeshGameObjectContainers.Add(containerObject);
+
+            //attach BlenderObject to containerObject
+            foreach(BlenderObjectBlock b in blenderObjects)
+            {
+                if (b.objectName.Substring(2) == um[0].Name.Substring(2)) //TODO Doesn't work if the object and the mesh don't have same name
+                {
+                    BlenderObject attachedObject = containerObject.AddComponent<BlenderObject>();
+                    attachedObject.objectName = b.objectName;
+                    attachedObject.location = b.location;
+                    attachedObject.rotation = b.rotation;
+                }
+            }
 
             foreach (UnityMesh unityMesh in um)
             {
@@ -277,6 +293,11 @@ public class MeshLoader : MonoBehaviour {
 		byte b = byte.Parse(hex.Substring(5,2), System.Globalization.NumberStyles.HexNumber);
 		return new Color32(r,g,b, 255);
 	}
+
+    /*public List<BlenderObject> getBlenderObjects()
+    {
+        return blenderObjects;
+    }*/
 
 
 }
