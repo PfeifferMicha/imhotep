@@ -11,16 +11,16 @@ public class Recorder : MonoBehaviour
 {
 	public enum MODE : short
 	{
-		STANDARD = 0,
-		ANNOTATION = 1,
+		LEBER = 0,
+		REKTUM = 1,
 		TEXT = 2,
-		LEBER = 3,
-		REKTUM = 4,
-		CUSTOM = 5}
+		CUSTOM = 3}
 	;
 
-	//ip address the server runs on
+	//the speech servers ip address
 	public string ipString;
+
+	public bool reconnect;
 
 	//encoding variable
 	private int shortSize;
@@ -49,6 +49,7 @@ public class Recorder : MonoBehaviour
 	private Socket controlSocket;
 	private readonly short START = short.MaxValue;
 	private readonly short END = short.MinValue;
+	private readonly short GRAMMAR = (short)30000;
 
 	private string recognizedText;
 	private Action<string> setResult;
@@ -63,8 +64,15 @@ public class Recorder : MonoBehaviour
 		Debug.Log ("Sended " + sendCount + " shorts");
 	}
 
+	void OnDisable ()
+	{
+		PatientEventSystem.stopListening (PatientEventSystem.Event.RECOGNITION_Start, start);
+		PatientEventSystem.stopListening (PatientEventSystem.Event.RECOGNITION_End, stop);
+		Debug.Log ("speech recognition unsubscribed patient loaded");
+	}
+
 	//use this for initialization
-	void Start ()
+	void OnEnable ()
 	{
 		//initializing recording variables
 		recording = false;
@@ -93,24 +101,46 @@ public class Recorder : MonoBehaviour
 			ipAddress = IPAddress.Parse ("127.0.0.1");
 		}
 
-		Debug.Log ("Start");
-
-		Debug.Log ("Available Devices:");
-		foreach (string dev in Microphone.devices) {
-			Debug.Log ("    " + dev);
-		}
-		Debug.Log ("using default device: " + Microphone.devices [0]);
+//		Debug.Log ("Available Devices:");
+//		foreach (string dev in Microphone.devices) {
+//			Debug.Log ("    " + dev);
+//		}
+//		Debug.Log ("using default device: " + Microphone.devices [0]);
 
 		clip = Microphone.Start (null, true, recordSeconds, sampleRate);
 		channels = clip.channels;
-		Debug.Log (channels + " channel(s)");
 		if (channels != 1) {
+			Debug.Log (channels + " channel(s)");
 			Debug.Log ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		}
 
 		connect ();
 
 		checkConnection ();
+
+		//		string[] body = new string[10] { "test1",  "test2",  "test3",  "test4",  
+		//			"test5",  "test6",  "test7",  "test8",  "test9",  "test10",
+		//		};
+		//		createGrammar ("testGrammar", body);
+
+		PatientEventSystem.startListening (PatientEventSystem.Event.RECOGNITION_Start, start);
+		PatientEventSystem.startListening (PatientEventSystem.Event.RECOGNITION_End, stop);
+	}
+
+	public void start (object obj = null)
+	{
+		if (obj == null) {
+			Debug.Log ("cannot start recognition obj is null");
+		} else {
+			setResult = (string text) => ((AnnotationLabel)obj).setLabelText (text);
+			setResult ("test");
+			startRecognition ((short)MODE.TEXT);
+		}
+	}
+
+	public void stop (object obj = null)
+	{
+		stopRecognition ();
 	}
 
 	//Update is called once per frame
@@ -122,7 +152,7 @@ public class Recorder : MonoBehaviour
 
 			if (sendEnd) {
 				if (connected ()) {
-					showStatus ("stop recording");
+					showStatus ("stop recognition");
 
 					sendEndRecording ();
 
@@ -137,44 +167,53 @@ public class Recorder : MonoBehaviour
 				string elapsedTime = String.Format ("{0:00}:{1:00}:{2:00}.{3:00}",
 					                     ts.Hours, ts.Minutes, ts.Seconds,
 					                     ts.Milliseconds / 10);
-				Debug.Log ("RunTime " + elapsedTime);
-				Debug.Log ("send: " + sendCount);
+				Debug.Log ("sample size ~" + elapsedTime);
+//				Debug.Log ("send: " + sendCount);
 
 				sendEnd = false;
 			}
 
 			tryRead ();
 		} else {
-			reconnect ();
+			if (reconnect) {
+				tryReconnect ();
+			}
 		}
 
 		displayResult ();
 	}
 
 	//call when recognition should start
-	public void StartRecognition (Action<string> setText, short mode)
+	public void startRecognition (short mode)
 	{
-		Debug.Log ("start recognition. mode: " + mode);
+		Debug.Log ("start recognition. Mode: " + (MODE)mode + " (" + mode + ")");
 		if (connected ()) {
-			showStatus ("recording");
-
 			sendStartRecording (mode);
-
-			recognizedText = "Recording...";
 			recording = true;
-			setResult = setText;
+		} else {
+			setResult = null;
 		}
 
 		stopWatch = new System.Diagnostics.Stopwatch ();
 		stopWatch.Start ();
-		Debug.Log ("send: " + sendCount);
 	}
 
 	//call when recognition should stop
-	public void StopRecognition ()
+	public void stopRecognition ()
 	{
+		Debug.Log ("stop recognition");
 		if (connected ()) {
 			sendEnd = true;	
+		}
+	}
+
+	public void createGrammar (string name, string[] body)
+	{
+		sendInstructionShort (GRAMMAR);
+		sendInstruction (name);
+		sendInstruction (body.Length.ToString ());
+		foreach (string s in body) {
+			sendInstruction (s);
 		}
 	}
 
@@ -189,10 +228,6 @@ public class Recorder : MonoBehaviour
 	{
 		if (setResult != null && recognizedText != "") {
 			setResult (recognizedText);
-
-			//			if (recording == false) {
-			//				Debug.Log ("display result not recording");
-			//			}
 		}
 	}
 
@@ -229,7 +264,7 @@ public class Recorder : MonoBehaviour
 	//connect data and control socket to server
 	private void connect ()
 	{
-		showStatus ("starting reconnect attempt");
+		showStatus ("connecting...");
 		controlSocket = startSocket (controlPort);
 		dataSocket = startSocket (dataPort);
 
@@ -242,8 +277,8 @@ public class Recorder : MonoBehaviour
 		}
 	}
 
-	//call if sockets are not connected, tries to reconnect every few seconds
-	private void reconnect ()
+	//call periodically if sockets are not connected, tries to reconnect every few seconds
+	private void tryReconnect ()
 	{
 		reconnectCounter++;
 
@@ -252,7 +287,6 @@ public class Recorder : MonoBehaviour
 			if (ipAddress != null) {
 				connect ();
 			}
-
 		}
 
 		if (connected ()) {
@@ -291,30 +325,39 @@ public class Recorder : MonoBehaviour
 	private void tryRead ()
 	{
 		if (controlConnected && controlSocket != null && controlSocket.Available > 0) {
-			byte[] buffer = new byte[256]; //TODO: variable length
+			byte[] buffer = new byte[1024]; //TODO: variable length
 			try {
 				// Get reply from the server.
 				controlSocket.Receive (buffer);
-				string message = Encoding.UTF7.GetString (buffer);
+				string message = Encoding.UTF8.GetString (buffer);
 				string[] split = (message.Split ("\n" [0]));
+				bool end = false;
 
-				if (split.Length >= 2) {
-					message = split [split.Length - 2];
-					Debug.Log (message);
-					if (message.Contains ("UNK")) {
-						recognizedText = "Unknown expression try again";
-					} else if (message.Contains ("\\\\\\")) {
-						if (split.Length >= 3) {
-							recognizedText = split [split.Length - 3];
-							displayResult ();
-						}
-						setResult = null;
-					} else {
-						recognizedText = message;
+				if (message.Contains ("\\\\\\")) {
+					end = true;
+					if (split.Length >= 3) {
+						recognizedText = split [split.Length - 3];
 					}
+				} else if (split.Length >= 2) {
+					recognizedText = split [split.Length - 2];
+				} else {
+					recognizedText = message;
+				}
+				recognizedText = recognizedText.Trim ();
+				if (recognizedText.Contains ("UNK")) {
+					recognizedText = "<Eingabe unbekannt>";
+				}
+				if (recognizedText == "") {
+					recognizedText = "<Es wurde nichts erkannt>";
+				}
+
+				if (end) {
+					displayResult ();
+					setResult = null;
+					showStatus ("final result: " + recognizedText); 
 				}
 			} catch (SocketException e) {
-				showStatus ("Couldn't reach server");
+				showStatus ("Couldn't reach server (" + e.ToString () + ")");
 			}
 		}
 	}
@@ -362,7 +405,7 @@ public class Recorder : MonoBehaviour
 
 			return socket;
 		} catch (SocketException e) {
-			showStatus ("Couldn't connect to server (port: " + port + ")");
+			showStatus ("Couldn't connect to server (port: " + port + ") (" + e.ToString () + ")");
 			return null;
 		}
 	}
@@ -382,35 +425,50 @@ public class Recorder : MonoBehaviour
 		}
 	}
 
-	//tell server to start recognition. Mode determines the recording mode (annotation, text, ...)
+	//tell server to start recognition. Mode determines the recognition mode (annotation, text, ...)
 	private void sendStartRecording (short mode)
 	{
-		sendInstruction (START);
-		sendInstruction (mode);
+		sendInstructionShort (START);
+		sendInstructionShort (mode);
 	}
 
 	//tell server to stop recognition
 	private void sendEndRecording ()
 	{
-		sendInstruction (END);
+		sendInstructionShort (END);
+	}
+
+	private void sendInstruction (string instruction)
+	{
+		if (connected ()) {
+			try {
+				controlSocket.Send (System.Text.Encoding.UTF8.GetBytes (instruction + "\n"));
+			} catch (SocketException e) {
+				showStatus ("couldn't reach server (" + e.ToString () + ")");
+			}
+		}
 	}
 
 	//send an instruction over control socket
-	private void sendInstruction (short send)
+	private void sendInstructionShort (short send)
 	{
 		byte[] sendBytes = new byte[0];
 		if (send == START) {
 			sendBytes = System.Text.Encoding.UTF8.GetBytes ("Start\n");
 		} else if (send == END) {
 			sendBytes = System.Text.Encoding.UTF8.GetBytes ("End\n");
+		} else if (send == GRAMMAR) {
+			sendBytes = System.Text.Encoding.UTF8.GetBytes ("CreateGrammar\n");
 		} else {
 			sendBytes = encodeMode (send);
 		}
 
-		try {
-			controlSocket.Send (sendBytes);
-		} catch (SocketException e) {
-			showStatus ("Couldn't reach server");
+		if (connected ()) {
+			try {
+				controlSocket.Send (sendBytes);
+			} catch (SocketException e) {
+				showStatus ("Couldn't reach server (" + e.ToString () + ")");
+			}
 		}
 	}
 
@@ -418,23 +476,17 @@ public class Recorder : MonoBehaviour
 	{
 		byte[] result = new byte[0];
 		switch (mode) {
-		case (short)MODE.ANNOTATION:
-			result = System.Text.Encoding.UTF7.GetBytes ("Annotation\n");
-			break;
 		case (short)MODE.LEBER:
-			result = System.Text.Encoding.UTF7.GetBytes ("Leber\n");
+			result = System.Text.Encoding.UTF8.GetBytes ("Leber\n");
 			break;
 		case (short)MODE.REKTUM:
-			result = System.Text.Encoding.UTF7.GetBytes ("Rektum\n");
-			break;
-		case (short)MODE.STANDARD:
-			result = System.Text.Encoding.UTF7.GetBytes ("Standard\n");
+			result = System.Text.Encoding.UTF8.GetBytes ("Rektum\n");
 			break;
 		case (short)MODE.TEXT:
-			result = System.Text.Encoding.UTF7.GetBytes ("Text\n");
+			result = System.Text.Encoding.UTF8.GetBytes ("Text\n");
 			break;
 		default:
-			result = System.Text.Encoding.UTF7.GetBytes ("\n");
+			result = System.Text.Encoding.UTF8.GetBytes ("\n");
 			Debug.Log ("unknown mode to encode: " + mode);
 			break;
 		}
@@ -454,7 +506,7 @@ public class Recorder : MonoBehaviour
 			byte[] sendData = encode (floats);
 			dataSocket.Send (sendData);
 		} catch (SocketException e) {
-			showStatus ("Couldn't reach server");
+			showStatus ("Couldn't reach server (" + e.ToString () + ")");
 		}
 	}
 

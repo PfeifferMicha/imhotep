@@ -7963,6 +7963,7 @@ GameObject:
   - 120: {fileID: 795904951}
   - 114: {fileID: 795904946}
   - 114: {fileID: 795904952}
+  - 114: {fileID: 795904954}
   m_Layer: 0
   m_Name: GlobalScript
   m_TagString: Untagged
@@ -8165,6 +8166,19 @@ MonoBehaviour:
   developmentMode: 1
   rayOriginOffset: {x: 0, y: 0, z: 0}
   mouseSpeed: 1.5
+--- !u!114 &795904954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 795904939}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6e1647d8c556cc41b3fa37c27169347, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ipString: 127.0.0.1
+  reconnect: 0
 --- !u!1 &796464321
 GameObject:
   m_ObjectHideFlags: 0

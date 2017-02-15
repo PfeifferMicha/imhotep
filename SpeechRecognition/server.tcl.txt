@@ -1,0 +1,36 @@
+set data false
+set control false
+set controlChannel ""
+set dataChannel ""
+
+proc acceptData {chan addr port} {
+	global data dataChannel
+	set dataChannel $chan
+	set data true
+}
+
+proc acceptControl {chan addr port} {
+	global control controlChannel
+	fconfigure $chan -translation binary
+	set controlChannel $chan
+	set control true
+}
+
+socket -server acceptData 11000
+socket -server acceptControl 11001
+
+puts "waiting for connection..."
+
+while {$data == false && $control == false} {
+	after 50
+	update
+}
+
+puts "data and control connected"
+
+while {1} {
+	set input [read $controlChannel 2]
+	puts $input
+}
+
+vwait forever
