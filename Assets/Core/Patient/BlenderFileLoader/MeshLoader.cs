@@ -53,12 +53,12 @@ public class MeshLoader : MonoBehaviour {
         {
             StartCoroutine("LoadFileExecute");
             unityMeshes = new List<List<UnityMesh>>();
-            blenderObjects = new List<BlenderObjectBlock>();
             loaded = false;
             Path = "";
 
         }
 		if(triggerEvent){
+            blenderObjects = new List<BlenderObjectBlock>();
             meshJson = null;
 			triggerEvent = false;
 
@@ -150,23 +150,22 @@ public class MeshLoader : MonoBehaviour {
     private IEnumerator LoadFileExecute()
 	{
 		Bounds bounds = new Bounds ();
-		bool boundsInitialized = false;	// set to true when bounds is first set
+		bool boundsInitialized = false; // set to true when bounds is first set
 
-		//  meshNode
-		//	| - containerObject
-		//		| - actual mesh
-		//		| - actual mesh
-		//		| - actual mesh
-		//		| - ...
-		//	| - containerObject
-		//		| - actual mesh
-		//		| - actual mesh
-		//		| - actual mesh
-		//		| - ...
-		//	| ...
+        //  meshNode
+        //	| - containerObject
+        //		| - actual mesh
+        //		| - actual mesh
+        //		| - actual mesh
+        //		| - ...
+        //	| - containerObject
+        //		| - actual mesh
+        //		| - actual mesh
+        //		| - actual mesh
+        //		| - ...
+        //	| ...
 
         foreach (List<UnityMesh> um in unityMeshes) {
-            
             GameObject containerObject = new GameObject(um[0].Name);
             containerObject.layer = meshNode.layer; //Set same layer as parent
 			containerObject.transform.SetParent( meshNode.transform, false );
@@ -180,12 +179,22 @@ public class MeshLoader : MonoBehaviour {
             //attach BlenderObject to containerObject
             foreach(BlenderObjectBlock b in blenderObjects)
             {
-                if (b.objectName.Substring(2) == um[0].Name.Substring(2)) //TODO Doesn't work if the object and the mesh don't have same name
+                if (b.uniqueIdentifier == um[0].UniqueIdentifier) 
                 {
-                    BlenderObject attachedObject = containerObject.AddComponent<BlenderObject>();
+                    BlenderObject attachedObject = containerObject.AddComponent<BlenderObject>(); //TODO Remove... maybe
                     attachedObject.objectName = b.objectName;
                     attachedObject.location = b.location;
                     attachedObject.rotation = b.rotation;
+
+                    //Convert to left-handed soordinate systems
+                    //containerObject.transform.localPosition = new Vector3(b.location.x, b.location.y, -b.location.z);
+
+                    /* TODO
+                    Quaternion rot = Quaternion.Inverse(b.rotation);
+                    rot = new Quaternion(-rot.x, -rot.z, rot.y, -rot.w);
+                    containerObject.transform.localRotation = rot;
+                    */
+
                 }
             }
 
