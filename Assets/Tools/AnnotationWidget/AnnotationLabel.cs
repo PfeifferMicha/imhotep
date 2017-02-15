@@ -38,7 +38,7 @@ public class AnnotationLabel : MonoBehaviour
 		textBackground.color = new Color (textBackground.color.r, textBackground.color.b, textBackground.color.b, 0.0f);
 		myText.color = new Color (myText.color.r, myText.color.b, myText.color.b, 0.0f);
 
-		PatientEventSystem.triggerEvent (PatientEventSystem.Event.RECOGNITION_Start, this);
+		PatientEventSystem.triggerEvent (PatientEventSystem.Event.RECOGNITION_Start, new Recognition (((string text) => (setLabelText (text))), (short)Recorder.MODE.ANNOTATION));
 	}
 
 	// called when vlue in input Field changed

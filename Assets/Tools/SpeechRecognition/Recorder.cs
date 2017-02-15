@@ -6,6 +6,20 @@ using System.Net;
 using System.Text;
 using System.Collections.Generic;
 
+//using System.Diagnostics;
+using UnityEditor.VersionControl;
+
+public struct Recognition
+{
+	public Action<string> setText;
+	public short mode;
+
+	public Recognition (Action<string> newSetText, short newMode)
+	{
+		setText = newSetText;
+		mode = newMode;
+	}
+}
 
 public class Recorder : MonoBehaviour
 {
@@ -14,7 +28,8 @@ public class Recorder : MonoBehaviour
 		LEBER = 0,
 		REKTUM = 1,
 		TEXT = 2,
-		CUSTOM = 3}
+		CUSTOM = 3,
+		ANNOTATION = 4}
 	;
 
 	//the speech servers ip address
@@ -129,12 +144,11 @@ public class Recorder : MonoBehaviour
 
 	public void start (object obj = null)
 	{
-		if (obj == null) {
-			Debug.Log ("cannot start recognition obj is null");
+		Recognition rec = (Recognition)obj;
+		if (rec.setText != null) {
+			StartRecognition (rec.setText, rec.mode);
 		} else {
-			setResult = (string text) => ((AnnotationLabel)obj).setLabelText (text);
-			setResult ("test");
-			startRecognition ((short)MODE.TEXT);
+			Debug.Log ("couldn't start recognition, no Recognition object");
 		}
 	}
 
@@ -182,16 +196,39 @@ public class Recorder : MonoBehaviour
 
 		displayResult ();
 	}
-
 	//call when recognition should start
-	public void startRecognition (short mode)
+	public void StartRecognition (Action<string> setText, short mode)
 	{
+		if (mode == (short)MODE.ANNOTATION) {
+			Patient patient = Patient.getLoadedPatient ();
+			if (patient != null) {
+				PatientMeta.OperationBodyPart op = ((PatientMeta)patient).operationBodyPart;
+
+				switch (op) {
+				case PatientMeta.OperationBodyPart.Liver:
+					mode = (short)MODE.LEBER;
+					Debug.Log ("changed mode to leber"); 
+					break;
+				case PatientMeta.OperationBodyPart.Pancreas:
+					mode = (short)MODE.REKTUM;
+					Debug.Log ("changed mode to rektum");
+					break;
+				default:
+					Debug.Log ("unsuported operation type " + op.ToString () + " using standart ngram model");
+					mode = (short)MODE.TEXT;
+					break;
+				}
+			} else {
+				Debug.Log ("unsuported operation type using standart ngram model");
+				mode = (short)MODE.TEXT;
+			}
+		}
 		Debug.Log ("start recognition. Mode: " + (MODE)mode + " (" + mode + ")");
 		if (connected ()) {
 			sendStartRecording (mode);
+
 			recording = true;
-		} else {
-			setResult = null;
+			setResult = setText;
 		}
 
 		stopWatch = new System.Diagnostics.Stopwatch ();
