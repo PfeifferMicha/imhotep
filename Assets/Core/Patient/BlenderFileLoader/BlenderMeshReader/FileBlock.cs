@@ -20,7 +20,7 @@ namespace BlenderMeshReader
             this.SDNAIndex = sDNAIndex;
             this.Count = count;
             this.StartAddess = starAddress;
-            this.OldAddess = oldAdress;
+            this.OldAddess = oldAdress; //Is actually a unique identifier
         }
 
         public override string ToString()

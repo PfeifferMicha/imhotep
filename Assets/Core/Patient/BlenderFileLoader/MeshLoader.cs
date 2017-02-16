@@ -14,7 +14,9 @@ public class MeshLoader : MonoBehaviour {
 	public GameObject meshNode;
 
     //List of lists of UnityMeshes with max. 2^16 vertices per mesh
-    private volatile List<List<UnityMesh>> unityMeshes = new List<List<UnityMesh>>();    
+    private volatile List<List<UnityMesh>> unityMeshes = new List<List<UnityMesh>>();
+    //List of blender objects, witch conatins name, location and rotation of all blender objects
+    private volatile List<BlenderObjectBlock> blenderObjects = new List<BlenderObjectBlock>();
     //True if file is loaded
     private bool loaded = false;
 	private bool triggerEvent = false;
@@ -56,6 +58,7 @@ public class MeshLoader : MonoBehaviour {
 
         }
 		if(triggerEvent){
+            blenderObjects = new List<BlenderObjectBlock>();
             meshJson = null;
 			triggerEvent = false;
 
@@ -120,6 +123,7 @@ public class MeshLoader : MonoBehaviour {
     {
         BlenderFile b = new BlenderFile(Path);
         List<BlenderMesh> blenderMeshes = new List<BlenderMesh>();
+        blenderObjects = b.readObject();
         blenderMeshes = b.readMesh();
         unityMeshes = BlenderFile.createSubmeshesForUnity(blenderMeshes);
         return;
@@ -146,23 +150,22 @@ public class MeshLoader : MonoBehaviour {
     private IEnumerator LoadFileExecute()
 	{
 		Bounds bounds = new Bounds ();
-		bool boundsInitialized = false;	// set to true when bounds is first set
+		bool boundsInitialized = false; // set to true when bounds is first set
 
-		//  meshNode
-		//	| - containerObject
-		//		| - actual mesh
-		//		| - actual mesh
-		//		| - actual mesh
-		//		| - ...
-		//	| - containerObject
-		//		| - actual mesh
-		//		| - actual mesh
-		//		| - actual mesh
-		//		| - ...
-		//	| ...
+        //  meshNode
+        //	| - containerObject
+        //		| - actual mesh
+        //		| - actual mesh
+        //		| - actual mesh
+        //		| - ...
+        //	| - containerObject
+        //		| - actual mesh
+        //		| - actual mesh
+        //		| - actual mesh
+        //		| - ...
+        //	| ...
 
         foreach (List<UnityMesh> um in unityMeshes) {
-
             GameObject containerObject = new GameObject(um[0].Name);
             containerObject.layer = meshNode.layer; //Set same layer as parent
 			containerObject.transform.SetParent( meshNode.transform, false );
@@ -172,6 +175,28 @@ public class MeshLoader : MonoBehaviour {
 			Color col = matColorForMeshName (um[0].Name);
 			matControl.materialColor = col;
             MeshGameObjectContainers.Add(containerObject);
+
+            //attach BlenderObject to containerObject
+            foreach(BlenderObjectBlock b in blenderObjects)
+            {
+                if (b.uniqueIdentifier == um[0].UniqueIdentifier) 
+                {
+                    BlenderObject attachedObject = containerObject.AddComponent<BlenderObject>(); //TODO Remove... maybe
+                    attachedObject.objectName = b.objectName;
+                    attachedObject.location = b.location;
+                    attachedObject.rotation = b.rotation;
+
+                    //Convert to left-handed soordinate systems
+                    //containerObject.transform.localPosition = new Vector3(b.location.x, b.location.y, -b.location.z);
+
+                    /* TODO
+                    Quaternion rot = Quaternion.Inverse(b.rotation);
+                    rot = new Quaternion(-rot.x, -rot.z, rot.y, -rot.w);
+                    containerObject.transform.localRotation = rot;
+                    */
+
+                }
+            }
 
             foreach (UnityMesh unityMesh in um)
             {
@@ -277,6 +302,11 @@ public class MeshLoader : MonoBehaviour {
 		byte b = byte.Parse(hex.Substring(5,2), System.Globalization.NumberStyles.HexNumber);
 		return new Color32(r,g,b, 255);
 	}
+
+    /*public List<BlenderObject> getBlenderObjects()
+    {
+        return blenderObjects;
+    }*/
 
 
 }
