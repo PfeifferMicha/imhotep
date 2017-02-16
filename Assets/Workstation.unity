@@ -9801,7 +9801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be7a4ce3fceed0b41ad252649954230b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skipAnimations: 0
+  skipAnimations: 1
 --- !u!4 &795904941
 Transform:
   m_ObjectHideFlags: 0
@@ -13081,7 +13081,7 @@ Prefab:
       objectReference: {fileID: 388430303}
     - target: {fileID: 146900, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11463128, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: index
@@ -18458,7 +18458,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &1508808261
 AudioListener:
   m_ObjectHideFlags: 0

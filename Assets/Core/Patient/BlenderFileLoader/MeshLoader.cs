@@ -187,7 +187,7 @@ public class MeshLoader : MonoBehaviour {
                     attachedObject.rotation = b.rotation;
 
                     //Convert to left-handed soordinate systems
-                    //containerObject.transform.localPosition = new Vector3(b.location.x, b.location.y, -b.location.z);
+					containerObject.transform.localPosition = new Vector3(b.location.x, b.location.y, -b.location.z);
 
                     /* TODO
                     Quaternion rot = Quaternion.Inverse(b.rotation);
@@ -227,12 +227,16 @@ public class MeshLoader : MonoBehaviour {
                 loaded = false;
                 Path = "";
 
+
 				// Increase the common bounding box to contain this object:
+				// Calculate bounds in 
+				Bounds worldBounds = TransformUtil.TransformBounds( objToSpawn.transform.parent, mesh.bounds );
+				Bounds localBounds = TransformUtil.InverseTransformBounds (containerObject.transform.parent, worldBounds);
 				if (!boundsInitialized) {
-					bounds = mesh.bounds;
+					bounds = localBounds;
 					boundsInitialized = true;
 				} else {
-					bounds.Encapsulate (mesh.bounds);
+					bounds.Encapsulate (localBounds);
 				}
 
 				// Let others know that a new mesh has been loaded:
@@ -246,15 +250,12 @@ public class MeshLoader : MonoBehaviour {
 
                 yield return null;
             }
-
-
-			// Move the object by half the size of all of the meshes.
-			// This makes sure the object will rotate around its actual center:
-			//containerObject.transform.localPosition = -bounds.center;
-
-			meshNode.GetComponent<ModelMover> ().targetPosition = Vector3.Scale(-bounds.center, meshNode.transform.localScale);
         }
 
+		// Move the object by half the size of all of the meshes.
+		// This makes sure the object will rotate around its actual center:
+		//containerObject.transform.localPosition = -bounds.center;
+		meshNode.GetComponent<ModelMover> ().targetPosition = Vector3.Scale(-bounds.center, meshNode.transform.localScale);
 
 		triggerEvent = true;
 
