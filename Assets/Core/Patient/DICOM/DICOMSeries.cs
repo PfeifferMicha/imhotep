@@ -132,14 +132,13 @@ public class DICOMSeries {
 		}
 
 		// Load the direction cosines:
+		// ITK stores the direction cosines in a matrix with row-major-ordering. The weird indexing is because
+		// we need the first and second column (0,3,6 for X and 1,4,7 for Y)
 		VectorDouble direction = firstSlice.GetDirection();
 		if( direction.Count < 6 )
 			throw( new System.Exception ("Invalid direction cosines found in images."));
-		directionCosineX = new Vector3 ((float)direction [0], (float)direction [1], (float)direction [2]);
-		directionCosineY = new Vector3 ((float)direction [3], (float)direction [4], (float)direction [5]);
-		Debug.LogWarning ("Direction Cosines:");
-		for (int i = 0; i < 6; i++)
-			Debug.LogWarning ("\t" + direction [i]);
+		directionCosineX = new Vector3 ((float)direction [0], (float)direction [3], (float)direction [6]);
+		directionCosineY = new Vector3 ((float)direction [1], (float)direction [4], (float)direction [7]);
 
 		sliceNormal = Vector3.Cross (directionCosineX, directionCosineY);
 
