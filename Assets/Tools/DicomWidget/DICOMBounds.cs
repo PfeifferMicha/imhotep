@@ -85,6 +85,8 @@ public class DICOMBounds : MonoBehaviour {
 				Debug.Log ("lastSlice " + lastSlice);
 				Debug.Log ("dicom.texWidth " + dicom.origTexWidth);
 				Debug.Log ("dicom.texHeight " + dicom.origTexHeight);
+				Debug.Log ("dicom.directionCosX " + dicom.seriesInfo.directionCosineX.x + " "  + dicom.seriesInfo.directionCosineX.y + " " + dicom.seriesInfo.directionCosineX.z);
+				Debug.Log ("dicom.directionCosY " + dicom.seriesInfo.directionCosineY.x + " "  + dicom.seriesInfo.directionCosineY.y + " " + dicom.seriesInfo.directionCosineY.z);
 				Debug.Log ("c1 " + c1);
 				Debug.Log ("c4 " + c4);
 
@@ -133,6 +135,8 @@ public class DICOMBounds : MonoBehaviour {
 			RectYMin.SetPosition (1, p2);
 			RectYMax.SetPosition (0, p3);
 			RectYMax.SetPosition (1, p4);
+			itk.simple.VectorDouble vec = dicom.image.GetOrigin ();
+			Debug.Log ("dicom.origin " + vec [0] + " " + vec [1] + " " + vec [2]);
 
 			gameObject.SetActive (true);
 		} else {

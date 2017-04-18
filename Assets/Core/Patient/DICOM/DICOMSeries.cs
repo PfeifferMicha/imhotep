@@ -137,6 +137,9 @@ public class DICOMSeries {
 			throw( new System.Exception ("Invalid direction cosines found in images."));
 		directionCosineX = new Vector3 ((float)direction [0], (float)direction [1], (float)direction [2]);
 		directionCosineY = new Vector3 ((float)direction [3], (float)direction [4], (float)direction [5]);
+		Debug.LogWarning ("Direction Cosines:");
+		for (int i = 0; i < 6; i++)
+			Debug.LogWarning ("\t" + direction [i]);
 
 		sliceNormal = Vector3.Cross (directionCosineX, directionCosineY);
 
@@ -162,8 +165,8 @@ public class DICOMSeries {
 		//		x and y direction...
 		VectorDouble spacing = firstSlice.GetSpacing();
 		if( spacing.Count < 2 )
-			throw( new System.Exception ("Invalid direction cosines found in images."));
-		pixelSpacing = new Vector2 ((float)spacing [0], (float)spacing [1] );
+			throw( new System.Exception ("Invalid pixel spacing found in images."));
+		pixelSpacing = new Vector2 ((float)spacing [1], (float)spacing [0] );
 
 		// Set up the transformation matrix:
 		Matrix4x4 transformMatrix = new Matrix4x4 ();
