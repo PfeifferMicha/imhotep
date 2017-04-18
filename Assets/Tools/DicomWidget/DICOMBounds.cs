@@ -75,13 +75,18 @@ public class DICOMBounds : MonoBehaviour {
 				// Calculate the positions of the corners of this stack of slices:
 				int lastSlice = dicom.seriesInfo.numberOfSlices - 1;
 				Vector3 c1 = dicom.seriesInfo.transformPixelToPatientPos (Vector2.zero, 0f);
-				Vector3 c2 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.texWidth, 0f), 0f);
-				Vector3 c3 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (0f, dicom.texHeight), 0f);
-				Vector3 c4 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.texWidth, dicom.texHeight), 0f);
+				Vector3 c2 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, 0f), 0f);
+				Vector3 c3 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (0f, dicom.origTexHeight), 0f);
+				Vector3 c4 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, dicom.origTexHeight), 0f);
 				Vector3 c5 = dicom.seriesInfo.transformPixelToPatientPos (Vector2.zero, lastSlice);
-				Vector3 c6 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.texWidth, 0f), lastSlice);
-				Vector3 c7 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (0f, dicom.texHeight), lastSlice);
-				Vector3 c8 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.texWidth, dicom.texHeight), lastSlice);
+				Vector3 c6 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, 0f), lastSlice);
+				Vector3 c7 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (0f, dicom.origTexHeight), lastSlice);
+				Vector3 c8 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, dicom.origTexHeight), lastSlice);
+				Debug.Log ("lastSlice " + lastSlice);
+				Debug.Log ("dicom.texWidth " + dicom.origTexWidth);
+				Debug.Log ("dicom.texHeight " + dicom.origTexHeight);
+				Debug.Log ("c1 " + c1);
+				Debug.Log ("c4 " + c4);
 
 				// Display the bounding box:
 				Edge1.SetPosition (0, c1);
@@ -117,9 +122,9 @@ public class DICOMBounds : MonoBehaviour {
 
 			// Display the position of the current slice:
 			Vector3 p1 = dicom.seriesInfo.transformPixelToPatientPos (Vector2.zero, dicom.slice);
-			Vector3 p2 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.texWidth, 0f), dicom.slice);
-			Vector3 p3 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.texWidth, dicom.texHeight), dicom.slice);
-			Vector3 p4 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (0, dicom.texHeight), dicom.slice);
+			Vector3 p2 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, 0f), dicom.slice);
+			Vector3 p3 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, dicom.origTexHeight), dicom.slice);
+			Vector3 p4 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (0, dicom.origTexHeight), dicom.slice);
 			RectXMin.SetPosition (0, p1);
 			RectXMin.SetPosition (1, p4);
 			RectXMax.SetPosition (0, p2);
