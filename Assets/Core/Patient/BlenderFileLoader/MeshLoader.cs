@@ -141,7 +141,8 @@ public class MeshLoader : MonoBehaviour {
             Debug.Log("Loading cancelled");
         }else if (e.Error != null)
 		{
-			Debug.LogError("[MeshLoader.cs] Loading error: " + e.Error.Message);
+            Debug.LogError("[MeshLoader.cs] Loading error");
+            Debug.LogError(e.Error);
         }
         else
 		{
