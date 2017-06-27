@@ -18395,7 +18395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b4c60d05182f314eadb3925d042b48e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  move: 0
+  move: 1
   labelScale: 0.04
 --- !u!120 &1494569422
 LineRenderer:

@@ -551,7 +551,7 @@ public class AnnotationControl : MonoBehaviour
 		List<GameObject> returnList = new List<GameObject> ();
 		if(annotationListEntryList != null) {
 			foreach(GameObject g in annotationListEntryList) {
-				returnList.Add (g.GetComponent<AnnotationListEntry> ().getAnnotation ());
+				returnList.Add (g.GetComponent<AnnotationListEntry>().getAnnotation());
 			}
 		}
 		return returnList;
