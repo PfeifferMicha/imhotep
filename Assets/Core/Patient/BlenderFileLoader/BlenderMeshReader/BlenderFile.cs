@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace BlenderMeshReader
 {
+	/*! Definition of MLoop as in a blender file */
     [StructLayout(LayoutKind.Explicit, Pack = 4, Size = 8)]
     struct MLoop
     {
@@ -15,6 +16,7 @@ namespace BlenderMeshReader
         public int e;
     }
 
+	/*! Definition of MPloy as in a blender file */
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 12)]
     struct MPoly
     {
@@ -30,6 +32,7 @@ namespace BlenderMeshReader
         public byte pad;
     }
 
+	/*! Definition of MVert as in a blender file */
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 20)]
     struct MVert
     {
@@ -54,7 +57,7 @@ namespace BlenderMeshReader
         public byte bweight;
     }
 
-
+	/*! Definition of BondingBox as in a blender file */
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 104)]
     struct BoundBox
     {
@@ -116,6 +119,7 @@ namespace BlenderMeshReader
         public int pad;
     }
 
+	/*! Definition of BlenderObjectBlock */
     struct BlenderObjectBlock
     {
         public string objectName;
@@ -124,6 +128,10 @@ namespace BlenderMeshReader
         public Quaternion rotation;
     }
 
+	/*! This class is able to load a mesh and its position and rotation informations from a blender file. 
+	 * All the other objects, like cameras, annimations, ... will be ignored
+	 * There is also a methode to create a unity mesh, because Blender uses a right-handed coordinate system and Unity left-handed coordinate system
+	*/
     class BlenderFile
     {
         public static int PointerSize { get; private set; }

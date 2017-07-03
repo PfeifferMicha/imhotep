@@ -23,6 +23,11 @@ public class DICOM {
 	public int texWidth { private set; get; }
 	public int texHeight { private set; get; }
 	public int texDepth { private set; get; }
+
+	/*! Width (in Pixels) in DICOM slice*/
+	public int origTexWidth { private set; get; }
+	/*! Height (in Pixels) in DICOM slice*/
+	public int origTexHeight { private set; get; }
 	/*! Texture of the slice. The texture will be generated when this is first called.
 	 * \note This may only be called if dimension == 2, otherwise it will throw an error.*/
 	public Texture2D texture2D { private set; get; }
@@ -66,8 +71,8 @@ public class DICOM {
 		// Read the DICOM image:
 		Image image = SimpleITK.ReadImage( fileNames[slice] );
 
-		int origTexWidth = (int)image.GetWidth ();
-		int origTexHeight = (int)image.GetHeight ();
+		origTexWidth = (int)image.GetWidth ();
+		origTexHeight = (int)image.GetHeight ();
 		//int origTexDepth = (int)image.GetDepth ();
 		texWidth = Mathf.NextPowerOfTwo ((int)image.GetWidth ());
 		texHeight = Mathf.NextPowerOfTwo ((int)image.GetHeight ());

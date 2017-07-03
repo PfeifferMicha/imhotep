@@ -4,23 +4,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-public class ObjectEvent : UnityEvent<object>
-{
-
-}
-//empty class; just needs to exist
+public class ObjectEvent : UnityEvent<object> { } //empty class; just needs to exist
 
 
 public class EventTupel
 {
-	public ObjectEvent objEvent;
-	public object obj;
+    public ObjectEvent objEvent;
+    public object obj;
 
-	public EventTupel (ObjectEvent objEvent, object obj)
-	{
-		this.objEvent = objEvent;
-		this.obj = obj;
-	}
+    public EventTupel(ObjectEvent objEvent, object obj)
+    {
+        this.objEvent = objEvent;
+        this.obj = obj;
+    }
 }
 /*! Event system for all patient-related events.
  * Listeners can register for specific events and will be notified from now on.
@@ -28,12 +24,11 @@ public class EventTupel
 public class PatientEventSystem
 {
 	private Dictionary< Event, ObjectEvent> mEventDictionary;
-	private static List<EventTupel> savedEvents = new List<EventTupel> ();
+    private static List<EventTupel> savedEvents = new List<EventTupel>();
 	private static PatientEventSystem mInstance = null;
 
-	/*! All possible events: */
-	public enum Event
-	{
+    /*! All possible events: */
+    public enum Event {
 		/*! Called when we start loading a new Patient. */
 		PATIENT_StartLoading,
 		/*! Called when we have loaded a new Patient.
@@ -56,11 +51,9 @@ public class PatientEventSystem
 		/*! Called when a new (single!) mesh has been loaded.
 		 * Other meshes might still be loading.
 		 * The new GameObject holding the new mesh is passed to the callbacks. */
-		MESH_LoadedSingle,
-		// Called whenever a new mesh has been loaded
+		MESH_LoadedSingle,		// Called whenever a new mesh has been loaded
 		/*! Called when all meshes has been loaded.*/
-		MESH_LoadedAll,
-		// Called after all of the patient's meshes have been loaded
+		MESH_LoadedAll,			// Called after all of the patient's meshes have been loaded
 		/*! Called when mesh opacity is changed. Internal use only.
 		 * \note Not called if a slider changed the opacity.*/
 		MESH_Opacity_Changed,
@@ -81,16 +74,12 @@ public class PatientEventSystem
 		/*! Internal use only. */
 		LOADING_AddLoadingJob,
 		/*! Internal use only. */
-		LOADING_RemoveLoadingJob,
-
-		/*Called when Annotation is clicked, starts speech recognition*/
-		RECOGNITION_Start,
-		/*Called when Annotation looses focus, stops speech recognition*/
-		RECOGNITION_End
-	}
+		LOADING_RemoveLoadingJob
+    }
 
 	/*! Returns the singleton instance: */
-	public static PatientEventSystem instance {
+	public static PatientEventSystem instance
+	{
 		get {
 			if (mInstance == null) {
 				mInstance = new PatientEventSystem ();
@@ -100,23 +89,25 @@ public class PatientEventSystem
 	}
 
 	/*! Start calling the function listener whenever eventType happens. */
-	public static void startListening (Event eventType, UnityAction<object> listener)
+	public static void startListening(Event eventType, UnityAction<object> listener)
 	{
 		ObjectEvent thisEvent = null;
 		// Attempt to get the the UnityEvent from the dictionary. If this succeeds,
 		// thisEvent will be filled and the if will evaluate to true:
-		if (instance.mEventDictionary.TryGetValue (eventType, out thisEvent)) {
-			thisEvent.AddListener (listener);
-		} else {
-			thisEvent = new ObjectEvent ();
-			thisEvent.AddListener (listener);
-			instance.mEventDictionary.Add (eventType, thisEvent);
+		if (instance.mEventDictionary.TryGetValue(eventType, out thisEvent))
+		{
+			thisEvent.AddListener(listener);
+		}
+		else {
+			thisEvent = new ObjectEvent();
+			thisEvent.AddListener(listener);
+			instance.mEventDictionary.Add(eventType, thisEvent);
 		}
 		//Debug.Log("Added event listener for event: " + eventType);
 	}
 	/*! Stop calling the function listener.
 	 * This should be called with the exact same parameters as were passed to startListening before.*/
-	public static void stopListening (Event eventType, UnityAction<object> listener)
+	public static void stopListening(Event eventType, UnityAction<object> listener)
 	{
 		if (mInstance == null)
 			return;
@@ -124,48 +115,52 @@ public class PatientEventSystem
 		ObjectEvent thisEvent = null;
 		// Attempt to get the the UnityEvent from the dictionary. If this succeeds,
 		// thisEvent will be filled and the if will evaluate to true:
-		if (instance.mEventDictionary.TryGetValue (eventType, out thisEvent)) {
-			thisEvent.RemoveListener (listener);
+		if (instance.mEventDictionary.TryGetValue(eventType, out thisEvent))
+		{
+			thisEvent.RemoveListener(listener);
 		}
 		//Debug.Log("Removed event listener for event: " + eventType);
 	}
-
-	public static void triggerEvent (Event eventType, object obj = null)
+	public static void triggerEvent(Event eventType, object obj = null )
 	{
 		ObjectEvent thisEvent = null;
 		// Attempt to get the the UnityEvent from the dictionary. If this succeeds,
 		// thisEvent will be filled and the if will evaluate to true:
-		if (instance.mEventDictionary.TryGetValue (eventType, out thisEvent)) {
-			//Debug.Log("Triggering Event: " + eventType);
-			//thisEvent.Invoke( obj );
+		if (instance.mEventDictionary.TryGetValue(eventType, out thisEvent))
+		{
+            //Debug.Log("Triggering Event: " + eventType);
+            //thisEvent.Invoke( obj );
 
-			//save event and execute them in main thread, because events can be called form other thread (e.g. PATIENT_Loaded)
-			savedEvents.Add (new EventTupel (thisEvent, obj));
+            //save event and execute them in main thread, because events can be called form other thread (e.g. PATIENT_Loaded)
+            savedEvents.Add(new EventTupel(thisEvent, obj));
 
-		}
+        }
 	}
 
-	/*
+    /*
      *  Executes all saved events since the last call 
      */
-	public static void executeSavedEvents ()
+    public static void executeSavedEvents()
+    {
+        if (savedEvents.Count == 0)
+        {
+            return;
+        }
+
+        List<EventTupel> savedEventsCopy = new List<EventTupel>(savedEvents);
+        savedEvents.Clear();
+
+        foreach(EventTupel e in savedEventsCopy)
+        {
+            e.objEvent.Invoke(e.obj);
+        }
+    }
+
+	private PatientEventSystem()
 	{
-		if (savedEvents.Count == 0) {
-			return;
-		}
-
-		List<EventTupel> savedEventsCopy = new List<EventTupel> (savedEvents);
-		savedEvents.Clear ();
-
-		foreach (EventTupel e in savedEventsCopy) {
-			e.objEvent.Invoke (e.obj);
-		}
-	}
-
-	private PatientEventSystem ()
-	{
-		if (mEventDictionary == null) {
-			mEventDictionary = new Dictionary< Event, ObjectEvent > ();
+		if( mEventDictionary == null )
+		{
+			mEventDictionary = new Dictionary< Event, ObjectEvent >();
 		}
 	}
 

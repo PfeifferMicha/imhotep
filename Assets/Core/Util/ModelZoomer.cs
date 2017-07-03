@@ -30,14 +30,14 @@ public class ModelZoomer : MonoBehaviour
 
     private void Update()
     {
-		//if (UI.Core.instance.pointerIsOverPlatformUIObject == false) {
+		if (UI.Core.instance.layoutSystem.activeScreen == UI.Screen.center) {
 
 			InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;
 			if (inputDevice.getDeviceType () == InputDeviceManager.InputDeviceType.Mouse) {
 				// Let mouse handle zooming:
 				if (!UI.Core.instance.pointerIsOverPlatformUIObject) {
 					if (Input.GetAxis ("Mouse ScrollWheel") != 0) {
-						
+							
 						float inputScroll = Input.GetAxis ("Mouse ScrollWheel");
 
 						float zoom = transform.localScale.x + inputScroll / (1 / zoomingSpeed);
@@ -48,33 +48,34 @@ public class ModelZoomer : MonoBehaviour
 						targetZoom = transform.localScale;
 					}
 				}
-			} else if ( inputDevice.getDeviceType() == InputDeviceManager.InputDeviceType.ViveController ) {
-				// Let left Vive controller handle zooming:
-				LeftController lc = InputDeviceManager.instance.leftController;
-				if (lc != null) {
-					UnityEngine.EventSystems.PointerEventData.FramePressState triggerState = lc.triggerButtonState;
-					if (triggerState == UnityEngine.EventSystems.PointerEventData.FramePressState.Pressed && zooming == false) {
-						zooming = true;
-						originalDist = (lc.transform.position - transform.position).magnitude;
-						mOriginalZoom = transform.localScale;
-					} else if (triggerState == UnityEngine.EventSystems.PointerEventData.FramePressState.Released && zooming == true) {
-						zooming = false;
+			} else if (inputDevice.getDeviceType () == InputDeviceManager.InputDeviceType.ViveController) {
+
+					// Let left Vive controller handle zooming:
+					LeftController lc = InputDeviceManager.instance.leftController;
+					if (lc != null) {
+						UnityEngine.EventSystems.PointerEventData.FramePressState triggerState = lc.triggerButtonState;
+						if (triggerState == UnityEngine.EventSystems.PointerEventData.FramePressState.Pressed && zooming == false) {
+							zooming = true;
+							originalDist = (lc.transform.position - transform.position).magnitude;
+							mOriginalZoom = transform.localScale;
+						} else if (triggerState == UnityEngine.EventSystems.PointerEventData.FramePressState.Released && zooming == true) {
+							zooming = false;
+						}
+
+						if (zooming) {
+
+							float dist = (lc.transform.position - transform.position).magnitude;
+
+							float distDiff = dist - originalDist;
+
+							Vector3 newScale = mOriginalZoom + mOriginalZoom * distDiff;
+
+							setTargetZoom (newScale);
+						}
 					}
 
-					if (zooming) {
-
-						float dist = (lc.transform.position - transform.position).magnitude;
-
-						float distDiff = dist - originalDist;
-
-						Vector3 newScale = mOriginalZoom + mOriginalZoom * distDiff;
-
-						setTargetZoom (newScale);
-					}
 				}
-
-			}
-		//}
+		}
 
 		// Auto-Zoom to target, if given:
 		transform.localScale = Vector3.SmoothDamp(transform.localScale, targetZoom, ref zoomVelocity, scaleTime);

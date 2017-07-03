@@ -8,9 +8,12 @@ using System.Collections;
 using System.IO;
 using LitJson;
 
-
+/*! Loads all meshs from a .blend file.
+ * The meshs are loaded in the background and splitted into little parts to avoid lagging.
+ * Every part of the mesh is placed frame by frame below the mesh node.  */
 public class MeshLoader : MonoBehaviour {
 
+	/*! Game object where the loaded meshs placed */
 	public GameObject meshNode;
 
     //List of lists of UnityMeshes with max. 2^16 vertices per mesh
@@ -41,10 +44,7 @@ public class MeshLoader : MonoBehaviour {
 	{
 		// Unregister myself:
 		PatientEventSystem.stopListening(PatientEventSystem.Event.PATIENT_Closed, RemoveMesh);
-	}
-
-
-    
+	}    
 	
 	// Update is called once per frame
 	void Update () {
@@ -55,7 +55,6 @@ public class MeshLoader : MonoBehaviour {
             unityMeshes = new List<List<UnityMesh>>();
             loaded = false;
             Path = "";
-
         }
 		if(triggerEvent){
             blenderObjects = new List<BlenderObjectBlock>();
@@ -68,6 +67,8 @@ public class MeshLoader : MonoBehaviour {
 		}
     }
 
+	/*! This methode starts the loading of a .blend file 
+	 * \param pathToMeshJson path to a .blend file */
     public void LoadFile(string pathToMeshJson)
     {
         //Check if mesh.json exists
@@ -118,7 +119,9 @@ public class MeshLoader : MonoBehaviour {
 		}
     }
 
-    //Runs in own thread
+	/*! This methode is called from LoadFile() and executes the actual loading
+	 * Runs in own thread
+	 */
     private void LoadFileWorker(object sender, DoWorkEventArgs e)
     {
         BlenderFile b = new BlenderFile(Path);
@@ -129,7 +132,7 @@ public class MeshLoader : MonoBehaviour {
         return;
     }
 
-
+	/*! This methode is called from LoadFileWorker() when finished loading */
     private void LoadFileCallback(object sender, RunWorkerCompletedEventArgs e)
     {        
         //BackgroundWorker worker = sender as BackgroundWorker;
@@ -138,7 +141,8 @@ public class MeshLoader : MonoBehaviour {
             Debug.Log("Loading cancelled");
         }else if (e.Error != null)
 		{
-			Debug.LogError("[MeshLoader.cs] Loading error: " + e.Error.Message);
+            Debug.LogError("[MeshLoader.cs] Loading error");
+            Debug.LogError(e.Error);
         }
         else
 		{
@@ -147,6 +151,8 @@ public class MeshLoader : MonoBehaviour {
         return;
     }
 
+	/*! This methode creates the game object of new mesh and runs as coroutine.
+	 * The loaded meshs are splitted in little part. Only on part of a mesh will be process each frame */
     private IEnumerator LoadFileExecute()
 	{
 		Bounds bounds = new Bounds ();
@@ -262,6 +268,7 @@ public class MeshLoader : MonoBehaviour {
         yield return null;
     }
 
+	/*! Removes all meshs below the mehsNode*/
     public void RemoveMesh(object obj = null)
     {
         //Destroy current game objects attached to mesh node
