@@ -25,7 +25,8 @@ public class ModelRotator : MonoBehaviour
 
 	private void Update()
 	{
-		//if (UI.Core.instance.pointerIsOverPlatformUIObject == false) {
+		if (UI.Core.instance.layoutSystem.activeScreen == UI.Screen.center) {
+			
 			InputDevice inputDevice = InputDeviceManager.instance.currentInputDevice;
 			if (inputDevice.getDeviceType() == InputDeviceManager.InputDeviceType.Mouse) {
 				// Let mouse handle rotation:
@@ -62,7 +63,7 @@ public class ModelRotator : MonoBehaviour
 					}
 				}
 			}
-		//}
+		}
 
 		// Slowly rotate towards target, if any:
 		//float step =  Time.time;
