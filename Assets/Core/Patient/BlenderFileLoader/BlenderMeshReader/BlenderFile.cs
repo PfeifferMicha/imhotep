@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace BlenderMeshReader
 {
+	/*! Definition of MLoop as in a blender file */
     [StructLayout(LayoutKind.Explicit, Pack = 4, Size = 8)]
     struct MLoop
     {
@@ -15,6 +16,7 @@ namespace BlenderMeshReader
         public int e;
     }
 
+	/*! Definition of MPloy as in a blender file */
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 12)]
     struct MPoly
     {
@@ -30,6 +32,7 @@ namespace BlenderMeshReader
         public byte pad;
     }
 
+	/*! Definition of MVert as in a blender file */
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 20)]
     struct MVert
     {
@@ -54,7 +57,7 @@ namespace BlenderMeshReader
         public byte bweight;
     }
 
-
+	/*! Definition of BondingBox as in a blender file */
     [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 104)]
     struct BoundBox
     {
@@ -116,6 +119,19 @@ namespace BlenderMeshReader
         public int pad;
     }
 
+	/*! Definition of BlenderObjectBlock */
+    struct BlenderObjectBlock
+    {
+        public string objectName;
+        public ulong uniqueIdentifier;
+        public Vector3 location;
+        public Quaternion rotation;
+    }
+
+	/*! This class is able to load a mesh and its position and rotation informations from a blender file. 
+	 * All the other objects, like cameras, annimations, ... will be ignored
+	 * There is also a methode to create a unity mesh, because Blender uses a right-handed coordinate system and Unity left-handed coordinate system
+	*/
     class BlenderFile
     {
         public static int PointerSize { get; private set; }
@@ -182,7 +198,7 @@ namespace BlenderMeshReader
                 long startaddess = reader.BaseStream.Position;
                 string code = new string(reader.ReadChars(4));
                 int size = reader.ReadInt32();
-                ulong oldaddress = PointerSize == 8 ? reader.ReadUInt64() : reader.ReadUInt32(); //not used
+                ulong oldaddress = PointerSize == 8 ? reader.ReadUInt64() : reader.ReadUInt32();
                 int sdna = reader.ReadInt32();
                 int count = reader.ReadInt32();
 
@@ -283,7 +299,7 @@ namespace BlenderMeshReader
         }
 
         //Return a list of bounding boxes or an empty list if there are no bounding boxes 
-        public List<BoundingBox> readBoundingBoxes()
+        /*public List<BoundingBox> readBoundingBoxes()
         {
             List<BoundingBox> result = new List<BoundingBox>();
 
@@ -386,6 +402,119 @@ namespace BlenderMeshReader
 
             reader.Close();
             return result;
+        }*/
+
+        public List<BlenderObjectBlock> readObject()
+        {
+            List<BlenderObjectBlock> result = new List<BlenderObjectBlock>();
+            
+            int objIndex = 0;
+            int startPositionLoc = 0;
+            int startPositionQuat = 0;
+            int startPositionData = 0;
+
+            //Print name of all Blocks
+            /*foreach (FileBlock fileBlock in FileBockList)
+            {
+                foreach (Structure s in StructureList)
+                {
+                    if(fileBlock.SDNAIndex == s.Index)
+                    {
+                        Debug.LogWarning("File Block: " + s.Name + " SA: " + fileBlock.StartAddess.ToString("X"));
+                    }
+                }
+            }
+
+
+            foreach (Structure s in StructureList)
+            {
+                if (s.Name == "Base")
+                {
+                    foreach (FileBlock fileBlock in FileBockList)
+                    {
+                        if(fileBlock.SDNAIndex == s.Index)
+                        {
+                            Debug.LogWarning("Code: " + fileBlock.Code + " Start address: "+ fileBlock.StartAddess.ToString("X"));
+                        }
+                    }
+                }
+
+            }*/
+
+
+            foreach (Structure s in StructureList)
+            {
+                if (s.Name == "Object") //search index of object structure 
+                {
+                    objIndex = s.Index;
+                    int countLenght = 0;
+                    foreach (Field f in s.Fields)
+                    {
+                        if (f.Name == "loc[3]")
+                        {
+                            startPositionLoc = countLenght;
+                        }
+                        else if (f.Name == "quat[4]")
+                        {
+                            startPositionQuat = countLenght;
+                        }
+                        else if (f.Name == "*data")
+                        {
+                            startPositionData = countLenght;
+                        }
+                        countLenght += f.getLength();
+                    }
+                }
+                
+            }
+            
+            BinaryReader reader = new BinaryReader(File.Open(Filename, FileMode.Open));            
+            foreach (FileBlock fileBlock in FileBockList)
+            {
+                if (fileBlock.SDNAIndex == objIndex)
+                {
+                    reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + 32;
+                    string name = "";
+                    for (int i = 0; i < 66; i++)
+                    {
+                        char c = reader.ReadChar();
+                        if (c == 0x0)
+                        {
+                            break;
+                        }
+                        name += c;
+                    }
+                    
+                    //Read location
+                    reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + startPositionLoc;
+                    float[] loc = new float[3];
+                    loc[0] = reader.ReadSingle();
+                    loc[1] = reader.ReadSingle();
+                    loc[2] = reader.ReadSingle();
+
+                    //Read rotation
+                    reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + startPositionQuat;
+                    float[] quat = new float[4];
+                    quat[0] = reader.ReadSingle();
+                    quat[1] = reader.ReadSingle();
+                    quat[2] = reader.ReadSingle();
+                    quat[3] = reader.ReadSingle();
+
+                    //Read unique identifier
+                    reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + startPositionData;
+                    ulong uniqueIdentifier = PointerSize == 8 ? reader.ReadUInt64() : reader.ReadUInt32();
+
+                    BlenderObjectBlock b = new BlenderObjectBlock();
+                    b.objectName = name;
+                    b.uniqueIdentifier = uniqueIdentifier;
+                    b.location = new Vector3(loc[0], loc[1], loc[2]);
+                    b.rotation = new Quaternion(quat[0], quat[1], quat[2], quat[3]);
+                    result.Add(b);
+                }
+
+            }
+            reader.Close();
+            return result;
         }
 
         public List<BlenderMesh> readMesh()
@@ -448,10 +577,10 @@ namespace BlenderMeshReader
             BinaryReader reader = new BinaryReader(File.Open(Filename, FileMode.Open));
             foreach (FileBlock fileBlock in FileBockList)
             {
-                if(fileBlock.SDNAIndex == indexMesh)
+                if(fileBlock.SDNAIndex == indexMesh) //If the file block contains a mesh
                 {
                     //read name
-                    reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + 32;
+                    reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + 32; //32 because name has an offset of 32 in the ID structure 
                     string name = "";
                     for(int i = 0; i < 66; i++)
                     {
@@ -463,7 +592,7 @@ namespace BlenderMeshReader
                         name += c;
                     }
 
-                    BlenderMesh currentMesh = new BlenderMesh(name);
+                    BlenderMesh currentMesh = new BlenderMesh(name, fileBlock.OldAddess);
                     result.Add(currentMesh);
 
                     reader.BaseStream.Position = fileBlock.StartAddess + (PointerSize == 8 ? 24 : 20) + startPositionMVert;
@@ -571,12 +700,12 @@ namespace BlenderMeshReader
                 List<UnityMesh> outterListElement = new List<UnityMesh>();
                 result.Add(outterListElement);
 
-                int maxVerts = 6000;//65534; //TODO this is only a workaround 
+                int maxVerts = 6000;//65534; //TODO ? magic number, performs well
                 int positionTriangleList = 0;
                 //Go over the complete triangle list of mesh
                 while (positionTriangleList < completeMesh.TriangleList.Length)
                 {
-                    UnityMesh newMesh = new UnityMesh(completeMesh.Name); //Create submesh
+                    UnityMesh newMesh = new UnityMesh(completeMesh.Name, completeMesh.UniqueIdentifier); //Create submesh
                     outterListElement.Add(newMesh);
                     List<Vector3> vertList = new List<Vector3>(); //Create vertices list for submesh
                     List<Vector3> normList = new List<Vector3>(); //Create normal list for submesh

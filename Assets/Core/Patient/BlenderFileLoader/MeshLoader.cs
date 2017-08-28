@@ -8,13 +8,18 @@ using System.Collections;
 using System.IO;
 using LitJson;
 
-
+/*! Loads all meshs from a .blend file.
+ * The meshs are loaded in the background and splitted into little parts to avoid lagging.
+ * Every part of the mesh is placed frame by frame below the mesh node.  */
 public class MeshLoader : MonoBehaviour {
 
+	/*! Game object where the loaded meshs placed */
 	public GameObject meshNode;
 
     //List of lists of UnityMeshes with max. 2^16 vertices per mesh
-    private volatile List<List<UnityMesh>> unityMeshes = new List<List<UnityMesh>>();    
+    private volatile List<List<UnityMesh>> unityMeshes = new List<List<UnityMesh>>();
+    //List of blender objects, witch conatins name, location and rotation of all blender objects
+    private volatile List<BlenderObjectBlock> blenderObjects = new List<BlenderObjectBlock>();
     //True if file is loaded
     private bool loaded = false;
 	private bool triggerEvent = false;
@@ -39,10 +44,7 @@ public class MeshLoader : MonoBehaviour {
 	{
 		// Unregister myself:
 		PatientEventSystem.stopListening(PatientEventSystem.Event.PATIENT_Closed, RemoveMesh);
-	}
-
-
-    
+	}    
 	
 	// Update is called once per frame
 	void Update () {
@@ -53,9 +55,9 @@ public class MeshLoader : MonoBehaviour {
             unityMeshes = new List<List<UnityMesh>>();
             loaded = false;
             Path = "";
-
         }
 		if(triggerEvent){
+            blenderObjects = new List<BlenderObjectBlock>();
             meshJson = null;
 			triggerEvent = false;
 
@@ -65,6 +67,8 @@ public class MeshLoader : MonoBehaviour {
 		}
     }
 
+	/*! This methode starts the loading of a .blend file 
+	 * \param pathToMeshJson path to a .blend file */
     public void LoadFile(string pathToMeshJson)
     {
         //Check if mesh.json exists
@@ -115,17 +119,20 @@ public class MeshLoader : MonoBehaviour {
 		}
     }
 
-    //Runs in own thread
+	/*! This methode is called from LoadFile() and executes the actual loading
+	 * Runs in own thread
+	 */
     private void LoadFileWorker(object sender, DoWorkEventArgs e)
     {
         BlenderFile b = new BlenderFile(Path);
         List<BlenderMesh> blenderMeshes = new List<BlenderMesh>();
+        blenderObjects = b.readObject();
         blenderMeshes = b.readMesh();
         unityMeshes = BlenderFile.createSubmeshesForUnity(blenderMeshes);
         return;
     }
 
-
+	/*! This methode is called from LoadFileWorker() when finished loading */
     private void LoadFileCallback(object sender, RunWorkerCompletedEventArgs e)
     {        
         //BackgroundWorker worker = sender as BackgroundWorker;
@@ -134,7 +141,8 @@ public class MeshLoader : MonoBehaviour {
             Debug.Log("Loading cancelled");
         }else if (e.Error != null)
 		{
-			Debug.LogError("[MeshLoader.cs] Loading error: " + e.Error.Message);
+            Debug.LogError("[MeshLoader.cs] Loading error");
+            Debug.LogError(e.Error);
         }
         else
 		{
@@ -143,26 +151,27 @@ public class MeshLoader : MonoBehaviour {
         return;
     }
 
+	/*! This methode creates the game object of new mesh and runs as coroutine.
+	 * The loaded meshs are splitted in little part. Only on part of a mesh will be process each frame */
     private IEnumerator LoadFileExecute()
 	{
 		Bounds bounds = new Bounds ();
-		bool boundsInitialized = false;	// set to true when bounds is first set
+		bool boundsInitialized = false; // set to true when bounds is first set
 
-		//  meshNode
-		//	| - containerObject
-		//		| - actual mesh
-		//		| - actual mesh
-		//		| - actual mesh
-		//		| - ...
-		//	| - containerObject
-		//		| - actual mesh
-		//		| - actual mesh
-		//		| - actual mesh
-		//		| - ...
-		//	| ...
+        //  meshNode
+        //	| - containerObject
+        //		| - actual mesh
+        //		| - actual mesh
+        //		| - actual mesh
+        //		| - ...
+        //	| - containerObject
+        //		| - actual mesh
+        //		| - actual mesh
+        //		| - actual mesh
+        //		| - ...
+        //	| ...
 
         foreach (List<UnityMesh> um in unityMeshes) {
-
             GameObject containerObject = new GameObject(um[0].Name);
             containerObject.layer = meshNode.layer; //Set same layer as parent
 			containerObject.transform.SetParent( meshNode.transform, false );
@@ -172,6 +181,28 @@ public class MeshLoader : MonoBehaviour {
 			Color col = matColorForMeshName (um[0].Name);
 			matControl.materialColor = col;
             MeshGameObjectContainers.Add(containerObject);
+
+            //attach BlenderObject to containerObject
+            foreach(BlenderObjectBlock b in blenderObjects)
+            {
+                if (b.uniqueIdentifier == um[0].UniqueIdentifier) 
+                {
+                    BlenderObject attachedObject = containerObject.AddComponent<BlenderObject>(); //TODO Remove... maybe
+                    attachedObject.objectName = b.objectName;
+                    attachedObject.location = b.location;
+                    attachedObject.rotation = b.rotation;
+
+                    //Convert to left-handed soordinate systems
+					containerObject.transform.localPosition = new Vector3(b.location.x, b.location.y, -b.location.z);
+
+                    /* TODO
+                    Quaternion rot = Quaternion.Inverse(b.rotation);
+                    rot = new Quaternion(-rot.x, -rot.z, rot.y, -rot.w);
+                    containerObject.transform.localRotation = rot;
+                    */
+
+                }
+            }
 
             foreach (UnityMesh unityMesh in um)
             {
@@ -202,12 +233,16 @@ public class MeshLoader : MonoBehaviour {
                 loaded = false;
                 Path = "";
 
+
 				// Increase the common bounding box to contain this object:
+				// Calculate bounds in 
+				Bounds worldBounds = TransformUtil.TransformBounds( objToSpawn.transform.parent, mesh.bounds );
+				Bounds localBounds = TransformUtil.InverseTransformBounds (containerObject.transform.parent, worldBounds);
 				if (!boundsInitialized) {
-					bounds = mesh.bounds;
+					bounds = localBounds;
 					boundsInitialized = true;
 				} else {
-					bounds.Encapsulate (mesh.bounds);
+					bounds.Encapsulate (localBounds);
 				}
 
 				// Let others know that a new mesh has been loaded:
@@ -221,21 +256,19 @@ public class MeshLoader : MonoBehaviour {
 
                 yield return null;
             }
-
-
-			// Move the object by half the size of all of the meshes.
-			// This makes sure the object will rotate around its actual center:
-			//containerObject.transform.localPosition = -bounds.center;
-
-			meshNode.GetComponent<ModelMover> ().targetPosition = Vector3.Scale(-bounds.center, meshNode.transform.localScale);
         }
 
+		// Move the object by half the size of all of the meshes.
+		// This makes sure the object will rotate around its actual center:
+		//containerObject.transform.localPosition = -bounds.center;
+		meshNode.GetComponent<ModelMover> ().targetPosition = Vector3.Scale(-bounds.center, meshNode.transform.localScale);
 
 		triggerEvent = true;
 
         yield return null;
     }
 
+	/*! Removes all meshs below the mehsNode*/
     public void RemoveMesh(object obj = null)
     {
         //Destroy current game objects attached to mesh node
@@ -277,6 +310,11 @@ public class MeshLoader : MonoBehaviour {
 		byte b = byte.Parse(hex.Substring(5,2), System.Globalization.NumberStyles.HexNumber);
 		return new Color32(r,g,b, 255);
 	}
+
+    /*public List<BlenderObject> getBlenderObjects()
+    {
+        return blenderObjects;
+    }*/
 
 
 }
