@@ -12,13 +12,13 @@ public class CopyPosition : MonoBehaviour {
 	public float offsetZ = 0f;
 
 	void Update () {
-		Vector3 pos = transform.localPosition;
+		Vector3 pos = transform.position;
 		if (copyX)
-			pos.x = target.localPosition.x + offsetX;
+			pos.x = target.position.x + offsetX;
 		if (copyY)
-			pos.y = target.localPosition.y + offsetY;
+			pos.y = target.position.y + offsetY;
 		if (copyZ)
-			pos.z = target.localPosition.z + offsetZ;
-		transform.localPosition = pos;
+			pos.z = target.position.z + offsetZ;
+		transform.position = pos;
 	}
 }
