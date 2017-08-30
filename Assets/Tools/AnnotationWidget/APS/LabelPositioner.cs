@@ -14,8 +14,10 @@ using System.IO;
 
 
 
-public class LabelPositioner : MonoBehaviour
-{
+public class LabelPositioner : MonoBehaviour{
+
+    
+
     public struct PlaneVectors /**<  die Vektoren welche die Ebene aufspannen  */
     {
         public Vector3 x, y, z, origin;
@@ -28,6 +30,8 @@ public class LabelPositioner : MonoBehaviour
             this.origin = o;
         }
     }
+       
+    
     private PlaneVectors[] pointPlaneVectors; /**<  Vektoren für die Ebenen zu denen der Abstand von den Punkten gemessen wird  */
     private PlaneVectors[] labelPlaneVectors; /**<   Vektoren der Ebenen in denen die labels Liegen  */
 
@@ -35,29 +39,31 @@ public class LabelPositioner : MonoBehaviour
     private Plane[] labelPlanes; /**<   Ebenen in denen die Labels liegen   */
 
     private Plane[] camPlanes; /**<   Ebenen des ViewPlaneFrustum   */
+
+
+    
+
     private float[] initialPlaneRadius = new float[4];  /**<   Radien der Ebenen   */
 
     private Bounds meshBox; /**<   BoundingBox um das Objekt   */
     private BoundingSphere bSphere; /**<   BoundingSphere um das Objekt   */
 
     private GameObject meshRotationNode;
-    private GameObject meshNode;
+    private GameObject meshNode; 
     private GameObject meshPositionNode;
-    private GameObject meshViewerBase;
+    private GameObject meshViewerBase; 
 
-    private List<GameObject> annotationList;
+	private List<GameObject> annotationList;
 
     public Camera silhouetteCamPrefab; /**<   Prefab mit der Später ein 2D-Bild gerendert wird   */
     private Texture2D silhouetteImage; /**<   Textur in der das Bild gespeichert wird   */
 
     private Camera silhouetteCam; /**<   Kamera mit der später das silhouetteImage gerendert wird   */
 
-    public float scaleCloseRage = 1.75f; /**<   Schwellwert von MeshViewerScale (Scale) ab dem die hinteren Labels ausgeblendet werden   */
-
-    public bool autoHideAnnotations = true;
+	public bool autoHideAnnotations = true;   
 
     private List<Label>[] labelLists = new List<Label>[4]; /**<   ein Array von Listen für die Labels in den einzelnen Ebenen   */
-    private List<Point>[] pointsOnPlane = new List<Point>[4]; /**<   ein Array von Listen für die Punkte in den einzelnen Ebenen   */
+    private List<Point>[] pointsOnPlane = new List<Point>[4]; /**<   ein Array von Listen für die Punkte in den einzelnen Ebenen   */    
 
     private Quaternion meshRotation = Quaternion.identity; /**<   die Rotation des Objekts   */
 
@@ -73,7 +79,7 @@ public class LabelPositioner : MonoBehaviour
     private int pointCount = 0; /**<   anzahl an Punkten   */
     private int counter = 0; /**<   anzahl an durchlaufenen Iteratiionschritten   */
 
-    private float[] rads = new float[360]; /**<  die Radien der Kuchenstücke für die Silhouette   */
+    private float[] rads = new float[360]; /**<  die Radien der Kuchenstücke für die Silhouette   */    
 
     private bool inCalculationOfZoomPlane = false; /**<   ob momentan eine berechnung zur neupositionierung in der Zoomebene stattfindet   */
     private bool inCalculationOfPlanes = false; /**<   ob momentan eine berechnung zur neupositionierung in den anderen Ebenen stattfindet   */
@@ -81,12 +87,12 @@ public class LabelPositioner : MonoBehaviour
     public int iterations = 250; /**<   Anzahl der Iterationen   */
     public float weightAngleSizeRatio = 0.2f; /**<   Winkelgewicht verhältnis   */
     public bool middlePlane = false; /**<   ob Labels in der mittleren Ebene dargestellt werden sollen oder nicht   */
-
+    
     public float zoomPlaneDistance = 2f; /**<   abstand der Zoomebene von der Kamera   */
     public float zoomPlaneDetectionRadius; /**<   Radius des Kreises auf der Zoomebene  */
 
     private int whichMode = 0;
-
+    
     private bool startRepositioning; //dient als interrupt falls die anzahl der annotationen sich ändert
 
     void Start()
@@ -105,6 +111,7 @@ public class LabelPositioner : MonoBehaviour
         meshPositionNode = GameObject.Find("MeshViewerBase/MeshViewerScale/MeshRotationNode/MeshPositionNode");
 
         camPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+
 
         zoomPlaneDistance = 3f;
         weightAngleSizeRatio = 0.2f; // wurde experimentell bestimmt
@@ -128,9 +135,9 @@ public class LabelPositioner : MonoBehaviour
         rotationChange = Quaternion.Angle(meshRotation, meshRotationNode.transform.rotation);
         scaleChange = Math.Abs(meshNode.transform.localScale.x - meshScale);
 
-        if (annotationList != null)
+        if(annotationList != null)
         {
-            if (annotationList.Count != 0)
+            if(annotationList.Count != 0)
             {
                 if (annotationList[annotationList.Count - 1].GetComponent<Annotation>().getLabel() != null)
                 {
@@ -141,44 +148,39 @@ public class LabelPositioner : MonoBehaviour
 
     }
 
-    public void forceRecalculate()
-    {
+	public void forceRecalculate() {
+		whichMode = 0;
+		rotationChange = 35;
+		startRepositioning = true;
+		inCalculationOfPlanes = false;
+		inCalculationOfZoomPlane = false;
+		if(meshNode != null) {
+			updateAnnotation();	
+		}
+	}
+
+
+	/// <summary>
+	/// Called by Annotation Control to update Annotation List when it changes
+	/// </summary>
+	/// <param name="annoList">tge new List with changes.</param>
+	public void updateAnnotationList(List<GameObject> annoList) {
+		annotationList = annoList;
         whichMode = 0;
         rotationChange = 35;
         startRepositioning = true;
         inCalculationOfPlanes = false;
         inCalculationOfZoomPlane = false;
-        if (meshNode != null)
-        {
-            updateAnnotation();
-        }
-    }
+		if(meshNode != null) {
+			updateAnnotation();	
+		}
+        
+	}
 
-
-    /// <summary>
-    /// Called by Annotation Control to update Annotation List when it changes
-    /// </summary>
-    /// <param name="annoList">tge new List with changes.</param>
-    public void updateAnnotationList(List<GameObject> annoList)
-    {
-        annotationList = annoList;
-        whichMode = 0;
-        rotationChange = 35;
-        startRepositioning = true;
-        inCalculationOfPlanes = false;
-        inCalculationOfZoomPlane = false;
-        if (meshNode != null)
-        {
-            updateAnnotation();
-        }
-
-    }
-
-    public void resetAnnotationList()
-    {
-        annotationList = new List<GameObject>();
-    }
-
+	public void resetAnnotationList() {
+		annotationList = new List<GameObject> ();
+	}
+    
 
     /**
     * \brief updateAnnotation
@@ -191,10 +193,10 @@ public class LabelPositioner : MonoBehaviour
     {
         //things to do every frame
 
-        createBoundingBox();
-        zoomPlaneDetectionRadius = getInitialPlaneRadius(3);
+        createBoundingBox(); 
+        zoomPlaneDetectionRadius = getInitialPlaneRadius(3);  
 
-        if (meshNode.transform.localScale.x < scaleCloseRage) //hier wird unterschieden ob das Objekt sehr nah ist oder nicht. Jenachdem werden bestimmte labels ausgeblendet oder eingeblendet
+        if (meshNode.transform.localScale.x < 1.2f) //hier wird unterschieden ob das Objekt sehr nah ist oder nicht. Jenachdem werden bestimmte labels ausgeblendet oder eingeblendet
         {
             bool[] whichPlane = new bool[] { false, middlePlane, true, false };
 
@@ -202,8 +204,8 @@ public class LabelPositioner : MonoBehaviour
             {
                 rotationChange = 35;
                 switchToZoomPlane = false;
-            }
-
+            }       
+				
             if (rotationChange >= 35 || scaleChange >= 0.25f || startRepositioning) //hier wird geprüft ob das Model sich mehr als 35 grad gedreht hat --> labels werden neu angeordnet
             {
                 if (whichMode == 2)
@@ -252,10 +254,10 @@ public class LabelPositioner : MonoBehaviour
 
             }
             else if (inCalculationOfPlanes)
-            {
+            {                
                 calculateForces(switchToZoomPlane, whichPlane);
                 counter++;
-                if (energyOfPlanes[2] == 0 || counter > iterations)
+                if(energyOfPlanes[2] == 0 || counter > iterations)
                 {
                     inCalculationOfPlanes = false;
                     //drawPicture();
@@ -266,7 +268,7 @@ public class LabelPositioner : MonoBehaviour
         else
         {
 
-            bool[] whichPlane = new bool[] {false, false, false, true};
+            bool[] whichPlane = new bool[] { false, false, false, true };
 
             if (!switchToZoomPlane)
             {
@@ -278,7 +280,8 @@ public class LabelPositioner : MonoBehaviour
                 createPlanes(zoomPlaneDistance);
 
                 inCalculationOfPlanes = false;
-                inCalculationOfZoomPlane = true;
+                inCalculationOfZoomPlane = true;               
+
 
                 meshRotation = meshRotationNode.transform.rotation;
                 meshScale = meshNode.transform.localScale.x;
@@ -287,9 +290,9 @@ public class LabelPositioner : MonoBehaviour
                 {
                     labelLists[i] = new List<Label>();
                     pointsOnPlane[i] = new List<Point>();
-                }
+                }                
 
-                createLabelCircle(switchToZoomPlane);
+                createLabelCircle(switchToZoomPlane);                
 
                 sortListsByAngle(whichPlane);
 
@@ -301,19 +304,22 @@ public class LabelPositioner : MonoBehaviour
             }
             else if (inCalculationOfZoomPlane)
             {
-
+                
                 switchToZoomPlane = true;
+
                 calculateForces(switchToZoomPlane, whichPlane);
+
                 counter++;
 
-
-                if (energyOfPlanes[3] == 0 || counter > iterations)
+                
+                if(energyOfPlanes[3] == 0 || counter > iterations)
                 {
-                    inCalculationOfZoomPlane = false;
+                    inCalculationOfZoomPlane = false;                    
+
                     counter = 0;
                 }
-            }
-        }
+            }  
+        }  
     }
 
     /**
@@ -322,17 +328,17 @@ public class LabelPositioner : MonoBehaviour
     * 
     * \param whichPlane. Beschreibt welche Ebenen sortiert werden sollen
     */
-    private void sortListsByAngle(bool[] whichPlane)
-    {
+    private void sortListsByAngle(bool[] whichPlane ) 
+    {       
 
-        for (int i = 0; i < labelLists.Length; i++)
+        for(int i = 0; i < labelLists.Length; i++)
         {
             if (whichPlane[i])
             {
                 labelLists[i].Sort((s1, s2) => s1.angle.CompareTo(s2.angle));
             }
-        }
-
+        }    
+        
 
     }
 
@@ -346,110 +352,112 @@ public class LabelPositioner : MonoBehaviour
     private void createLabelCircle(bool zoomPlane)
     {
         int planeNumber;
-
-        for (int i = 0; i < annotationList.Count; i++)
+        
+		for(int i = 0; i < annotationList.Count; i++)
         {
 
-            Point p = new Point();
+            Point p = new Point();  
 
 
-            if (annotationList[i] != null)
+			if (annotationList[i] != null)
             {
-
-                planeNumber = updateWhichPlaneForPoint(annotationList[i], zoomPlane, middlePlane);
+                                
+				planeNumber = updateWhichPlaneForPoint(annotationList[i], zoomPlane, middlePlane);     
 
 
                 p.planeNumber = planeNumber;
-                p = orthoProjectPointOnPlane(annotationList[i].transform.position, planeNumber, labelPlaneVectors[planeNumber], labelPlanes[planeNumber]);
-                p.annotationPoint = annotationList[i];
+				p = orthoProjectPointOnPlane(annotationList[i].transform.position, planeNumber, labelPlaneVectors[planeNumber], labelPlanes[planeNumber]);
+				p.annotationPoint = annotationList[i];
 
                 //hier wird der Punkt der zuvor auf eine Ebene projiziert wurde auf einen Kreis in der ebene projiziert
 
                 float radius = getInitialPlaneRadius(planeNumber);
-
+                
                 Vector3 pointProjectedOnCircle = labelPlaneVectors[planeNumber].origin + radius * (p.position - labelPlaneVectors[planeNumber].origin).normalized;
-
+                  
                 float y = Vector3.Dot(pointProjectedOnCircle - labelPlaneVectors[planeNumber].origin, labelPlaneVectors[planeNumber].y);
                 float x = Vector3.Dot(pointProjectedOnCircle - labelPlaneVectors[planeNumber].origin, labelPlaneVectors[planeNumber].x);
-
-                Label l = new Label(y, x, pointProjectedOnCircle, planeNumber, p.angle, annotationList[i]);
+                
+				Label l = new Label(y, x, pointProjectedOnCircle, planeNumber, p.angle, annotationList[i]);
 
                 l.pointOnPlane = p;
                 l.calculateAngleToLeftAndRight(labelPlaneVectors[planeNumber].x, labelPlaneVectors[planeNumber].y, labelPlaneVectors[planeNumber].origin);
                 l.calculateWeight(weightAngleSizeRatio);
+
+
                 
+
+
                 p.label = l;
-                //check if annotation is not current
+				//check if annotation is not current
 
-                if (l.annotationLabel != null)
-                {
-                    if (AnnotationControl.instance.isCurrentAnnotation(p.annotationPoint))
-                    {
-                        l.annotationLabel.SetActive(true);
-                    }
+					if (l.annotationLabel != null)
+					{
+						if (AnnotationControl.instance.isCurrentAnnotation (p.annotationPoint)) {
+							l.annotationLabel.SetActive(true);
+						}
+						
+						if (zoomPlane)
+						{
 
-                    if (zoomPlane)
-                    {
-                        if (planeNumber != 3)
-                        {
-                            if (!AnnotationControl.instance.isCurrentAnnotation(p.annotationPoint))
-                            {
-                                if (autoHideAnnotations)
-                                    l.annotationLabel.SetActive(false);
-                            }
-                            //l.annotationPoint.SetActive(false);
-                        }
-                        else
-                        {
-                            l.annotationLabel.SetActive(true);
-                            l.annotationPoint.SetActive(true);
-                            labelLists[planeNumber].Add(l);
-                            pointsOnPlane[planeNumber].Add(p);
-                        }
-                    }
-                    else
-                    {
-                        if (middlePlane)
-                        {
-                            if (planeNumber == 0 || planeNumber == 3)
-                            {
-                                if (!AnnotationControl.instance.isCurrentAnnotation(p.annotationPoint))
-                                {
-                                    if (autoHideAnnotations)
-                                        l.annotationLabel.SetActive(false);
-                                }
-                                //l.annotationPoint.SetActive(false);
-                            }
-                            else
-                            {
-                                l.annotationLabel.SetActive(true);
-                                l.annotationPoint.SetActive(true);
-                                labelLists[planeNumber].Add(l);
-                                pointsOnPlane[planeNumber].Add(p);
-                            }
-                        }
-                        else
-                        {
-                            if (planeNumber != 2)
-                            {
-                                if (!AnnotationControl.instance.isCurrentAnnotation(p.annotationPoint))
-                                {
-                                    if (autoHideAnnotations)
-                                        l.annotationLabel.SetActive(false);
-                                }
-                                //l.annotationPoint.SetActive(false);
-                            }
-                            else
-                            {
-                                l.annotationLabel.SetActive(true);
-                                l.annotationPoint.SetActive(true);
-                                labelLists[planeNumber].Add(l);
-                                pointsOnPlane[planeNumber].Add(p);
-                            }
-                        }
-                    }
-                }
-            }
+							if (planeNumber != 3)
+							{
+								if (!AnnotationControl.instance.isCurrentAnnotation (p.annotationPoint)) {
+									if( autoHideAnnotations )
+										l.annotationLabel.SetActive(false);
+								}
+								//l.annotationPoint.SetActive(false);
+							}
+							else
+							{
+								l.annotationLabel.SetActive(true);
+								l.annotationPoint.SetActive(true);
+								labelLists[planeNumber].Add(l);
+								pointsOnPlane[planeNumber].Add(p);
+							}
+						}
+						else
+						{
+							if (middlePlane)
+							{
+								if (planeNumber == 0 || planeNumber == 3)
+								{
+									if (!AnnotationControl.instance.isCurrentAnnotation (p.annotationPoint)) {
+										if( autoHideAnnotations )
+											l.annotationLabel.SetActive(false);
+									}
+									//l.annotationPoint.SetActive(false);
+								}
+								else
+								{
+									l.annotationLabel.SetActive(true);
+									l.annotationPoint.SetActive(true);
+									labelLists[planeNumber].Add(l);
+									pointsOnPlane[planeNumber].Add(p);
+								}
+							}
+							else
+							{
+								if (planeNumber != 2)
+								{
+									if (!AnnotationControl.instance.isCurrentAnnotation (p.annotationPoint)) {
+										if( autoHideAnnotations )
+											l.annotationLabel.SetActive(false);
+									}
+									//l.annotationPoint.SetActive(false);
+								}
+								else
+								{
+									l.annotationLabel.SetActive(true);
+									l.annotationPoint.SetActive(true);
+									labelLists[planeNumber].Add(l);
+									pointsOnPlane[planeNumber].Add(p);
+								}
+							}
+						}
+					}
+				}
+              
         }
         if (zoomPlane)
         {
@@ -468,7 +476,7 @@ public class LabelPositioner : MonoBehaviour
         {
             for (int j = 0; j < labelLists[m].Count; j++)
             {
-                if (j == 0)
+                if(j == 0)
                 {
                     labelLists[m][j].leftLabel = labelLists[m][labelLists[m].Count - 1];
 
@@ -494,8 +502,8 @@ public class LabelPositioner : MonoBehaviour
                         labelLists[m][j].leftLabel = labelLists[m][j];
                     }
                 }
-                else
-                {
+                else{
+
                     labelLists[m][j].rightLabel = labelLists[m][j + 1];
                     labelLists[m][j].leftLabel = labelLists[m][j - 1];
 
@@ -507,7 +515,7 @@ public class LabelPositioner : MonoBehaviour
 
 
     }
-
+      
 
     /**
     * \brief calculateForces
@@ -516,7 +524,7 @@ public class LabelPositioner : MonoBehaviour
     * \param zoomPlane. Beschreibt ob die Zoomebene aktiv ist oder nicht
     * \param whichPlane. Beschreibt in welchen Ebenen Kräfte wirken können
     */
-    private void calculateForces(bool zoomPlane, bool[] whichPlane)
+    private void calculateForces( bool zoomPlane, bool[] whichPlane)
     {
         for (int m = 0; m < labelLists.Length; m++)
         {
@@ -529,7 +537,7 @@ public class LabelPositioner : MonoBehaviour
                     if (labelLists[m][j].annotationLabel != null)
                     {
                         if (labelLists[m][j].annotationLabel.activeSelf)
-                        {
+                        {                            
                             for (int u = 0; u < labelLists[m].Count; u++)
                             {
                                 if (labelLists[m][u].annotationLabel != null)
@@ -595,7 +603,7 @@ public class LabelPositioner : MonoBehaviour
                         }
                     }
                 }
-                applyForcesOnLabels(zoomPlane, whichPlane);
+                applyForcesOnLabels(zoomPlane, whichPlane);                
             }
         }
     }
@@ -622,7 +630,7 @@ public class LabelPositioner : MonoBehaviour
                     float angleToRight = 0;
                     float angleToLeft = 0;
 
-                    if (labelLists[m][j].rightLabel.angle > labelLists[m][j].angle)
+                    if(labelLists[m][j].rightLabel.angle > labelLists[m][j].angle)
                     {
                         angleToRight = labelLists[m][j].rightLabel.angle - labelLists[m][j].angle;
                     }
@@ -630,8 +638,8 @@ public class LabelPositioner : MonoBehaviour
                     {
                         angleToRight = (360 - labelLists[m][j].angle) + labelLists[m][j].rightLabel.angle;
                     }
-
-                    if (labelLists[m][j].angle > labelLists[m][j].leftLabel.angle)
+                    
+                    if(labelLists[m][j].angle > labelLists[m][j].leftLabel.angle)
                     {
                         angleToLeft = labelLists[m][j].angle - labelLists[m][j].leftLabel.angle;
                     }
@@ -644,7 +652,7 @@ public class LabelPositioner : MonoBehaviour
                     labelLists[m][j].angleToRightLabel = angleToRight;
 
                     if (labelLists[m][j].dispAngle > 0)
-                    {
+                    {                     
 
                         if (labelLists[m][j].angleToLeftLabel < labelLists[m][j].dispAngle)
                         {
@@ -666,6 +674,7 @@ public class LabelPositioner : MonoBehaviour
                     }
                     else
                     {
+
                         if (-labelLists[m][j].angleToRightLabel > labelLists[m][j].dispAngle)
                         {
                             labelLists[m][j].dispAngle = -(labelLists[m][j].angleToRightLabel);
@@ -688,10 +697,10 @@ public class LabelPositioner : MonoBehaviour
 
                     float xNew = labelLists[m][j].x * Mathf.Cos(labelLists[m][j].dispAngle) - labelLists[m][j].y * Mathf.Sin(labelLists[m][j].dispAngle);
                     float yNew = labelLists[m][j].x * Mathf.Sin(labelLists[m][j].dispAngle) + labelLists[m][j].y * Mathf.Cos(labelLists[m][j].dispAngle);
-
+                    
                     labelLists[m][j].y = yNew;
                     labelLists[m][j].x = xNew;
-
+                    
                     labelLists[m][j].position = labelPlaneVectors[m].origin + yNew * labelPlaneVectors[m].y + xNew * labelPlaneVectors[m].x;
 
                     float angle = Vector3.Angle(labelLists[m][j].position - labelPlaneVectors[m].origin, labelPlaneVectors[m].origin + 2 * labelPlaneVectors[m].y);
@@ -705,7 +714,7 @@ public class LabelPositioner : MonoBehaviour
                     {
                         angle = 360 - angle;
                     }
-
+                    
                     labelLists[m][j].angle = angle;
                     labelLists[m][j].dispAngle = 0;
 
@@ -713,18 +722,19 @@ public class LabelPositioner : MonoBehaviour
 
                     labelLists[m][j].calculateCornersOnPlane(meshNode, meshPositionNode, meshViewerBase);
                     labelLists[m][j].calculateAngleToLeftAndRight(labelPlaneVectors[m].x, labelPlaneVectors[m].y, labelPlaneVectors[m].origin);
-                    
+
+
                     if (!zoomPlane)
                     {
-                        if (m == 2)
+                        if(m == 2)
                         {
                             newRadius = findSmallestPossibleRadius(labelLists[m][j]);
-                        }
+                        }                        
 
                         if (newRadius > getInitialPlaneRadius(m))
                         {
                             newRadius = getInitialPlaneRadius(m);
-                        }
+                        }                        
                     }
 
                     float offset = 0;
@@ -739,19 +749,19 @@ public class LabelPositioner : MonoBehaviour
 
                     labelLists[m][j].y = Vector3.Dot(labelLists[m][j].position - labelPlaneVectors[m].origin, labelPlaneVectors[m].y);
                     labelLists[m][j].x = Vector3.Dot(labelLists[m][j].position - labelPlaneVectors[m].origin, labelPlaneVectors[m].x);
-
+                    
                     labelLists[m][j].calculateCornersOnPlane(meshNode, meshPositionNode, meshViewerBase);
                     labelLists[m][j].calculateAngleToLeftAndRight(labelPlaneVectors[m].x, labelPlaneVectors[m].y, labelPlaneVectors[m].origin);
-
+                    
                     labelLists[m][j].calculateWeight(weightAngleSizeRatio);
 
-                    labelLists[m][j].moveToNewPosition();
+                    labelLists[m][j].moveToNewPosition();                    
                 }
             }
-        }
+        }        
     }
 
-
+    
 
     /**
     * \brief calculateRepForce
@@ -765,8 +775,8 @@ public class LabelPositioner : MonoBehaviour
         float magnitude;
 
         if (distance > 0)
-        {
-            magnitude = -(k * k) / distance;
+        {            
+            magnitude = -(k * k ) / distance;            
         }
         else
         {
@@ -787,20 +797,20 @@ public class LabelPositioner : MonoBehaviour
     {
         Vector3 center = meshNode.transform.position;
         center = meshBox.center;
-
+        
         Vector3 planesNormal = (center - Camera.main.transform.position).normalized;
-
+                
         float distanceBetweenPointPlanes = bSphere.radius / 2;
 
         Vector3 xAxis = planesNormal; //xAxis zeigt vom Mittelpunkt nach rechts
         Vector3 yAxis = planesNormal; //YAxis zeigt vom Mittelpunkt nach oben
         Vector3 zAxis = planesNormal; //zAxis zeigt vom Mittelpunkt nach hinten
         Vector3.OrthoNormalize(ref zAxis, ref yAxis, ref xAxis); // hier wird die Y-Achse leider umgedreht, daher wird sie bei verwendung wieder umgedreht
-
+        
         //Debug.DrawLine(center, center - 5 * yAxis);
         //Debug.DrawLine(center, center + 5 * zAxis, Color.red, 10);
         //Debug.DrawLine(center, center + 5 * xAxis);
-
+        
         //Fläche 1 hinterste ebene
         pointPlanes[0] = new Plane();
         pointPlanes[0].SetNormalAndPosition(planesNormal, center + (planesNormal * distanceBetweenPointPlanes));
@@ -810,7 +820,7 @@ public class LabelPositioner : MonoBehaviour
 
         pointPlaneVectors[0] = new PlaneVectors(xAxis, -yAxis, zAxis, center + (planesNormal * distanceBetweenPointPlanes));
         labelPlaneVectors[0] = new PlaneVectors(xAxis, -yAxis, zAxis, center + (planesNormal * distanceBetweenPointPlanes * 2));
-
+        
         //Fläche 2 mittlere ebene
         pointPlanes[1] = new Plane();
         pointPlanes[1].SetNormalAndPosition(planesNormal, center);
@@ -820,7 +830,7 @@ public class LabelPositioner : MonoBehaviour
 
         pointPlaneVectors[1] = new PlaneVectors(xAxis, -yAxis, zAxis, center);
         labelPlaneVectors[1] = new PlaneVectors(xAxis, -yAxis, zAxis, center);
-
+        
         //Fläche 3 vordere ebene
         pointPlanes[2] = new Plane();
         pointPlanes[2].SetNormalAndPosition(planesNormal, center - (planesNormal * distanceBetweenPointPlanes));
@@ -840,7 +850,7 @@ public class LabelPositioner : MonoBehaviour
         float maxDistance = (Camera.main.transform.position - meshBox.center).magnitude;
 
 
-
+        
         Ray ray = new Ray(Camera.main.transform.position, meshBox.center - Camera.main.transform.position);
         Physics.Raycast(ray, out hit, maxDistance, layerMask);
 
@@ -907,7 +917,7 @@ public class LabelPositioner : MonoBehaviour
             pointsOnPlane[3][i].label.y = y;
             pointsOnPlane[3][i].label.angle = p.angle;
         }
-
+        
 
         sortListsByAngle(new bool[] { false, false, false, true });
     }
@@ -924,16 +934,16 @@ public class LabelPositioner : MonoBehaviour
     private int updateWhichPlaneForPoint(GameObject annoPoint, bool zoomPlane, bool middlePlane)
     {
 
-        Vector3 pointPosition = annoPoint.transform.position;
-        //hier wird bestimmt welche Fläche welchem Punkt am nächsten liegt
-        float d1 = pointPlanes[0].GetDistanceToPoint(pointPosition);
-        //d1 = Mathf.Abs(d1);
-        float d2 = pointPlanes[1].GetDistanceToPoint(pointPosition);
-        //d2 = Mathf.Abs(d2);
-        float d3 = pointPlanes[2].GetDistanceToPoint(pointPosition);
-        //d3 = Mathf.Abs(d3);
-        float d4 = pointPlanes[3].GetDistanceToPoint(pointPosition);
-        d4 = Mathf.Abs(d4);
+            Vector3 pointPosition = annoPoint.transform.position;
+            //hier wird bestimmt welche Fläche welchem Punkt am nächsten liegt
+            float d1 = pointPlanes[0].GetDistanceToPoint(pointPosition);
+            //d1 = Mathf.Abs(d1);
+            float d2 = pointPlanes[1].GetDistanceToPoint(pointPosition);
+            //d2 = Mathf.Abs(d2);
+            float d3 = pointPlanes[2].GetDistanceToPoint(pointPosition);
+            //d3 = Mathf.Abs(d3);
+            float d4 = pointPlanes[3].GetDistanceToPoint(pointPosition);
+            d4 = Mathf.Abs(d4);
 
 
         //wertet aus zu welcher Ebene der punkt den geringsten abstand hat
@@ -946,7 +956,7 @@ public class LabelPositioner : MonoBehaviour
         {
             // punkt gehört in ebene 3 oder in die Blickfeldebene
             Point p = orthoProjectPointOnPlane(annoPoint.transform.position, 3, pointPlaneVectors[3], pointPlanes[3]);
-            if ((p.x * p.x + p.y * p.y) < zoomPlaneDetectionRadius * zoomPlaneDetectionRadius && d4 <= depth)
+            if ((p.x * p.x + p.y * p.y) < zoomPlaneDetectionRadius * zoomPlaneDetectionRadius && d4 <= depth) 
             {
                 //point is in fieldofVision, ebene 4                
                 return 3;
@@ -957,14 +967,14 @@ public class LabelPositioner : MonoBehaviour
             }
         }
         else
-        {
-            if (d2 > 0)
+        {             
+            if(d2 > 0)
             {
                 return 0;
             }
             else
-            {
-                if (Mathf.Abs(d3) <= Mathf.Abs(d2))
+            {            
+                if(Mathf.Abs(d3) <= Mathf.Abs(d2))
                 {
                     return 2;
                 }
@@ -977,11 +987,11 @@ public class LabelPositioner : MonoBehaviour
                     else
                     {
                         return 0; //nur labels in der vorderen ebene werden angezeigt
-                    }
+                    }                     
                 }
-            }
-        }
-
+            }            
+        }         
+        
     }
 
     /**
@@ -992,12 +1002,12 @@ public class LabelPositioner : MonoBehaviour
     * \return Radius   
     */
     private float getInitialPlaneRadius(int planeNumber)
-    {
+    {   
         initialPlaneRadius[0] = 0;
         initialPlaneRadius[1] = bSphere.radius * 1.05f;
         initialPlaneRadius[2] = bSphere.radius;
         initialPlaneRadius[3] = zoomPlaneDistance * Mathf.Tan(1.4f) / 8; //hier wird der radius des sichtfelds einer person berechnet. 1.4f in rad sind 80 grad. 80 grad ist die hälfte vom sichtfeld    
-
+        
         return initialPlaneRadius[planeNumber];
     }
 
@@ -1019,7 +1029,7 @@ public class LabelPositioner : MonoBehaviour
         {
             Transform child = meshPositionNode.transform.GetChild(i);
 
-            if (child.tag != "Annotation")
+			if (child.tag != "Annotation")
             {
 
                 for (int j = 0; j < child.childCount; j++)
@@ -1054,9 +1064,9 @@ public class LabelPositioner : MonoBehaviour
         y = y.normalized;
         z = z.normalized;
         Debug.DrawLine(pointPlaneVectors[0].origin + (2 * z + 2 * y), pointPlaneVectors[0].origin + (2 * z - 2 * y), Color.red, 5f);
-        Debug.DrawLine(pointPlaneVectors[0].origin + (2 * z - 2 * y), pointPlaneVectors[0].origin + (-2 * z - 2 * y), Color.red, 5f);
-        Debug.DrawLine(pointPlaneVectors[0].origin + (-2 * z - 2 * y), pointPlaneVectors[0].origin + (-2 * z + 2 * y), Color.red, 5f);
-        Debug.DrawLine(pointPlaneVectors[0].origin + (-2 * z + 2 * y), pointPlaneVectors[0].origin + (2 * z + 2 * y), Color.red, 5f);
+        Debug.DrawLine(pointPlaneVectors[0].origin + (2 * z - 2 * y), pointPlaneVectors[0].origin + (- 2 * z - 2 * y), Color.red, 5f);
+        Debug.DrawLine(pointPlaneVectors[0].origin + (- 2 * z - 2 * y), pointPlaneVectors[0].origin + (- 2 * z + 2 * y), Color.red, 5f);
+        Debug.DrawLine(pointPlaneVectors[0].origin + (- 2 * z + 2 * y), pointPlaneVectors[0].origin + (2 * z + 2 * y), Color.red, 5f);
     }
 
     /**
@@ -1078,13 +1088,13 @@ public class LabelPositioner : MonoBehaviour
         Vector3 pointPos = pointPosition;
         Vector3 planeOrigin = planeVector.origin;
         Vector3 planeNormal = planeVector.z;
-
+        
         //hier wird eine orthogonalprojektion von einem Punkt auf eine Fläche durchgeführt               
-
+        
         float distance = plane.GetDistanceToPoint(pointPos); //hier wird der kürzeste Abstand vom punkt zur fläche bestimmt
-        distance *= -2;
+        distance *= -1;
         Vector3 projectedPoint = pointPos + planeNormal * distance;
-
+        
         //Skalarprodukt ist orthogonalprojektion von einem Vektor auf einen anderen
         // x und y koordinaten in der Fläche des projezierten Punktes
         y = Vector3.Dot(projectedPoint - planeOrigin, planeVector.y);
@@ -1095,32 +1105,32 @@ public class LabelPositioner : MonoBehaviour
         //Es wird geprüft ob der punkt links oder rechts von der Y-Achse liegt. Abhängig davon kann man den Winkel auf die 360 hochrechnen
 
         float angle = Vector3.Angle(projectedPoint - planeOrigin, planeOrigin + 2 * planeVector.y);
-
-        if (x >= 0)
+        
+        if (x >= 0) 
         {
-
+         
         }
         else
-        {
+        {          
             angle = 360 - angle;
         }
-
+        
         p.y = y;
         p.x = x;
-
+        
         p.planeNumber = planeNumber;
         p.position = projectedPoint;
         p.angle = angle;
-
+        
         //Debug.DrawLine(pointPlaneVectors[planeNumber].origin, pointPlaneVectors[planeNumber].origin + z * pointPlaneVectors[planeNumber].z);
         //Debug.DrawLine(pointPlaneVectors[planeNumber].origin, pointPlaneVectors[planeNumber].origin + y * pointPlaneVectors[planeNumber].y);
         //Debug.DrawLine(pointPlaneVectors[planeNumber].origin, projectedPoint);
-
+        
         return p;
-    }
+    }    
 
     private void OnDrawGizmos()
-    {
+    {        
         Gizmos.DrawWireCube(meshBox.center, meshBox.size);
     }
 
@@ -1145,7 +1155,8 @@ public class LabelPositioner : MonoBehaviour
 
         if (labeli != null && labelj != null)
         {
-            widthi = labeli.GetComponent<RectTransform>().rect.width * labeli.GetComponent<RectTransform>().localScale.x * labeli.transform.parent.localScale.x * meshNode.transform.localScale.x * meshPositionNode.transform.localScale.x * meshViewerBase.transform.localScale.x;
+			
+			widthi = labeli.GetComponent<RectTransform>().rect.width * labeli.GetComponent<RectTransform>().localScale.x * labeli.transform.parent.localScale.x * meshNode.transform.localScale.x * meshPositionNode.transform.localScale.x * meshViewerBase.transform.localScale.x;
             heighti = labeli.GetComponent<RectTransform>().rect.height * labeli.GetComponent<RectTransform>().localScale.x * labeli.transform.parent.localScale.x * meshNode.transform.localScale.x * meshPositionNode.transform.localScale.x * meshViewerBase.transform.localScale.x;
             widthj = labelj.GetComponent<RectTransform>().rect.width * labelj.GetComponent<RectTransform>().localScale.x * labeli.transform.parent.localScale.x * meshNode.transform.localScale.x * meshPositionNode.transform.localScale.x * meshViewerBase.transform.localScale.x;
             heightj = labelj.GetComponent<RectTransform>().rect.height * labelj.GetComponent<RectTransform>().localScale.x * labeli.transform.parent.localScale.x * meshNode.transform.localScale.x * meshPositionNode.transform.localScale.x * meshViewerBase.transform.localScale.x;
@@ -1156,11 +1167,11 @@ public class LabelPositioner : MonoBehaviour
         float xi = li.x;
 
         //Debug.Log(widthi);
-
+        
         //daten für j Object
         float yj = lj.y;
         float xj = lj.x;
-
+        
         //overlap in y richtung
 
         if (yi == yj)
@@ -1171,11 +1182,10 @@ public class LabelPositioner : MonoBehaviour
         {
             overlap[0] = 1;
         }
-        else
-        {
+        else{
             overlap[0] = 0;
         }
-
+        
         //overlap in z richtung
 
         if (xi == xj)
@@ -1186,11 +1196,10 @@ public class LabelPositioner : MonoBehaviour
         {
             overlap[1] = 1;
         }
-        else
-        {
+        else{
             overlap[1] = 0;
         }
-
+        
         if (overlap[0] == 1 && overlap[1] == 1)
         {
             return true;
@@ -1199,9 +1208,9 @@ public class LabelPositioner : MonoBehaviour
         {
             return false;
         }
-
+        
     }
-
+    
     /**
     * \brief calculateEnergy
     * berechnet die Energie einer Ebene
@@ -1210,7 +1219,7 @@ public class LabelPositioner : MonoBehaviour
     */
     private void calculateEnergy(bool[] whichPlanes)
     {
-        for (int p = 0; p < labelLists.Length; p++)
+        for (int p = 0; p < labelLists.Length; p++)            
         {
             if (whichPlanes[p])
             {
@@ -1229,7 +1238,7 @@ public class LabelPositioner : MonoBehaviour
                         }
                     }
                 }
-            }
+            }            
         }
     }
 
@@ -1243,7 +1252,7 @@ public class LabelPositioner : MonoBehaviour
     * \param planeNumber.
     */
     private float calculateSilouhette(Vector3 position, Camera cam, Texture2D image, int planeNumber)
-    {
+    {       
         float radius = 0;
         float maxRadius = getInitialPlaneRadius(planeNumber);
 
@@ -1259,7 +1268,7 @@ public class LabelPositioner : MonoBehaviour
         Vector3 pointPosIn3D = cam.WorldToScreenPoint(position);
         Vector2 pointPosIn2D = new Vector2(pointPosIn3D.x, pointPosIn3D.y);
 
-
+        
 
         Vector2 pEdge = bresenhamLine((int)pointPosIn2D.x, (int)pointPosIn2D.y, (int)centerIn2D.x, (int)centerIn2D.y, image);
 
@@ -1267,18 +1276,18 @@ public class LabelPositioner : MonoBehaviour
 
         Vector3 centerIn3DInWorld = cam.ScreenToWorldPoint(centerIn3DOnCamPlane);
         centerIn3DInWorld = labelPlaneVectors[1].origin;
-
+        
         radius = (pEdgeInWorld - centerIn3DInWorld).magnitude;
 
-        if (radius <= 0)
+        if(radius <= 0)
         {
             radius = maxRadius;
         }
-        else if (radius > maxRadius)
+        else if(radius > maxRadius)
         {
-            radius = maxRadius;
+            radius = maxRadius;  
         }
-
+        
         //Debug.DrawLine(centerIn3DInWorld, centerIn3DInWorld + ((pEdgeInWorld- centerIn3DInWorld).normalized * radius), Color.red, 0.020f);
         Debug.DrawRay(centerIn3DInWorld, (pEdgeInWorld - centerIn3DInWorld).normalized * radius, Color.red, 0.20f);
 
@@ -1324,18 +1333,18 @@ public class LabelPositioner : MonoBehaviour
 
                 //for (int n  = 0; n < 5; n++)
                 //{
-                //image.SetPixel(x, y + n, Color.blue);
-                //image.SetPixel(x + n, y, Color.blue);
-                //image.SetPixel(x, y - n, Color.blue);
-                //image.SetPixel(x - n, y, Color.blue);
+                    //image.SetPixel(x, y + n, Color.blue);
+                    //image.SetPixel(x + n, y, Color.blue);
+                    //image.SetPixel(x, y - n, Color.blue);
+                    //image.SetPixel(x - n, y, Color.blue);
 
-                //image.SetPixel(x + n, y + n, Color.blue);
-                //image.SetPixel(x - n, y - n, Color.blue);
-                //image.SetPixel(x + n, y - n, Color.blue);
-                //image.SetPixel(x - n, y + n, Color.blue);
+                    //image.SetPixel(x + n, y + n, Color.blue);
+                    //image.SetPixel(x - n, y - n, Color.blue);
+                    //image.SetPixel(x + n, y - n, Color.blue);
+                    //image.SetPixel(x - n, y + n, Color.blue);
 
                 //}              
-
+    
                 Vector2 pos = new Vector2(x, y);
                 return pos;
             }
@@ -1366,6 +1375,8 @@ public class LabelPositioner : MonoBehaviour
                     y += dy2;
                 }
             }
+            
+
         }
 
         Vector2 center = new Vector2(0, 0);
@@ -1382,6 +1393,7 @@ public class LabelPositioner : MonoBehaviour
     {
         //hier wird eine Kamera erstellt welche ein Bild nur von den Objekten macht welche auf der "MeshViewer" layer liegen 
         //aus diesem Bild wird die Silhouette brechnet
+        
 
         //RenderTexture currentRT = RenderTexture.active;
         RenderTexture.active = silhouetteCam.targetTexture;
@@ -1401,7 +1413,7 @@ public class LabelPositioner : MonoBehaviour
         //draw Picture
         Byte[] b = silhouetteImage.EncodeToPNG();
 
-        File.WriteAllBytes("C:/Users/Matthias/Desktop/Image.png", b);
+        File.WriteAllBytes("C:/Users/Ben/Desktop/Image.png", b);
     }
 
     /**
@@ -1422,8 +1434,9 @@ public class LabelPositioner : MonoBehaviour
 
         for (int i = 0; i < rads.Length; i++)
         {
-            rads[rads.Length - 1 - i] = (((Camera.main.transform.position - labelPlaneVectors[2].origin).magnitude) * calculateSilouhette(p.position, silhouetteCam, silhouetteImage, 1)) / ((Camera.main.transform.position - meshBox.center).magnitude);
 
+            rads[rads.Length - 1 - i] =   (((Camera.main.transform.position - labelPlaneVectors[2].origin).magnitude) * calculateSilouhette(p.position, silhouetteCam, silhouetteImage, 1)) / ((Camera.main.transform.position - meshBox.center).magnitude);
+            
             rotangle = 1 * Mathf.Deg2Rad;
 
             xNew = p.x * Mathf.Cos(rotangle) - p.y * Mathf.Sin(rotangle);
@@ -1444,32 +1457,35 @@ public class LabelPositioner : MonoBehaviour
     * \return radius des Kuchenstücks
     */
     private float findSmallestPossibleRadius(Label l)
-    {
-        int angleSize = (int)(l.angleToLeftAndRightCorner[0] + l.angleToLeftAndRightCorner[1]);
-
-        if (angleSize <= 0)
+    {        
+        int angleSize = (int) (l.angleToLeftAndRightCorner[0] + l.angleToLeftAndRightCorner[1]);
+        
+        if(angleSize <= 0)
         {
             angleSize = 1;
         }
 
         int startAngle;
-
-        if (l.angleToLeftAndRightCorner[0] < l.angle)
+        
+        if(l.angleToLeftAndRightCorner[0] < l.angle)
         {
             startAngle = (int)(l.angle - l.angleToLeftAndRightCorner[0]);
-
+            
         }
         else
         {
             startAngle = 360 - Mathf.Abs((int)(l.angle - l.angleToLeftAndRightCorner[0]));
-
-        }
+            
+        }        
+        
         float[] rads1 = new float[angleSize];
 
-        if ((startAngle + angleSize) < 360)
+
+        if((startAngle + angleSize) < 360)
         {
             for (int i = 0; i < angleSize; i++)
             {
+
                 rads1[i] = rads[startAngle + i];
 
             }
@@ -1478,17 +1494,20 @@ public class LabelPositioner : MonoBehaviour
         {
             for (int i = 0; i < 360 - startAngle; i++)
             {
+
                 rads1[i] = rads[startAngle + i];
             }
 
-            for (int i = 0; i < angleSize - (360 - startAngle); i++)
+            for(int i = 0; i < angleSize - (360 - startAngle); i++)
             {
+
                 float ko = rads[i];
-                rads1[(360 - startAngle) + i] = ko;
+                rads1[(360 - startAngle) + i] = ko;                
             }
 
         }
         Array.Sort(rads1);
+
         return rads1[rads1.Length - 1];
     }
 }
