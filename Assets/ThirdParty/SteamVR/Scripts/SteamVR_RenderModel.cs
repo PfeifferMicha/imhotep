@@ -577,7 +577,7 @@ public class SteamVR_RenderModel : MonoBehaviour
 	{
 		deviceConnectedAction = SteamVR_Events.DeviceConnectedAction(OnDeviceConnected);
 		hideRenderModelsAction = SteamVR_Events.HideRenderModelsAction(OnHideRenderModels);
-		modelSkinSettingsHaveChangedAction = SteamVR_Events.SystemAction(EVREventType.VREvent_ModelSkinSettingsHaveChanged, OnModelSkinSettingsHaveChanged);
+		modelSkinSettingsHaveChangedAction = SteamVR_Events.SystemAction("ModelSkinSettingsHaveChangedAction", OnModelSkinSettingsHaveChanged);
 	}
 
 	void OnEnable()

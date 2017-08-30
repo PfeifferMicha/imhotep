@@ -1,6 +1,4 @@
-﻿//======= Copyright (c) Valve Corporation, All rights reserved. ===============
-// UNITY_SHADER_NO_UPGRADE
-Shader "Custom/SteamVR_AlphaOut" {
+﻿Shader "Custom/SteamVR_AlphaOut" {
 	Properties { _MainTex ("Base (RGB)", 2D) = "white" {} }
 
 	CGINCLUDE

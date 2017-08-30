@@ -147,7 +147,7 @@ public class Platform : MonoBehaviour {
 
 		mainCamera.transform.localPosition = new Vector3 (0f, 0f, depth * 0.5f);
 
-		footPrints.transform.localPosition = new Vector3 (0f, 0.01f, depth * 0.5f - 0.15f);
+		footPrints.transform.localPosition = new Vector3 (0f, 0.01f, depth * 0.5f);
 
 		rectWidth = width;
 		rectDepth = depth;

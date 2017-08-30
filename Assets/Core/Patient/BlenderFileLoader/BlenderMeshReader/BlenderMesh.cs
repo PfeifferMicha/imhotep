@@ -9,7 +9,6 @@ namespace BlenderMeshReader
     class BlenderMesh : MeshInterface
     {
         public string Name { get; set; }
-        public ulong UniqueIdentifier { get; set; }
         public Vector3[] VertexList { get; set; }
         public Vector3[] NormalList { get; set; }
         public List<PolygonListEntry> PolygonList { get; set; }
@@ -19,7 +18,6 @@ namespace BlenderMeshReader
         public BlenderMesh()
         {
             this.Name = "defaultMesh";
-            this.UniqueIdentifier = 0;
             VertexList = new Vector3[0];
             NormalList = new Vector3[0];
             PolygonList = new List<PolygonListEntry>();
@@ -27,11 +25,9 @@ namespace BlenderMeshReader
             TriangleList = new int[0];
         }
 
-
-        public BlenderMesh(string name, ulong uniqueIdentifier)
+        public BlenderMesh(string name)
         {
             this.Name = name;
-            this.UniqueIdentifier = uniqueIdentifier;
             VertexList = new Vector3[0];
             NormalList = new Vector3[0];
             PolygonList = new List<PolygonListEntry>();
@@ -79,7 +75,7 @@ namespace BlenderMeshReader
         //Return a unity mesh in a left-handed coordinate system
         public UnityMesh ToUnityMesh()
         {
-            UnityMesh result = new UnityMesh(this.Name, this.UniqueIdentifier);
+            UnityMesh result = new UnityMesh(this.Name);
 
             Vector3[] vertices = new Vector3[VertexList.Length];
             //Flip z component of all Vector3 in vertex list

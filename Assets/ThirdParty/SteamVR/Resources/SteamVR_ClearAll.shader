@@ -1,6 +1,4 @@
-﻿//======= Copyright (c) Valve Corporation, All rights reserved. ===============
-// UNITY_SHADER_NO_UPGRADE
-Shader "Custom/SteamVR_ClearAll" {
+﻿Shader "Custom/SteamVR_ClearAll" {
 	Properties { _MainTex ("Base (RGB)", 2D) = "white" {} }
 
 	CGINCLUDE

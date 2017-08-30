@@ -429,19 +429,15 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		Vector3 spacing = new Vector3 ();
 		spacing.x = (float)currentDICOM.seriesInfo.pixelSpacing.x;
 		spacing.y = (float)currentDICOM.seriesInfo.pixelSpacing.y;
-
-		float imgWidth = GetComponent<RectTransform> ().rect.width;
-		float imgHeight = GetComponent<RectTransform> ().rect.height;
-		float aspectRatio = imgWidth / imgHeight;
 		//spacing.z = (float)currentDICOM.getHeader ().Spacing [2];
 		// Number of pixels multiplied with the spacing of a pixel gives the texture width/height:
 		float effectiveWidth = tex.width * spacing.x;
 		float effectiveHeight = tex.height * spacing.y;
 		// Scale to the correct aspect ratio:
-		if (effectiveWidth/imgWidth > effectiveHeight/imgHeight) {
-			scaleH = (float)effectiveWidth / (float)effectiveHeight / aspectRatio;
+		if (effectiveWidth > effectiveHeight) {
+			scaleH = (float)effectiveWidth / (float)effectiveHeight;
 		} else {
-			scaleW = (float)effectiveHeight / (float)effectiveWidth * aspectRatio;
+			scaleW = (float)effectiveHeight / (float)effectiveWidth;
 		}
 
 		float oX = currentViewSettings.panX*scaleW;

@@ -124,17 +124,8 @@ public class PatientMeta
 		firstName = toCopy.firstName;
 		lastName = toCopy.lastName;
 		birthDate = toCopy.birthDate;
-		birthDateDT = toCopy.birthDateDT;
 		operationDate = toCopy.operationDate;
-		diagnosis = toCopy.diagnosis;
-		details = toCopy.details;
-		sex = toCopy.sex;
 		path = toCopy.path;
-		dicomPath = toCopy.dicomPath;
-		meshPath = toCopy.meshPath;
-		age = toCopy.age;
-		operationBodyPart = toCopy.operationBodyPart;
-		warnings = new List<string> (toCopy.warnings);
 	}
 
 
