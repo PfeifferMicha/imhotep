@@ -15,7 +15,7 @@ public class OpacitySlider : MonoBehaviour, IPointerHoverHandler
     void Start()
 	{
 		updateSlider();
-		sliderFill = transform.FindChild ("Fill").gameObject;
+		sliderFill = transform.Find ("Fill").gameObject;
     }
 
 	void OnEnable()

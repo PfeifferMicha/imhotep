@@ -8,7 +8,7 @@ public class FootPrints : MonoBehaviour {
 
 	void Start()
 	{
-		text = transform.FindChild ("PleaseStandHere").gameObject;
+		text = transform.Find ("PleaseStandHere").gameObject;
 	}
 
 	// Update is called once per frame

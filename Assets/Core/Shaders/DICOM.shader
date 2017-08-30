@@ -1,4 +1,6 @@
-﻿Shader "Unlit/DICOM"
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Unlit/DICOM"
 {
 	Properties
 	{
@@ -50,7 +52,7 @@
 			v3f vert (appdata v)
 			{
 				v3f o;
-				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
+				o.vertex = UnityObjectToClipPos(v.vertex);
 				float2 tmp = TRANSFORM_TEX(v.uv, _MainTex);
 				o.uv = float3( tmp.x, tmp.y, layer );
 				UNITY_TRANSFER_FOG(o,o.vertex);

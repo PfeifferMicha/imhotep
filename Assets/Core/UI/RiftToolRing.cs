@@ -31,7 +31,7 @@ public class RiftToolRing : MonoBehaviour {
 	public void setAvailableTools (List<ToolWidget> tools)
 	{
 		// Disable the toolbar if there's no tools to display:
-		Transform toolBar = transform.FindChild ("ToolBar");
+		Transform toolBar = transform.Find ("ToolBar");
 		if (tools == null || tools.Count == 0) {
 			toolBar.gameObject.SetActive (false);
 			return;
@@ -40,7 +40,7 @@ public class RiftToolRing : MonoBehaviour {
 		}
 
 		// Get the default tool button:
-		GameObject toolButton = toolBar.FindChild ("ToolButton").gameObject;
+		GameObject toolButton = toolBar.Find ("ToolButton").gameObject;
 		float toolButtonWidth = toolButton.GetComponent<RectTransform> ().rect.width;
 		// Resize the tool bar:
 		RectTransform r = toolBar.GetComponent<RectTransform> ();
@@ -54,7 +54,7 @@ public class RiftToolRing : MonoBehaviour {
 			RectTransform rb = b.GetComponent<RectTransform> ();
 			rb.anchoredPosition = new Vector2 (1f + i * toolButtonWidth, 0f);
 
-			Image im = b.transform.FindChild ("Image").GetComponent<Image> ();
+			Image im = b.transform.Find ("Image").GetComponent<Image> ();
 			im.sprite = tool.ToolIcon;
 
 			Button button = b.GetComponent<Button> ();
@@ -63,7 +63,7 @@ public class RiftToolRing : MonoBehaviour {
 			i++;
 		}
 
-		GameObject closeButton = toolBar.FindChild ("CloseButton").gameObject;
+		GameObject closeButton = toolBar.Find ("CloseButton").gameObject;
 		RectTransform rc = closeButton.GetComponent<RectTransform> ();
 		rc.anchoredPosition = new Vector2 (1f + i * toolButtonWidth, 0f);
 		Button cButton = closeButton.GetComponent<Button> ();

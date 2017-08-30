@@ -159,7 +159,7 @@ public class NotificationControl : MonoBehaviour {
         //Set Icon
         if (n.NotificationSprite != null)
         {
-            notificationGameObject.transform.FindChild("Icon").GetComponent<Image>().sprite = n.NotificationSprite;
+            notificationGameObject.transform.Find("Icon").GetComponent<Image>().sprite = n.NotificationSprite;
         }
 
         //Set reference to notification object

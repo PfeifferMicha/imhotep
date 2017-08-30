@@ -114,7 +114,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 				Vector3 pos3D = pixelTo3DPos (pixel);
 
 				// Display the current position:
-				Text t = transform.FindChild ("PositionText").GetComponent<Text> ();
+				Text t = transform.Find ("PositionText").GetComponent<Text> ();
 				t.text = "(" + (int)Mathf.Round(pixel.x) + ", " + (int)Mathf.Round(pixel.y) + ", " + currentViewSettings.slice + ")";
 
 				GameObject pointer = GameObject.Find ("3DPointer");

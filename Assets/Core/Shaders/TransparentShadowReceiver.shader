@@ -1,4 +1,6 @@
-﻿Shader "Custom/TransparentShadowReceiver" 
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Custom/TransparentShadowReceiver" 
 { 
  
 Properties 
@@ -113,7 +115,7 @@ ENDCG
 			{
 				v2f o;
                 o.uv_MainTex = TRANSFORM_TEX(v.texcoord, _MainTex);
-				o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
+				o.pos = UnityObjectToClipPos (v.vertex);
 				o.lightDir = ObjSpaceLightDir( v.vertex );
 				TRANSFER_VERTEX_TO_FRAGMENT(o);
 				return o;

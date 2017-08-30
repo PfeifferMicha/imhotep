@@ -93,7 +93,7 @@ public class PatientBriefing : MonoBehaviour
 				GameObject newButton = GameObject.Instantiate(tabButton);
 				newButton.SetActive(true);
 				newButton.name = tabNames[i];
-				newButton.transform.FindChild("Text").GetComponent<Text>().text = tabNames[i];
+				newButton.transform.Find("Text").GetComponent<Text>().text = tabNames[i];
 				newButton.transform.SetParent(tabButton.transform.parent, false);
 
 				Button b = newButton.GetComponent<Button>();

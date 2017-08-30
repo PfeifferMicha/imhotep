@@ -1,4 +1,6 @@
-﻿
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+
 // Unlit alpha-blended shader.
 // - no lighting
 // - no lightmap support
@@ -83,7 +85,7 @@ SubShader {
 				o.texcoord1 = TRANSFORM_TEX(v.texcoord1, _Noise);
 				o.texcoord2 = TRANSFORM_TEX(v.texcoord2, _MainTex);
 
-				float4 goalWorldPos = mul(_Object2World, v.vertex);
+				float4 goalWorldPos = mul(unity_ObjectToWorld, v.vertex);
 
             	float noise = (tex2Dlod( _Noise, half4( o.texcoord1, 0, 0 ) )).r;
             	float noise2 = (tex2Dlod( _Noise2, half4( o.texcoord, 0, 0 ) )).r;
