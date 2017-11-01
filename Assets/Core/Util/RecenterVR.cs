@@ -12,7 +12,7 @@ public class RecenterVR : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            UnityEngine.VR.InputTracking.Recenter();
+            UnityEngine.XR.InputTracking.Recenter();
         }
     }
 }
