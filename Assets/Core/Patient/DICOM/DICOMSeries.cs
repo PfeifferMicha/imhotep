@@ -86,12 +86,16 @@ public class DICOMSeries {
 	/*! Cached human-readable description string.*/
 	private string description = null;
 
+	/*! True if there are multiple slices and the first and last slice have the same orientation, false otherwise. */
+	public bool isConsecutiveVolume { private set; get; }
+
 	/*! Constructor, fills most of the attributes of the DICOMSeries class.
 	 * \note This does some heavy file/directory parsing to determine the files which are part of
 	 * 		this series and their order. This is why the DICOMSeries should be constructed in a
 	 * 		background thread and then passed to the main thread. */
 	public DICOMSeries( string directory, string seriesUID )
 	{
+		Debug.Log ("Loading Meta Data for Series: " + seriesUID);
 		// Get the file names for the series:
 		filenames = ImageSeriesReader.GetGDCMSeriesFileNames( directory, seriesUID );
 		if (filenames.Count <= 0) {
@@ -108,6 +112,7 @@ public class DICOMSeries {
 		origin = new Vector3 ((float)o1 [0], (float)o1 [1], (float)o1 [2]);
 
 		numberOfSlices = filenames.Count;
+		lastSlice = null;
 
 		// Offset between two adjacent slices. If only one slice is present,
 		// this defaults to zero.
@@ -141,6 +146,29 @@ public class DICOMSeries {
 		directionCosineY = new Vector3 ((float)direction [1], (float)direction [4], (float)direction [7]);
 
 		sliceNormal = Vector3.Cross (directionCosineX, directionCosineY);
+
+		if (lastSlice != null) {
+			// Load the direction cosines:
+			// ITK stores the direction cosines in a matrix with row-major-ordering. The weird indexing is because
+			// we need the first and second column (0,3,6 for X and 1,4,7 for Y)
+			VectorDouble directionLast = lastSlice.GetDirection();
+			if( directionLast.Count < 6 )
+				throw( new System.Exception ("Invalid direction cosines found in images."));
+			Vector3 directionCosineXLast = new Vector3 ((float)directionLast [0], (float)directionLast [3], (float)directionLast [6]);
+			Vector3 directionCosineYLast = new Vector3 ((float)directionLast [1], (float)directionLast [4], (float)directionLast [7]);
+
+			Vector3 sliceNormalLast = Vector3.Cross (directionCosineXLast, directionCosineYLast);
+
+			// If the first and last slice have the same orientation, then consider this series to be a volume.
+			// TODO: Better check?
+			if ((sliceNormal == sliceNormalLast)) {
+				isConsecutiveVolume = true;
+			} else {
+				Debug.LogWarning ("First and last slice of the series do not have the same orientation. This will not be considered a volume.");
+				Debug.LogWarning( "\tNormal first slice, Normal last slice: " + sliceNormal + " " + sliceNormalLast );
+			}
+		}
+
 
 		// Calculate the which direction the normal is facing to determine the orienation (Transverse,
 		// Coronal or Saggital).

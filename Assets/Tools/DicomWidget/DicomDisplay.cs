@@ -8,7 +8,7 @@ public class DicomDisplay : MonoBehaviour {
 
 	public GameObject ListScreen;
 	public GameObject ImageScreen;
-	public GameObject ListEntryButton;
+	public GameObject ListEntry;
 
 	public DicomDisplayImage DicomImage;
 	//private Dropdown mDicomList;
@@ -71,36 +71,47 @@ public class DicomDisplay : MonoBehaviour {
 		// Make sure a patient is loaded:
 		Patient p = Patient.getLoadedPatient ();
 		if (p == null) {
-			Text newEntryText = ListEntryButton.transform.GetComponentInChildren<Text> ();
+			Text newEntryText = ListEntry.transform.GetComponentInChildren<Text> ();
 			newEntryText.text = "No patient loaded.";
-			ListEntryButton.SetActive (true);
+			ListEntry.SetActive (true);
 			return;
 		}
 		// Make sure at least one series was found:
 		List<DICOMSeries> series = DICOMLoader.instance.availableSeries;
 		if (series.Count <= 0) {
-			Text newEntryText = ListEntryButton.transform.GetComponentInChildren<Text> ();
+			Text newEntryText = ListEntry.transform.GetComponentInChildren<Text> ();
 			newEntryText.text = "No series found.";
-			ListEntryButton.SetActive (true);
+			ListEntry.SetActive (true);
 			return;
 		}
 
 		// Deactivate default button:
-		ListEntryButton.SetActive (false);
+		ListEntry.SetActive (false);
 
 		foreach (DICOMSeries s in series) {
 			//customNames.Add (p.getDICOMNameForSeriesUID (uid));
-			GameObject newEntry = Instantiate (ListEntryButton) as GameObject;
+			GameObject newEntry = Instantiate (ListEntry) as GameObject;
 			newEntry.SetActive (true);
 
 			Text newEntryText = newEntry.transform.GetComponentInChildren<Text> ();
 			newEntryText.text = s.getDescription ();
-			newEntry.transform.SetParent (ListEntryButton.transform.parent, false);
+			newEntry.transform.SetParent (ListEntry.transform.parent, false);
+
+			// Keep a reference to this series:
+			DICOMSeries captured = s;
 
 			// Make the button load the DICOM:
-			Button newButton = newEntry.GetComponent<Button> ();
-			DICOMSeries captured = s;
-			newButton.onClick.AddListener(() => selectedNewDicom( captured ));
+			GameObject newButton = newEntry.transform.Find("EntryButton").gameObject;
+			newButton.GetComponent<Button> ().onClick.AddListener(() => selectedNewDicom( captured ));
+
+			// Make the volume button display the DICOM as volume:
+			GameObject volumetricButton = newEntry.transform.Find ("VolumetricButton").gameObject;
+			if (captured.isConsecutiveVolume) {
+				volumetricButton.GetComponent<Button> ().onClick.AddListener (() => selectedNewVolumetric (captured));
+				volumetricButton.SetActive (true);
+			} else {
+				volumetricButton.SetActive (false);	
+			}
 		}
 
 		DicomImage.gameObject.SetActive (false);
@@ -108,14 +119,14 @@ public class DicomDisplay : MonoBehaviour {
 
 	void eventClear( object obj = null )
 	{
-		foreach (Transform tf in ListEntryButton.transform.parent) {
-			if (tf != ListEntryButton.transform) {
+		foreach (Transform tf in ListEntry.transform.parent) {
+			if (tf != ListEntry.transform) {
 				Destroy (tf.gameObject);
 			}
 		}
-		Text newEntryText = ListEntryButton.transform.GetComponentInChildren<Text> ();
+		Text newEntryText = ListEntry.transform.GetComponentInChildren<Text> ();
 		newEntryText.text = "No series loaded.";
-		ListEntryButton.SetActive (true);
+		ListEntry.SetActive (true);
 		backToList ();
 	}
 	void eventHideDICOM( object obj = null )
@@ -135,6 +146,10 @@ public class DicomDisplay : MonoBehaviour {
 		ImageScreen.SetActive (true);
 		ListScreen.SetActive (false);
 		//DicomImage.gameObject.SetActive (false);
+	}
+	public void selectedNewVolumetric( DICOMSeries series )
+	{
+		Debug.Log ("Enabling volumetric rendering for series " + series.seriesUID + " (" + series.numberOfSlices + " slices)." );
 	}
 
 	public void backToList()

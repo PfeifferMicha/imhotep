@@ -67,7 +67,7 @@ public class DICOMBounds : MonoBehaviour {
 	void eventNewDICOM( object obj = null )
 	{
 		DICOM dicom = DICOMLoader.instance.currentDICOM;
-		if (dicom != null) {
+		if (dicom != null && dicom.seriesInfo.isConsecutiveVolume) {
 
 			// If the series has changed, modify the bounding box:
 			if (dicom.seriesInfo.seriesUID != currentSeriesUID) {
