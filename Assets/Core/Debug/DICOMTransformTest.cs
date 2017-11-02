@@ -6,7 +6,6 @@ public class DICOMTransformTest : MonoBehaviour, IPointerClickHandler {
 
 	public void OnPointerClick(UnityEngine.EventSystems.PointerEventData eventData )
 	{
-
 		// Get the currently loaded DICOM:
 		DICOM dicom = DICOMLoader.instance.currentDICOM;
 		if( dicom != null )

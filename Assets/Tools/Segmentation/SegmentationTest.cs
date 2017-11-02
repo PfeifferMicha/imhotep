@@ -15,7 +15,7 @@ public class SegmentationTest : MonoBehaviour {
 
 	public void OnDICOMLoaded( object obj = null )
 	{
-		DICOM dicom = obj as DICOM;
+		DICOM2D dicom = obj as DICOM2D;
 		if (dicom == null)
 			return;
 		if (dicom.dimensions != 3)

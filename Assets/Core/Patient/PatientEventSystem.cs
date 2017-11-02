@@ -65,7 +65,7 @@ public class PatientEventSystem
 		/*! Called when the user wants to start loading a new DICOM slice or series.*/
 		DICOM_StartLoading,
 		/*! Called when we've loaded a new slice.*/
-		DICOM_NewLoaded,
+		DICOM_NewLoadedSlice,
 		/*! Called when we've loaded a new volume.*/
 		DICOM_NewLoadedVolume,
 		/*! Internal use only. */

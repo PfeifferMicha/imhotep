@@ -51,7 +51,7 @@ public class DICOMBounds : MonoBehaviour {
 		RectYMax = gameObject.transform.Find ("RectYMax").GetComponent<LineRenderer> ();
 
 		if (!listeningToEvents) {
-			PatientEventSystem.startListening (PatientEventSystem.Event.DICOM_NewLoaded, eventNewDICOM);
+			PatientEventSystem.startListening (PatientEventSystem.Event.DICOM_NewLoadedSlice, eventNewDICOM);
 			PatientEventSystem.startListening (PatientEventSystem.Event.PATIENT_Closed, patientClosed);
 			listeningToEvents = true;	// Don't call startListening again when disabling and re-enabling this object.
 		}
@@ -60,7 +60,7 @@ public class DICOMBounds : MonoBehaviour {
 		eventNewDICOM ();
 	}
 	void OnDestroy() {
-		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewLoaded, eventNewDICOM );
+		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewLoadedSlice, eventNewDICOM );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.PATIENT_Closed, patientClosed );
 	}
 
@@ -122,21 +122,24 @@ public class DICOMBounds : MonoBehaviour {
 				currentSeriesUID = dicom.seriesInfo.seriesUID;
 			}
 
-			// Display the position of the current slice:
-			Vector3 p1 = dicom.seriesInfo.transformPixelToPatientPos (Vector2.zero, dicom.slice);
-			Vector3 p2 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, 0f), dicom.slice);
-			Vector3 p3 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, dicom.origTexHeight), dicom.slice);
-			Vector3 p4 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (0, dicom.origTexHeight), dicom.slice);
-			RectXMin.SetPosition (0, p1);
-			RectXMin.SetPosition (1, p4);
-			RectXMax.SetPosition (0, p2);
-			RectXMax.SetPosition (1, p3);
-			RectYMin.SetPosition (0, p1);
-			RectYMin.SetPosition (1, p2);
-			RectYMax.SetPosition (0, p3);
-			RectYMax.SetPosition (1, p4);
-			itk.simple.VectorDouble vec = dicom.image.GetOrigin ();
-			Debug.Log ("dicom.origin " + vec [0] + " " + vec [1] + " " + vec [2]);
+			if (dicom is DICOM2D) {
+				DICOM2D dicom2D = dicom as DICOM2D;
+				// Display the position of the current slice:
+				Vector3 p1 = dicom2D.seriesInfo.transformPixelToPatientPos (Vector2.zero, dicom2D.slice);
+				Vector3 p2 = dicom2D.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom2D.origTexWidth, 0f), dicom2D.slice);
+				Vector3 p3 = dicom2D.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom2D.origTexWidth, dicom2D.origTexHeight), dicom2D.slice);
+				Vector3 p4 = dicom2D.seriesInfo.transformPixelToPatientPos (new Vector2 (0, dicom2D.origTexHeight), dicom2D.slice);
+				RectXMin.SetPosition (0, p1);
+				RectXMin.SetPosition (1, p4);
+				RectXMax.SetPosition (0, p2);
+				RectXMax.SetPosition (1, p3);
+				RectYMin.SetPosition (0, p1);
+				RectYMin.SetPosition (1, p2);
+				RectYMax.SetPosition (0, p3);
+				RectYMax.SetPosition (1, p4);
+				itk.simple.VectorDouble vec = dicom2D.image.GetOrigin ();
+				Debug.Log ("dicom2D.origin " + vec [0] + " " + vec [1] + " " + vec [2]);
+			}
 
 			gameObject.SetActive (true);
 		} else {

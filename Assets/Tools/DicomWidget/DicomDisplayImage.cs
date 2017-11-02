@@ -31,7 +31,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 
 	private Texture2D mDefaultMask = null;
 
-	private DICOM currentDICOM;
+	private DICOM2D currentDICOM;
 
 	private bool touchpadUpPressed = false;
 	private bool touchpadDownPressed = false;
@@ -388,7 +388,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		}
 	}
 
-	public void SetDicom( DICOM dicom )
+	public void SetDicom( DICOM2D dicom )
 	{
 		if (mMaterial == null) {
 			mMaterial = new Material (Shader.Find ("Unlit/DICOM2D"));

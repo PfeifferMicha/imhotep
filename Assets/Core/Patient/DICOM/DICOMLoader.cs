@@ -18,9 +18,9 @@ public class DICOMLoader : MonoBehaviour {
 	public static DICOMLoader instance { private set; get; }
 
 	/*! The DICOM slice which has been loaded */
-	public DICOM currentDICOM { private set; get; }
+	public DICOM2D currentDICOM { private set; get; }
 	/*! The DICOM volume which has been loaded */
-	public DICOM currentDICOMVolume { private set; get; }
+	public DICOM3D currentDICOMVolume { private set; get; }
 	/*! The DICOM series which has been loaded */
 	public DICOMSeries currentDICOMSeries { private set; get; }
 
@@ -207,8 +207,10 @@ public class DICOMLoader : MonoBehaviour {
 	public void load(object sender, DoWorkEventArgs e)
 	{
 		try {
-			DICOM newDICOM = new DICOM( seriesToLoad, sliceToLoad );
-			newlyLoadedDICOM = newDICOM;
+			if( sliceToLoad >= 0 )
+				newlyLoadedDICOM = new DICOM2D( seriesToLoad, sliceToLoad );
+			else
+				newlyLoadedDICOM = new DICOM3D( seriesToLoad );
 		} catch( System.Exception err ) {
 			Debug.LogError( "[DICOM] " + err.Message );
 			newlyLoadedDICOM = null;
@@ -240,11 +242,11 @@ public class DICOMLoader : MonoBehaviour {
 			newDICOMLoaded = false;
 			if (newlyLoadedDICOM != null) {
 				if (newlyLoadedDICOM.dimensions == 2) {
-					currentDICOM = newlyLoadedDICOM;
+					currentDICOM = newlyLoadedDICOM as DICOM2D;
 					// Let Listeners know that we've loaded a new DICOM:
-					PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_NewLoaded, currentDICOM);
+					PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_NewLoadedSlice, currentDICOM);
 				} else {
-					currentDICOMVolume = newlyLoadedDICOM;
+					currentDICOMVolume = newlyLoadedDICOM as DICOM3D;
 					// Let Listeners know that we've loaded a new DICOM:
 					PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_NewLoadedVolume, currentDICOMVolume);
 				}

@@ -69,14 +69,18 @@ public class DICOMSeries {
 	/*! Distance between rows and columns in images of this series.*/
 	public Vector2 pixelSpacing { private set; get; }
 
+	/*! Assuming this series is a volume of consecutive slices, where neighbouring slices always have
+	 * the same offset between each other, this offset is stored in sliceOffset.*/
+	public Vector3 sliceOffset { private set; get; }
+
 	/*! Minimal pixel value of first slice
 	 * \note If possible, this is read from the DICOM header of the first slice.
-	 *		However, this value may not be present, in which case this is filled when a slice is
+	 *		However, this value may not be present, in which case this is filled when a slice/volume is
 	 *		first loaded (by checking all pixel values and finding the minimum).*/
 	public int minPixelValue { private set; get; }
 	/*! Maximal pixel value of first slice
 	 * \note If possible, this is read from the DICOM header of the first slice.
-	 *		However, this value may not be present, in which case this is filled when a slice is
+	 *		However, this value may not be present, in which case this is filled when a slice/volume is
 	 *		first loaded (by checking all pixel values and finding the maximum).*/
 	public int maxPixelValue { private set; get; }
 
@@ -116,7 +120,7 @@ public class DICOMSeries {
 
 		// Offset between two adjacent slices. If only one slice is present,
 		// this defaults to zero.
-		Vector3 sliceOffset = Vector3.zero;
+		sliceOffset = Vector3.zero;
 
 		// If we have more than one slice, also load the last slice to be able to determine the slice spacing:
 		if( filenames.Count > 1 )

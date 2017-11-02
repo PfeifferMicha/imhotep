@@ -32,7 +32,7 @@ public class DicomDisplay : MonoBehaviour {
 		// Register event callbacks for all DICOM events:
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewList, eventNewDicomList );
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_StartLoading, eventHideDICOM );
-		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewLoaded, eventDisplayCurrentDicom );
+		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewLoadedSlice, eventDisplayCurrentDicom );
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_AllCleared, eventClear );
 		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, eventClear );
 		eventClear ();
@@ -45,7 +45,7 @@ public class DicomDisplay : MonoBehaviour {
 		// Unregister myself - no longer receive events (until the next OnEnable() call):
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewList, eventNewDicomList );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_StartLoading, eventHideDICOM );
-		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewLoaded, eventDisplayCurrentDicom );
+		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewLoadedSlice, eventDisplayCurrentDicom );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_AllCleared, eventClear );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.PATIENT_Closed, eventClear );
 	}
@@ -54,9 +54,9 @@ public class DicomDisplay : MonoBehaviour {
 	void eventDisplayCurrentDicom( object obj = null )
 	{
 		DICOM dicom = DICOMLoader.instance.currentDICOM;
-		if( dicom != null )
+		if( dicom != null && dicom is DICOM2D )
 		{
-			DicomImage.SetDicom (dicom);
+			DicomImage.SetDicom (dicom as DICOM2D);
 			DicomImage.gameObject.SetActive (true);
 			StatusText.gameObject.SetActive (false);
 			ImageScreen.SetActive (true);
@@ -149,7 +149,7 @@ public class DicomDisplay : MonoBehaviour {
 	}
 	public void selectedNewVolumetric( DICOMSeries series )
 	{
-		Debug.Log ("Enabling volumetric rendering for series " + series.seriesUID + " (" + series.numberOfSlices + " slices)." );
+		DICOMLoader.instance.startLoadingVolume (series);
 	}
 
 	public void backToList()
