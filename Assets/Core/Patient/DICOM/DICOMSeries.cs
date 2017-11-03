@@ -93,6 +93,8 @@ public class DICOMSeries {
 	/*! True if there are multiple slices and the first and last slice have the same orientation, false otherwise. */
 	public bool isConsecutiveVolume { private set; get; }
 
+	public Histogram histogram;
+
 	/*! Constructor, fills most of the attributes of the DICOMSeries class.
 	 * \note This does some heavy file/directory parsing to determine the files which are part of
 	 * 		this series and their order. This is why the DICOMSeries should be constructed in a

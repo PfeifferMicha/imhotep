@@ -12,8 +12,8 @@ Shader "Custom/VolumeStackOfSlices"
 	{
 		_MainTex ("Texture", 3D) = "white" {}
 		_TransferFunction ("Transfer Function", 2D) = "white" {}
-		level("Level", Range(-1, 2)) = 0.5
-		window("Window", Range(0, 1)) = 1
+		minimum("minimum", Range(0, 1)) = 0
+		maximum("maximum", Range(0, 1)) = 1
 		globalMinimum("GlobalMinimum", Range(-65536, 65536)) = 0
 		globalMaximum("GlobalMaximum", Range(-65536, 65536)) = 65536
 	}
@@ -61,8 +61,8 @@ Shader "Custom/VolumeStackOfSlices"
 			sampler3D _MainTex;
 			float4 _MainTex_ST;
 			sampler2D _TransferFunction;
-			float level;
-			float window;
+			float minimum;
+			float maximum;
 			float globalMaximum;
 			float globalMinimum;
 
@@ -72,9 +72,10 @@ Shader "Custom/VolumeStackOfSlices"
 
 				val = (val - globalMinimum)/(globalMaximum-globalMinimum);
 
-				val = (val - level + window/2)/window;
+				val = (val - minimum)/(maximum-minimum);
+				//val = (val - level + window/2)/window;
 				//val = (val - level)/window;
-				val = clamp( val, 0, 1 );
+				//val = clamp( val, 0, 1 );
 				return val;
 				//return (col.g*65536 + col.r*256 - _globalMinimum)/(_globalMaximum - _globalMinimum);
 				//return (col.g*255)/globalMaximum;
@@ -160,13 +161,17 @@ Shader "Custom/VolumeStackOfSlices"
 				// sample the texture
 				//fixed4 col = tex3D(_MainTex, i.uv3D);
 				float val = C2F( tex3D(_MainTex, i.uv3D) );
+				if( val < 0 || val > 1 )
+					return fixed4( 0,0,0,0 );
 
 				//val = (val - _minValue) / (_maxValue - _minValue);
 				float3 grad = gradient( i.uv3D );
-				//float gradLength = clamp(length(grad),0,1);
-				float gradLength = 0;
+				float gradLength = clamp(length(grad),0,1);
+				//float gradLength = 0;
 				fixed4 col = tex2D( _TransferFunction, float2(val,gradLength));//, gradLength) );
 				//fixed4 col = tex2D( _TransferFunction, float2(0,0));//, gradLength) );
+
+				//col = fixed4( 1, 1, 1, val*val );
 
 				// determine cosine via dot-product
 				// vectors must be normalized!
@@ -183,11 +188,11 @@ Shader "Custom/VolumeStackOfSlices"
 
 				//col *= col.a;
 
-				/*fixed3 lightColor = fixed3(1,0.8,0.6);
+				fixed3 lightColor = fixed3(1,0.8,0.6);
 				float3 lightPos = mul( unity_WorldToObject, _WorldSpaceLightPos0 ).xyz;
 				float3 lightDir = i.localPos.xyz - lightPos;
-				fixed3 diffuse = 0.5*lightColor*dot( normalize(grad.rgb), normalize(lightDir) );
-				col.rgb += diffuse;*/
+				fixed3 diffuse = lightColor*dot( normalize(grad.rgb), normalize(lightDir) );
+				col.rgb += diffuse;
 
 
 				//return fixed4( val, val, val, val*0.002 )*val;

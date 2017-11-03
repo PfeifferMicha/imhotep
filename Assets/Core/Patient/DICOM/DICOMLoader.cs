@@ -211,6 +211,7 @@ public class DICOMLoader : MonoBehaviour {
 				newlyLoadedDICOM = new DICOM2D( seriesToLoad, sliceToLoad );
 			else
 				newlyLoadedDICOM = new DICOM3D( seriesToLoad );
+			currentDICOMSeries = seriesToLoad;
 		} catch( System.Exception err ) {
 			Debug.LogError( "[DICOM] " + err.Message );
 			newlyLoadedDICOM = null;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class VolumeCube : MonoBehaviour {
 
-	public MeshFilter terrainMesh;
+	public MeshFilter stackOfSlices;
 
 
 	void OnEnable()
@@ -204,7 +204,7 @@ public class VolumeCube : MonoBehaviour {
 		// Assign the mesh object and update it.
 		ret.RecalculateBounds();
 		//ret.RecalculateNormals();
-		terrainMesh.mesh = ret;
+		stackOfSlices.mesh = ret;
 
 		float diff = Time.time - start_time;
 		Debug.Log("Stack Of Slices was generated in " + diff + " seconds.");
@@ -259,11 +259,12 @@ public class VolumeCube : MonoBehaviour {
 		DICOM3D dicom = DICOMLoader.instance.currentDICOMVolume;
 		if (dicom != null) {
 			SetDicom (dicom);
+			//GetComponent<MeshRenderer> ().enabled = true;
 		}
 	}
 
 	void eventClear( object obj = null )
 	{
-		return;
+		//GetComponent<MeshRenderer> ().enabled = false;
 	}
 }

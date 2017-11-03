@@ -55,9 +55,12 @@ public class DICOM3D : DICOM
 			throw( new System.Exception( "Cannot load volume: Image needs to be 3D. Dimensions of image: " + image.GetDimension()));
 		}
 
+		seriesInfo.histogram = new Histogram ();
 
-		Int64 min = int.MaxValue;
-		Int64 max = int.MinValue;
+		Int64 min = Int64.MaxValue;
+		Int64 max = Int64.MinValue;
+
+		Debug.Log ("Pixel format: " + image.GetPixelID ());
 
 		// Copy the image into a colors array:
 		IntPtr bufferPtr;
@@ -65,8 +68,11 @@ public class DICOM3D : DICOM
 		if (image.GetPixelID () == PixelIDValueEnum.sitkUInt16) {
 			bufferPtr = image.GetBufferAsUInt16 ();
 
-			Int16[] colorsTmp = new Int16[ numberOfPixels ];
-			Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
+			UInt16[] colorsTmp = new UInt16[ numberOfPixels ];
+			Int16[] tmp = new Int16[ numberOfPixels ];
+			Marshal.Copy( bufferPtr, tmp, 0, (int)numberOfPixels );
+			System.Buffer.BlockCopy (tmp, 0, colorsTmp, 0, (int)numberOfPixels);
+
 			int index = 0;
 			//for (UInt32 z = 0; z < texDepth; z++) {
 			for (UInt32 z = 0; z < texDepth; z++) {
@@ -82,6 +88,8 @@ public class DICOM3D : DICOM
 								max = pixelValue;
 							if (pixelValue < min)
 								min = pixelValue;
+
+							seriesInfo.histogram.addValue (pixelValue);
 
 							index++;
 						}
@@ -103,13 +111,16 @@ public class DICOM3D : DICOM
 						long consecutiveIndex =  x + y * texWidth + z*texWidth*texHeight;
 						if (x < origTexWidth && y < origTexHeight && z < origTexDepth )
 						{
-							UInt16 pixelValue = (UInt16)((colorsTmp [index] - intercept) / slope);
+							Int16 pixelValueInt16 = (Int16)((colorsTmp [index] - intercept) / slope);
+							UInt32 pixelValue = (UInt32)((int)pixelValueInt16 + 32768);
 							colors [ consecutiveIndex] = F2C(pixelValue);
 
 							if (pixelValue > max)
 								max = pixelValue;
 							if (pixelValue < min)
 								min = pixelValue;
+
+							seriesInfo.histogram.addValue (pixelValue);
 
 							index++;
 						}
@@ -138,6 +149,8 @@ public class DICOM3D : DICOM
 							if (pixelValue < min)
 								min = (Int64)pixelValue;
 
+							seriesInfo.histogram.addValue (pixelValue);
+
 							index++;
 						}
 					}
@@ -150,6 +163,9 @@ public class DICOM3D : DICOM
 		// Manually set the min and max values, because we just caculated them for the whole volume and
 		// can thus be sure that we have the correct values:
 		seriesInfo.setMinMaxPixelValues ((int)min, (int)max);
+
+
+		seriesInfo.histogram.sortIntoBins (5000, min, max);
 
 		// Make the loaded image accessable from elsewhere:
 		this.image = image;

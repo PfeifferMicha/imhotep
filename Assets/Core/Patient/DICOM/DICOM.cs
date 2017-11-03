@@ -61,9 +61,14 @@ public class DICOM {
 		return c;
 	}
 	/*! Helper function, converts Int16 to color */
-	public static Color F2C(Int16 value)
+	/*public static Color F2C(Int16 value)
 	{
 		UInt32 valueUInt = (UInt32)((int)value + 32768);
+		return F2C (valueUInt);
+	}*/
+	public static Color F2C(UInt16 value)
+	{
+		UInt32 valueUInt = (UInt32)(value);
 		return F2C (valueUInt);
 	}
 }
