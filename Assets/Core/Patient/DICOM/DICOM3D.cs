@@ -49,6 +49,7 @@ public class DICOM3D : DICOM
 			slope = Int32.Parse( image.GetMetaData("0028|1053") );
 		} catch {
 		}
+		Debug.Log ("Slope: " + slope + " Intercept: " + intercept);
 
 		if (image.GetDimension () != 3)
 		{
@@ -57,8 +58,8 @@ public class DICOM3D : DICOM
 
 		seriesInfo.histogram = new Histogram ();
 
-		Int64 min = Int64.MaxValue;
-		Int64 max = Int64.MinValue;
+		UInt32 min = UInt32.MaxValue;
+		UInt32 max = UInt32.MinValue;
 
 		Debug.Log ("Pixel format: " + image.GetPixelID ());
 
@@ -141,13 +142,15 @@ public class DICOM3D : DICOM
 						//long consecutiveIndex = (texWidth-1-x) + y*texWidth + z*texWidth*texHeight;
 						long consecutiveIndex =  x + y * texWidth + z*texWidth*texHeight;
 						if (x < origTexWidth && y < origTexHeight && z < origTexDepth) {
-							UInt32 pixelValue = (UInt32)((colorsTmp [index] - intercept) / slope);
+							Int32 pixelValueInt32 = (Int32)((colorsTmp [index] - intercept) / slope);
+
+							UInt32 pixelValue = (UInt32)((Int64)pixelValueInt32 + Int32.MaxValue);
 							colors [ consecutiveIndex ] = F2C(pixelValue);
 
 							if (pixelValue > max)
-								max = (Int64)pixelValue;
+								max = pixelValue;
 							if (pixelValue < min)
-								min = (Int64)pixelValue;
+								min = pixelValue;
 
 							seriesInfo.histogram.addValue (pixelValue);
 
@@ -162,7 +165,7 @@ public class DICOM3D : DICOM
 
 		// Manually set the min and max values, because we just caculated them for the whole volume and
 		// can thus be sure that we have the correct values:
-		seriesInfo.setMinMaxPixelValues ((int)min, (int)max);
+		seriesInfo.setMinMaxPixelValues (min, max);
 
 
 		seriesInfo.histogram.sortIntoBins (5000, min, max);

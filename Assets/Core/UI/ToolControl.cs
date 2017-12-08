@@ -112,7 +112,7 @@ public class ToolControl : MonoBehaviour {
 				// Only show the tool if it's currently available:
 				if (tool.displayTime == ToolWidget.ToolDisplayTime.Always ||
 				   (tool.displayTime == ToolWidget.ToolDisplayTime.WhenPatientIsLoaded && Patient.getLoadedPatient () != null) ||
-				   (tool.displayTime == ToolWidget.ToolDisplayTime.WhenNoPatientIsLoaded && Patient.getLoadedPatient () == null)) {
+					(tool.displayTime == ToolWidget.ToolDisplayTime.WhenNoPatientIsLoaded && Patient.getLoadedPatient () == null)) {
 					availableTools.Add (tool);
 				}
 			}
@@ -140,6 +140,7 @@ public class ToolControl : MonoBehaviour {
 	/*! Create a new Tool Ring and add an entry for each available Tool.*/
 	public void generateToolRing()
 	{
+		Debug.LogWarning ("Tool Ring 0");
 		Controller lc = InputDeviceManager.instance.leftController;
 		if (lc != null) {			
 			// If there's already a tool ring element, delete it:
@@ -193,9 +194,11 @@ public class ToolControl : MonoBehaviour {
 			Renderer r = text.GetComponent<Renderer> ();
 			r.sortingLayerID = SortingLayer.NameToID ("Sprites");
 		} else {
+			Debug.LogWarning ("Tool Ring 1");
 			// If no controller is active, let the RiftToolRing handle the display of available tools:
             if(RiftToolRing.instance != null)
-            {
+			{
+				Debug.LogWarning ("Tool Ring 2");
 			    RiftToolRing.instance.setAvailableTools (availableTools);
             }
 		}

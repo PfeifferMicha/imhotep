@@ -14,8 +14,8 @@ Shader "Custom/VolumeStackOfSlices"
 		_TransferFunction ("Transfer Function", 2D) = "white" {}
 		minimum("minimum", Range(0, 1)) = 0
 		maximum("maximum", Range(0, 1)) = 1
-		globalMinimum("GlobalMinimum", Range(-65536, 65536)) = 0
-		globalMaximum("GlobalMaximum", Range(-65536, 65536)) = 65536
+		globalMinimum("GlobalMinimum", Range(0, 4294967295)) = 0
+		globalMaximum("GlobalMaximum", Range(0, 4294967295)) = 4294967295
 	}
 	SubShader
 	{
@@ -191,7 +191,7 @@ Shader "Custom/VolumeStackOfSlices"
 				fixed3 lightColor = fixed3(1,0.8,0.6);
 				float3 lightPos = mul( unity_WorldToObject, _WorldSpaceLightPos0 ).xyz;
 				float3 lightDir = i.localPos.xyz - lightPos;
-				fixed3 diffuse = lightColor*dot( normalize(grad.rgb), normalize(lightDir) );
+				fixed3 diffuse = 0.5*lightColor*dot( normalize(grad.rgb), normalize(lightDir) );
 				col.rgb += diffuse;
 
 

@@ -227,24 +227,20 @@ public class VolumeCube : MonoBehaviour {
 		Debug.Log (width + " " + height + " " + depth);
 
 		if (width == height && width == depth) {
-			Debug.Log (0);
 			transform.localScale = new Vector3 (1f, 1f, 1f);
 		} else if (width >= height && width >= depth) {
-			Debug.Log (1);
 			transform.localScale = new Vector3 (
 				1f,
 				width/height,
 				width/depth
 			);
 		} else if (height >= width && height >= depth) {
-			Debug.Log (2);
 			transform.localScale = new Vector3 (
 				height/width,
 				height/depth,
 				1f
 			);
 		} else {
-			Debug.Log (3);
 			transform.localScale = new Vector3 (
 				depth/width,
 				1f,

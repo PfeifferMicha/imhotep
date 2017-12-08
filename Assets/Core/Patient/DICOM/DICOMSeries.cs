@@ -77,12 +77,12 @@ public class DICOMSeries {
 	 * \note If possible, this is read from the DICOM header of the first slice.
 	 *		However, this value may not be present, in which case this is filled when a slice/volume is
 	 *		first loaded (by checking all pixel values and finding the minimum).*/
-	public int minPixelValue { private set; get; }
+	public UInt32 minPixelValue { private set; get; }
 	/*! Maximal pixel value of first slice
 	 * \note If possible, this is read from the DICOM header of the first slice.
 	 *		However, this value may not be present, in which case this is filled when a slice/volume is
 	 *		first loaded (by checking all pixel values and finding the maximum).*/
-	public int maxPixelValue { private set; get; }
+	public UInt32 maxPixelValue { private set; get; }
 
 	/*! True if the minPixelValue and maxPixelValue have been found or calculated, false otherwise. */
 	public bool foundMinMaxPixelValues { private set; get; }
@@ -241,8 +241,8 @@ public class DICOMSeries {
 		maxPixelValue = UInt16.MaxValue;
 		foundMinMaxPixelValues = false;
 		try {
-			minPixelValue = Int32.Parse( firstSlice.GetMetaData("0028|0106") );
-			maxPixelValue = Int32.Parse( firstSlice.GetMetaData("0028|0107") );
+			minPixelValue = UInt32.Parse( firstSlice.GetMetaData("0028|0106") );
+			maxPixelValue = UInt32.Parse( firstSlice.GetMetaData("0028|0107") );
 			foundMinMaxPixelValues = true;
 		} catch {
 		}
@@ -358,7 +358,7 @@ public class DICOMSeries {
 
 	/*! If header did not contain information about minimum/maximum pixel values, this can be used to set them.
 	 * \note Should only be called once. Will be called when the first slice of this series is loaded. */
-	public void setMinMaxPixelValues( int min, int max )
+	public void setMinMaxPixelValues( UInt32 min, UInt32 max )
 	{
 		minPixelValue = min;
 		maxPixelValue = max;

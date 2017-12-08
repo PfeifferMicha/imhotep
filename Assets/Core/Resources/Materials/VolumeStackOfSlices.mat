@@ -79,11 +79,11 @@ Material:
     - _globalMinimum: 0
     - _maxValue: 1
     - _minValue: 0.472
-    - globalMaximum: -1
-    - globalMinimum: 0
+    - globalMaximum: 34681
+    - globalMinimum: 31744
     - level: 1.17
-    - maximum: 1
-    - minimum: 0
+    - maximum: 0.803
+    - minimum: 0.385
     - window: 0.359
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

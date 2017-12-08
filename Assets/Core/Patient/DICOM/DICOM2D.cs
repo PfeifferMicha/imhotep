@@ -58,8 +58,8 @@ public class DICOM2D : DICOM
 		}
 
 
-		Int64 min = int.MaxValue;
-		Int64 max = int.MinValue;
+		UInt32 min = UInt32.MaxValue;
+		UInt32 max = UInt32.MinValue;
 
 		// Copy the image into a colors array:
 		IntPtr bufferPtr;
@@ -127,9 +127,9 @@ public class DICOM2D : DICOM
 						colors [ x + y * texWidth ] = F2C(pixelValue);
 
 						if (pixelValue > max)
-							max = (Int64)pixelValue;
+							max = pixelValue;
 						if (pixelValue < min)
-							min = (Int64)pixelValue;
+							min = pixelValue;
 
 						index ++;
 					}
@@ -142,7 +142,7 @@ public class DICOM2D : DICOM
 		// If the DICOM header did not contain info about the minimum/maximum values and no one
 		// has manually set them yet, set the min/max values found for this slice:
 		if (!seriesInfo.foundMinMaxPixelValues) {
-			seriesInfo.setMinMaxPixelValues ((int)min, (int)max);
+			seriesInfo.setMinMaxPixelValues (min, max);
 		}
 		// Make the loaded image accessable from elsewhere:
 		this.image = image;
