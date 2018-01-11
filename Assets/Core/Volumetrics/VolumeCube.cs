@@ -14,6 +14,7 @@ public class VolumeCube : MonoBehaviour {
 		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, eventClear );
 		eventClear ();
 		//eventDisplayCurrentDicom ();
+		buildMesh();
 	}
 
 	void OnDisable()
@@ -25,6 +26,9 @@ public class VolumeCube : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+	}
+
+	void buildMesh()  {
 
 		float start_time = Time.time;
 
@@ -93,31 +97,6 @@ public class VolumeCube : MonoBehaviour {
 		normal = new Vector3 (0, 1, 0);
 		vertsAlreadyAdded = verts.Count;
 		for (int slice = 0; slice < numSlices; slice ++) {
-			Vector3 vert1 = new Vector3 (-1, 1 - 2f*(float)(slice+0.5f)*sliceDelta, -1);
-			Vector3 vert2 = new Vector3 (-1, 1 - 2f*(float)(slice+0.5f)*sliceDelta, 1);
-			Vector3 vert3 = new Vector3 (1, 1 - 2f*(float)(slice+0.5f)*sliceDelta, -1);
-			Vector3 vert4 = new Vector3 (1, 1 - 2f*(float)(slice+0.5f)*sliceDelta, 1);
-
-			// Front faces:
-			verts.Add (vert1);
-			verts.Add (vert2);
-			verts.Add (vert3);
-			verts.Add (vert4);
-			normals.Add (normal);
-			normals.Add (normal);
-			normals.Add (normal);
-			normals.Add (normal);
-			// 1
-			tris.Add (vertsAlreadyAdded + slice*4 + 2);
-			tris.Add (vertsAlreadyAdded + slice*4 + 1);
-			tris.Add (vertsAlreadyAdded + slice*4 + 0);
-			// 2
-			tris.Add (vertsAlreadyAdded + slice*4 + 2);
-			tris.Add (vertsAlreadyAdded + slice*4 + 3);
-			tris.Add (vertsAlreadyAdded + slice*4 + 1);
-		}
-		vertsAlreadyAdded = verts.Count;
-		for (int slice = 0; slice < numSlices; slice ++) {
 			Vector3 vert1 = new Vector3 (-1, -1 + 2f*(float)(slice+0.5f)*sliceDelta, -1);
 			Vector3 vert2 = new Vector3 (-1, -1 + 2f*(float)(slice+0.5f)*sliceDelta, 1);
 			Vector3 vert3 = new Vector3 (1, -1 + 2f*(float)(slice+0.5f)*sliceDelta, -1);
@@ -128,10 +107,11 @@ public class VolumeCube : MonoBehaviour {
 			verts.Add (vert2);
 			verts.Add (vert3);
 			verts.Add (vert4);
-			normals.Add (-normal);
-			normals.Add (-normal);
-			normals.Add (-normal);
-			normals.Add (-normal);
+			normals.Add (normal);
+			normals.Add (normal);
+			normals.Add (normal);
+			normals.Add (normal);
+
 			// 1
 			tris.Add (vertsAlreadyAdded + slice*4 + 0);
 			tris.Add (vertsAlreadyAdded + slice*4 + 1);
@@ -140,6 +120,32 @@ public class VolumeCube : MonoBehaviour {
 			tris.Add (vertsAlreadyAdded + slice*4 + 1);
 			tris.Add (vertsAlreadyAdded + slice*4 + 3);
 			tris.Add (vertsAlreadyAdded + slice*4 + 2);
+
+		}
+		vertsAlreadyAdded = verts.Count;
+		for (int slice = 0; slice < numSlices; slice ++) {
+			Vector3 vert1 = new Vector3 (-1, 1 - 2f*(float)(slice+0.5f)*sliceDelta, -1);
+			Vector3 vert2 = new Vector3 (-1, 1 - 2f*(float)(slice+0.5f)*sliceDelta, 1);
+			Vector3 vert3 = new Vector3 (1, 1 - 2f*(float)(slice+0.5f)*sliceDelta, -1);
+			Vector3 vert4 = new Vector3 (1, 1 - 2f*(float)(slice+0.5f)*sliceDelta, 1);
+
+			// Front faces:
+			verts.Add (vert1);
+			verts.Add (vert2);
+			verts.Add (vert3);
+			verts.Add (vert4);
+			normals.Add (-normal);
+			normals.Add (-normal);
+			normals.Add (-normal);
+			normals.Add (-normal);
+			// 1
+			tris.Add (vertsAlreadyAdded + slice*4 + 2);
+			tris.Add (vertsAlreadyAdded + slice*4 + 1);
+			tris.Add (vertsAlreadyAdded + slice*4 + 0);
+			// 2
+			tris.Add (vertsAlreadyAdded + slice*4 + 2);
+			tris.Add (vertsAlreadyAdded + slice*4 + 3);
+			tris.Add (vertsAlreadyAdded + slice*4 + 1);
 		}
 
 		normal = new Vector3 (1, 0, 0);

@@ -1,4 +1,6 @@
-﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
 // Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
 
@@ -16,6 +18,7 @@ Shader "Custom/VolumeStackOfSlices"
 		maximum("maximum", Range(0, 1)) = 1
 		globalMinimum("GlobalMinimum", Range(0, 4294967295)) = 0
 		globalMaximum("GlobalMaximum", Range(0, 4294967295)) = 4294967295
+		numberOfSlices("NumberOfSlices",Float) = 512
 	}
 	SubShader
 	{
@@ -65,6 +68,7 @@ Shader "Custom/VolumeStackOfSlices"
 			float maximum;
 			float globalMaximum;
 			float globalMinimum;
+			float numberOfSlices;
 
 			float C2F( float4 col )
 			{
@@ -114,15 +118,41 @@ Shader "Custom/VolumeStackOfSlices"
 				//o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				o.uv3D = v.vertex.xyz*0.5+0.5;
 
-				o.normal = normalize(UnityObjectToWorldNormal(v.normal));
+				float3 worldNormal = UnityObjectToWorldNormal(v.normal);
+				o.normal = v.normal.xyz;
+				//float3 viewSpaceNormal = normalize(mul((float3x3)UNITY_MATRIX_MVP, v.normal));
 
-				//float3 viewDir = _WorldSpaceCameraPos.xyz - mul(_Object2World, float4(0,0,0,1)).xyz;	//normalize(ObjSpaceViewDir(v.vertex)); //;_WorldSpaceCameraPos - mul(_Object2World, v.vertex).xyz;
-				float3 viewDir = - mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1) );
+				fixed3 viewDir = normalize(ObjSpaceViewDir(v.vertex));
+				fixed dotProduct = dot(v.normal, viewDir);
 
-				float3 absNormal = abs( v.normal.xyz );
-				float3 absViewDir = abs(viewDir);
+                //float3 worldNorm = UnityObjectToWorldNormal(v.normal);
+                float3 viewSpaceNormal = mul((float3x3)UNITY_MATRIX_VP, worldNormal);
+				//float3 viewSpaceNormal = UnityObjectToViewNormal(v.normal);
+
+				//float3 viewDir = _WorldSpaceCameraPos.xyz - mul(unity_ObjectToWorld, float4(0,0,0,1)).xyz;	//normalize(ObjSpaceViewDir(v.vertex)); //;_WorldSpaceCameraPos - mul(_Object2World, v.vertex).xyz;
+				//float3 viewDir = - mul(unity_WorldToObject, float4(_WorldSpaceCameraPos, 1) );
+				//float3 viewDir = WorldSpaceViewDir(v.vertex);
+				float3 worldViewDir = mul(unity_ObjectToWorld, float4(UNITY_MATRIX_IT_MV[2].xyz,1));
+
+				//float3 absNormal = abs( v.normal.xyz );
+				//float3 absViewDir = abs(worldViewDir);
 				
-				o.color = fixed4( 0,0,0,1 );
+				/*float cosAng = dot( worldNormal, -worldViewDir )/( length(worldViewDir)*length(v.normal) );
+				if( cosAng > 0.5 )
+				{
+					o.color = fixed4( 0,0,0,1 );
+				} else {
+					o.color = fixed4( 0,0,0,0 );
+				}*/
+
+				float cosAng = dot( fixed3(0,0,1), viewSpaceNormal )/( 1*length(viewSpaceNormal) );
+				//o.color = fixed4( 1,1,1, max( cosAng-0.4, 0 ) );//2*(cosAng-0.45) );
+
+				//o.color = fixed4( v.normal.x, v.normal.y, v.normal.z, 1 );
+				//o.color = fixed4( cosAng,cosAng,cosAng, 1 );
+				//o.color = fixed4( abs(viewSpaceNormal), 1 );
+				//o.color = fixed4( worldViewDir, 1 );
+				o.color = fixed4( 1, 1, 1, dotProduct*dotProduct );
 
                 /*if( absViewDir.x >= absViewDir.y && absViewDir.x >= absViewDir.z )
                 {
@@ -158,6 +188,7 @@ Shader "Custom/VolumeStackOfSlices"
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
+				//clip(i.color.a);
 				// sample the texture
 				//fixed4 col = tex3D(_MainTex, i.uv3D);
 				float val = C2F( tex3D(_MainTex, i.uv3D) );
@@ -196,8 +227,11 @@ Shader "Custom/VolumeStackOfSlices"
 
 
 				//return fixed4( val, val, val, val*0.002 )*val;
-				return col;
+				return col*i.color;
+				//return i.color;
 				//return fixed4( val, val, val, 1 );
+				//return fixed4( i.color );
+				//return fixed4( i.color.a, i.color.a, i.color.a, i.color.a );
 			}
 			ENDCG
 		}
