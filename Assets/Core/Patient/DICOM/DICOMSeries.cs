@@ -95,6 +95,8 @@ public class DICOMSeries {
 
 	public Histogram histogram;
 
+	public Bounds boundingBox { private set; get; }
+
 	/*! Constructor, fills most of the attributes of the DICOMSeries class.
 	 * \note This does some heavy file/directory parsing to determine the files which are part of
 	 * 		this series and their order. This is why the DICOMSeries should be constructed in a
@@ -246,6 +248,18 @@ public class DICOMSeries {
 			foundMinMaxPixelValues = true;
 		} catch {
 		}
+
+		Vector3 corner1 = transformPixelToPatientPos (Vector2.zero, 0f);
+		Vector2 imgDimensions = new Vector2 (firstSlice.GetWidth (), firstSlice.GetHeight ());
+		Vector3 corner2 = transformPixelToPatientPos (imgDimensions, numberOfSlices-1);
+		Vector3 min = Vector3.Min (corner1, corner2);
+		Vector3 max = Vector3.Max (corner1, corner2);
+		Debug.Log ("min: " + min);
+		Debug.Log ("max: " + max);
+		//boundingBox = new Bounds ((max - min) / 2 + min, (max - min));
+		boundingBox = new Bounds ((corner2 - corner1) / 2 + corner1, (corner2 - corner1));
+
+		Debug.Log ("bounds1: " + boundingBox);
 	}
 
 	/*! Transforms a 2D pixel on a given layer to the 3D patient coordinate system.

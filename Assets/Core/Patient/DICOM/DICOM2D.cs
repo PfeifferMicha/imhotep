@@ -42,6 +42,9 @@ public class DICOM2D : DICOM
 		texWidth = Mathf.NextPowerOfTwo ((int)image.GetWidth ());
 		texHeight = Mathf.NextPowerOfTwo ((int)image.GetHeight ());
 		texDepth = 1;
+		texPaddingWidth = texWidth - origTexWidth;
+		texPaddingHeight = texHeight - origTexHeight;
+		texPaddingDepth = texDepth - origTexDepth;
 		colors = new Color32[ texWidth * texHeight ];
 
 		int intercept = 0;

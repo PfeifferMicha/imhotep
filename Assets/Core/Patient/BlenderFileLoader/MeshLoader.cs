@@ -273,8 +273,9 @@ public class MeshLoader : MonoBehaviour {
     {
         //Destroy current game objects attached to mesh node
         for (int i = 0; i < meshNode.transform.childCount; i++)
-        {
-			if (meshNode.transform.GetChild (i).name != "DICOMBounds") {
+		{
+			if (meshNode.transform.GetChild (i).name != "DICOMBounds" &&
+				meshNode.transform.GetChild (i).name != "Volumetric" ) {
 				Destroy (meshNode.transform.GetChild (i).gameObject);
 			}
         }

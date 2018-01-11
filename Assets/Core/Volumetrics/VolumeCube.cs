@@ -226,7 +226,7 @@ public class VolumeCube : MonoBehaviour {
 		mat.SetFloat ("globalMaximum", (float)dicom.seriesInfo.maxPixelValue);
 		mat.mainTexture = dicom.getTexture3D();
 
-		float width = (float)dicom.getTexture3D ().width*(float)dicom.seriesInfo.pixelSpacing.x;
+		/*float width = (float)dicom.getTexture3D ().width*(float)dicom.seriesInfo.pixelSpacing.x;
 		float height = (float)dicom.getTexture3D ().height*(float)dicom.seriesInfo.pixelSpacing.y;
 		float depth = (float)dicom.getTexture3D ().depth*(float)dicom.seriesInfo.sliceOffset.z;
 
@@ -252,7 +252,34 @@ public class VolumeCube : MonoBehaviour {
 				1f,
 				depth/height
 			);
-		}
+		}*/
+
+		// Debug: Draw small sphere at origin:
+		//Vector3 origin = dicom.seriesInfo.origin;
+		//Debug.Log ("Origin: " + origin);	
+
+		GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+		sphere.transform.SetParent ( transform.parent );
+
+		sphere.transform.localPosition = dicom.seriesInfo.boundingBox.min;
+
+		// Corner points of the bounding box:
+		Vector3 min = dicom.seriesInfo.boundingBox.min;
+		Vector3 max = dicom.seriesInfo.boundingBox.max;
+		Vector3 goalSize = dicom.seriesInfo.boundingBox.size;
+		Vector3 paddingFactor = new Vector3 (
+			(float)dicom.texWidth / (float)dicom.origTexWidth,
+			(float)dicom.texHeight / (float)dicom.origTexHeight,
+			(float)dicom.texDepth / (float)dicom.origTexDepth);
+		Vector3 scale = Vector3.Scale( goalSize, paddingFactor )/ 2f;
+		transform.localScale = scale;
+		transform.localPosition = dicom.seriesInfo.boundingBox.center
+		+ Vector3.Scale (dicom.seriesInfo.boundingBox.extents, paddingFactor - new Vector3 (1, 1, 1));
+		Debug.Log ("paddingFactor " + paddingFactor);
+		Debug.Log ("scale " + scale);
+		Vector3 minMesh = new Vector3 (-1, -1, -1);
+		Vector3 maxMesh = new Vector3 (1, 1, 1);
+
 	}
 
 

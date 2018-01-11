@@ -38,6 +38,9 @@ public class DICOM3D : DICOM
 		texWidth = Mathf.NextPowerOfTwo ((int)image.GetWidth ());
 		texHeight = Mathf.NextPowerOfTwo ((int)image.GetHeight ());
 		texDepth = Mathf.NextPowerOfTwo ((int)image.GetDepth ());
+		texPaddingWidth = texWidth - origTexWidth;
+		texPaddingHeight = texHeight - origTexHeight;
+		texPaddingDepth = texDepth - origTexDepth;
 		Debug.Log ("Original texture dimensions: " + origTexWidth + " " + origTexHeight + " " + origTexDepth);
 		Debug.Log ("Texture dimensions: " + texWidth + " " + texHeight + " " + texDepth);
 		colors = new Color32[ texWidth * texHeight * texDepth ];

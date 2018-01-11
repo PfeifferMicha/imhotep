@@ -27,6 +27,13 @@ public class DICOM {
 	/*! Depth (in Pixels) in DICOM volume*/
 	public int origTexDepth { protected set; get; }
 
+	/*! Unused texture width which results from unity needing Power-Of-Two texture sizes */
+	public int texPaddingWidth { protected set; get; }
+	/*! Unused texture height which results from unity needing Power-Of-Two texture sizes */
+	public int texPaddingHeight { protected set; get; }
+	/*! Unused texture depth which results from unity needing Power-Of-Two texture sizes */
+	public int texPaddingDepth { protected set; get; }
+
 	/*! The ITK image.
 	 * Can be used to access the raw pixel data as it is in the file.
 	 * Make sure to read the SimpleITK (or the normal ITK) documentation for details on

@@ -136,14 +136,7 @@ Shader "Custom/VolumeStackOfSlices"
 
 				//float3 absNormal = abs( v.normal.xyz );
 				//float3 absViewDir = abs(worldViewDir);
-				
-				/*float cosAng = dot( worldNormal, -worldViewDir )/( length(worldViewDir)*length(v.normal) );
-				if( cosAng > 0.5 )
-				{
-					o.color = fixed4( 0,0,0,1 );
-				} else {
-					o.color = fixed4( 0,0,0,0 );
-				}*/
+
 
 				float cosAng = dot( fixed3(0,0,1), viewSpaceNormal )/( 1*length(viewSpaceNormal) );
 				//o.color = fixed4( 1,1,1, max( cosAng-0.4, 0 ) );//2*(cosAng-0.45) );
@@ -225,9 +218,8 @@ Shader "Custom/VolumeStackOfSlices"
 				fixed3 diffuse = 0.5*lightColor*dot( normalize(grad.rgb), normalize(lightDir) );
 				col.rgb += diffuse;
 
-
-				//return fixed4( val, val, val, val*0.002 )*val;
 				return col*i.color;
+				//return fixed4( val, val, val, val*0.002 )*val;
 				//return i.color;
 				//return fixed4( val, val, val, 1 );
 				//return fixed4( i.color );

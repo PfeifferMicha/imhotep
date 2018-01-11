@@ -55,7 +55,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TransferFunction:
-        m_Texture: {fileID: 2800000, guid: 2d946c1c8d15c2841bb8f172d7726e00, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6f97c2fa2be8a704a916572413739cb1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -79,11 +79,12 @@ Material:
     - _globalMinimum: 0
     - _maxValue: 1
     - _minValue: 0.472
-    - globalMaximum: 34409
-    - globalMinimum: 31744
+    - globalMaximum: 686
+    - globalMinimum: 0
     - level: 1.17
-    - maximum: 0.803
-    - minimum: 0.385
+    - maximum: 0.088
+    - minimum: 0
+    - numberOfSlices: 512
     - window: 0.359
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
