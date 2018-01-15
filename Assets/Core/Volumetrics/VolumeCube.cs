@@ -226,60 +226,45 @@ public class VolumeCube : MonoBehaviour {
 		mat.SetFloat ("globalMaximum", (float)dicom.seriesInfo.maxPixelValue);
 		mat.mainTexture = dicom.getTexture3D();
 
-		/*float width = (float)dicom.getTexture3D ().width*(float)dicom.seriesInfo.pixelSpacing.x;
-		float height = (float)dicom.getTexture3D ().height*(float)dicom.seriesInfo.pixelSpacing.y;
-		float depth = (float)dicom.getTexture3D ().depth*(float)dicom.seriesInfo.sliceOffset.z;
 
-		Debug.Log (width + " " + height + " " + depth);
+		// ------------------------------------------------
+		// Move the VolumeCube to the position where the 3D DICOM should be rendered:
+		// (The VolumeCube's localPosition and localScale is in the DICOM's "patient coordinate system", so
+		// adjusting its localPosition and localScale to fit with the DICOM's center and size will set it to
+		// the correct position.)
 
-		if (width == height && width == depth) {
-			transform.localScale = new Vector3 (1f, 1f, 1f);
-		} else if (width >= height && width >= depth) {
-			transform.localScale = new Vector3 (
-				1f,
-				width/height,
-				width/depth
-			);
-		} else if (height >= width && height >= depth) {
-			transform.localScale = new Vector3 (
-				height/width,
-				height/depth,
-				1f
-			);
-		} else {
-			transform.localScale = new Vector3 (
-				depth/width,
-				1f,
-				depth/height
-			);
-		}*/
-
-		// Debug: Draw small sphere at origin:
-		//Vector3 origin = dicom.seriesInfo.origin;
-		//Debug.Log ("Origin: " + origin);	
-
-		GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-		sphere.transform.SetParent ( transform.parent );
-
-		sphere.transform.localPosition = dicom.seriesInfo.boundingBox.min;
-
-		// Corner points of the bounding box:
-		Vector3 min = dicom.seriesInfo.boundingBox.min;
-		Vector3 max = dicom.seriesInfo.boundingBox.max;
+		// Size which the volume should have at the end (in patient coordinates):
 		Vector3 goalSize = dicom.seriesInfo.boundingBox.size;
-		Vector3 paddingFactor = new Vector3 (
-			(float)dicom.texWidth / (float)dicom.origTexWidth,
-			(float)dicom.texHeight / (float)dicom.origTexHeight,
-			(float)dicom.texDepth / (float)dicom.origTexDepth);
-		Vector3 scale = Vector3.Scale( goalSize, paddingFactor )/ 2f;
-		transform.localScale = scale;
-		transform.localPosition = dicom.seriesInfo.boundingBox.center
-		+ Vector3.Scale (dicom.seriesInfo.boundingBox.extents, paddingFactor - new Vector3 (1, 1, 1));
-		Debug.Log ("paddingFactor " + paddingFactor);
-		Debug.Log ("scale " + scale);
+		// Position where the center of the rendered volume should be (in patient coordinates):
+		Vector3 goalCenter = dicom.seriesInfo.boundingBox.center;
+		// Current (original) position and sizes of the mesh, because of the way it was generated:
 		Vector3 minMesh = new Vector3 (-1, -1, -1);
 		Vector3 maxMesh = new Vector3 (1, 1, 1);
+		Vector3 meshSize = maxMesh - minMesh;
+		// The padding factor takes into account that the DICOM volume may be smaller than the texture, since
+		// Unity requires power-of-two textures, so the texture may be larger than the DICOM volume.
+		Vector3 paddingFactor = new Vector3 (
+			(float)dicom.origTexWidth / (float)dicom.texWidth,
+			(float)dicom.origTexHeight / (float)dicom.texHeight,
+			(float)dicom.origTexDepth / (float)dicom.texDepth);
 
+		// Part of the mesh which actually holds the DICOM volume:
+		Vector3 paddedMeshSize = Vector3.Scale (paddingFactor, meshSize);
+
+		// Center of the part of the mesh which is filled with the DICOM volume:
+		Vector3 meshCenter = minMesh + paddedMeshSize*0.5f;
+		// Offset from the mesh original center (which is, because of the way the mesh was generated above, zero):
+		Vector3 meshCenterOffset = Vector3.zero - meshCenter;
+
+		// Inverse of paddedMeshSize:
+		Vector3 invPaddedMeshSize = new Vector3 (1f / paddedMeshSize.x, 1f / paddedMeshSize.y, 1f / paddedMeshSize.z);
+		// The final scale is the goalSize/paddedMeshSize:
+		Vector3 scale = Vector3.Scale (goalSize, invPaddedMeshSize);
+		transform.localScale = scale;
+		// Move the mesh center to its final position:
+		transform.localPosition = goalCenter + Vector3.Scale (meshCenterOffset, scale);
+
+		// ------------------------------------------------
 	}
 
 
