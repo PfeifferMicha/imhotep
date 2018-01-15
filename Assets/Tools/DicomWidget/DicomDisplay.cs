@@ -152,7 +152,12 @@ public class DicomDisplay : MonoBehaviour {
 	}
 	public void selectedNewVolumetric( DICOMSeries series )
 	{
-		DICOMLoader.instance.startLoadingVolume (series);
+		if (DICOMLoader.instance.currentDICOMVolume != null
+			&& DICOMLoader.instance.currentDICOMVolume.seriesInfo == series) {
+			DICOMLoader.instance.unloadVolume ();
+		} else {
+			DICOMLoader.instance.startLoadingVolume (series);
+		}
 	}
 
 	public void backToList()

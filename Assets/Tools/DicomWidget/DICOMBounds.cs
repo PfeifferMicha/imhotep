@@ -138,7 +138,7 @@ public class DICOMBounds : MonoBehaviour {
 				RectYMax.SetPosition (0, p3);
 				RectYMax.SetPosition (1, p4);
 				itk.simple.VectorDouble vec = dicom2D.image.GetOrigin ();
-				Debug.Log ("dicom2D.origin " + vec [0] + " " + vec [1] + " " + vec [2]);
+				//Debug.Log ("dicom2D.origin " + vec [0] + " " + vec [1] + " " + vec [2]);
 			}
 
 			gameObject.SetActive (true);

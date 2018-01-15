@@ -12,6 +12,7 @@ public class VolumeCube : MonoBehaviour {
 		// Register event callbacks for all DICOM events:
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewLoadedVolume, eventDisplayCurrentDicom );
 		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, eventClear );
+		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_CloseVolume, eventClear );
 		eventClear ();
 		//eventDisplayCurrentDicom ();
 		buildMesh();
@@ -22,6 +23,7 @@ public class VolumeCube : MonoBehaviour {
 		// Unregister myself - no longer receive events (until the next OnEnable() call):
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewLoadedVolume, eventDisplayCurrentDicom );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.PATIENT_Closed, eventClear );
+		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_CloseVolume, eventClear );
 	}
 
 	// Use this for initialization
@@ -218,6 +220,7 @@ public class VolumeCube : MonoBehaviour {
 		Debug.Log ("Number of normals: " + normals.Count);
 	}
 
+	/*! Set a volume DICOM which is to be rendered in 3D */
 	public void SetDicom( DICOM3D dicom )
 	{
 		Material mat = GetComponent<MeshRenderer> ().sharedMaterial;
@@ -273,12 +276,12 @@ public class VolumeCube : MonoBehaviour {
 		DICOM3D dicom = DICOMLoader.instance.currentDICOMVolume;
 		if (dicom != null) {
 			SetDicom (dicom);
-			//GetComponent<MeshRenderer> ().enabled = true;
+			GetComponent<MeshRenderer> ().enabled = true;
 		}
 	}
 
 	void eventClear( object obj = null )
 	{
-		//GetComponent<MeshRenderer> ().enabled = false;
+		GetComponent<MeshRenderer> ().enabled = false;
 	}
 }

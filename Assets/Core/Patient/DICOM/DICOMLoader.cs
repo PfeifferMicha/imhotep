@@ -255,4 +255,12 @@ public class DICOMLoader : MonoBehaviour {
 		}
 	}
 
+	/*! Can be called to unload the current volume.
+	 *	Assuming that all other users correctly respond to DICOM_CloseVolume event, the memory should be freed.*/
+	public void unloadVolume()
+	{
+		PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_CloseVolume);
+		currentDICOMVolume = null;
+	}
+
 }

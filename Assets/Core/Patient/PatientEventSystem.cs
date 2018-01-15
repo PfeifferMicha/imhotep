@@ -66,10 +66,12 @@ public class PatientEventSystem
 		DICOM_StartLoading,
 		/*! Called when we've loaded a new slice.*/
 		DICOM_NewLoadedSlice,
-		/*! Called when we've loaded a new volume.*/
+		/*! Called when we've loaded a new volume. Note: You should also listen to DICOM_CloseVolume and respond correctly!*/
 		DICOM_NewLoadedVolume,
 		/*! Internal use only. */
 		DICOM_AllCleared,
+		/*! Called to signal that a volume is to be closes. All users must immediately stop using the DICOM volume!*/
+		DICOM_CloseVolume,
 
 		/*! Internal use only. */
 		LOADING_AddLoadingJob,
