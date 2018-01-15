@@ -275,7 +275,7 @@ public class MeshLoader : MonoBehaviour {
         for (int i = 0; i < meshNode.transform.childCount; i++)
 		{
 			if (meshNode.transform.GetChild (i).name != "DICOMBounds" &&
-				meshNode.transform.GetChild (i).name != "Volumetric" ) {
+				meshNode.transform.GetChild (i).name != "DICOMVolume" ) {
 				Destroy (meshNode.transform.GetChild (i).gameObject);
 			}
         }

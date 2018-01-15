@@ -32,7 +32,6 @@ public class DicomDisplay : MonoBehaviour {
 	{
 		// Register event callbacks for all DICOM events:
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewList, eventNewDicomList );
-		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_StartLoading, eventHideDICOM );
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewLoadedSlice, eventDisplayCurrentDicom );
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_AllCleared, eventClear );
 		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, eventClear );
@@ -46,7 +45,6 @@ public class DicomDisplay : MonoBehaviour {
 	{
 		// Unregister myself - no longer receive events (until the next OnEnable() call):
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewList, eventNewDicomList );
-		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_StartLoading, eventHideDICOM );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewLoadedSlice, eventDisplayCurrentDicom );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_AllCleared, eventClear );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.PATIENT_Closed, eventClear );
@@ -131,10 +129,6 @@ public class DicomDisplay : MonoBehaviour {
 		newEntryText.text = "No series loaded.";
 		ListEntry.SetActive (true);
 		backToList ();
-	}
-	void eventHideDICOM( object obj = null )
-	{
-		//DicomImage.gameObject.SetActive (false);
 	}
 	public void selectedNewDicom( DICOMSeries series )
 	{

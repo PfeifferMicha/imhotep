@@ -138,7 +138,12 @@ public class DICOMLoader : MonoBehaviour {
 
 			// Let event system know what we're currently doing:
 			PatientEventSystem.triggerEvent (PatientEventSystem.Event.LOADING_AddLoadingJob,
-				"DICOM directory parsing");
+				"Loading DICOM series " + toLoad.seriesUID);
+
+			if( slice >= 0 )
+				PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_StartLoadingSlice);
+			else
+				PatientEventSystem.triggerEvent (PatientEventSystem.Event.DICOM_StartLoadingVolume);
 
 			return true;
 		} else {

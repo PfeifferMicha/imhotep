@@ -62,8 +62,10 @@ public class PatientEventSystem
 		 * If needed, the list can be retrieved using
 		 * PatientDirectoryLoader.getAvailableSeries().*/
 		DICOM_NewList,
-		/*! Called when the user wants to start loading a new DICOM slice or series.*/
-		DICOM_StartLoading,
+		/*! Called when the user wants to start loading a new DICOM slice.*/
+		DICOM_StartLoadingSlice,
+		/*! Called when the user wants to start loading a new DICOM volume.*/
+		DICOM_StartLoadingVolume,
 		/*! Called when we've loaded a new slice.*/
 		DICOM_NewLoadedSlice,
 		/*! Called when we've loaded a new volume. Note: You should also listen to DICOM_CloseVolume and respond correctly!*/
