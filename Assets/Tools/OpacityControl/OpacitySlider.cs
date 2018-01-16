@@ -32,7 +32,7 @@ public class OpacitySlider : MonoBehaviour, IPointerHoverHandler, IPointerDownHa
 		PatientEventSystem.stopListening(PatientEventSystem.Event.MESH_Opacity_Changed, updateSlider);
 	}
 
-	//Set the slider to the value of f
+	//! Set the slider to the value of f
     public void changeOpacity(float f)
     {
 		MeshMaterialControl moc = gameObjectToChangeOpacity.GetComponent<MeshMaterialControl> ();
@@ -41,7 +41,7 @@ public class OpacitySlider : MonoBehaviour, IPointerHoverHandler, IPointerDownHa
 		}
     }
 
-	// Called if Silder value changed from external tool by event system.
+	//! Called if Silder value changed from external tool by event system.
 	private void updateSlider(object obj = null){		
 		if (gameObjectToChangeOpacity != null) {
 			float currentOpacity = 0f;

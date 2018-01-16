@@ -70,6 +70,16 @@ public class DicomVolumeControl : MonoBehaviour {
 		SideScreenTextureList.SetActive (false);
 	}
 
+	public void setTransferFunctionRange( float min, float max )
+	{
+		DICOMVolume.GetComponent<MeshRenderer>().material.SetFloat ("minimum", min);
+		DICOMVolume.GetComponent<MeshRenderer>().material.SetFloat ("maximum", max);
+	}
+
+	void setTransferFunction( Texture2D tex )
+	{
+		DICOMVolume.GetComponent<MeshRenderer>().material.SetTexture ("_TransferFunction", tex);
+	}
 
 	// =========================================================
 	// Load and handle transfer function textures:
@@ -128,10 +138,7 @@ public class DicomVolumeControl : MonoBehaviour {
 		}
 	}
 
-	void setTransferFunction( Texture2D tex )
-	{
-		DICOMVolume.GetComponent<MeshRenderer>().material.SetTexture ("_TransferFunction", tex);
-	}
+	// =========================================================
 
 	public void displayTransferFunctionList()
 	{
@@ -158,4 +165,5 @@ public class DicomVolumeControl : MonoBehaviour {
 			SideScreenEmpty.SetActive (true);
 		}
 	}
+	// =========================================================
 }

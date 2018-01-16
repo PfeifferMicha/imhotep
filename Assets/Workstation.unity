@@ -20399,6 +20399,7 @@ GameObject:
   - component: {fileID: 1026443029}
   - component: {fileID: 1026443031}
   - component: {fileID: 1026443030}
+  - component: {fileID: 1026443032}
   m_Layer: 5
   m_Name: Texture
   m_TagString: Untagged
@@ -20457,6 +20458,35 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1026443028}
+--- !u!114 &1026443032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1026443028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 221ca95134d3773468341e4c7efde56a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SliderSprite: {fileID: 21300000, guid: 254a4594ec7bf42d8af74d69860ab81c, type: 3}
+  SliderColor: {r: 0.39607844, g: 0.5137255, b: 0.6313726, a: 0.8627451}
+  OnValuesChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 469429552}
+        m_MethodName: setTransferFunctionRange
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UI.OnDualSliderValuesChanged, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
 --- !u!1 &1027057851
 GameObject:
   m_ObjectHideFlags: 0
