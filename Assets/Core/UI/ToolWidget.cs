@@ -48,7 +48,10 @@ public class ToolWidget : MonoBehaviour {
 		if( images != null )
 		{
 			foreach (Image i in images)
-				i.material = material;
+			{
+				if( i.material.name == "Default UI Material")
+					i.material = material;
+			}
 		}
 	}
 

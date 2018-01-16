@@ -22,6 +22,7 @@ Shader "Custom/UIObject"
 
 		_fadeIn ("Fade In", Range( 0, 1) ) = 1
 		_highlight ("Highlight", Int ) = 0
+		_blockHighlight ("Block Highlight", Int ) = 0		// Set to 1 to avoid highlighting
 	}
 
 	SubShader
@@ -102,6 +103,7 @@ Shader "Custom/UIObject"
 
 			float _fadeIn;
 			int _highlight;
+			int _blockHighlight;
 
 			fixed4 frag(v2f IN) : SV_Target
 			{
@@ -117,7 +119,7 @@ Shader "Custom/UIObject"
 
 				//ccolor = color*(1-outline.a)*color.a + outline*outline.a;
 
-				if( !_highlight )
+				if( !_blockHighlight && !_highlight )
 				{
 					color.a *= 0.6;
 				}

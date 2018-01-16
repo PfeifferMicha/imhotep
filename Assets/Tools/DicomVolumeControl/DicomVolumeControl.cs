@@ -100,17 +100,14 @@ public class DicomVolumeControl : MonoBehaviour {
 		List<string> filenames = getTextureFiles ("../TransferFunctions/");
 		clearTextureList ();
 		foreach (string filename in filenames) {
-			Debug.Log("Loading: " + "../TransferFunctions/" + filename );
 			Texture2D tex = loadTransferFunctionTexture ("../TransferFunctions/" + filename + ".png");
 
 			GameObject listEntry = Instantiate (TextureListEntry) as GameObject;
 			listEntry.SetActive (true);
 			listEntry.transform.SetParent (TextureListEntry.transform.parent, false);
 
-			Image img = listEntry.GetComponentInChildren<Image> () as Image;
+			Image img = listEntry.transform.Find("Texture").GetComponent<Image> () as Image;
 			Sprite sprite = Sprite.Create (tex, new Rect (0, 0, tex.width, tex.height), new Vector2 (0.5f, 0.5f));
-			Debug.Log (sprite);
-			Debug.Log (sprite.texture);
 			img.sprite = sprite;
 
 			Text text = listEntry.GetComponentInChildren<Text> () as Text;
