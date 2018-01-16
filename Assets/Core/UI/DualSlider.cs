@@ -16,7 +16,9 @@ namespace UI
 
 	/*! Slider with two sliding parts (left and right) which can be used to specify a range.
 	 * To use, attach this to a UI element. The UI Element must have a RectTransform and an
-	 * Image component.
+	 * Image component. Then set the OnValuesChanged event in the Unity Editor to point to a function
+	 * which accepts two floats (minimum and maximum values). This function will be called whenever
+	 * the slider values are changed.
 	 * The sliders will automatically be generated and will fill the size of the RectTransform.
 	 * */
 	public class DualSlider : MonoBehaviour, IPointerHoverHandler, IPointerDownHandler, IPointerUpHandler
@@ -92,7 +94,6 @@ namespace UI
 				Rect r = rectTf.rect;
 
 				float amount = (localMousePos.x + r.size.x * 0.5f) / r.size.x;
-				Debug.Log (amount);
 
 				float distToLeftSlider = Mathf.Abs (amount - curLeft);
 				float distToRightSlider = Mathf.Abs (amount - curRight);
@@ -119,7 +120,6 @@ namespace UI
 					Rect r = rectTf.rect;
 
 					float amount = (localMousePos.x + r.size.x * 0.5f) / r.size.x;
-					Debug.Log (amount);
 					if (slidingLeft) {
 						float right = curRight;
 						if (amount > right)
