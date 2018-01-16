@@ -4,12 +4,14 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using UI;
 
-public class OpacitySlider : MonoBehaviour, IPointerHoverHandler
+public class OpacitySlider : MonoBehaviour, IPointerHoverHandler, IPointerDownHandler, IPointerUpHandler
 {
 	
 	public GameObject gameObjectToChangeOpacity;
 	private GameObject sliderFill;
 	private float dampeningArea = 0.05f;
+
+	private bool sliding = false;
 
     // Use this for initialization
     void Start()
@@ -67,9 +69,20 @@ public class OpacitySlider : MonoBehaviour, IPointerHoverHandler
 		}
 	}
 
+
+	public void OnPointerDown( PointerEventData data )
+	{
+		sliding = true;
+	}
+
+	public void OnPointerUp( PointerEventData data )
+	{
+		sliding = false;
+	}
+
 	public void OnPointerHover( PointerEventData data )
 	{
-		if (InputDeviceManager.instance.currentInputDevice.isLeftButtonDown() ) {
+		if (sliding && InputDeviceManager.instance.currentInputDevice.isLeftButtonDown() ) {
 			Vector2 localMousePos;
 			RectTransform rectTF = transform.GetComponent<RectTransform> ();
 			if (RectTransformUtility.ScreenPointToLocalPointInRectangle (rectTF, data.position, data.enterEventCamera, out localMousePos)) {
