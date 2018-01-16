@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: VolumeStackOfSlices
   m_Shader: {fileID: 4800000, guid: b6c5a5ccc808d0b47a79b53da22c457c, type: 3}
-  m_ShaderKeywords: _ALPHAPREMULTIPLY_ON _EMISSION
+  m_ShaderKeywords: ENABLELIGHTING_ON _ALPHAPREMULTIPLY_ON _EMISSION
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -79,9 +79,11 @@ Material:
     - _globalMinimum: 0
     - _maxValue: 1
     - _minValue: 0.472
+    - enableLighting: 1
     - globalMaximum: 34409
     - globalMinimum: 31744
     - level: 1.17
+    - lightingIntensity: 0.5
     - maximum: 1
     - minimum: 0.012
     - numberOfSlices: 512
@@ -89,3 +91,4 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - lightColor: {r: 1, g: 0.8, b: 0.7, a: 0.5}
