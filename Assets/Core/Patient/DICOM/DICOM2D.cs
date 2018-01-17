@@ -60,81 +60,93 @@ public class DICOM2D : DICOM
 			throw( new System.Exception( "Only 2D and 3D images are currently supported. Dimensions of image: " + image.GetDimension()));
 		}
 
+		Debug.Log ("Pixel format: " + image.GetPixelID ());
+		Debug.Log ("Slope, Intercept: " + slope + " " + intercept);
 
 		UInt32 min = UInt32.MaxValue;
 		UInt32 max = UInt32.MinValue;
 
+		// TODO: Ignore slope and intercept??
+
 		// Copy the image into a colors array:
-		IntPtr bufferPtr;
 		UInt32 numberOfPixels = image.GetWidth () * image.GetHeight ();
 		if (image.GetPixelID () == PixelIDValueEnum.sitkUInt16) {
-			bufferPtr = image.GetBufferAsUInt16 ();
+			IntPtr bufferPtr = image.GetBufferAsUInt16 ();
 
-			Int16[] colorsTmp = new Int16[ numberOfPixels ];
-			Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
-			int index = 0;
-			//for (UInt32 z = 0; z < texDepth; z++) {
-			for (UInt32 y = 0; y < texHeight; y++) {
-				for (UInt32 x = 0; x < texWidth; x++) {
-					if( x < origTexWidth && y < origTexHeight )// && z < origTexDepth )
-					{
-						UInt16 pixelValue = (UInt16)((colorsTmp [index] - intercept) / slope);
-						colors [ x + y * texWidth] = F2C(pixelValue);
+			unsafe {
+				UInt16 *ptr = (UInt16 *)bufferPtr.ToPointer();
 
-						if (pixelValue > max)
-							max = pixelValue;
-						if (pixelValue < min)
-							min = pixelValue;
+				int consecutiveIndex = 0;
+				//for (UInt32 z = 0; z < texDepth; z++) {
+				for (UInt32 y = 0; y < texHeight; y++) {
+					for (UInt32 x = 0; x < texWidth; x++) {
+						if (x < origTexWidth && y < origTexHeight) {// && z < origTexDepth )
+							long jumpingIndex =  x + y * texWidth;
 
-						index ++;
+							UInt32 pixelValue = (UInt32)((UInt16)ptr[consecutiveIndex]);
+							colors [jumpingIndex] = F2C (pixelValue);
+
+							if (pixelValue > max)
+								max = pixelValue;
+							if (pixelValue < min)
+								min = pixelValue;
+
+							consecutiveIndex++;
+						}
 					}
 				}
 			}
 		} else if ( image.GetPixelID() == PixelIDValueEnum.sitkInt16 ) {
-			bufferPtr = image.GetBufferAsInt16 ();
+			IntPtr bufferPtr = image.GetBufferAsInt16 ();
 
-			Int16[] colorsTmp = new Int16[ numberOfPixels ];
-			Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
+			unsafe {
+				Int16 *ptr = (Int16 *)bufferPtr.ToPointer();
 
-			int index = 0;
-			//for (UInt32 z = 0; z < texDepth; z++) {
-			for (UInt32 y = 0; y < texHeight; y++) {
-				for (UInt32 x = 0; x < texWidth; x++) {
-					if( x < origTexWidth && y < origTexHeight )// && z < origTexDepth )
-					{
-						UInt16 pixelValue = (UInt16)((colorsTmp [index] - intercept) / slope);
-						colors [ x + y * texWidth] = F2C(pixelValue);
+				int consecutiveIndex = 0;
+				//for (UInt32 z = 0; z < texDepth; z++) {
+				for (UInt32 y = 0; y < texHeight; y++) {
+					for (UInt32 x = 0; x < texWidth; x++) {
+						if (x < origTexWidth && y < origTexHeight) {// && z < origTexDepth )
+							long jumpingIndex =  x + y * texWidth;
 
-						if (pixelValue > max)
-							max = pixelValue;
-						if (pixelValue < min)
-							min = pixelValue;
+							UInt32 pixelValue = (UInt32)((Int16)ptr[consecutiveIndex] + Int16.MaxValue);
+							colors [jumpingIndex] = F2C (pixelValue);
 
-						index ++;
+							if (pixelValue > max)
+								max = pixelValue;
+							if (pixelValue < min)
+								min = pixelValue;
+
+							consecutiveIndex++;
+						}
 					}
 				}
 			}
 		} else if ( image.GetPixelID() == PixelIDValueEnum.sitkInt32 ) {
-			bufferPtr = image.GetBufferAsInt32 ();
+			IntPtr bufferPtr = image.GetBufferAsInt32 ();
 
-			Int32[] colorsTmp = new Int32[ numberOfPixels ];
-			Marshal.Copy( bufferPtr, colorsTmp, 0, (int)numberOfPixels );
+			unsafe {
+				Int32 *ptr = (Int32 *)bufferPtr.ToPointer();
 
-			int index = 0;
-			//for (UInt32 z = 0; z < texDepth; z++) {
-			for (UInt32 y = 0; y < texHeight; y++) {
-				for (UInt32 x = 0; x < texWidth; x++) {
-					if( x < origTexWidth && y < origTexHeight )// && z < origTexDepth )
-					{
-						UInt32 pixelValue = (UInt32)((colorsTmp [index] - intercept) / slope);
-						colors [ x + y * texWidth ] = F2C(pixelValue);
+				int consecutiveIndex = 0;
+				//for (UInt32 z = 0; z < texDepth; z++) {
+				for (UInt32 y = 0; y < texHeight; y++) {
+					for (UInt32 x = 0; x < texWidth; x++) {
+						if (x < origTexWidth && y < origTexHeight) {// && z < origTexDepth )
+							long jumpingIndex =  x + y * texWidth;
 
-						if (pixelValue > max)
-							max = pixelValue;
-						if (pixelValue < min)
-							min = pixelValue;
+							// TODO: To move from Int32 to UInt32 range, we should add Int32.MaxValue?!
+							// However, when we do this, 
+							UInt32 pixelValue = (UInt32)((Int32)ptr[consecutiveIndex]) + (UInt32)Int16.MaxValue;
+							colors [jumpingIndex] = F2C (pixelValue);
 
-						index ++;
+							if (pixelValue > max)
+								max = pixelValue;
+							if (pixelValue < min)
+								min = pixelValue;
+
+							consecutiveIndex++;
+						}
 					}
 				}
 			}
@@ -142,11 +154,7 @@ public class DICOM2D : DICOM
 			throw(new System.Exception ("Unsupported pixel format: " + image.GetPixelID()));
 		}
 
-		// If the DICOM header did not contain info about the minimum/maximum values and no one
-		// has manually set them yet, set the min/max values found for this slice:
-		if (!seriesInfo.foundMinMaxPixelValues) {
-			seriesInfo.setMinMaxPixelValues (min, max);
-		}
+		seriesInfo.setMinMaxPixelValues (min, max);
 		// Make the loaded image accessable from elsewhere:
 		this.image = image;
 	}
@@ -166,6 +174,10 @@ public class DICOM2D : DICOM
 		texture2D = new Texture2D (texWidth, texHeight, TextureFormat.ARGB32, false, true);
 		texture2D.SetPixels32 (colors);
 		texture2D.Apply ();
+
+		// Clear no longer needed data:
+		colors = null;
+
 		return texture2D;
 	}
 }

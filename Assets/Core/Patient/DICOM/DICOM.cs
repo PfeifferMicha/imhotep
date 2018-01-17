@@ -59,10 +59,19 @@ public class DICOM {
 	{
 		Color32 c = new Color32 ();
 
-		c.r = (byte)(value % 256); value /= 256;
+		/*c.r = (byte)(value % 256); value /= 256;
 		c.g = (byte)(value % 256); value /= 256;
 		c.b = (byte)(value % 256); value /= 256;
-		c.a = (byte)(value % 256);
+		c.a = (byte)(value % 256);*/
+
+		/*c.r = (byte)(value % 256); value = value >> 8;
+		c.g = (byte)(value % 256); value = value >> 8;
+		c.b = (byte)(value % 256); value = value >> 8;
+		c.a = (byte)(value % 256);*/
+		c.a = (byte)(value >> 24);
+		c.b = (byte)(value >> 16);
+		c.g = (byte)(value >> 8);
+		c.r = (byte)(value);
 		//Debug.LogWarning ("c: " + c.r + " " + c.g + " " + c.b + "  " + c.a);
 
 		return c;
@@ -73,9 +82,9 @@ public class DICOM {
 		UInt32 valueUInt = (UInt32)((int)value + 32768);
 		return F2C (valueUInt);
 	}*/
-	public static Color F2C(UInt16 value)
+	/*public static Color F2C(UInt16 value)
 	{
 		UInt32 valueUInt = (UInt32)(value);
 		return F2C (valueUInt);
-	}
+	}*/
 }

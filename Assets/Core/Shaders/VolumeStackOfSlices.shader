@@ -80,16 +80,12 @@ Shader "Custom/VolumeStackOfSlices"
 
 			float C2F( float4 col )
 			{
-				float val = (col.r + (col.g + (col.b + col.a*256)*256)*256)*256;
+				col = col*255;		// Scale the range from [0,255] to [0,255]
+				float val = (col.r + (col.g + (col.b + col.a*256)*256)*256);
 
 				val = (val - globalMinimum)/(globalMaximum-globalMinimum);
 
-				//val = (val - level + window/2)/window;
-				//val = (val - level)/window;
-				//val = clamp( val, 0, 1 );
 				return val;
-				//return (col.g*65536 + col.r*256 - _globalMinimum)/(_globalMaximum - _globalMinimum);
-				//return (col.g*255)/globalMaximum;
 			}
 
 			float3 gradient( float3 pos )

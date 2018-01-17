@@ -67,7 +67,101 @@ public class DICOM3D : DICOM
 		Debug.Log ("Pixel format: " + image.GetPixelID ());
 
 		// Copy the image into a colors array:
-		IntPtr bufferPtr;
+		UInt32 numberOfPixels = image.GetWidth () * image.GetHeight ();
+		if (image.GetPixelID () == PixelIDValueEnum.sitkUInt16) {
+			IntPtr bufferPtr = image.GetBufferAsUInt16 ();
+
+			unsafe {
+				UInt16 *ptr = (UInt16 *)bufferPtr.ToPointer();
+
+				int consecutiveIndex = 0;
+				for (UInt32 z = 0; z < texDepth; z++) {
+					for (UInt32 y = 0; y < texHeight; y++) {
+						for (UInt32 x = 0; x < texWidth; x++) {
+							if (x < origTexWidth && y < origTexHeight && z < origTexDepth ) {
+								long jumpingIndex = x + y * texWidth + z*texWidth*texHeight;
+
+								UInt32 pixelValue = (UInt32)((UInt16)ptr [consecutiveIndex]);
+								colors [jumpingIndex] = F2C (pixelValue);
+
+								if (pixelValue > max)
+									max = pixelValue;
+								if (pixelValue < min)
+									min = pixelValue;
+								
+								seriesInfo.histogram.addValue (pixelValue);
+
+								consecutiveIndex++;
+							}
+						}
+					}
+				}
+			}
+		} else if ( image.GetPixelID() == PixelIDValueEnum.sitkInt16 ) {
+			IntPtr bufferPtr = image.GetBufferAsInt16 ();
+
+			unsafe {
+				Int16 *ptr = (Int16 *)bufferPtr.ToPointer();
+
+				int consecutiveIndex = 0;
+				for (UInt32 z = 0; z < texDepth; z++) {
+					for (UInt32 y = 0; y < texHeight; y++) {
+						for (UInt32 x = 0; x < texWidth; x++) {
+							if (x < origTexWidth && y < origTexHeight && z < origTexDepth ) {
+								long jumpingIndex = x + y * texWidth + z*texWidth*texHeight;
+
+								UInt32 pixelValue = (UInt32)((Int16)ptr[consecutiveIndex] + Int16.MaxValue);
+								colors [jumpingIndex] = F2C (pixelValue);
+
+								if (pixelValue > max)
+									max = pixelValue;
+								if (pixelValue < min)
+									min = pixelValue;
+
+								seriesInfo.histogram.addValue (pixelValue);
+
+								consecutiveIndex++;
+							}
+						}
+					}
+				}
+			}
+		} else if ( image.GetPixelID() == PixelIDValueEnum.sitkInt32 ) {
+			IntPtr bufferPtr = image.GetBufferAsInt32 ();
+
+			unsafe {
+				Int32 *ptr = (Int32 *)bufferPtr.ToPointer();
+
+				int consecutiveIndex = 0;
+
+				for (UInt32 z = 0; z < texDepth; z++) {
+					for (UInt32 y = 0; y < texHeight; y++) {
+						for (UInt32 x = 0; x < texWidth; x++) {
+							if (x < origTexWidth && y < origTexHeight && z < origTexDepth ) {
+								long jumpingIndex = x + y * texWidth + z*texWidth*texHeight;
+
+								// TODO: To move from Int32 to UInt32 range, we should add Int32.MaxValue?!
+								// However, when we do this, 
+								UInt32 pixelValue = (UInt32)((Int32)ptr[consecutiveIndex]) + (UInt32)Int16.MaxValue;
+								colors [jumpingIndex] = F2C (pixelValue);
+
+								if (pixelValue > max)
+									max = pixelValue;
+								if (pixelValue < min)
+									min = pixelValue;
+
+								seriesInfo.histogram.addValue (pixelValue);
+
+								consecutiveIndex++;
+							}
+						}
+					}
+				}
+			}
+		} else {
+			throw(new System.Exception ("Unsupported pixel format: " + image.GetPixelID()));
+		}
+		/*IntPtr bufferPtr;
 		UInt32 numberOfPixels = image.GetWidth () * image.GetHeight () * image.GetDepth();
 		if (image.GetPixelID () == PixelIDValueEnum.sitkUInt16) {
 			bufferPtr = image.GetBufferAsUInt16 ();
@@ -115,8 +209,10 @@ public class DICOM3D : DICOM
 						long consecutiveIndex =  x + y * texWidth + z*texWidth*texHeight;
 						if (x < origTexWidth && y < origTexHeight && z < origTexDepth )
 						{
-							Int16 pixelValueInt16 = (Int16)((colorsTmp [index] - intercept) / slope);
-							UInt32 pixelValue = (UInt32)((int)pixelValueInt16 + 32768);
+							//Int16 pixelValueInt16 = (Int16)((colorsTmp [index] - intercept) / slope);
+							//UInt32 pixelValue = (UInt32)((int)pixelValueInt16 + 32768);
+
+							UInt16 pixelValue = (UInt16)((colorsTmp [index] - intercept) / slope);
 							colors [ consecutiveIndex] = F2C(pixelValue);
 
 							if (pixelValue > max)
@@ -164,7 +260,7 @@ public class DICOM3D : DICOM
 			}
 		} else {
 			throw(new System.Exception ("Unsupported pixel format: " + image.GetPixelID()));
-		}
+		}*/
 
 		// Manually set the min and max values, because we just caculated them for the whole volume and
 		// can thus be sure that we have the correct values:
@@ -188,7 +284,7 @@ public class DICOM3D : DICOM
 
 
 		Debug.Log ("Generating DICOM texture:");
-		texture3D = new Texture3D( texWidth, texHeight, texDepth, TextureFormat.RGBA32, false);
+		texture3D = new Texture3D( texWidth, texHeight, texDepth, TextureFormat.ARGB32, false);
 		texture3D.SetPixels32(colors); //needs around 0.15 sec for a small DICOM, TODO coroutine?
 		texture3D.Apply();
 		texture3D.wrapMode = TextureWrapMode.Clamp;

@@ -399,6 +399,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		currentViewSettings.slice = dicom.slice;
 		mMaterial.SetFloat ("globalMinimum", (float)dicom.seriesInfo.minPixelValue);
 		mMaterial.SetFloat ("globalMaximum", (float)dicom.seriesInfo.maxPixelValue);
+		Debug.LogWarning ("Min, max " + dicom.seriesInfo.minPixelValue + " " + dicom.seriesInfo.maxPixelValue);
 
 		GetComponent<RawImage> ().texture = tex;
 

@@ -212,6 +212,7 @@ public class DICOMLoader : MonoBehaviour {
 	public void load(object sender, DoWorkEventArgs e)
 	{
 		try {
+			Debug.Log("Loading: " + seriesToLoad.seriesUID + " " + sliceToLoad );
 			if( sliceToLoad >= 0 )
 				newlyLoadedDICOM = new DICOM2D( seriesToLoad, sliceToLoad );
 			else
@@ -228,6 +229,7 @@ public class DICOMLoader : MonoBehaviour {
 		// Unlock:
 		isBusy = false;
 		newDICOMLoaded = true;
+		Debug.Log ("Loading done. " + currentDICOMSeries.seriesUID);
 	}
 
 
@@ -244,7 +246,6 @@ public class DICOMLoader : MonoBehaviour {
 				"DICOM directory parsing");
 		}
 		if (newDICOMLoaded) {
-			//Debug.Log ("newDICOMLoaded: " + newDICOMLoaded);
 			newDICOMLoaded = false;
 			if (newlyLoadedDICOM != null) {
 				if (newlyLoadedDICOM.dimensions == 2) {
