@@ -82,13 +82,13 @@ public class DICOMBounds : MonoBehaviour {
 				Vector3 c6 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, 0f), lastSlice);
 				Vector3 c7 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (0f, dicom.origTexHeight), lastSlice);
 				Vector3 c8 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, dicom.origTexHeight), lastSlice);
-				Debug.Log ("lastSlice " + lastSlice);
+				/*Debug.Log ("lastSlice " + lastSlice);
 				Debug.Log ("dicom.texWidth " + dicom.origTexWidth);
 				Debug.Log ("dicom.texHeight " + dicom.origTexHeight);
 				Debug.Log ("dicom.directionCosX " + dicom.seriesInfo.directionCosineX.x + " "  + dicom.seriesInfo.directionCosineX.y + " " + dicom.seriesInfo.directionCosineX.z);
 				Debug.Log ("dicom.directionCosY " + dicom.seriesInfo.directionCosineY.x + " "  + dicom.seriesInfo.directionCosineY.y + " " + dicom.seriesInfo.directionCosineY.z);
 				Debug.Log ("c1 " + c1);
-				Debug.Log ("c4 " + c4);
+				Debug.Log ("c4 " + c4);*/
 
 				// Display the bounding box:
 				Edge1.SetPosition (0, c1);

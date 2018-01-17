@@ -228,7 +228,7 @@ public class VolumeCube : MonoBehaviour {
 		mat.SetFloat ("globalMinimum", (float)dicom.seriesInfo.minPixelValue);
 		mat.SetFloat ("globalMaximum", (float)dicom.seriesInfo.maxPixelValue);
 		mat.mainTexture = dicom.getTexture3D();
-
+		mat.SetVector ("textureSize", new Vector3 (dicom.texWidth, dicom.texHeight, dicom.texDepth));
 
 		// ------------------------------------------------
 		// Move the VolumeCube to the position where the 3D DICOM should be rendered:

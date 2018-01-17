@@ -21,6 +21,8 @@ Shader "Custom/VolumeStackOfSlices"
 		//[MaterialToggle] enableLighting("EnableLighting",Float) = 1
 		//lightingIntensity("LightingIntensity", Range(0,1)) = 0.5
 		lightColor("LightColor", Color ) = (1,0.8,0.7,0.5)
+		textureSize("TextureSize", Vector ) = (1,1,1)
+
 	}
 	SubShader
 	{
@@ -60,6 +62,7 @@ Shader "Custom/VolumeStackOfSlices"
 				float3 normal : NORMAL;
 				fixed4 color : COLOR;
 				float4 localPos : TEXCOORD1;
+				float3 localViewDir : TEXCOORD2;
 				//float4 pos;
 			};
 
@@ -73,6 +76,7 @@ Shader "Custom/VolumeStackOfSlices"
 			//float lightingIntensity;
 			fixed4 lightColor;
 			const float PI_2 = 0.5f*3.14159f;
+			float3 textureSize;
 
 			float C2F( float4 col )
 			{
@@ -90,25 +94,26 @@ Shader "Custom/VolumeStackOfSlices"
 
 			float3 gradient( float3 pos )
 			{
-				float _sampleRate = 1.0/512.0;
-				float _sampleRate2 = 2*_sampleRate;
-				float x1 = C2F( tex3D(_MainTex, pos + float3(_sampleRate,0,0)) );
+				//float _sampleRate = 1.0/512.0;
+				float3 _sampleRate = 2/textureSize;
+				float3 _sampleRate2 = 2*_sampleRate;
+				float x1 = C2F( tex3D(_MainTex, pos + float3(_sampleRate.x,0,0)) );
 				//x1 = (x1 - _minValue) / (_maxValue - _minValue);
-				float x2 = C2F( tex3D(_MainTex, pos - float3(_sampleRate,0,0)) );
+				float x2 = C2F( tex3D(_MainTex, pos - float3(_sampleRate.x,0,0)) );
 				//x2 = (x2 - _minValue) / (_maxValue - _minValue);
-				float y1 = C2F( tex3D(_MainTex, pos + float3(0,_sampleRate,0)) );
+				float y1 = C2F( tex3D(_MainTex, pos + float3(0,_sampleRate.y,0)) );
 				//y1 = (y1 - _minValue) / (_maxValue - _minValue);
-				float y2 = C2F( tex3D(_MainTex, pos - float3(0,_sampleRate,0)) );
+				float y2 = C2F( tex3D(_MainTex, pos - float3(0,_sampleRate.y,0)) );
 				//y2 = (y2 - _minValue) / (_maxValue - _minValue);
-				float z1 = C2F( tex3D(_MainTex, pos + float3(0,0,_sampleRate)) );
+				float z1 = C2F( tex3D(_MainTex, pos + float3(0,0,_sampleRate.z)) );
 				//z1 = (z1 - _minValue) / (_maxValue - _minValue);
-				float z2 = C2F( tex3D(_MainTex, pos - float3(0,0,_sampleRate)) );
+				float z2 = C2F( tex3D(_MainTex, pos - float3(0,0,_sampleRate.z)) );
 				//z2 = (z2 - _minValue) / (_maxValue - _minValue);
 
 				return float3(
-					(x1-x2)/(_sampleRate2),
-					(y1-y2)/(_sampleRate2),
-					(z1-z2)/(_sampleRate2)
+					(x1-x2)/(_sampleRate2.x),
+					(y1-y2)/(_sampleRate2.y),
+					(z1-z2)/(_sampleRate2.z)
 				);
 			}
 			
@@ -129,6 +134,8 @@ Shader "Custom/VolumeStackOfSlices"
 				fixed dotProduct = dot(normalize(v.normal.xyz), viewDir);
 				fixed ang = acos( dotProduct );
 				//float cosAng = cos( ang*2.0 );
+
+				o.localViewDir = normalize(ObjSpaceViewDir(v.vertex));
 
                 //float3 worldNorm = UnityObjectToWorldNormal(v.normal);
                 //float3 viewSpaceNormal = mul((float3x3)UNITY_MATRIX_VP, worldNormal);
@@ -223,11 +230,20 @@ Shader "Custom/VolumeStackOfSlices"
 					float3 worldLightPos = float3( 0, 20, 0 );
 					float3 lightPos = mul( unity_WorldToObject, worldLightPos ).xyz;
 					float3 lightDir = i.localPos.xyz - lightPos;
-					fixed3 diffuse = lightColor.a*lightColor*max(dot( normalize(grad.rgb), normalize(lightDir) ), 0);
-					col.rgb += diffuse;
+
+					float3 gradNormalized = normalize(grad.rgb);
+
+					// halfway vector:
+					float3 h = (lightDir + i.localViewDir)/(length(lightDir)+length(i.localViewDir));
+
+					fixed3 diffuse = lightColor.a*lightColor*max(dot( gradNormalized, normalize(lightDir) ), 0);
+
+					fixed3 specular = val*lightColor.a*lightColor* pow(dot( gradNormalized, h ),3);
+					col.rgb += specular + diffuse;
 				}
 
 				return col*i.color;
+				//return fixed4( i.localViewDir, i.color.a );
 				//return fixed4( i.color.a,i.color.a,i.color.a, 1 );
 				//return fixed4( val, val, val, val*0.002 )*val;
 				//return i.color;
@@ -239,3 +255,4 @@ Shader "Custom/VolumeStackOfSlices"
 		}
 	}
 }
+
