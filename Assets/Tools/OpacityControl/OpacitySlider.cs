@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using UI;
 
+// TODO Update this class to work like DualSlider?
 public class OpacitySlider : MonoBehaviour, IPointerHoverHandler, IPointerDownHandler, IPointerUpHandler
 {
 	
