@@ -107,7 +107,8 @@ public class DicomDisplay : MonoBehaviour {
 
 			// Make the volume button display the DICOM as volume:
 			GameObject volumetricButton = newEntry.transform.Find ("VolumetricButton").gameObject;
-			if (captured.isConsecutiveVolume) {
+			// For now, only allow Transverse volumes:
+			if (captured.sliceOrientation == DICOMSeries.SliceOrientation.Transverse && captured.isConsecutiveVolume) {
 				volumetricButton.GetComponent<Button> ().onClick.AddListener (() => selectedNewVolumetric (captured));
 				volumetricButton.SetActive (true);
 			} else {
