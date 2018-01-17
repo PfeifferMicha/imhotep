@@ -8936,7 +8936,7 @@ GameObject:
   - component: {fileID: 469429551}
   - component: {fileID: 469429552}
   m_Layer: 11
-  m_Name: Volumetrics
+  m_Name: Volume Control
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
