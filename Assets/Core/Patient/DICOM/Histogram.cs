@@ -13,8 +13,8 @@ public class Histogram {
 	Texture2D texture;
 
 	double binSize;
-	double minValue;
-	double maxValue;
+	double minValue = 0;
+	double maxValue = 1;
 	int numOfBins;
 	long max = 0;
 
@@ -36,14 +36,17 @@ public class Histogram {
 		return texture;
 	}
 
-	public void sortIntoBins( int numOfBins, double minValue, double maxValue )
+	public void setMinMaxPixelValues( float min, float max )
+	{
+		minValue = min;
+		maxValue = max;
+	}
+
+	public void sortIntoBins( int numOfBins )
 	{
 		bins = new long[numOfBins];
 		binSize = (maxValue - minValue)/(double)numOfBins;
-		this.minValue = minValue;
-		this.maxValue = maxValue;
 		this.numOfBins = numOfBins;
-		Debug.Log ("Histogram: " + minValue + " - " + maxValue + " (" + numOfBins + " bins), binSize: " + binSize);
 
 		for (int i = 1; i < values.Count; i++) {
 			if (values[i] < minValue || values[i] > maxValue)
@@ -54,7 +57,7 @@ public class Histogram {
 		}
 
 		// search the maximum value:
-		max = 0;
+		max = 1;
 		for (int i = 0; i < numOfBins; i++) {
 			if (bins [i] > max)
 				max = bins [i];
@@ -66,9 +69,9 @@ public class Histogram {
 	public void generateTexture()
 	{
 		if (needsToBeResorted)
-			sortIntoBins (100, 0, 100);		// Default values
+			sortIntoBins (200);		// Default values
 
-		int texHeight = 128;
+		int texHeight = 100;
 
 		texture = new Texture2D (numOfBins, texHeight, TextureFormat.ARGB32, false, true);
 
@@ -84,8 +87,11 @@ public class Histogram {
 			}
 		}
 		texture.Apply ();
-		System.IO.File.WriteAllBytes ("histogram.png", texture.EncodeToPNG ());
 		textureNeedsToBeRegenerated = false;
+
+		// Save to file for debugging purposes:
+		/*byte[] bytes = texture.EncodeToPNG ();
+		System.IO.File.WriteAllBytes ("histogram.png", bytes);*/
 	}
 
 }

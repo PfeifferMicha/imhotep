@@ -9,7 +9,7 @@ public class DicomDisplay : MonoBehaviour {
 	public GameObject ListScreen;
 	public GameObject ImageScreen;
 	public GameObject ListEntry;
-	public Image HistogramImage;
+	//public Image HistogramImage;
 
 	public DicomDisplayImage DicomImage;
 	//private Dropdown mDicomList;
@@ -35,7 +35,7 @@ public class DicomDisplay : MonoBehaviour {
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewLoadedSlice, eventDisplayCurrentDicom );
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_AllCleared, eventClear );
 		PatientEventSystem.startListening( PatientEventSystem.Event.PATIENT_Closed, eventClear );
-		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewLoadedVolume, eventDisplayHistogram );
+		//PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewLoadedVolume, eventDisplayHistogram );
 		eventClear ();
 		eventNewDicomList ();
 		//eventDisplayCurrentDicom ();
@@ -48,7 +48,7 @@ public class DicomDisplay : MonoBehaviour {
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewLoadedSlice, eventDisplayCurrentDicom );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_AllCleared, eventClear );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.PATIENT_Closed, eventClear );
-		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewLoadedVolume, eventDisplayHistogram );
+		//PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewLoadedVolume, eventDisplayHistogram );
 	}
 
 	//! Called when a new DICOM was loaded:
@@ -180,11 +180,11 @@ public class DicomDisplay : MonoBehaviour {
 		}*/
 	}
 
-	public void eventDisplayHistogram( object obj = null )
+	/*public void eventDisplayHistogram( object obj = null )
 	{
 		Histogram hist = DICOMLoader.instance.currentDICOMSeries.histogram;
 		Texture2D tex = hist.asTexture ();
 		Sprite sprite = Sprite.Create(tex, new Rect(0,0,tex.width, tex.height), new Vector2(0.5f,0.5f));
 		HistogramImage.sprite = sprite;
-	}
+	}*/
 }

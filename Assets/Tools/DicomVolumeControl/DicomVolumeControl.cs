@@ -16,6 +16,8 @@ public class DicomVolumeControl : MonoBehaviour {
 	public GameObject SideScreenMain;
 	public GameObject SideScreenTextureList;
 
+	public Image HistogramImage;
+
 	//private Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
 
 	// Use this for initialization
@@ -28,6 +30,8 @@ public class DicomVolumeControl : MonoBehaviour {
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_CloseVolume, eventDicomClosed );
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_NewLoadedVolume, eventNewDicom );		
 		PatientEventSystem.startListening( PatientEventSystem.Event.DICOM_StartLoadingVolume, eventLoadingStarted );
+
+		// If a DICOM is already loaded, display the transfer function and histogram:
 		if (DICOMLoader.instance.currentDICOMVolume != null) {
 			eventNewDicom ();
 		} else {
@@ -39,7 +43,7 @@ public class DicomVolumeControl : MonoBehaviour {
 	{
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_CloseVolume, eventDicomClosed );
 		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_NewLoadedVolume, eventNewDicom );	
-		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_StartLoadingVolume, eventLoadingStarted );	
+		PatientEventSystem.stopListening( PatientEventSystem.Event.DICOM_StartLoadingVolume, eventLoadingStarted );
 	}
 
 	void eventNewDicom( object obj = null )
@@ -47,6 +51,7 @@ public class DicomVolumeControl : MonoBehaviour {
 		NoVolumeText.SetActive (false);
 		LoadingText.SetActive (false);
 		SideScreenEmpty.SetActive (false);
+		displayHistogram ();
 		displayMainScreen ();
 	}
 
@@ -79,6 +84,17 @@ public class DicomVolumeControl : MonoBehaviour {
 	void setTransferFunction( Texture2D tex )
 	{
 		DICOMVolume.GetComponent<MeshRenderer>().material.SetTexture ("_TransferFunction", tex);
+	}
+
+	void displayHistogram( object obj = null )
+	{
+		Debug.Log ("Histogram Event");
+		Histogram hist = DICOMLoader.instance.currentDICOMSeries.histogram;
+		if (hist != null) {
+			Texture2D tex = hist.asTexture ();
+			Sprite sprite = Sprite.Create (tex, new Rect (0, 0, tex.width, tex.height), new Vector2 (0.5f, 0.5f));
+			HistogramImage.sprite = sprite;
+		}
 	}
 
 	// =========================================================

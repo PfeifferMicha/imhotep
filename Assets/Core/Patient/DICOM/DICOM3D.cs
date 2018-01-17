@@ -171,7 +171,7 @@ public class DICOM3D : DICOM
 		seriesInfo.setMinMaxPixelValues (min, max);
 
 
-		seriesInfo.histogram.sortIntoBins (5000, min, max);
+		seriesInfo.histogram.setMinMaxPixelValues (min, max);
 
 		// Make the loaded image accessable from elsewhere:
 		this.image = image;
