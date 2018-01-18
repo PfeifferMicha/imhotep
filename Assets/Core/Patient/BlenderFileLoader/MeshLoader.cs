@@ -9,7 +9,7 @@ using System.IO;
 using LitJson;
 
 /*! Loads all meshs from a .blend file.
- * The meshs are loaded in the background and splitted into little parts to avoid lagging.
+ * The meshs are loaded in the background and split into little parts to avoid lagging.
  * Every part of the mesh is placed frame by frame below the mesh node.  */
 public class MeshLoader : MonoBehaviour {
 
@@ -67,7 +67,7 @@ public class MeshLoader : MonoBehaviour {
 		}
     }
 
-	/*! This methode starts the loading of a .blend file 
+	/*! This method starts the loading of a .blend file 
 	 * \param pathToMeshJson path to a .blend file */
     public void LoadFile(string pathToMeshJson)
     {
@@ -152,7 +152,7 @@ public class MeshLoader : MonoBehaviour {
     }
 
 	/*! This methode creates the game object of new mesh and runs as coroutine.
-	 * The loaded meshs are splitted in little part. Only on part of a mesh will be process each frame */
+	 * The loaded meshs are splitt in little part. Only on part of a mesh will be processed each frame */
     private IEnumerator LoadFileExecute()
 	{
 		Bounds bounds = new Bounds ();
@@ -179,7 +179,7 @@ public class MeshLoader : MonoBehaviour {
             containerObject.transform.localPosition = new Vector3(0, 0, 0);
 			MeshMaterialControl matControl = containerObject.AddComponent<MeshMaterialControl> ();
 			Color col = matColorForMeshName (um[0].Name);
-			matControl.materialColor = col;
+			matControl.setColor (col);
             MeshGameObjectContainers.Add(containerObject);
 
             //attach BlenderObject to containerObject
@@ -245,17 +245,20 @@ public class MeshLoader : MonoBehaviour {
 					bounds.Encapsulate (localBounds);
 				}
 
-				// Let others know that a new mesh has been loaded:
-				PatientEventSystem.triggerEvent (PatientEventSystem.Event.MESH_LoadedSingle, objToSpawn);
-
 				// Make sure the color of the material is set correctly:
 				matControl.changeOpactiyOfChildren (1f);
+
+				// Let others know that a new mesh has been loaded:
+				PatientEventSystem.triggerEvent (PatientEventSystem.Event.MESH_LoadedSingle, objToSpawn);
 
 				// Deactivate for now, let someone else activate the mesh when needed:
 				objToSpawn.SetActive( false );
 
                 yield return null;
             }
+
+			// Once all sub-meshes have been loaded, start the loading effect:
+			matControl.startLoadingEffect ();
         }
 
 		// Move the object by half the size of all of the meshes.
@@ -293,7 +296,7 @@ public class MeshLoader : MonoBehaviour {
 		return new Color (0.7f, 0.5f, 0.2f);
     }
 
-	// Adopted rom the Unity Wiki:
+	// Adopted from the Unity Wiki:
 	// http://wiki.unity3d.com/index.php?title=HexConverter
 	public static string ColorToHex(Color32 color)
 	{
@@ -301,7 +304,7 @@ public class MeshLoader : MonoBehaviour {
 		return hex;
 	}
 
-	// Adopted rom the Unity Wiki:
+	// Adopted from the Unity Wiki:
 	// http://wiki.unity3d.com/index.php?title=HexConverter
 	public static Color HexToColor(string hex)
 	{

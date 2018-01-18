@@ -4,8 +4,8 @@
 Shader "Custom/MeshShaderTransparent" {
 	Properties {
 		_Color ("Color", Color) = (0.6, 0.6, 0.6, 1.0)
-		_min("Min Scan Effect", float) = -1.0
-		_max("Max Scan Effect", float) = 1.0
+		_center("Center",Vector) = (0,0,0,1)
+		_size("Size",Vector) = (1,1,1,1)
 		_amount("Amount", float) = 0.5
 	}
 	SubShader {
@@ -49,14 +49,21 @@ Shader "Custom/MeshShaderTransparent" {
 			}
 
 			float4 _Color;
+			float4 _center;
+			float4 _size;
 			float _amount;
-			float _min;
-			float _max;
-			float4 _cuttingPlanePosition;
-			float4 _cuttingPlaneNormal = float4( 1,0,0,1 );
-			float3 burnCol;
 
 			void surf (Input IN, inout SurfaceOutputStandard o) {
+
+
+				float4 scaledLocalPos = float4( 
+					(_center.x - IN.localPos.x)/_size.x,
+					(_center.y - IN.localPos.y)/_size.y,
+					(_center.z - IN.localPos.z)/_size.z,
+					1 );
+
+				float pos = _amount - scaledLocalPos.z*2;
+				clip( pos );
 
 				//_Color.a = 0.5;
 				o.Albedo = _Color.rgb;
