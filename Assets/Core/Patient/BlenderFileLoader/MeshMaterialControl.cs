@@ -118,8 +118,6 @@ public class MeshMaterialControl : MonoBehaviour {
 		materialTransparent.SetFloat ("_amount", amount - 3f );
 		materialTransparent.SetVector ("_size", b.size);
 		materialTransparent.SetVector ("_center", b.center);
-		Debug.Log ("size: " + b.size);
-		Debug.Log ("center: " + b.center);
 	}
 
 	void Update () {

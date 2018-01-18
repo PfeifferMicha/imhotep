@@ -155,7 +155,7 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		Vector3 origin = header.getOrigin ();
 		position += new Vector3 (-origin.x, -origin.y, -origin.z);
 		return position;*/
-		return currentDICOM.seriesInfo.transformPixelToPatientPos (pixel, currentViewSettings.slice);
+		return currentDICOM.transformPixelToPatientPos (pixel, currentViewSettings.slice);
 	}
 
 	public Vector2 imageUVtoLayerUV( Vector2 imageUV )
@@ -399,7 +399,6 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		currentViewSettings.slice = dicom.slice;
 		mMaterial.SetFloat ("globalMinimum", (float)dicom.seriesInfo.minPixelValue);
 		mMaterial.SetFloat ("globalMaximum", (float)dicom.seriesInfo.maxPixelValue);
-		Debug.LogWarning ("Min, max " + dicom.seriesInfo.minPixelValue + " " + dicom.seriesInfo.maxPixelValue);
 
 		GetComponent<RawImage> ().texture = tex;
 
@@ -428,8 +427,8 @@ public class DicomDisplayImage : MonoBehaviour, IScrollHandler, IPointerDownHand
 		float scaleH = 1f;
 		// Get the pixel-spacing from the DICOM header:
 		Vector3 spacing = new Vector3 ();
-		spacing.x = (float)currentDICOM.seriesInfo.pixelSpacing.x;
-		spacing.y = (float)currentDICOM.seriesInfo.pixelSpacing.y;
+		spacing.x = (float)currentDICOM.pixelSpacing.x;
+		spacing.y = (float)currentDICOM.pixelSpacing.y;
 
 		float imgWidth = GetComponent<RectTransform> ().rect.width;
 		float imgHeight = GetComponent<RectTransform> ().rect.height;

@@ -12,10 +12,47 @@ public class DICOM3D : DICOM
 
 	private Texture3D texture3D;
 
+	public Bounds boundingBox { private set; get; }
+
+	public Histogram histogram;
+
 	public DICOM3D ( DICOMSeries seriesInfo ) : base( seriesInfo )
 	{
 		dimensions = 3;
+
+		Image firstSlice = seriesInfo.firstSlice;
+		Image lastSlice = seriesInfo.lastSlice;
+
+		VectorDouble o1 = firstSlice.GetOrigin();
+		if ( o1.Count < 3) {
+			throw( new System.Exception ("Invalid origins found in first image."));
+		}
+		origin = new Vector3 ((float)o1 [0], (float)o1 [1], (float)o1 [2]);
+
+		// Load the pixel spacing:
+		// NOTE: It seems that the the first value is the spacing between rows (i.e. y direction),
+		//		the second value is the spacing between columns (i.e. x direction).
+		//		I was not able to verify this so far, since all test dicoms we had have the same spacing in
+		//		x and y direction...
+		VectorDouble spacing = firstSlice.GetSpacing();
+		if( spacing.Count < 2 )
+			throw( new System.Exception ("Invalid pixel spacing found in images."));
+		pixelSpacing = new Vector2 ((float)spacing [1], (float)spacing [0] );
+
+		// Generate the transformation matrices which can later be used to translate pixels to
+		// 3D positions and vice versa.
+		setupTransformationMatrices ();
+
 		loadVolumeData ();
+
+
+		Vector3 corner1 = transformPixelToPatientPos (Vector2.zero, 0f);
+		Vector2 imgDimensions = new Vector2 (firstSlice.GetWidth (), firstSlice.GetHeight ());
+		Vector3 corner2 = transformPixelToPatientPos (imgDimensions, seriesInfo.numberOfSlices-1);
+		Vector3 min = Vector3.Min (corner1, corner2);
+		Vector3 max = Vector3.Max (corner1, corner2);
+		//boundingBox = new Bounds ((max - min) / 2 + min, (max - min));
+		boundingBox = new Bounds ((corner2 - corner1) / 2 + corner1, (corner2 - corner1));
 	}
 
 	/*! Load the entire series (i.e. the entire volume).
@@ -59,7 +96,7 @@ public class DICOM3D : DICOM
 			throw( new System.Exception( "Cannot load volume: Image needs to be 3D. Dimensions of image: " + image.GetDimension()));
 		}
 
-		seriesInfo.histogram = new Histogram ();
+		histogram = new Histogram ();
 
 		UInt32 min = UInt32.MaxValue;
 		UInt32 max = UInt32.MinValue;
@@ -67,7 +104,6 @@ public class DICOM3D : DICOM
 		Debug.Log ("Pixel format: " + image.GetPixelID ());
 
 		// Copy the image into a colors array:
-		UInt32 numberOfPixels = image.GetWidth () * image.GetHeight ();
 		if (image.GetPixelID () == PixelIDValueEnum.sitkUInt16) {
 			IntPtr bufferPtr = image.GetBufferAsUInt16 ();
 
@@ -89,7 +125,7 @@ public class DICOM3D : DICOM
 								if (pixelValue < min)
 									min = pixelValue;
 								
-								seriesInfo.histogram.addValue (pixelValue);
+								histogram.addValue (pixelValue);
 
 								consecutiveIndex++;
 							}
@@ -118,7 +154,7 @@ public class DICOM3D : DICOM
 								if (pixelValue < min)
 									min = pixelValue;
 
-								seriesInfo.histogram.addValue (pixelValue);
+								histogram.addValue (pixelValue);
 
 								consecutiveIndex++;
 							}
@@ -150,7 +186,7 @@ public class DICOM3D : DICOM
 								if (pixelValue < min)
 									min = pixelValue;
 
-								seriesInfo.histogram.addValue (pixelValue);
+								histogram.addValue (pixelValue);
 
 								consecutiveIndex++;
 							}
@@ -187,7 +223,7 @@ public class DICOM3D : DICOM
 							if (pixelValue < min)
 								min = pixelValue;
 
-							seriesInfo.histogram.addValue (pixelValue);
+							histogram.addValue (pixelValue);
 
 							index++;
 						}
@@ -220,7 +256,7 @@ public class DICOM3D : DICOM
 							if (pixelValue < min)
 								min = pixelValue;
 
-							seriesInfo.histogram.addValue (pixelValue);
+							histogram.addValue (pixelValue);
 
 							index++;
 						}
@@ -251,7 +287,7 @@ public class DICOM3D : DICOM
 							if (pixelValue < min)
 								min = pixelValue;
 
-							seriesInfo.histogram.addValue (pixelValue);
+							histogram.addValue (pixelValue);
 
 							index++;
 						}
@@ -267,7 +303,7 @@ public class DICOM3D : DICOM
 		seriesInfo.setMinMaxPixelValues (min, max);
 
 
-		seriesInfo.histogram.setMinMaxPixelValues (min, max);
+		histogram.setMinMaxPixelValues (min, max);
 
 		// Make the loaded image accessable from elsewhere:
 		this.image = image;

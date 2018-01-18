@@ -89,7 +89,7 @@ public class DicomVolumeControl : MonoBehaviour {
 	void displayHistogram( object obj = null )
 	{
 		Debug.Log ("Histogram Event");
-		Histogram hist = DICOMLoader.instance.currentDICOMSeries.histogram;
+		Histogram hist = DICOMLoader.instance.currentDICOMVolume.histogram;
 		if (hist != null) {
 			Texture2D tex = hist.asTexture ();
 			Sprite sprite = Sprite.Create (tex, new Rect (0, 0, tex.width, tex.height), new Vector2 (0.5f, 0.5f));

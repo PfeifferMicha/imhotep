@@ -41,6 +41,41 @@ public class DICOM {
 	 * This can also be used to access header information through image.GetMetaData().*/
 	public Image image { protected set; get; }
 
+	/*! Position of center of first voxel in this series*/
+	public Vector3 origin { protected set; get; }
+	/*! Distance between rows and columns in images of this series.*/
+	public Vector2 pixelSpacing { protected set; get; }
+
+	/*! Assuming this series is a volume of consecutive slices, where neighbouring slices always have
+	 * the same offset between each other, this offset is stored in sliceOffset.
+	 * For 2D slices, this is zero. */
+	public Vector3 sliceOffset { protected set; get; }
+
+	/*! The direction cosine of a row of this image.
+	 * This can be thought of as a unit-length vector pointing into the direction in which the 
+	 * row lies inside the patient coordinate system (i.e. when you walk along the row in 2D,
+	 * in which direction would you walk in the patient coordinate system).
+	 * See the DICOM standard for more information, or search online for "direction cosine". */
+	public Vector3 directionCosineX { protected set; get; }
+	/*! The direction cosine of a column of this image.
+	 * This can be thought of as a unit-length vector pointing into the direction in which the 
+	 * column lies inside the patient coordinate system (i.e. when you walk along the column in 2D,
+	 * in which direction would you walk in the patient coordinate system).
+	 * See the DICOM standard for more information, or search online for "direction cosine". */
+	public Vector3 directionCosineY { protected set; get; }
+
+	/*! The plane normal of the slices in this series (result of cross vector of the direction cosines). */
+	public Vector3 sliceNormal { protected set; get; }
+
+	/*! Matrix to transform from a pixel/layer coordinate to the patient coordinate system.
+	 * \sa patientToPixel */
+	public Matrix4x4 pixelToPatient { protected set; get; }
+
+	/*! Matrix to transform from the patient coordinate system to a pixel/layer coordinate.
+	 * Inverse of pixelToPatient.
+	 * \sa pixelToPatient */
+	public Matrix4x4 patientToPixel { protected set; get; }
+
 	/*! Constructor, loads the DICOM image data from file.
 	 * The constructor starts the loading of pixel data from the files (filenames are
 	 * taken from the seriesInfo). If slice is zero or positive, only the single file
@@ -52,6 +87,88 @@ public class DICOM {
 		
 		// Remember, we will need it later:
 		this.seriesInfo = seriesInfo;
+	}
+
+	// ===============================================================
+	// Transformations:
+
+	/*! Calculate the transformation matrices which can later be used to convert
+	 * pixels to 3D positions and vice versa.
+	 * \sa transformPixelToPatientPos
+	 * \sa transformPatientPosToPixel
+	 * \sa transformPatientPosToDiscretePixel */
+	public void setupTransformationMatrices()
+	{
+		// Set up the transformation matrix:
+		Matrix4x4 transformMatrix = new Matrix4x4 ();
+		// Column 1:
+		transformMatrix [0, 0] = directionCosineX.x * pixelSpacing.x;
+		transformMatrix [1, 0] = directionCosineX.y * pixelSpacing.x;
+		transformMatrix [2, 0] = directionCosineX.z * pixelSpacing.x;
+		transformMatrix [3, 0] = 0f;
+		// Column 2:
+		transformMatrix [0, 1] = directionCosineY.x * pixelSpacing.y;
+		transformMatrix [1, 1] = directionCosineY.y * pixelSpacing.y;
+		transformMatrix [2, 1] = directionCosineY.z * pixelSpacing.y;
+		transformMatrix [3, 1] = 0f;
+		// Column 3:
+		transformMatrix [0, 2] = sliceOffset.x;
+		transformMatrix [1, 2] = sliceOffset.y;
+		transformMatrix [2, 2] = sliceOffset.z;
+		transformMatrix [3, 2] = 0f;
+		// Column 4:
+		transformMatrix [0, 3] = origin.x;
+		transformMatrix [1, 3] = origin.y;
+		transformMatrix [2, 3] = origin.z;
+		transformMatrix [3, 3] = 1f;
+
+		// Convert to a the left-hand-side coordinate system which Unity uses:
+		Matrix4x4 rightHandToLeftHand = new Matrix4x4 ();
+		rightHandToLeftHand [0, 0] = 1f;
+		rightHandToLeftHand [1, 1] = 1f;
+		rightHandToLeftHand [2, 2] = -1f;
+		rightHandToLeftHand [3, 3] = 1f;
+
+		pixelToPatient = rightHandToLeftHand*transformMatrix;
+
+		// Inverse transformation:
+		patientToPixel = pixelToPatient.inverse;
+	}
+	/*! Transforms a 2D pixel on a given layer to the 3D patient coordinate system.
+	 * \note Both pixel and layer may be continuous, i.e. positions between pixels or
+	 * 		layers can be given as well as exact pixel/layer values. */
+	public Vector3 transformPixelToPatientPos( Vector2 pixel, float layer = 0 )
+	{
+		Vector4 p = new Vector4 (pixel.x, pixel.y, layer, 1f);
+		Vector4 pos = pixelToPatient * p;
+		return new Vector3 (pos.x, pos.y, pos.z);
+	}
+
+	/*! Transform a 3D position in the patient coordinate system to a pixel.
+	 * The z component of the returned vector is the slice number.
+	 * \note The returned position is continuous, i.e. to get an actual pixel value,
+	 * 		one must round the result.
+	 * \sa transformPatientPosToDiscretePixel
+	 *		transformPixelToPatientPos */
+	public Vector3 transformPatientPosToPixel( Vector3 pos )
+	{
+		Vector4 p = new Vector4 (pos.x, pos.y, pos.z, 1f);
+		Vector4 pixel = patientToPixel * p;
+		return new Vector3 (pixel.x, pixel.y, pixel.z);
+	}
+
+	/*! Transform a 3D position in the patient coordinate system to a pixel.
+	 * The z component of the returned vector is the slice number.
+	 * \note The returned position is rounded to the nearest pixel/slice.
+	 * \sa transformPatientPosToPixel
+	 *		transformPixelToPatientPos */
+	public Vector3 transformPatientPosToDiscretePixel( Vector3 pos )
+	{
+		Vector3 pixel = transformPatientPosToPixel( pos );
+		Vector3 rounded = new Vector3 (Mathf.Round (pixel.x),
+			Mathf.Round (pixel.y),
+			Mathf.Round (pixel.z));
+		return rounded;
 	}
 
 	/*! Helper function, converts UInt16 to color */

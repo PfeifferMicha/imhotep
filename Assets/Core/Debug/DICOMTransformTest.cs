@@ -19,11 +19,11 @@ public class DICOMTransformTest : MonoBehaviour, IPointerClickHandler {
 
 			// Now we can either transform the position to a continuous pixel position...
 			// (to do so, we use the series Info associated with the DICOM:
-			Vector3 pixel = dicom.seriesInfo.transformPatientPosToPixel ( localPos );
+			Vector3 pixel = dicom.transformPatientPosToPixel ( localPos );
 			Debug.Log ("Pixel: " + pixel.x + "," + pixel.y + " on layer " + pixel.z);
 
 			// ... or we can transform it to a discrete pixel position:
-			Vector3 pixelRounded = dicom.seriesInfo.transformPatientPosToDiscretePixel ( localPos );
+			Vector3 pixelRounded = dicom.transformPatientPosToDiscretePixel ( localPos );
 			Debug.Log ("Rounded: " + pixelRounded.x + "," + pixelRounded.y + " on layer " + pixelRounded.z);
 		} else {
 			Debug.Log ( "No DICOM loaded." );

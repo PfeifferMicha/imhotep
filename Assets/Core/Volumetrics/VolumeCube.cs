@@ -237,9 +237,9 @@ public class VolumeCube : MonoBehaviour {
 		// the correct position.)
 
 		// Size which the volume should have at the end (in patient coordinates):
-		Vector3 goalSize = dicom.seriesInfo.boundingBox.size;
+		Vector3 goalSize = dicom.boundingBox.size;
 		// Position where the center of the rendered volume should be (in patient coordinates):
-		Vector3 goalCenter = dicom.seriesInfo.boundingBox.center;
+		Vector3 goalCenter = dicom.boundingBox.center;
 		// Current (original) position and sizes of the mesh, because of the way it was generated:
 		Vector3 minMesh = new Vector3 (-1, -1, -1);
 		Vector3 maxMesh = new Vector3 (1, 1, 1);

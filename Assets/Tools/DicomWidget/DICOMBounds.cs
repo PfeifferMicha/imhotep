@@ -31,6 +31,13 @@ public class DICOMBounds : MonoBehaviour {
 
 	private bool listeningToEvents = false;
 
+	enum DisplayMode {
+		OFF,
+		SLICE_OUTLINE,
+		SLICE
+	}
+	private DisplayMode displayMode = DisplayMode.OFF;
+
 	void Start()
 	{
 		Edge1 = gameObject.transform.Find ("Edge (1)").GetComponent<LineRenderer> ();
@@ -66,29 +73,29 @@ public class DICOMBounds : MonoBehaviour {
 
 	void eventNewDICOM( object obj = null )
 	{
+		if (displayMode == DisplayMode.OFF) {
+			gameObject.SetActive (false);
+			return;
+		}
+
 		DICOM dicom = DICOMLoader.instance.currentDICOM;
-		if (dicom != null && dicom.seriesInfo.isConsecutiveVolume) {
+		if (dicom != null) {
 
 			// If the series has changed, modify the bounding box:
-			if (dicom.seriesInfo.seriesUID != currentSeriesUID) {
+			/*if (dicom.seriesInfo.seriesUID != currentSeriesUID && dicom.seriesInfo.isConsecutiveVolume) {
+
+				Debug.Log ("3");
 
 				// Calculate the positions of the corners of this stack of slices:
 				int lastSlice = dicom.seriesInfo.numberOfSlices - 1;
-				Vector3 c1 = dicom.seriesInfo.transformPixelToPatientPos (Vector2.zero, 0f);
-				Vector3 c2 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, 0f), 0f);
-				Vector3 c3 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (0f, dicom.origTexHeight), 0f);
-				Vector3 c4 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, dicom.origTexHeight), 0f);
-				Vector3 c5 = dicom.seriesInfo.transformPixelToPatientPos (Vector2.zero, lastSlice);
-				Vector3 c6 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, 0f), lastSlice);
-				Vector3 c7 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (0f, dicom.origTexHeight), lastSlice);
-				Vector3 c8 = dicom.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, dicom.origTexHeight), lastSlice);
-				/*Debug.Log ("lastSlice " + lastSlice);
-				Debug.Log ("dicom.texWidth " + dicom.origTexWidth);
-				Debug.Log ("dicom.texHeight " + dicom.origTexHeight);
-				Debug.Log ("dicom.directionCosX " + dicom.seriesInfo.directionCosineX.x + " "  + dicom.seriesInfo.directionCosineX.y + " " + dicom.seriesInfo.directionCosineX.z);
-				Debug.Log ("dicom.directionCosY " + dicom.seriesInfo.directionCosineY.x + " "  + dicom.seriesInfo.directionCosineY.y + " " + dicom.seriesInfo.directionCosineY.z);
-				Debug.Log ("c1 " + c1);
-				Debug.Log ("c4 " + c4);*/
+				Vector3 c1 = dicom.transformPixelToPatientPos (Vector2.zero, 0f);
+				Vector3 c2 = dicom.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, 0f), 0f);
+				Vector3 c3 = dicom.transformPixelToPatientPos (new Vector2 (0f, dicom.origTexHeight), 0f);
+				Vector3 c4 = dicom.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, dicom.origTexHeight), 0f);
+				Vector3 c5 = dicom.transformPixelToPatientPos (Vector2.zero, lastSlice);
+				Vector3 c6 = dicom.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, 0f), lastSlice);
+				Vector3 c7 = dicom.transformPixelToPatientPos (new Vector2 (0f, dicom.origTexHeight), lastSlice);
+				Vector3 c8 = dicom.transformPixelToPatientPos (new Vector2 (dicom.origTexWidth, dicom.origTexHeight), lastSlice);
 
 				// Display the bounding box:
 				Edge1.SetPosition (0, c1);
@@ -120,15 +127,42 @@ public class DICOMBounds : MonoBehaviour {
 
 				// Remember which series we're currently using:
 				currentSeriesUID = dicom.seriesInfo.seriesUID;
-			}
+				Edge1.enabled = true;
+				Edge2.enabled = true;
+				Edge3.enabled = true;
+				Edge4.enabled = true;
+				Edge5.enabled = true;
+				Edge6.enabled = true;
+				Edge7.enabled = true;
+				Edge8.enabled = true;
+				Edge9.enabled = true;
+				Edge10.enabled = true;
+				Edge11.enabled = true;
+				Edge12.enabled = true;
+			} else {
+				Edge1.enabled = false;
+				Edge2.enabled = false;
+				Edge3.enabled = false;
+				Edge4.enabled = false;
+				Edge5.enabled = false;
+				Edge6.enabled = false;
+				Edge7.enabled = false;
+				Edge8.enabled = false;
+				Edge9.enabled = false;
+				Edge10.enabled = false;
+				Edge11.enabled = false;
+				Edge12.enabled = false;
+			}*/
 
 			if (dicom is DICOM2D) {
+
 				DICOM2D dicom2D = dicom as DICOM2D;
 				// Display the position of the current slice:
-				Vector3 p1 = dicom2D.seriesInfo.transformPixelToPatientPos (Vector2.zero, dicom2D.slice);
-				Vector3 p2 = dicom2D.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom2D.origTexWidth, 0f), dicom2D.slice);
-				Vector3 p3 = dicom2D.seriesInfo.transformPixelToPatientPos (new Vector2 (dicom2D.origTexWidth, dicom2D.origTexHeight), dicom2D.slice);
-				Vector3 p4 = dicom2D.seriesInfo.transformPixelToPatientPos (new Vector2 (0, dicom2D.origTexHeight), dicom2D.slice);
+
+				Vector3 p1 = dicom2D.transformPixelToPatientPos (Vector2.zero);
+				Vector3 p2 = dicom2D.transformPixelToPatientPos (new Vector2 (dicom2D.origTexWidth, 0f), dicom2D.slice);
+				Vector3 p3 = dicom2D.transformPixelToPatientPos (new Vector2 (dicom2D.origTexWidth, dicom2D.origTexHeight), dicom2D.slice);
+				Vector3 p4 = dicom2D.transformPixelToPatientPos (new Vector2 (0, dicom2D.origTexHeight), dicom2D.slice);
 				RectXMin.SetPosition (0, p1);
 				RectXMin.SetPosition (1, p4);
 				RectXMax.SetPosition (0, p2);
@@ -137,8 +171,18 @@ public class DICOMBounds : MonoBehaviour {
 				RectYMin.SetPosition (1, p2);
 				RectYMax.SetPosition (0, p3);
 				RectYMax.SetPosition (1, p4);
-				itk.simple.VectorDouble vec = dicom2D.image.GetOrigin ();
+
+				RectXMin.enabled = true;
+				RectXMax.enabled = true;
+				RectYMin.enabled = true;
+				RectYMax.enabled = true;
+				//itk.simple.VectorDouble vec = dicom2D.origin;
 				//Debug.Log ("dicom2D.origin " + vec [0] + " " + vec [1] + " " + vec [2]);
+			} else {
+				RectXMin.enabled = false;
+				RectXMax.enabled = false;
+				RectYMin.enabled = false;
+				RectYMax.enabled = false;
 			}
 
 			gameObject.SetActive (true);
@@ -150,5 +194,18 @@ public class DICOMBounds : MonoBehaviour {
 	public void patientClosed( object obj = null )
 	{
 		gameObject.SetActive (false);
+	}
+
+	/*! Cycle through the display modes:
+	 * 	- Off
+	 * 	- Show slice outline
+	 * 	- Show slice */
+	public void cycle()
+	{
+		if (displayMode == DisplayMode.OFF)
+			displayMode = DisplayMode.SLICE;
+		else
+			displayMode = DisplayMode.OFF;
+		eventNewDICOM ();
 	}
 }
