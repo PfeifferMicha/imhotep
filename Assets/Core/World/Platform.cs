@@ -407,7 +407,7 @@ public class Platform : MonoBehaviour {
 		// Generate a new game object:
 		GameObject go = new GameObject("UIMesh");
 		go.transform.SetParent( transform, false );
-		//go.layer = LayerMask.NameToLayer ("UIMesh");
+		go.layer = LayerMask.NameToLayer ("UIMesh");
 		go.AddComponent<MeshFilter> ();
 		go.AddComponent<MeshCollider> ();
 		go.GetComponent<MeshFilter>().mesh = mesh;
