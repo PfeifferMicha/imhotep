@@ -400,10 +400,6 @@ public class Platform : MonoBehaviour {
 		mesh.triangles = newTriangles.ToArray();
 		mesh.RecalculateNormals ();
 
-		// Generate an animation:
-		RuntimeAnimatorController animController = Resources.Load("UIMeshController") as RuntimeAnimatorController;
-
-
 		// Generate a new game object:
 		GameObject go = new GameObject("UIMesh");
 		go.transform.SetParent( transform, false );
@@ -412,7 +408,6 @@ public class Platform : MonoBehaviour {
 		go.AddComponent<MeshCollider> ();
 		go.GetComponent<MeshFilter>().mesh = mesh;
 		go.GetComponent<MeshCollider> ().sharedMesh = mesh;
-		go.AddComponent<Animator> ().runtimeAnimatorController = animController;
 
 
 		// Set up the render texture:
