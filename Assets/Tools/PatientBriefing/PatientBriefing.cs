@@ -67,7 +67,7 @@ public class PatientBriefing : MonoBehaviour
 		PatientEventSystem.startListening(PatientEventSystem.Event.PATIENT_Closed, eventPatientClosed);
 
 		Patient loadedPatient = Patient.getLoadedPatient();
-		Debug.Log("loaded patient:" + loadedPatient);
+		Debug.Log("Loaded patient: " + loadedPatient);
 		if (loadedPatient != null)
 		{
 			eventNewPatientLoaded(loadedPatient);

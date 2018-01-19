@@ -44245,7 +44245,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2105285540}
   - component: {fileID: 2105285542}
-  - component: {fileID: 2105285544}
   m_Layer: 9
   m_Name: MeshViewerScale
   m_TagString: Untagged
@@ -44282,17 +44281,6 @@ MonoBehaviour:
   maxZoom: 2
   minZoom: 0.2
   autoZoomSpeed: 0.5
---- !u!114 &2105285544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 2105285539}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 973f98a3fa2b046758396265ce354472, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2106984785
 GameObject:
   m_ObjectHideFlags: 0

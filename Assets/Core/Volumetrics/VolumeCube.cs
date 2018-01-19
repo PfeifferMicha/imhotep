@@ -32,8 +32,6 @@ public class VolumeCube : MonoBehaviour {
 
 	void buildMesh()  {
 
-		float start_time = Time.time;
-
 		List<Vector3> verts = new List<Vector3> ();
 		List<int> tris = new List<int>();
 		List<Vector2> uvs = new List<Vector2>();
@@ -213,11 +211,6 @@ public class VolumeCube : MonoBehaviour {
 		ret.RecalculateBounds();
 		//ret.RecalculateNormals();
 		stackOfSlices.mesh = ret;
-
-		float diff = Time.time - start_time;
-		Debug.Log("Stack Of Slices was generated in " + diff + " seconds.");
-		Debug.Log ("Number of vertices: " + verts.Count);
-		Debug.Log ("Number of normals: " + normals.Count);
 	}
 
 	/*! Set a volume DICOM which is to be rendered in 3D */
