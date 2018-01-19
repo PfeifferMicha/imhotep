@@ -1,86 +1,86 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
 
 Shader "Custom/MeshShaderTransparent" {
-	Properties {
-		_Color ("Color", Color) = (0.6, 0.6, 0.6, 1.0)
-		_center("Center",Vector) = (0,0,0,1)
-		_size("Size",Vector) = (1,1,1,1)
-		_amount("Amount", float) = 0.5
+Properties {
+		_Color ("Color", Color) = (1.0, 0.6, 0.6, 1.0)
+		_amount("Amount", Range(0,2)) = 0
+		_size("Size", Vector) = (1,1,1)
+		_center("Center", Vector) = (0,0,0)
 	}
 	SubShader {
+		Tags {
+			"Queue"="Transparent"
+			"RenderType"="Transparent"
+		}
+		//Cull Off
 
-			Tags {
-				"Queue" = "Transparent"
-				"RenderType"="Transparent"
-			}
-			Cull Off
+		CGPROGRAM
+		#pragma surface surf Lambert fullforwardshadows nofog vertex:vert addshadow alpha:auto
+		//#pragma surface surf Standard fullforwardshadows nofog vertex:vert addshadow alpha:auto
 
-			CGPROGRAM
-			#pragma surface surf Standard fullforwardshadows vertex:vert alpha nofog
-			#pragma target 3.0
-
-			struct Input {
-				float3 localPos;
-				float3 viewDir;
-				float3 tangentSpaceNormal;
-				float3 tangentSpaceNormalFlipped;
-			};
-
-			 void vert (inout appdata_full v, out Input o) {
-				UNITY_INITIALIZE_OUTPUT(Input,o);
-
-				// Remember the object space position:
-				o.localPos = v.vertex.xyz;
-
-				// Calculate the world normal
-				float3 wNormal = mul( unity_ObjectToWorld, float4( v.normal, 0.0 ) ).xyz;
-				// Calculate the flipped world normal
-			    wNormal = -wNormal;
-
-			    // Calculate a rotation to get from object space to tangent space:
-			    float3 objUp = mul((float3x3)unity_WorldToObject, wNormal); // Convert world up to object up so it can be converted to tangent up.
-				float3 binormal = cross( v.normal, v.tangent.xyz ) * v.tangent.w;
-				float3x3 rotation = float3x3( v.tangent.xyz, binormal, v.normal );
-
-				// Apply the rotation to move the normal and the flipped normal to tangent space:
-				o.tangentSpaceNormalFlipped = mul(rotation, objUp);
-				o.tangentSpaceNormal = mul(rotation, v.normal);
-			}
-
-			float4 _Color;
-			float4 _center;
-			float4 _size;
-			float _amount;
-
-			void surf (Input IN, inout SurfaceOutputStandard o) {
+		struct Input {
+			float4 localPos;
+			float3 worldPos;
+			float3 normal;
+			float3 viewDir;
+		};
 
 
-				float4 scaledLocalPos = float4( 
-					(_center.x - IN.localPos.x)/_size.x,
-					(_center.y - IN.localPos.y)/_size.y,
-					(_center.z - IN.localPos.z)/_size.z,
-					1 );
+		float4 _Color;
+		float4 _RimColor;
+		float _amount;
+		float3 _size;
+		float3 _center;
 
-				float pos = _amount - scaledLocalPos.z*2;
-				clip( pos );
+		 void vert (inout appdata_full v, out Input o) {
+			UNITY_INITIALIZE_OUTPUT(Input,o);
+			o.localPos = v.vertex;
+			//o.worldPos = mul(_Object2World, v.vertex);
+			//o.normal = v.normal;
+			o.normal = mul( unity_ObjectToWorld, float4( v.normal, 0.0 ) ).xyz;
+		}
 
-				//_Color.a = 0.5;
-				o.Albedo = _Color.rgb;
-				o.Alpha = _Color.a;
+		#define M_PI 3.1415926535897932384626433832795
 
-				// If the normal is not facing the camera...
-				float tmp = dot(IN.viewDir, IN.tangentSpaceNormal);
-				if( tmp < 0 )
-				{
-					// ... flip it!
-					o.Normal = normalize( IN.tangentSpaceNormalFlipped );
-				} else {
-					o.Normal = normalize( IN.tangentSpaceNormal );
-				}
-			}
-			ENDCG
+		void surf (Input IN, inout SurfaceOutput o) {
 
+			float4 scaledLocalPos = float4( 
+				(_center.x - IN.localPos.x)/_size.x,
+				(_center.y - IN.localPos.y)/_size.y,
+				(_center.z - IN.localPos.z)/_size.z,
+				1 );
+
+			float pos = _amount - scaledLocalPos.z*2;
+			float stage = floor( pos );
+
+			float distToClosestStage = pos - stage;
+			if( pos - stage > 0.5 )
+				distToClosestStage = (stage+1) - pos;
+
+	        float stageDistGlow = max( (1-distToClosestStage)*25-24, 0);
+
+
+			float ringSize = 20;
+
+			float zCoord = IN.localPos.z + _Time[2]*10;
+			float zCenter = floor(zCoord/ringSize + 0.5)*ringSize;
+			float dist3 = abs(zCoord - zCenter)/ringSize*2;
+
+			float dist = dist3*2 - 1.5;
+			float glow = max( dist, 0 )*0.2 * (1 + 0.7*sin(IN.localPos.z*0.2));
+
+	        half rim = 1.0 - saturate(dot (normalize(IN.viewDir), normalize(IN.normal)));
+	        rim = pow(rim,3);
+
+			o.Albedo = _Color;
+			//o.Alpha = min( _Color.a*0.8 + rim*(_Color.a+0.2), 1 );
+			o.Alpha = min( max( rim*2*_Color.a, _Color.a ), 1 );
+			o.Emission = (_Color.rgb*0.5+1.5)*0.5*rim*min(_Color.a, 1-_Color.a);
+			//o.Emission = min( rim*_Color.a + _Color.a, 1 );
+			//o.Emission = 0.5*pow(rim,2)*(_Color);
+		}
+
+		ENDCG
 	} 
 	Fallback "Diffuse"
   }

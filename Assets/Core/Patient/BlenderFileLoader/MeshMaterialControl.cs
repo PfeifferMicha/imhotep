@@ -122,7 +122,7 @@ public class MeshMaterialControl : MonoBehaviour {
 
 	void Update () {
 		if (loadingEffectActive) {
-			loadingAmount = loadingAmount + 1f*Time.deltaTime;
+			loadingAmount = loadingAmount + 2f*Time.deltaTime;
 			SetLoadingEffectAmount (loadingAmount);
 			if (loadingAmount > 5) {
 				endLoadingEffect ();

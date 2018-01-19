@@ -17,8 +17,8 @@ public class OpacitySlider : MonoBehaviour, IPointerHoverHandler, IPointerDownHa
     // Use this for initialization
     void Start()
 	{
-		updateSlider();
 		sliderFill = transform.Find ("Fill").gameObject;
+		updateSlider();
     }
 
 	void OnEnable()
@@ -42,19 +42,26 @@ public class OpacitySlider : MonoBehaviour, IPointerHoverHandler, IPointerDownHa
 		}
     }
 
-	//! Called if Silder value changed from external tool by event system.
-	private void updateSlider(object obj = null){		
+	//! Called if someone else changed the opacity!
+	public void updateSlider(object obj = null){
 		if (gameObjectToChangeOpacity != null) {
-			float currentOpacity = 0f;
+			float newOpacity = 0f;
 			if (gameObjectToChangeOpacity.activeSelf) {
 				MeshRenderer mr = gameObjectToChangeOpacity.GetComponentInChildren<MeshRenderer> ();
 				if( mr != null )
-					currentOpacity = mr.material.color.a;
+					newOpacity = mr.material.color.a;
 			} else {
-				currentOpacity = 0f;
+				newOpacity = 0f;
 			}
 
+
 			//GetComponent<Slider> ().value = currentOpacity;
+
+			float sliderAmount = newOpacity * (1f - 2f * dampeningArea) + dampeningArea;
+			if (newOpacity >= 1)
+				sliderAmount = 1;
+			else if (newOpacity <= 0)
+				sliderAmount = 0;
 
 			//Rect r = transform.GetComponent<RectTransform> ().rect;
 			//Debug.Log("sliderFill: " + sliderFill);
@@ -63,7 +70,7 @@ public class OpacitySlider : MonoBehaviour, IPointerHoverHandler, IPointerDownHa
 
 				RectTransform rectTF = transform.GetComponent<RectTransform> ();
 				Rect r = rectTF.rect;
-				fillRT.offsetMax = new Vector2 (-(r.size.x - r.size.x * currentOpacity), fillRT.offsetMax.y);
+				fillRT.offsetMax = new Vector2 (-(r.size.x - r.size.x * sliderAmount), fillRT.offsetMax.y);
 			}
 
 			//float resultingAmount = Mathf.Clamp ((currentOpacity - dampeningArea)/(1f-2f*dampeningArea), 0f, 1f);

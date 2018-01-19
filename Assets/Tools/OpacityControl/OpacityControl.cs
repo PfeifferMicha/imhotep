@@ -58,8 +58,6 @@ public class OpacityControl : MonoBehaviour
 			} else {
 				buttonText.text = g.name;
 			}
-            
-
         }
     }
 

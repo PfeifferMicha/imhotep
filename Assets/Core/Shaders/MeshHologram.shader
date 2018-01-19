@@ -60,14 +60,14 @@ Properties {
 	        float stageDistGlow = max( (1-distToClosestStage)*25-24, 0);
 
 
-			float ringSize = 10;
+			float ringSize = 20;
 
-			float zCoord = IN.localPos.z - _Time[2]*6;
+			float zCoord = IN.localPos.z + _Time[2]*10;
 			float zCenter = floor(zCoord/ringSize + 0.5)*ringSize;
 			float dist3 = abs(zCoord - zCenter)/ringSize*2;
 
 			float dist = dist3*2 - 1.5;
-			float glow = max( dist, 0 )*0.2;
+			float glow = max( dist, 0 )*0.2 * (1 + 0.7*sin(IN.localPos.z*0.2));
 
 	        half rim = 1.0 - saturate(dot (normalize(IN.viewDir), normalize(IN.normal)));
 	        rim = pow(rim,2);
@@ -75,10 +75,10 @@ Properties {
 			o.Albedo = _Color;
 			//if( stage < 1 ) {
 			if( stage < 4 ) {
-				o.Alpha = (rim*(stage/4+1) + glow + stage*0.2 + stageDistGlow*0.5) * min( _amount*0.5, 1 );
+				o.Alpha = (rim*(stage/8+1) + glow + stage*0.2 + stageDistGlow*0.5) * min( _amount*0.5, 1 );
 	       		o.Emission = _GlowColor.rgb * (rim*stage/4 + glow + stage*0.1 + stageDistGlow*0.5) * min( _amount, 1 );
 			} else if( pos < 4.5 ) {		// Show stage scan line for last iteration, but nothing else:
-				o.Alpha = rim + stageDistGlow*0.5;
+				o.Alpha = stageDistGlow*0.5;
 	       		o.Emission = _GlowColor.rgb * (stageDistGlow*0.5);
 			} else {
 				o.Alpha = 0;
