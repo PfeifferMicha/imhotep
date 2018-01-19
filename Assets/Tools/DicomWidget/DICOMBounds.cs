@@ -200,9 +200,10 @@ public class DICOMBounds : MonoBehaviour {
 	 * 	- Off
 	 * 	- Show slice outline
 	 * 	- Show slice */
-	public void cycle()
+	public void toggle( bool t )
 	{
-		if (displayMode == DisplayMode.OFF)
+		Debug.Log ("Toggle " + t);
+		if (t)
 			displayMode = DisplayMode.SLICE;
 		else
 			displayMode = DisplayMode.OFF;

@@ -69,47 +69,20 @@ Properties {
 			float dist = dist3*2 - 1.5;
 			float glow = max( dist, 0 )*0.2;
 
-			//o.Albedo = _GlowColor*stage/3;
-			//o.Emission = _GlowColor*glow;
-			//o.Alpha = dist3;
-			//o.Emission = _Color.rgb*clamp(brightness*(1-amount),0,5);
-
 	        half rim = 1.0 - saturate(dot (normalize(IN.viewDir), normalize(IN.normal)));
 	        rim = pow(rim,2);
-
-
-			o.Albedo = _Color;
-			/*if( stage < 1 ) {
-				//o.Alpha = (rim + glow + stageDistGlow*0.2)*pos;
-	       		//o.Emission = _GlowColor.rgb * (rim + glow + stageDistGlow*0.5)*_amount*2;
-				o.Alpha = (glow)*pos*_amount;
-	       		o.Emission = _GlowColor.rgb * (glow)*_amount*2;
-			} else if( stage < 2 ) {
-				o.Alpha = ((rim + glow*1.5) + stageDistGlow*0.5);
-	       		o.Emission = _GlowColor.rgb * (rim*1.3 + glow*1.5 + stageDistGlow*0.2);
-			} else if( stage < 3 ) {
-				o.Alpha = (rim + glow + stage*0.2) + stageDistGlow*0.5;
-	       		o.Emission = _GlowColor.rgb * (rim*2 + glow*0.5 + stageDistGlow*0.7);
-			} else if( stage < 4 ) {
-				o.Alpha = (rim + glow + stage*0.4) + stageDistGlow*0.5;
-	       		o.Emission = _GlowColor.rgb * (rim*2 + glow*0.5 + stageDistGlow*0.7);
-			} else {
-				o.Alpha = 0;//stageDistGlow*0.5;
-	       		o.Emission = _GlowColor.rgb * (rim*2 + glow*0.5 + stageDistGlow*0.7);
-			}*/
 
 			o.Albedo = _Color;
 			//if( stage < 1 ) {
 			if( stage < 4 ) {
-				o.Alpha = (rim + glow + stage*0.2 + stageDistGlow*0.5) * min( _amount, 1 );
-	       		o.Emission = _GlowColor.rgb * (rim + glow + stage*0.1 + stageDistGlow*0.5) * min( _amount, 1 );
+				o.Alpha = (rim*(stage/4+1) + glow + stage*0.2 + stageDistGlow*0.5) * min( _amount*0.5, 1 );
+	       		o.Emission = _GlowColor.rgb * (rim*stage/4 + glow + stage*0.1 + stageDistGlow*0.5) * min( _amount, 1 );
+			} else if( pos < 4.5 ) {		// Show stage scan line for last iteration, but nothing else:
+				o.Alpha = rim + stageDistGlow*0.5;
+	       		o.Emission = _GlowColor.rgb * (stageDistGlow*0.5);
 			} else {
-				o.Alpha = 0;//stageDistGlow*0.5;
-	       		//o.Emission = _GlowColor.rgb * (rim*2 + glow*0.5 + stageDistGlow*0.7);
+				o.Alpha = 0;
 			}
-				
-//			((IN.worldPos.z+10)*amount/50);
-			//o.Albedo = pos;
 		}
 
 		ENDCG

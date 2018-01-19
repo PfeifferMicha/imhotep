@@ -11409,7 +11409,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &568768791
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11417,16 +11417,16 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 568768790}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 17.5, y: 17.5, z: 0}
+  m_LocalPosition: {x: 17.5, y: 17.5, z: -0.0000808686}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1160995541}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 60, y: 60}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &568768792
 MonoBehaviour:
@@ -11447,7 +11447,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: d934ba480a11f3f449184b1d21c0beb7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d6192426f721af74697c0e53ccbf1f59, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -23958,8 +23958,8 @@ GameObject:
   - component: {fileID: 1160995541}
   - component: {fileID: 1160995545}
   - component: {fileID: 1160995544}
-  - component: {fileID: 1160995543}
   - component: {fileID: 1160995542}
+  - component: {fileID: 1160995543}
   m_Layer: 5
   m_Name: ButtonDICOMBounds
   m_TagString: Untagged
@@ -24010,17 +24010,16 @@ MonoBehaviour:
 --- !u!114 &1160995543
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 11411014, guid: 7b9b69f00ac964a1f887c8ec516b3f8a,
-    type: 2}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1160995540}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Script: {fileID: 2109663825, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 0
+    m_Mode: 3
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -24044,12 +24043,15 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 1160995544}
-  m_OnClick:
+  toggleTransition: 0
+  graphic: {fileID: 568768792}
+  m_Group: {fileID: 0}
+  onValueChanged:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7768677}
-        m_MethodName: cycle
-        m_Mode: 1
+        m_MethodName: toggle
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -24058,8 +24060,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
+    m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  m_IsOn: 0
 --- !u!114 &1160995544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42860,7 +42863,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2065549887
 RectTransform:
   m_ObjectHideFlags: 0
@@ -44290,10 +44293,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 973f98a3fa2b046758396265ce354472, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadingEffectActive: 0
-  loadingAmount: 0
-  loadedObjects: []
-  loadingEffectMeshes: {fileID: 0}
 --- !u!1 &2106984785
 GameObject:
   m_ObjectHideFlags: 0
