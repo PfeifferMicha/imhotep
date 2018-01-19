@@ -97,7 +97,7 @@ public class SteamVR_LoadLevel : MonoBehaviour
 	public void Trigger()
 	{
 		if (!loading && !string.IsNullOrEmpty(levelName))
-			StartCoroutine("LoadLevel");
+			StartCoroutine(LoadLevel());
 	}
 
 	// Helper function to quickly and simply load a level from script.
@@ -350,14 +350,13 @@ public class SteamVR_LoadLevel : MonoBehaviour
 				Debug.Log("LaunchInternalProcessError: " + error);
 #if UNITY_EDITOR
 				UnityEditor.EditorApplication.isPlaying = false;
-#else
+#elif !UNITY_METRO
 				System.Diagnostics.Process.GetCurrentProcess().Kill();
 #endif
 			}
 		}
 		else
 		{
-#if !(UNITY_5_2 || UNITY_5_1 || UNITY_5_0)
 			var mode = loadAdditive ? UnityEngine.SceneManagement.LoadSceneMode.Additive : UnityEngine.SceneManagement.LoadSceneMode.Single;
 			if (loadAsync)
 			{
@@ -375,27 +374,6 @@ public class SteamVR_LoadLevel : MonoBehaviour
 			{
 				UnityEngine.SceneManagement.SceneManager.LoadScene(levelName, mode);
 			}
-#else
-			if (loadAsync)
-			{
-				async = loadAdditive ? Application.LoadLevelAdditiveAsync(levelName) : Application.LoadLevelAsync(levelName);
-
-				// Performing this in a while loop instead seems to help smooth things out.
-				//yield return async;
-				while (!async.isDone)
-				{
-					yield return null;
-				}
-			}
-			else if (loadAdditive)
-			{
-				Application.LoadLevelAdditive(levelName);
-			}
-			else
-			{
-				Application.LoadLevel(levelName);
-			}
-#endif
 		}
 
 		yield return null;
@@ -425,6 +403,8 @@ public class SteamVR_LoadLevel : MonoBehaviour
 		// Fade out to compositor
 		SteamVR_Events.LoadingFadeIn.Send(fadeInTime);
 
+		// Refresh compositor reference since loading scenes might have invalidated it.
+		compositor = OpenVR.Compositor;
 		if (compositor != null)
 		{
 			// Fade out foreground color if necessary.

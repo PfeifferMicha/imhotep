@@ -74,7 +74,7 @@ Properties {
 
 			o.Albedo = _Color;
 			//o.Alpha = min( _Color.a*0.8 + rim*(_Color.a+0.2), 1 );
-			o.Alpha = min( max( rim*2*_Color.a, _Color.a ), 1 );
+			o.Alpha = min( (rim*2 + 0.5)*_Color.a, 1 );
 			o.Emission = (_Color.rgb*0.5+1.5)*0.5*rim*min(_Color.a, 1-_Color.a);
 			//o.Emission = min( rim*_Color.a + _Color.a, 1 );
 			//o.Emission = 0.5*pow(rim,2)*(_Color);

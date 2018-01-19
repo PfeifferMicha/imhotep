@@ -4,15 +4,15 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 13
-  productGUID: 8827eb895e893e9499f3753beb4b8927
+  productGUID: 3355557de5a687e44a6eface0a816616
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   defaultScreenOrientation: 4
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
-  productName: IMHOTEP
+  companyName: Valve
+  productName: SteamVR
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -149,7 +149,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.Company.ProductName
-    Standalone: unity.DefaultCompany.IMHOTEP
+    Standalone: unity.Valve.SteamVR
     Tizen: com.Company.ProductName
     iOS: com.Company.ProductName
     tvOS: com.Company.ProductName
@@ -247,37 +247,22 @@ PlayerSettings:
     m_Icons:
     - serializedVersion: 2
       m_Icon: {fileID: 0}
-      m_Width: 128
-      m_Height: 128
+      m_Width: 1
+      m_Height: 1
       m_Kind: 0
   m_BuildTargetBatching:
   - m_BuildTarget: Standalone
     m_StaticBatching: 1
     m_DynamicBatching: 1
-  m_BuildTargetGraphicsAPIs:
-  - m_BuildTarget: WindowsStandaloneSupport
-    m_APIs: 0200000001000000
-    m_Automatic: 1
-  - m_BuildTarget: LinuxStandaloneSupport
-    m_APIs: 11000000
-    m_Automatic: 1
-  - m_BuildTarget: MacStandaloneSupport
-    m_APIs: 1100000010000000
-    m_Automatic: 1
-  - m_BuildTarget: WebPlayer
-    m_APIs: 
-    m_Automatic: 1
-  - m_BuildTarget: AndroidPlayer
-    m_APIs: 0b00000008000000
-    m_Automatic: 1
+  m_BuildTargetGraphicsAPIs: []
   m_BuildTargetVRSettings:
   - m_BuildTarget: Android
     m_Enabled: 0
-    m_Devices: []
+    m_Devices:
+    - Oculus
   - m_BuildTarget: Metro
     m_Enabled: 0
-    m_Devices:
-    - HoloLens
+    m_Devices: []
   - m_BuildTarget: N3DS
     m_Enabled: 0
     m_Devices: []
@@ -300,8 +285,8 @@ PlayerSettings:
   - m_BuildTarget: Standalone
     m_Enabled: 1
     m_Devices:
-    - Oculus
     - OpenVR
+    - Oculus
   - m_BuildTarget: Tizen
     m_Enabled: 0
     m_Devices: []
@@ -331,7 +316,6 @@ PlayerSettings:
   openGLRequireES31AEP: 0
   m_TemplateCustomTags: {}
   mobileMTRendering:
-    Android: 1
     iPhone: 1
     tvOS: 1
   wiiUTitleID: 0005000011000000
@@ -420,7 +404,7 @@ PlayerSettings:
   switchAccessibleURLs: 
   switchLegalInformation: 
   switchMainThreadStackSize: 1048576
-  switchPresenceGroupId: 0x01004b9000490000
+  switchPresenceGroupId: 
   switchLogoHandling: 0
   switchReleaseVersion: 0
   switchDisplayVersion: 1.0.0
@@ -432,8 +416,8 @@ PlayerSettings:
   switchUserAccountSaveDataSize: 0
   switchUserAccountSaveDataJournalSize: 0
   switchApplicationAttribute: 0
-  switchCardSpecSize: 4
-  switchCardSpecClock: 25
+  switchCardSpecSize: -1
+  switchCardSpecClock: -1
   switchRatingsMask: 0
   switchRatingsInt_0: 0
   switchRatingsInt_1: 0
@@ -447,7 +431,7 @@ PlayerSettings:
   switchRatingsInt_9: 0
   switchRatingsInt_10: 0
   switchRatingsInt_11: 0
-  switchLocalCommunicationIds_0: 0x01004b9000490000
+  switchLocalCommunicationIds_0: 
   switchLocalCommunicationIds_1: 
   switchLocalCommunicationIds_2: 
   switchLocalCommunicationIds_3: 
@@ -483,7 +467,7 @@ PlayerSettings:
   ps4VideoOutPixelFormat: 0
   ps4VideoOutInitialWidth: 1920
   ps4VideoOutBaseModeInitialWidth: 1920
-  ps4VideoOutReprojectionRate: 120
+  ps4VideoOutReprojectionRate: 60
   ps4PronunciationXMLPath: 
   ps4PronunciationSIGPath: 
   ps4BackgroundImagePath: 
@@ -599,32 +583,23 @@ PlayerSettings:
   webGLUseWasm: 0
   webGLCompressionFormat: 1
   scriptingDefineSymbols: {}
-  platformArchitecture:
-    iOS: 2
+  platformArchitecture: {}
   scriptingBackend:
-    Android: 0
-    Metro: 2
     Standalone: 0
-    WP8: 2
-    WebGL: 1
-    WebPlayer: 0
-    iOS: 1
-  incrementalIl2cppBuild:
-    iOS: 0
+  incrementalIl2cppBuild: {}
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 0
-  apiCompatibilityLevelPerPlatform:
-    Standalone: 1
+  apiCompatibilityLevelPerPlatform: {}
   m_RenderingPath: 1
-  m_MobileRenderingPath: 3
-  metroPackageName: IMHOTEP
+  m_MobileRenderingPath: 1
+  metroPackageName: v5
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: IMHOTEP
+  metroApplicationDescription: v5
   wsaImages: {}
   metroTileShortName: 
   metroCommandLineArgsFile: 
@@ -637,53 +612,7 @@ PlayerSettings:
   metroTileBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
   metroSplashScreenBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
   metroSplashScreenUseBackgroundColor: 0
-  platformCapabilities:
-    WindowsStoreApps:
-      AccountRead: False
-      AccountWrite: False
-      AlarmGet: False
-      AlarmSet: False
-      AppManagerLaunch: False
-      Bluetooth: False
-      CalendarRead: False
-      CalendarWrite: False
-      Call: False
-      CallHistoryRead: False
-      CallHistoryWrite: False
-      Camera: False
-      ContactRead: False
-      ContactWrite: False
-      ContentWrite: False
-      DataSharing: False
-      Display: False
-      Download: False
-      Email: False
-      ExternalStorage: False
-      ExternalStorageAppData: False
-      Haptic: False
-      Internet: False
-      KeyManager: False
-      LED: False
-      Location: False
-      MediaStorage: False
-      MessageRead: False
-      MessageWrite: False
-      NFC: False
-      NFCCardEmulation: False
-      NetworkGet: False
-      NetworkProfile: False
-      NetworkSet: False
-      Notification: False
-      PackageManagerInfo: False
-      Power: False
-      Push: False
-      Recorder: False
-      Shortcut: False
-      SystemSettings: False
-      Telephony: False
-      VolumeSet: False
-      WifiDirect: False
-      WindowPrioritySet: False
+  platformCapabilities: {}
   metroFTAName: 
   metroFTAFileTypes: []
   metroProtocolName: 

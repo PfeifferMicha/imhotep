@@ -78,6 +78,7 @@ public class Platform : MonoBehaviour {
 			float depth = 2f;
 			// Try to get the room size from the mesh:
 			SteamVR_PlayArea playArea = viveRig.GetComponent<SteamVR_PlayArea>();
+			Debug.Log ("Steam play area: " + playArea);
 			if (playArea != null) {
 				Valve.VR.HmdQuad_t rect = new Valve.VR.HmdQuad_t();
 				if (SteamVR_PlayArea.GetBounds (playArea.size, ref rect)) {
@@ -97,6 +98,7 @@ public class Platform : MonoBehaviour {
 						if (corners [i].v2 > max.y)
 							max.y = corners [i].v2;
 					}
+					Debug.Log ("Steam play area bounds: " + min + " - " + max);
 
 					Vector2 size = max - min;
 					width = size.x;
@@ -405,7 +407,7 @@ public class Platform : MonoBehaviour {
 		// Generate a new game object:
 		GameObject go = new GameObject("UIMesh");
 		go.transform.SetParent( transform, false );
-		go.layer = LayerMask.NameToLayer ("UIMesh");
+		//go.layer = LayerMask.NameToLayer ("UIMesh");
 		go.AddComponent<MeshFilter> ();
 		go.AddComponent<MeshCollider> ();
 		go.GetComponent<MeshFilter>().mesh = mesh;
