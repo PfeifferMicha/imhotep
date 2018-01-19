@@ -49,8 +49,6 @@ public class DICOM3D : DICOM
 		Vector3 corner1 = transformPixelToPatientPos (Vector2.zero, 0f);
 		Vector2 imgDimensions = new Vector2 (firstSlice.GetWidth (), firstSlice.GetHeight ());
 		Vector3 corner2 = transformPixelToPatientPos (imgDimensions, seriesInfo.numberOfSlices-1);
-		Vector3 min = Vector3.Min (corner1, corner2);
-		Vector3 max = Vector3.Max (corner1, corner2);
 		//boundingBox = new Bounds ((max - min) / 2 + min, (max - min));
 		boundingBox = new Bounds ((corner2 - corner1) / 2 + corner1, (corner2 - corner1));
 	}

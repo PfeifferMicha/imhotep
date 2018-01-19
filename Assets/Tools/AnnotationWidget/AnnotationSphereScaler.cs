@@ -11,7 +11,7 @@ public class AnnotationSphereScaler : MonoBehaviour{
 	public float minScale = 0.5f;
 
 	private bool reScale = false;
-	private bool onMesh = false;
+	//private bool onMesh = false;
 	private Vector3 rescaleDirection;
 
 	public void rescaleAnnotation(BaseEventData eventData) {

@@ -38,7 +38,7 @@ public class LabelPositioner : MonoBehaviour{
     private Plane[] pointPlanes; /**<   Ebenen der Punkte   */
     private Plane[] labelPlanes; /**<   Ebenen in denen die Labels liegen   */
 
-    private Plane[] camPlanes; /**<   Ebenen des ViewPlaneFrustum   */
+    //private Plane[] camPlanes; /**<   Ebenen des ViewPlaneFrustum   */
 
 
     
@@ -76,7 +76,7 @@ public class LabelPositioner : MonoBehaviour{
 
     private bool switchToZoomPlane = false; /**<   ob die Zoomebene verwendet wird oder nicht   */
 
-    private int pointCount = 0; /**<   anzahl an Punkten   */
+    //private int pointCount = 0; /**<   anzahl an Punkten   */
     private int counter = 0; /**<   anzahl an durchlaufenen Iteratiionschritten   */
 
     private float[] rads = new float[360]; /**<  die Radien der Kuchenstücke für die Silhouette   */    
@@ -110,7 +110,7 @@ public class LabelPositioner : MonoBehaviour{
         meshNode = GameObject.Find("MeshViewerBase/MeshViewerScale");
         meshPositionNode = GameObject.Find("MeshViewerBase/MeshViewerScale/MeshRotationNode/MeshPositionNode");
 
-        camPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+        //camPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
 
 
         zoomPlaneDistance = 3f;
@@ -936,7 +936,7 @@ public class LabelPositioner : MonoBehaviour{
 
             Vector3 pointPosition = annoPoint.transform.position;
             //hier wird bestimmt welche Fläche welchem Punkt am nächsten liegt
-            float d1 = pointPlanes[0].GetDistanceToPoint(pointPosition);
+            //float d1 = pointPlanes[0].GetDistanceToPoint(pointPosition);
             //d1 = Mathf.Abs(d1);
             float d2 = pointPlanes[1].GetDistanceToPoint(pointPosition);
             //d2 = Mathf.Abs(d2);

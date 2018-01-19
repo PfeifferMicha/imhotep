@@ -103,26 +103,23 @@ public class DICOM2D : DICOM
 		texPaddingDepth = texDepth - origTexDepth;
 		colors = new Color32[ texWidth * texHeight ];
 
-		int intercept = 0;
+		/*int intercept = 0;
 		int slope = 1;
 		try {
 			intercept = Int32.Parse( image.GetMetaData("0028|1052") );
 			slope = Int32.Parse( image.GetMetaData("0028|1053") );
 		} catch {
-		}
+		}*/
 
 		if (image.GetDimension () != 2 && image.GetDimension () != 3)
 		{
 			throw( new System.Exception( "Only 2D and 3D images are currently supported. Dimensions of image: " + image.GetDimension()));
 		}
 
-		Debug.Log ("Pixel format: " + image.GetPixelID ());
-		Debug.Log ("Slope, Intercept: " + slope + " " + intercept);
+		Debug.Log ("DICOM Pixel format: " + image.GetPixelID ());
 
 		UInt32 min = UInt32.MaxValue;
 		UInt32 max = UInt32.MinValue;
-
-		// TODO: Ignore slope and intercept??
 
 		// Copy the image into a colors array:
 		if (image.GetPixelID () == PixelIDValueEnum.sitkUInt16) {

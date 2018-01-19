@@ -16,7 +16,7 @@ public class DicomDisplay : MonoBehaviour {
 
 	public Text StatusText;
 
-	bool UserIsLookingAtMe = false;
+	//bool UserIsLookingAtMe = false;
 
 	void Awake()
 	{
@@ -163,9 +163,9 @@ public class DicomDisplay : MonoBehaviour {
 	}
 
 
-	public void Update()
+	/*public void Update()
 	{
-		/*UI.Screen myScreen = GetComponent<UI.Widget> ().layoutPosition.screen;
+		UI.Screen myScreen = GetComponent<UI.Widget> ().layoutPosition.screen;
 		UI.Screen activeScreen = UI.Core.instance.layoutSystem.activeScreen;
 		if (myScreen == activeScreen) {
 			if (!UserIsLookingAtMe) {
@@ -177,8 +177,8 @@ public class DicomDisplay : MonoBehaviour {
 				UserIsLookingAtMe = false;
 				ToolControl.instance.unoverrideTool ("DICOM");
 			}
-		}*/
-	}
+		}
+	}*/
 
 	/*public void eventDisplayHistogram( object obj = null )
 	{

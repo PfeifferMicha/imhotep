@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-/*! Displays the Bounds of the currently loaded DICOM series around the 3D Mesh.
- * Mostly used to debug DICOM positions.
+/*! Displays the Bounds of the currently loaded DICOM.
+ * Can be used to debug DICOM positions and to add a reference between the 2D and the 3D Data.
  * This should be attached to a GameObject which is a child of the MeshPositionNode (i.e. it should
  * have the same parent as the organs, meaning it's also in the Patient Coordinate System). */
 public class DICOMBounds : MonoBehaviour {
 
 	// Bounding box:
-	private LineRenderer Edge1;
+	/*private LineRenderer Edge1;
 	private LineRenderer Edge2;
 	private LineRenderer Edge3;
 	private LineRenderer Edge4;
@@ -19,7 +19,7 @@ public class DICOMBounds : MonoBehaviour {
 	private LineRenderer Edge9;
 	private LineRenderer Edge10;
 	private LineRenderer Edge11;
-	private LineRenderer Edge12;
+	private LineRenderer Edge12;*/
 
 	// Rectangle
 	private LineRenderer RectXMin;
@@ -27,7 +27,7 @@ public class DICOMBounds : MonoBehaviour {
 	private LineRenderer RectYMin;
 	private LineRenderer RectYMax;
 
-	private string currentSeriesUID = "";
+	//private string currentSeriesUID = "";
 
 	private bool listeningToEvents = false;
 
@@ -40,7 +40,7 @@ public class DICOMBounds : MonoBehaviour {
 
 	void Start()
 	{
-		Edge1 = gameObject.transform.Find ("Edge (1)").GetComponent<LineRenderer> ();
+		/*Edge1 = gameObject.transform.Find ("Edge (1)").GetComponent<LineRenderer> ();
 		Edge2 = gameObject.transform.Find ("Edge (2)").GetComponent<LineRenderer> ();
 		Edge3 = gameObject.transform.Find ("Edge (3)").GetComponent<LineRenderer> ();
 		Edge4 = gameObject.transform.Find ("Edge (4)").GetComponent<LineRenderer> ();
@@ -51,7 +51,7 @@ public class DICOMBounds : MonoBehaviour {
 		Edge9 = gameObject.transform.Find ("Edge (9)").GetComponent<LineRenderer> ();
 		Edge10 = gameObject.transform.Find ("Edge (10)").GetComponent<LineRenderer> ();
 		Edge11 = gameObject.transform.Find ("Edge (11)").GetComponent<LineRenderer> ();
-		Edge12 = gameObject.transform.Find ("Edge (12)").GetComponent<LineRenderer> ();
+		Edge12 = gameObject.transform.Find ("Edge (12)").GetComponent<LineRenderer> ();*/
 		RectXMin = gameObject.transform.Find ("RectXMin").GetComponent<LineRenderer> ();
 		RectXMax = gameObject.transform.Find ("RectXMax").GetComponent<LineRenderer> ();
 		RectYMin = gameObject.transform.Find ("RectYMin").GetComponent<LineRenderer> ();

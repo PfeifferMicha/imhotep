@@ -38,8 +38,6 @@ namespace UI
 
 		// Use this for initialization
 		void Start () {
-			RectTransform rect = GetComponent<RectTransform> ();
-
 			leftSlider = new GameObject ("LeftSlider");
 			Image leftSliderImg = leftSlider.AddComponent<Image> ();
 			leftSliderImg.sprite = SliderSprite;
