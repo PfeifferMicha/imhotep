@@ -39,6 +39,10 @@ public class DICOM3D : DICOM
 			throw( new System.Exception ("Invalid pixel spacing found in images."));
 		pixelSpacing = new Vector2 ((float)spacing [1], (float)spacing [0] );
 
+		// DICOMSeries already calculated these values, so get them from there:
+		directionCosineX = seriesInfo.directionCosineX;
+		directionCosineY = seriesInfo.directionCosineY;
+
 		// Generate the transformation matrices which can later be used to translate pixels to
 		// 3D positions and vice versa.
 		setupTransformationMatrices ();
@@ -51,6 +55,7 @@ public class DICOM3D : DICOM
 		Vector3 corner2 = transformPixelToPatientPos (imgDimensions, seriesInfo.numberOfSlices-1);
 		//boundingBox = new Bounds ((max - min) / 2 + min, (max - min));
 		boundingBox = new Bounds ((corner2 - corner1) / 2 + corner1, (corner2 - corner1));
+		Debug.Log ("bounding Box: " + boundingBox.center + " " + boundingBox.size);
 	}
 
 	/*! Load the entire series (i.e. the entire volume).

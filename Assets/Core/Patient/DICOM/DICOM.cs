@@ -46,10 +46,8 @@ public class DICOM {
 	/*! Distance between rows and columns in images of this series.*/
 	public Vector2 pixelSpacing { protected set; get; }
 
-	/*! Assuming this series is a volume of consecutive slices, where neighbouring slices always have
-	 * the same offset between each other, this offset is stored in sliceOffset.
-	 * For 2D slices, this is zero. */
-	public Vector3 sliceOffset { protected set; get; }
+	/*! Slice Offset as determined by the series Info. */
+	public Vector3 sliceOffset { get {return seriesInfo.sliceOffset;} }
 
 	/*! The direction cosine of a row of this image.
 	 * This can be thought of as a unit-length vector pointing into the direction in which the 

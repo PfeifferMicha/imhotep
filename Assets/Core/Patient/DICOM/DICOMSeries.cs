@@ -41,6 +41,11 @@ public class DICOMSeries {
 	 *		orientation, this will still return transverse. */
 	public SliceOrientation sliceOrientation { private set; get; }
 
+	/*! Assuming this series is a volume of consecutive slices, where neighbouring slices always have
+	 * the same offset between each other, this offset is stored in sliceOffset.
+	 * For 2D slices, this is zero. */
+	public Vector3 sliceOffset { private set; get; }
+
 	/*! Minimal pixel value of first slice
 	 * \note If possible, this is read from the DICOM header of the first slice.
 	 *		However, this value may not be present, in which case this is filled when a slice/volume is
@@ -57,6 +62,19 @@ public class DICOMSeries {
 
 	/*! Cached human-readable description string.*/
 	private string description = null;
+
+	/*! The direction cosine of a row of this image.
+	 * This can be thought of as a unit-length vector pointing into the direction in which the 
+	 * row lies inside the patient coordinate system (i.e. when you walk along the row in 2D,
+	 * in which direction would you walk in the patient coordinate system).
+	 * See the DICOM standard for more information, or search online for "direction cosine". */
+	public Vector3 directionCosineX { private set; get; }
+	/*! The direction cosine of a column of this image.
+	 * This can be thought of as a unit-length vector pointing into the direction in which the 
+	 * column lies inside the patient coordinate system (i.e. when you walk along the column in 2D,
+	 * in which direction would you walk in the patient coordinate system).
+	 * See the DICOM standard for more information, or search online for "direction cosine". */
+	public Vector3 directionCosineY { private set; get; }
 
 	/*! True if there are multiple slices and the first and last slice have the same orientation, false otherwise. */
 	public bool isConsecutiveVolume { private set; get; }
@@ -91,10 +109,30 @@ public class DICOMSeries {
 		VectorDouble direction = firstSlice.GetDirection();
 		if( direction.Count < 6 )
 			throw( new System.Exception ("Invalid direction cosines found in images."));
-		Vector3 directionCosineX = new Vector3 ((float)direction [0], (float)direction [3], (float)direction [6]);
-		Vector3 directionCosineY = new Vector3 ((float)direction [1], (float)direction [4], (float)direction [7]);
+		directionCosineX = new Vector3 ((float)direction [0], (float)direction [3], (float)direction [6]);
+		directionCosineY = new Vector3 ((float)direction [1], (float)direction [4], (float)direction [7]);
 
 		sliceNormal = Vector3.Cross (directionCosineX, directionCosineY);
+
+		if (lastSlice != null) {
+
+			// Get the origins of the two images:
+			VectorDouble o1 = firstSlice.GetOrigin();
+			if ( o1.Count < 3) {
+				throw( new System.Exception ("Invalid origins found in first image."));
+			}
+			Vector3 origin = new Vector3 ((float)o1 [0], (float)o1 [1], (float)o1 [2]);
+			VectorDouble o2 = lastSlice.GetOrigin ();
+			if ( o2.Count < 3) {
+				throw( new System.Exception ("Invalid origins found in last image."));
+			}
+			Vector3 lastOrigin = new Vector3 ((float)o2 [0], (float)o2 [1], (float)o2 [2]);
+
+			// Calculate offset between two adjacent slices (assuming all neighbours are the same distance apart):
+			// Note: I expect sliceOffset.x and sliceOffset.y to be zero most of the time.
+			//              Using a Vector just for completeness.
+			sliceOffset = (lastOrigin - origin) / (numberOfSlices - 1);
+		}
 
 		if (lastSlice != null && numberOfSlices > 1) {
 			// Load the direction cosines:
