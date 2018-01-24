@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class KeyboardControll : MonoBehaviour {
-	public Text input;
+	public InputField input;
+	public SteamVR_TrackedObject tracked;
+	public SteamVR_Controller.Device left;
 	// Use this for initialization
 	void Start () {
 		
@@ -15,14 +17,14 @@ public class KeyboardControll : MonoBehaviour {
 		
 	}
 
-	public void clickEvent( string key )
+	public void enterTextEvent( string key )
 	{
 		input.text = input.text+key;
 	}
+	public void deleteLastInputSymbol()
+	{
+		input.text.Remove (input.text.Length - 1);
+	}
+		
 
-	/*void getText(){
-		Component key = this.GetComponentsInChildren;
-
-		input.text = input.text + inputKey;
-	}**/
 }
