@@ -35,6 +35,7 @@ Features:
 - Predefined views and orientations of the organs
 - Volumetric Rendering (can be slow on lower end systems, might need more optimization)
 
+
 Usage:
 ---------------
 To run the project, you need a VR Headset (HTC Vive is recommended, although the framework will also work with an
@@ -47,8 +48,12 @@ Contribution:
 We welcome contributions to the project!
 Developers and researchers can contribute in the following areas:
 - Building your own tools. Please consult the documentation on how to do this.
+- Supplying test patient data. We would like to build up a small set of very diverse test cases. Make sure the data has been anonymized!
 - Testing with more DICOM data. Even though DICOM is a well defined standard, we keep on being surprised by all the different formats it can take.
 
+To Do:
+---------------
+See [here](ToDo.md) to get a list of much needed features, some of which we are working on. We will try to keep this list up to date.
 
 Documentation:
 ---------------
