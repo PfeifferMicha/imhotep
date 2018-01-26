@@ -80,7 +80,7 @@ Material:
     - _maxValue: 1
     - _minValue: 0.472
     - enableLighting: 1
-    - globalMaximum: 34680
+    - globalMaximum: 34408
     - globalMinimum: 31743
     - level: 1.17
     - lightingIntensity: 0.5
@@ -93,4 +93,4 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - lightColor: {r: 1, g: 0.8, b: 0.7, a: 0.5}
     - numberOfSlices: {r: 1, g: 1, b: 1, a: 1}
-    - textureSize: {r: 512, g: 512, b: 128, a: 0}
+    - textureSize: {r: 512, g: 512, b: 256, a: 0}
