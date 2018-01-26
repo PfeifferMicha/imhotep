@@ -41,5 +41,7 @@ Getting Started:
 
 [User Interface](Documentation/Source/userInterface.md): Describes how UI elements are set up in IMHOTEP.
 
+[Building your own tools](Documentation/Source/customTools.md): Hints on how to build your own tools and UI widgets.
+
 [Patient Event System](Documentation/Source/patientEventSystem.md): Describes how to make your tools react to Patient load/close events.
 

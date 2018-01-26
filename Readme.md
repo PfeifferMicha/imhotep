@@ -33,19 +33,30 @@ Features:
 - 3D User-Interface to maximize workspace
 - 3D/2D Annotation System
 - Predefined views and orientations of the organs
+- Volumetric Rendering (can be slow on lower end systems, might need more optimization)
 
 Usage:
 ---------------
 To run the project, you need a VR Headset (HTC Vive is recommended, although the framework will also work with an
-Oculus Rift), Unity3D (tested with Version 2017.1) and Blender3D. Set up your VR Headset, then download this project and load it using
-the Unity3D editor. In the Assets Folder, load the "Workstation" scene and then run the project.
-The visualization data is not included in the source code. If you want to use the software and get an example set of
+Oculus Rift), Unity3D (tested with Version 2017.1 and 2017.2) and Blender3D. Set up your VR Headset, then download this project and load it using the Unity3D editor. In the Assets Folder, load the "Workstation" scene and then run the project. To select the correct HMD (Vive or Rift), please consult the documentation (Main page, "VR Setup" section).
+The visualization data is not included in the source code. We will upload an anonymous test patient data set soon. Until then, if you want to use the software and get an example set of
 visualization data, please [contact us](http://imhotep-medical.org/contact).
+
+Contribution:
+---------------
+We welcome contributions to the project!
+Developers and researchers can contribute in the following areas:
+- Building your own tools. Please consult the documentation on how to do this.
+- Testing with more DICOM data. Even though DICOM is a well defined standard, we keep on being surprised by all the different formats it can take.
+
 
 Documentation:
 ---------------
-The IMHOTEP project is intended to be used as a framework and many of the framework's functions are documented.
-To generate the documentation, download "Doxygen". Then use the Doxyfile in the project's root directory to
+We are working on getting the documentation into a web-readable format.
+
+In the meantime, to generate the documentation, download "Doxygen". Then use the Doxyfile in the project's root directory to
 generate the documentation.
 For example, on Linux, run: 'doxygen Doxyfile'. You can then load the file Documentation/html/index.html.
+
+
 
