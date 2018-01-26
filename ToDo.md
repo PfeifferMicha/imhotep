@@ -7,6 +7,7 @@ To Do
 - Re-add automatic label positioning.
 - Queue for loading multiple DICOMs consequently? When a DICOM volume is being loaded, the loading of DICOM 2D slices is currently blocked.
 - Screenshot tool
+- Graph function to graph 2D and 3D data from tables
 - Volumetrics:
 	- Volumetric rendering of Saggital and Coronal volumes (i.e. volumes where the saved slices are oriented in non-transverse direction). These are currently disabled because they would be rendered using a wrong orientation.
 	- Option to precompute the volume's gradient (and uploading it as a texture) instead of computing it on the fly. Will require much more graphic card memory, so it should be optional.
