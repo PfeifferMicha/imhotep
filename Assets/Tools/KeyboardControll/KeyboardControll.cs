@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class KeyboardControll : MonoBehaviour {
-	public InputField input;
+public class KeyboardControll : MonoBehaviour{
+	public Text input;
 	public SteamVR_TrackedObject tracked;
 	public SteamVR_Controller.Device left;
 	// Use this for initialization
@@ -23,8 +24,20 @@ public class KeyboardControll : MonoBehaviour {
 	}
 	public void deleteLastInputSymbol()
 	{
-		input.text.Remove (input.text.Length - 1);
+		if (input.text.Length >= 1) {
+			input.text = input.text.Remove (input.text.Length - 1);
+	
+		}
+	}
+	public void deleteText()
+	{
+		input.text = "";
+	}
+
+	public void cancel()
+	{
+		input.text = "";
+		this.gameObject.SetActive (false);
 	}
 		
-
 }

@@ -8,6 +8,7 @@ TagManager:
   - projectile
   - AnnotationLabel
   - Annotation
+  - Keyboard
   layers:
   - Default
   - TransparentFX
