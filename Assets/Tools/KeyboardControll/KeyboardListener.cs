@@ -29,6 +29,7 @@ public class KeyboardListener : MonoBehaviour  {
 			if (controller != null) {
 				controller.selectedInputField = selected.GetComponent<InputField> ();
 				controller.oldCameraPosition = oldCameraPosition;
+				controller.oldText = controller.selectedInputField.text;
 			}
 			keyboard.SetActive (true);
 		}

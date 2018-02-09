@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class KeyboardControll : MonoBehaviour{
-	public Text inputText; 
+	public string oldText;
 	public InputField selectedInputField;
 	public Vector3 oldCameraPosition;
 	//public SteamVR_TrackedObject tracked;
@@ -13,7 +13,6 @@ public class KeyboardControll : MonoBehaviour{
 
 	// Use this for initialization
 	void Start () {
-		//inputText = input.text;
 	}
 	
 	// Update is called once per frame
@@ -23,30 +22,28 @@ public class KeyboardControll : MonoBehaviour{
 
 	public void enterTextEvent( string key )
 	{
-		inputText.text = inputText.text+key;
+		selectedInputField.text +=key;
 	}
 	public void deleteLastInputSymbol()
 	{
-		if (inputText.text.Length >= 1) {
-			inputText.text = inputText.text.Remove (inputText.text.Length - 1);
-	
+		if (selectedInputField.text.Length >= 1) {
+			selectedInputField.text = selectedInputField.text.Remove (selectedInputField.text.Length - 1);	
 		}
 	}
 	public void deleteText()
 	{
-		inputText.text = "";
+		selectedInputField.text = "";
 	}
 
 	public void cancel()
 	{
-		inputText.text = selectedInputField.text;
+		selectedInputField.text = oldText;
 		this.gameObject.SetActive (false);
 		Camera.main.transform.position = oldCameraPosition;
 	}
 
 	public void save()
 	{
-		selectedInputField.text = inputText.text;
 		this.gameObject.SetActive (false);
 		Camera.main.transform.position = oldCameraPosition;
 	}
