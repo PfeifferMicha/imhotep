@@ -12,15 +12,16 @@ public class KeyboardListener : MonoBehaviour  {
 
 	// Use this for initialization
 	void Start () {
-		
+		if (keyboard == null) {
+			keyboard = GameObject.FindWithTag ("Keyboard");
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		selected = EventSystem.current.currentSelectedGameObject;
-		if (selected != null && selected.GetType ()==(typeof(InputField))) {
+		if (selected != null && selected.name=="InputField") {
 			keyboard.SetActive (true);
-			Debug.Log (selected);
 		}
 
 	}
