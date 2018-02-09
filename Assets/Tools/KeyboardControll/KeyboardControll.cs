@@ -5,9 +5,10 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class KeyboardControll : MonoBehaviour{
-	public Text input;
-	public SteamVR_TrackedObject tracked;
-	public SteamVR_Controller.Device left;
+	public Text inputText; 
+	public InputField input;
+	//public SteamVR_TrackedObject tracked;
+	//public SteamVR_Controller.Device left;
 	// Use this for initialization
 	void Start () {
 		
@@ -20,24 +21,29 @@ public class KeyboardControll : MonoBehaviour{
 
 	public void enterTextEvent( string key )
 	{
-		input.text = input.text+key;
+		inputText.text = inputText.text+key;
 	}
 	public void deleteLastInputSymbol()
 	{
-		if (input.text.Length >= 1) {
-			input.text = input.text.Remove (input.text.Length - 1);
+		if (inputText.text.Length >= 1) {
+			inputText.text = inputText.text.Remove (inputText.text.Length - 1);
 	
 		}
 	}
 	public void deleteText()
 	{
-		input.text = "";
+		inputText.text = "";
 	}
 
 	public void cancel()
 	{
-		input.text = "";
+		inputText.text = "";
 		this.gameObject.SetActive (false);
 	}
-		
+
+	public void save()
+	{
+		input.text = inputText.text;
+		this.gameObject.SetActive (false);
+	}
 }
