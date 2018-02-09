@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class KeyboardControll : MonoBehaviour{
 	public Text inputText; 
 	public InputField selectedInputField;
+	public Vector3 oldCameraPosition;
 	//public SteamVR_TrackedObject tracked;
 	//public SteamVR_Controller.Device left;
 
@@ -40,11 +41,13 @@ public class KeyboardControll : MonoBehaviour{
 	{
 		inputText.text = selectedInputField.text;
 		this.gameObject.SetActive (false);
+		Camera.main.transform.position = oldCameraPosition;
 	}
 
 	public void save()
 	{
 		selectedInputField.text = inputText.text;
 		this.gameObject.SetActive (false);
+		Camera.main.transform.position = oldCameraPosition;
 	}
 }
