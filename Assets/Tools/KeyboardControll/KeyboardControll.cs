@@ -9,9 +9,10 @@ public class KeyboardControll : MonoBehaviour{
 	public InputField input;
 	//public SteamVR_TrackedObject tracked;
 	//public SteamVR_Controller.Device left;
+
 	// Use this for initialization
 	void Start () {
-		
+		//inputText = input.text;
 	}
 	
 	// Update is called once per frame
@@ -37,7 +38,7 @@ public class KeyboardControll : MonoBehaviour{
 
 	public void cancel()
 	{
-		inputText.text = "";
+		inputText.text = input.text;
 		this.gameObject.SetActive (false);
 	}
 
