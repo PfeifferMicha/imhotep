@@ -22,7 +22,7 @@ public class KeyboardListener : MonoBehaviour  {
 		selected = EventSystem.current.currentSelectedGameObject;
 		if (selected != null && selected.name=="InputField") {
 			if (controller != null) {
-				controller.input = selected.GetComponent<InputField> ();
+				controller.selectedInputField = selected.GetComponent<InputField> ();
 			}
 			keyboard.SetActive (true);
 		}
