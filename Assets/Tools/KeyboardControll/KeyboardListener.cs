@@ -16,7 +16,6 @@ public class KeyboardListener : MonoBehaviour  {
 		}
 		if (annotationControl == null) {
 			annotationControl = GameObject.FindWithTag("AnnotationControl");
-			Debug.Log (annotationControl);
 		}
 	}
 	
@@ -27,6 +26,7 @@ public class KeyboardListener : MonoBehaviour  {
 			if (controller != null) {
 				controller.selectedInputField = selected.GetComponent<InputField> ();
 				controller.oldText = controller.selectedInputField.text;
+				controller.keyboardInputField.text = controller.oldText;
 			}
 			keyboard.SetActive (true);
 		}

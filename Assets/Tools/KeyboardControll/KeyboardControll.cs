@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class KeyboardControll : MonoBehaviour{
 	public string oldText;
 	public InputField selectedInputField;
-
+	public InputField keyboardInputField;
 	public GameObject annotationControl;
 	//public SteamVR_TrackedObject tracked;
 	//public SteamVR_Controller.Device left;
@@ -26,22 +26,26 @@ public class KeyboardControll : MonoBehaviour{
 
 	public void enterTextEvent( string key )
 	{
-		selectedInputField.text +=key;
+		selectedInputField.text += key;
+		keyboardInputField.text += key;
 	}
 	public void deleteLastInputSymbol()
 	{
 		if (selectedInputField.text.Length >= 1) {
-			selectedInputField.text = selectedInputField.text.Remove (selectedInputField.text.Length - 1);	
+			selectedInputField.text = selectedInputField.text.Remove (selectedInputField.text.Length - 1);
+			keyboardInputField.text = keyboardInputField.text.Remove (keyboardInputField.text.Length - 1);
 		}
 	}
 	public void deleteText()
 	{
 		selectedInputField.text = "";
+		keyboardInputField.text = "";
 	}
 
 	public void cancel()
 	{
 		selectedInputField.text = oldText;
+		keyboardInputField.text = oldText;
 		this.gameObject.SetActive (false);
 		this.setAnnotationControllerPositionBack ();
 	}
@@ -49,6 +53,7 @@ public class KeyboardControll : MonoBehaviour{
 	public void save()
 	{
 		this.gameObject.SetActive (false);
+		keyboardInputField.text = "";
 		this.setAnnotationControllerPositionBack ();
 	}
 
