@@ -8,13 +8,16 @@ public class KeyboardListener : MonoBehaviour  {
 	public GameObject keyboard;
 	public KeyboardControll controller;
 	private GameObject selected;
-	 
+	public GameObject annotationControl;
 	// Use this for initialization
 	void Start () {
 		if (keyboard == null) {
 			keyboard = GameObject.FindWithTag ("Keyboard");
 		}
-
+		if (annotationControl == null) {
+			annotationControl = GameObject.FindWithTag("AnnotationControl");
+			Debug.Log (annotationControl);
+		}
 	}
 	
 	// Update is called once per frame
@@ -28,15 +31,4 @@ public class KeyboardListener : MonoBehaviour  {
 			keyboard.SetActive (true);
 		}
 	}
-	/*public void OnSelect (BaseEventData data)
-	{
-		Debug.Log ("Test");
-
-		GameObject keyboard = GameObject.FindWithTag ("Keyboard");
-		if (keyboard != null)
-		{
-			Debug.Log ("Test-----");
-			keyboard.SetActive (true);
-		}
-	}*/
 }

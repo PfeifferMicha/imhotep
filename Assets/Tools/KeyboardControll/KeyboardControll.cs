@@ -7,11 +7,16 @@ using UnityEngine.EventSystems;
 public class KeyboardControll : MonoBehaviour{
 	public string oldText;
 	public InputField selectedInputField;
+
+	public GameObject annotationControl;
 	//public SteamVR_TrackedObject tracked;
 	//public SteamVR_Controller.Device left;
 
 	// Use this for initialization
 	void Start () {
+		if (annotationControl == null) {
+			annotationControl = GameObject.FindWithTag ("AnnotationControl");
+		}
 	}
 	
 	// Update is called once per frame
@@ -38,10 +43,24 @@ public class KeyboardControll : MonoBehaviour{
 	{
 		selectedInputField.text = oldText;
 		this.gameObject.SetActive (false);
+		this.setAnnotationControllerPositionBack ();
 	}
 
 	public void save()
 	{
 		this.gameObject.SetActive (false);
+		this.setAnnotationControllerPositionBack ();
+	}
+
+	void OnEnable(){
+		this.setAnnotationControllerPosition ();
+	}
+	private void setAnnotationControllerPosition(){
+		Rect sideScreenRect = this.gameObject.GetComponentInChildren<RectTransform> ().rect;
+		annotationControl.transform.Translate (new Vector3 (sideScreenRect.width/1000, 0));
+	}
+	private void setAnnotationControllerPositionBack(){
+		Rect sideScreenRect = this.gameObject.GetComponentInChildren<RectTransform> ().rect;
+		annotationControl.transform.Translate (new Vector3 (-sideScreenRect.width/1000, 0));
 	}
 }

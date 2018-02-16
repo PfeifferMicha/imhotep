@@ -9,6 +9,7 @@ TagManager:
   - AnnotationLabel
   - Annotation
   - Keyboard
+  - AnnotationControl
   layers:
   - Default
   - TransparentFX
