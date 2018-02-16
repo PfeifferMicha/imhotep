@@ -22,13 +22,15 @@ public class KeyboardListener : MonoBehaviour  {
 	// Update is called once per frame
 	void Update () {
 		selected = EventSystem.current.currentSelectedGameObject;
-		if (selected != null && selected.name=="InputField") {
-			if (controller != null) {
+		if (selected != null && selected.name=="InputField" ) {
+			if (controller != null && selected.GetComponent<InputField> ().tag.CompareTo("Keyboard")!=0  ) {
 				controller.selectedInputField = selected.GetComponent<InputField> ();
 				controller.oldText = controller.selectedInputField.text;
-				controller.keyboardInputField.text = controller.oldText;
+				controller.keyboardInputField.text = controller.selectedInputField.text;
+				controller.keyboardInputField.ActivateInputField ();
+				keyboard.SetActive (true);
 			}
-			keyboard.SetActive (true);
+
 		}
 	}
 }

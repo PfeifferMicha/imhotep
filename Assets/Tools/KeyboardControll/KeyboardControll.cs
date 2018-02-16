@@ -9,6 +9,7 @@ public class KeyboardControll : MonoBehaviour{
 	public InputField selectedInputField;
 	public InputField keyboardInputField;
 	public GameObject annotationControl;
+	private int caretPostionKeyboard;
 	//public SteamVR_TrackedObject tracked;
 	//public SteamVR_Controller.Device left;
 
@@ -17,21 +18,29 @@ public class KeyboardControll : MonoBehaviour{
 		if (annotationControl == null) {
 			annotationControl = GameObject.FindWithTag ("AnnotationControl");
 		}
+		caretPostionKeyboard = 0;
 	}
-	
+	public void updateCaretPosition(){
+		caretPostionKeyboard = keyboardInputField.caretPosition;
+
+	}
 	// Update is called once per frame
 	void Update () {
 		
 	}
 
-	public void enterTextEvent( string key )
-	{
-		selectedInputField.text += key;
-		keyboardInputField.text += key;
+	public void enterTextEvent( string key )	{
+		keyboardInputField.text = createText (keyboardInputField.text, key, caretPostionKeyboard);
+		selectedInputField.text = createText (selectedInputField.text, key, caretPostionKeyboard);
+		caretPostionKeyboard++;
+	}
+	private string createText(string text,string key,int caredPosition){
+		return text.Insert(caredPosition,key);
 	}
 	public void deleteLastInputSymbol()
 	{
 		if (selectedInputField.text.Length >= 1) {
+			caretPostionKeyboard--;
 			selectedInputField.text = selectedInputField.text.Remove (selectedInputField.text.Length - 1);
 			keyboardInputField.text = keyboardInputField.text.Remove (keyboardInputField.text.Length - 1);
 		}
@@ -40,13 +49,16 @@ public class KeyboardControll : MonoBehaviour{
 	{
 		selectedInputField.text = "";
 		keyboardInputField.text = "";
+		caretPostionKeyboard = 0;
 	}
 
 	public void cancel()
 	{
+		caretPostionKeyboard = 0;
 		selectedInputField.text = oldText;
 		keyboardInputField.text = oldText;
 		this.gameObject.SetActive (false);
+		keyboardInputField.DeactivateInputField ();
 		this.setAnnotationControllerPositionBack ();
 	}
 
@@ -54,6 +66,7 @@ public class KeyboardControll : MonoBehaviour{
 	{
 		this.gameObject.SetActive (false);
 		keyboardInputField.text = "";
+		keyboardInputField.DeactivateInputField ();
 		this.setAnnotationControllerPositionBack ();
 	}
 
@@ -62,10 +75,10 @@ public class KeyboardControll : MonoBehaviour{
 	}
 	private void setAnnotationControllerPosition(){
 		Rect sideScreenRect = this.gameObject.GetComponentInChildren<RectTransform> ().rect;
-		annotationControl.transform.Translate (new Vector3 (sideScreenRect.width/1000, 0));
+		annotationControl.transform.Translate (new Vector3 ((sideScreenRect.width/1000)*2, 0));
 	}
 	private void setAnnotationControllerPositionBack(){
 		Rect sideScreenRect = this.gameObject.GetComponentInChildren<RectTransform> ().rect;
-		annotationControl.transform.Translate (new Vector3 (-sideScreenRect.width/1000, 0));
+		annotationControl.transform.Translate (new Vector3 ((-sideScreenRect.width/1000)*2, 0));
 	}
 }
