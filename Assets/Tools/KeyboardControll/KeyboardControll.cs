@@ -73,10 +73,9 @@ public class KeyboardControll : MonoBehaviour{
 	public void save()
 	{
 		caretPostionKeyboard = 0;
-		this.gameObject.SetActive (false);
-		oldText = "";
-
+		oldText = selectedInputField.text;
 		keyboardInputField.DeactivateInputField ();
+		this.gameObject.SetActive (false);
 		this.setAnnotationControllerPositionBack ();
 	}
 
