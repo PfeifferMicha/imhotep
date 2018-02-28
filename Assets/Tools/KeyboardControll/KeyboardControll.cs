@@ -35,16 +35,13 @@ public class KeyboardControll : MonoBehaviour{
 		
 	}
 
-	//Enter's the text in the InputField of the Keyboard
+	//Enter's the text at the given caretPostion in the InputField of the Keyboard
 	public void enterTextEvent( string key )	{
-		keyboardInputField.text = createText (keyboardInputField.text, key, caretPostionKeyboard);
-		selectedInputField.text = createText (selectedInputField.text, key, caretPostionKeyboard);
+		keyboardInputField.text = keyboardInputField.text.Insert(caretPostionKeyboard,key);
+		selectedInputField.text = selectedInputField.text.Insert(caretPostionKeyboard,key);
 		caretPostionKeyboard++;
 	}
-	//return a String with the inserted "key" at the given caretPostion
-	private string createText(string text,string key,int caretPosition){
-		return text.Insert(caretPosition,key);
-	}
+
 	//Delete's the last Input-Symbol
 	public void  deleteLastInputSymbol()
 	{
@@ -75,8 +72,10 @@ public class KeyboardControll : MonoBehaviour{
 	//Save's everything and deactivate the keyboard
 	public void save()
 	{
+		caretPostionKeyboard = 0;
 		this.gameObject.SetActive (false);
 		oldText = "";
+
 		keyboardInputField.DeactivateInputField ();
 		this.setAnnotationControllerPositionBack ();
 	}
