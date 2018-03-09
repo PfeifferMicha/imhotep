@@ -1,7 +1,7 @@
 IMHOTEP Framework								{#mainpage}
 ===============================================
 
-Welcome to the IMHOTEP Documentation.
+Welcome to the [IMHOTEP](imhotep-medical.org) Documentation.
 
 The IMHOTEP Framework can be used to view medical data in a Virtual Reality (VR) setting.
 Supported VR-Devices are:
@@ -14,7 +14,7 @@ Supported Input options:
 
 To compile the Framework, you need:
 	- Unity3D (tested with Version 5.x)
-	- Steam and SteamVR
+	- Steam and %SteamVR
 	- Blender (tested with Version 2.70)
 
 
@@ -31,17 +31,17 @@ To run the project using the *HTC Vive*:
 	1. Search for the "Camera" GameObject in the Hierarchy
 	2. The "Camera" has a child called "[CameraRig(Vive)]". Set it to active.
 	3. The "Camera" also has a child called "Camera(Rift)". Set it to inactive.
-	4. Connect the HTC Vive and start SteamVR.
+	4. Connect the HTC Vive and start %SteamVR.
 	5. Run the project from within Unity.
 
 Getting Started:
 ----------------------------------------------
 
-[Input](Documentation/Source/input.md): Describes how the IMHOTEP Input system differs from Unitys default system.
+[Input](input.md): Describes how the IMHOTEP Input system differs from Unitys default system.
 
-[User Interface](Documentation/Source/userInterface.md): Describes how UI elements are set up in IMHOTEP.
+[User Interface](userInterface.md): Describes how %UI elements are set up in IMHOTEP.
 
-[Building your own tools](Documentation/Source/customTools.md): Hints on how to build your own tools and UI widgets.
+[Building your own tools](customTools.md): Hints on how to build your own tools and %UI widgets.
 
-[Patient Event System](Documentation/Source/patientEventSystem.md): Describes how to make your tools react to Patient load/close events.
+[Patient Event System](patientEventSystem.md): Describes how to make your tools react to %Patient load/close events.
 
