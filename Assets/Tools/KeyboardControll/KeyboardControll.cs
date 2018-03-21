@@ -133,7 +133,6 @@ public class KeyboardControll : MonoBehaviour{
 		case 0:
 		default:
 			lettersField.SetActive (false);
-			Debug.Log ("letterdeactive");
 			break;
 		case 1:
 			numbersField.SetActive (false);
