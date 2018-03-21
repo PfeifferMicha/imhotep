@@ -25,10 +25,14 @@ public class KeyboardControll : MonoBehaviour{
 	public GameObject numbersField;
 	public GameObject specialSignsField;
 	public GameObject lettersField;
+	private GameObject[] keyboard_letters;
 	// Use this for initialization
 	void Start () {
 		if (annotationControl == null) {
 			annotationControl = GameObject.FindWithTag ("AnnotationControl");
+		}
+		if (keyboard_letters == null) {
+			keyboard_letters = GameObject.FindGameObjectsWithTag ("Keyboard_letter");
 		}
 		caretPostionKeyboard = 0;
 		shift_flag = false;
@@ -47,8 +51,16 @@ public class KeyboardControll : MonoBehaviour{
 	public void setShift_Flag(){
 		if (shift_flag) {
 			shift_flag = false;
+			foreach (GameObject buttonletter in keyboard_letters) {
+				Text temp = buttonletter.GetComponent<Text> ();
+				temp.text = temp.text.ToUpper ();
+			}
 		} else {
 			shift_flag = true;
+			foreach (GameObject buttonletter in keyboard_letters) {
+				Text temp = buttonletter.GetComponent<Text> ();
+				temp.text = temp.text.ToLower();
+			}
 		}
 	}
 	//Enter's the text at the given caretPostion in the InputField of the Keyboard
@@ -62,6 +74,8 @@ public class KeyboardControll : MonoBehaviour{
 	public void enterLetterEvent(string letter){
 		if (shift_flag) {
 			this.enterTextEvent (letter.ToLower ());
+		} else {
+			this.enterTextEvent (letter);
 		}
 	}
 
