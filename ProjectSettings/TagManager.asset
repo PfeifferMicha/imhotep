@@ -10,8 +10,7 @@ TagManager:
   - Annotation
   - Keyboard
   - AnnotationControl
-  - Keyboard_numbersField
-  - Keyboard_lettersField
+  - Keyboard_letter
   - Keyboard_specialSignsField
   layers:
   - Default
