@@ -10,6 +10,9 @@ TagManager:
   - Annotation
   - Keyboard
   - AnnotationControl
+  - Keyboard_numbersField
+  - Keyboard_lettersField
+  - Keyboard_specialSignsField
   layers:
   - Default
   - TransparentFX

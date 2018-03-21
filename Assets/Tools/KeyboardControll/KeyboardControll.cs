@@ -21,6 +21,10 @@ public class KeyboardControll : MonoBehaviour{
 	private bool shift_flag;
 	//0:letterField is activated; 1:numberField is activated; 2:specialSignField is activated
 	private int activatedField_flag;
+
+	public GameObject numbersField;
+	public GameObject specialSignsField;
+	public GameObject lettersField;
 	// Use this for initialization
 	void Start () {
 		if (annotationControl == null) {
@@ -114,13 +118,14 @@ public class KeyboardControll : MonoBehaviour{
 		switch (activatedField_flag) {
 		case 0:
 		default:
-			GameObject.Find ("lettersField").SetActive (false);
+			lettersField.SetActive (false);
+			Debug.Log ("letterdeactive");
 			break;
 		case 1:
-			GameObject.Find ("numbersField").SetActive (false);
+			numbersField.SetActive (false);
 			break;
 		case 2:
-			GameObject.Find ("specialSignsField").SetActive (false);
+			specialSignsField.SetActive (false);
 			break;
 		}
 		this.switcher (switchToField);
@@ -129,13 +134,14 @@ public class KeyboardControll : MonoBehaviour{
 		switch (switchToField) {
 		case 0:
 		default:
-			GameObject.Find ("lettersField").SetActive (true);
+			lettersField.SetActive (true);
 			break;
 		case 1:
-			GameObject.Find ("numbersField").SetActive (true);
+			numbersField.SetActive (true);
 			break;
 		case 2:
-			GameObject.Find ("specialSignsField").SetActive (true);
+			specialSignsField.SetActive (true);
+			Debug.Log ("SpecialActive");
 			break;
 		}
 		this.activatedField_flag = switchToField;
