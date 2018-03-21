@@ -126,7 +126,7 @@ public class KeyboardControll : MonoBehaviour{
 	public void lineBreak(){
 		keyboardInputField.text += "\n";
 		selectedInputField.text += "\n";
-		this.caretPostionKeyboard = 0;
+		this.caretPostionKeyboard++;
 	}
 	public void switchToField(int switchToField){
 		switch (activatedField_flag) {
