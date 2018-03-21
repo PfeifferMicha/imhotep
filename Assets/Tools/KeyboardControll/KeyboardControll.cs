@@ -28,6 +28,7 @@ public class KeyboardControll : MonoBehaviour{
 		}
 		caretPostionKeyboard = 0;
 		shift_flag = false;
+		activatedField_flag = 0;
 	}
 	//Save's the current caret Position
 	public void updateCaretPosition(){
@@ -104,7 +105,11 @@ public class KeyboardControll : MonoBehaviour{
 		this.setAnnotationControllerPosition ();
 	}
 
-
+	public void lineBreak(){
+		keyboardInputField.text += "\n";
+		selectedInputField.text += "\n";
+		this.caretPostionKeyboard = 0;
+	}
 	public void switchToField(int switchToField){
 		switch (activatedField_flag) {
 		case 0:
@@ -133,7 +138,7 @@ public class KeyboardControll : MonoBehaviour{
 			GameObject.Find ("specialSignsField").SetActive (true);
 			break;
 		}
-		activatedField_flag = switchToField;
+		this.activatedField_flag = switchToField;
 	}
 
 	//Reset's the Annotation-Position
