@@ -31,6 +31,12 @@ public class KeyboardListener : MonoBehaviour  {
 		if (selected != null && selected.name=="InputField" ) {
 			if (controller != null && selected.GetComponent<InputField> ().tag.CompareTo("Keyboard")!=0  ) {
 				controller.selectedInputField = selected.GetComponent<InputField> ();
+				//Replace's the placeholder-Text of the keyboard-InputField with the placeholdertext of the selected InputField 
+				if (controller.selectedInputField.placeholder.GetComponent<Text> () != null) {
+					controller.keyboardInputField.placeholder.
+							GetComponent<Text>().text = controller.
+												selectedInputField.placeholder.GetComponent<Text> ().text;
+				}
 				controller.oldText = controller.selectedInputField.text;
 				controller.keyboardInputField.text = controller.selectedInputField.text;
 				controller.keyboardInputField.ActivateInputField ();

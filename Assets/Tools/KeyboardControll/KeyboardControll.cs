@@ -70,6 +70,7 @@ public class KeyboardControll : MonoBehaviour{
 		caretPostionKeyboard++;
 	}
 
+
 	//Enter's a given letter
 	public void enterLetterEvent(string letter){
 		if (shift_flag) {
