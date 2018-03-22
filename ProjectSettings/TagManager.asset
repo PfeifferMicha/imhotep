@@ -12,6 +12,7 @@ TagManager:
   - AnnotationControl
   - Keyboard_letter
   - Keyboard_specialSignsField
+  - Keyboard_numbersField
   layers:
   - Default
   - TransparentFX
@@ -27,7 +28,7 @@ TagManager:
   - UITool
   - UIOrgans
   - UIAnnotationEdit
-  - 
+  - UIKeyboardScrollbar
   - 
   - 
   - 
