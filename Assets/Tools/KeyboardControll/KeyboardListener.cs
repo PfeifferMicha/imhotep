@@ -5,9 +5,9 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 /*
  * Listen every Frame, if the current selected Gameobject is an InputField. 
- * If it is, it will activate the Keyboard-Gameobject.
+ * If it is an InputField, it will activate the Keyboard-Gameobject.
  */
-public class KeyboardListener : MonoBehaviour  {
+public class KeyboardListener : MonoBehaviour, IPointerClickHandler {
 
 	public GameObject keyboard;
 	//Script
@@ -41,8 +41,17 @@ public class KeyboardListener : MonoBehaviour  {
 				controller.keyboardInputField.text = controller.selectedInputField.text;
 				controller.keyboardInputField.ActivateInputField ();
 				keyboard.SetActive (true);
+				EventSystem.current.SetSelectedGameObject (keyboard);
 			}
-
 		}
+	}
+
+	public void OnPointerClick(PointerEventData data){
+		Debug.Log ("Test");
+		if (controller != null) {
+			controller.clickedGameObject = data.pointerEnter;
+			controller.clicked = true;
+			Debug.Log ("Klick");
+		}	
 	}
 }

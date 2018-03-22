@@ -35,6 +35,11 @@ public class HierarchicalInputModule : BaseInputModule {
 	private bool isPointerOverUI = false;
 	private bool isPointerOverPlatformUI = false;
 
+	public CustomEventData getPointerData()
+	{
+		return eventData;
+	}
+
 	protected override void Start()
 	{
 		lineRenderer = this.GetComponent<LineRenderer>();
