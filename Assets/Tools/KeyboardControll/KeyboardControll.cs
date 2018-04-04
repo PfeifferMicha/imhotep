@@ -22,8 +22,6 @@ public class KeyboardControll : MonoBehaviour{
 	//0:letterField is activated; 1:numberField is activated; 2:specialSignField is activated
 	private int activatedField_flag;
 
-	public GameObject clickedGameObject;
-	public bool clicked;
 	public GameObject numbersField;
 	public GameObject specialSignsField;
 	public GameObject lettersField;
@@ -47,42 +45,20 @@ public class KeyboardControll : MonoBehaviour{
 	// Update is called once per frame
 	void Update () {
 		if (EventSystem.current.currentSelectedGameObject == null) {
-
 			// Check if we clicked somewhere outside of the 
 			if (Input.GetMouseButtonUp (0)) {
-				Debug.Log ("Mouse Released");
 				// Get currently hovered game object:
 				HierarchicalInputModule inputModule = EventSystem.current.currentInputModule as HierarchicalInputModule;
 				GameObject hover = inputModule.getPointerData ().pointerCurrentRaycast.gameObject;
+				if (hover == null | LayerMask.LayerToName (hover.layer).CompareTo("UITool")!=0) {
+					this.cancel ();
+				}
 				Debug.Log (LayerMask.LayerToName (hover.layer));
 			}
-
-			//this.cancel();
 		} else {
 			// TODO: Check if has/is Input Box:
 			//EventSystem.current.currentSelectedGameObject
 		}
-
-		/*GameObject temp = EventSystem.current.currentSelectedGameObject;
-		EventSystem.current.current
-		Debug.Log (temp.name);
-		if (clicked) {
-			//GameObject temp = EventSystem.current.currentSelectedGameObject;
-			while (clickedGameObject!=null && !clickedGameObject.CompareTag ("Keyboard")) {
-				//Debug.Log (temp.GetType());
-				//Debug.Log (temp.tag+" "+temp.GetType()+" "+temp.name+" "+temp.layer);
-
-				if (clickedGameObject.transform.parent != null) {
-					clickedGameObject = clickedGameObject.transform.parent.gameObject;
-				} else {
-					break;
-				}
-			}	
-			if (clickedGameObject==null || !clickedGameObject.CompareTag ("Keyboard")) {
-				this.cancel();
-			}		
-			clicked = false;
-		}*/
 	}
 
 	public void setShift_Flag(){
@@ -192,7 +168,6 @@ public class KeyboardControll : MonoBehaviour{
 			break;
 		case 2:
 			specialSignsField.SetActive (true);
-			Debug.Log ("SpecialActive");
 			break;
 		}
 		this.activatedField_flag = switchToField;

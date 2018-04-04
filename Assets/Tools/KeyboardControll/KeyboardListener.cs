@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
  * Listen every Frame, if the current selected Gameobject is an InputField. 
  * If it is an InputField, it will activate the Keyboard-Gameobject.
  */
-public class KeyboardListener : MonoBehaviour, IPointerClickHandler {
+public class KeyboardListener : MonoBehaviour{
 
 	public GameObject keyboard;
 	//Script
@@ -44,14 +44,5 @@ public class KeyboardListener : MonoBehaviour, IPointerClickHandler {
 				EventSystem.current.SetSelectedGameObject (keyboard);
 			}
 		}
-	}
-
-	public void OnPointerClick(PointerEventData data){
-		Debug.Log ("Test");
-		if (controller != null) {
-			controller.clickedGameObject = data.pointerEnter;
-			controller.clicked = true;
-			Debug.Log ("Klick");
-		}	
 	}
 }
