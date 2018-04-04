@@ -112,10 +112,12 @@ public class KeyboardControll : MonoBehaviour{
 	//Delete's the last Input-Symbol
 	public void  deleteLastInputSymbol()
 	{
-		if (selectedInputField.text.Length >= 1) {
+		if (caretPostionKeyboard>0) {			
+			string temp = selectedInputField.text;
+			string newText = temp.Substring (0, caretPostionKeyboard-1) + temp.Substring (caretPostionKeyboard);
+			selectedInputField.text = selectedInputField.text.Replace (selectedInputField.text,newText);
+			keyboardInputField.text = keyboardInputField.text.Replace (keyboardInputField.text,newText);
 			caretPostionKeyboard--;
-			selectedInputField.text = selectedInputField.text.Remove (selectedInputField.text.Length - 1);
-			keyboardInputField.text = keyboardInputField.text.Remove (keyboardInputField.text.Length - 1);
 		}
 	}
 	public void buttonDeleteLastSymbolPressingDown(){
