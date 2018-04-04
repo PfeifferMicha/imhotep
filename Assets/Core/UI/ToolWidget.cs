@@ -19,7 +19,8 @@ public class ToolWidget : MonoBehaviour {
 	public enum ToolDisplayTime {
 		WhenPatientIsLoaded,
 		WhenNoPatientIsLoaded,
-		Always
+		Always,
+		Never
 	};
 
 	public ToolDisplayTime displayTime = ToolDisplayTime.WhenPatientIsLoaded;

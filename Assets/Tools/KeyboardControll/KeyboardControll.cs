@@ -22,6 +22,10 @@ public class KeyboardControll : MonoBehaviour{
 	//0:letterField is activated; 1:numberField is activated; 2:specialSignField is activated
 	private int activatedField_flag;
 
+	private float keyDeleteTimer = -1;
+	private double keyDeleteThreshold = 0.5;
+	private bool buttonDeleteLastSymbolPressedDown;
+
 	public GameObject numbersField;
 	public GameObject specialSignsField;
 	public GameObject lettersField;
@@ -37,6 +41,7 @@ public class KeyboardControll : MonoBehaviour{
 		caretPostionKeyboard = 0;
 		shift_flag = false;
 		activatedField_flag = 0;
+		buttonDeleteLastSymbolPressedDown = false;
 	}
 	//Save's the current caret Position
 	public void updateCaretPosition(){
@@ -44,20 +49,30 @@ public class KeyboardControll : MonoBehaviour{
 	}
 	// Update is called once per frame
 	void Update () {
-		if (EventSystem.current.currentSelectedGameObject == null) {
+		//Debug.Log (InputDeviceManager.instance.currentInputDevice.isLeftButtonDown ());
 			// Check if we clicked somewhere outside of the 
-			if (Input.GetMouseButtonUp (0)) {
+		if (InputDeviceManager.instance.currentInputDevice.isLeftButtonDown ()) {	
 				// Get currently hovered game object:
 				HierarchicalInputModule inputModule = EventSystem.current.currentInputModule as HierarchicalInputModule;
 				GameObject hover = inputModule.getPointerData ().pointerCurrentRaycast.gameObject;
-				if (hover == null | LayerMask.LayerToName (hover.layer).CompareTo("UITool")!=0) {
+				if (hover == null || LayerMask.LayerToName (hover.layer).CompareTo("UITool")!=0) {
 					this.cancel ();
 				}
 				Debug.Log (LayerMask.LayerToName (hover.layer));
 			}
+		//if the DeleteLastSysmbolbutton is pressed down, the last symbols will be continuiously deleted
+		if(InputDeviceManager.instance.currentInputDevice.isLeftButtonDown () & buttonDeleteLastSymbolPressedDown) {
+			keyDeleteTimer += Time.deltaTime;
+			if( keyDeleteTimer > keyDeleteThreshold )
+			{
+				deleteLastInputSymbol();
+				keyDeleteTimer = 0;
+				keyDeleteThreshold = 0.08;
+			}
 		} else {
-			// TODO: Check if has/is Input Box:
-			//EventSystem.current.currentSelectedGameObject
+			keyDeleteThreshold = 0.5;
+			keyDeleteTimer = 0;
+			this.buttonDeleteLastSymbolPressedDown = false;
 		}
 	}
 
@@ -103,7 +118,9 @@ public class KeyboardControll : MonoBehaviour{
 			keyboardInputField.text = keyboardInputField.text.Remove (keyboardInputField.text.Length - 1);
 		}
 	}
-
+	public void buttonDeleteLastSymbolPressingDown(){
+		this.buttonDeleteLastSymbolPressedDown = true;
+	}
 	//Delete's the whole text
 	public void deleteText()
 	{
