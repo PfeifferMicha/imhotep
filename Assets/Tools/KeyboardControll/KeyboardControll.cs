@@ -95,7 +95,9 @@ public class KeyboardControll : MonoBehaviour{
 	public void enterTextEvent(string key )	{
 		
 		keyboardInputField.text = keyboardInputField.text.Insert(caretPostionKeyboard,key);
-		selectedInputField.text = selectedInputField.text.Insert(caretPostionKeyboard,key);
+		if (selectedInputField != null) {
+			selectedInputField.text = selectedInputField.text.Insert (caretPostionKeyboard, key);
+		}
 		caretPostionKeyboard++;
 	}
 
@@ -113,10 +115,12 @@ public class KeyboardControll : MonoBehaviour{
 	public void  deleteLastInputSymbol()
 	{
 		if (caretPostionKeyboard>0) {			
-			string temp = selectedInputField.text;
+			string temp = keyboardInputField.text;
 			string newText = temp.Substring (0, caretPostionKeyboard-1) + temp.Substring (caretPostionKeyboard);
-			selectedInputField.text = selectedInputField.text.Replace (selectedInputField.text,newText);
 			keyboardInputField.text = keyboardInputField.text.Replace (keyboardInputField.text,newText);
+			if (selectedInputField != null) {
+				selectedInputField.text = selectedInputField.text.Replace (selectedInputField.text, newText);
+			}
 			caretPostionKeyboard--;
 		}
 	}
@@ -126,7 +130,9 @@ public class KeyboardControll : MonoBehaviour{
 	//Delete's the whole text
 	public void deleteText()
 	{
-		selectedInputField.text = "";
+		if (selectedInputField != null) {
+			selectedInputField.text = "";
+		}
 		keyboardInputField.text = "";
 		caretPostionKeyboard = 0;
 	}
@@ -135,7 +141,9 @@ public class KeyboardControll : MonoBehaviour{
 	public void cancel()
 	{
 		caretPostionKeyboard = 0;
-		selectedInputField.text = oldText;
+		if (selectedInputField != null) {
+			selectedInputField.text = oldText;
+		}
 		keyboardInputField.text = oldText;
 		this.gameObject.SetActive (false);
 		keyboardInputField.DeactivateInputField ();
@@ -145,7 +153,9 @@ public class KeyboardControll : MonoBehaviour{
 	public void save()
 	{
 		caretPostionKeyboard = 0;
-		oldText = selectedInputField.text;
+		if (selectedInputField != null) {
+			oldText = selectedInputField.text;
+		}
 		keyboardInputField.DeactivateInputField ();
 		this.gameObject.SetActive (false);
 		this.setAnnotationControllerPositionBack ();
@@ -158,7 +168,9 @@ public class KeyboardControll : MonoBehaviour{
 
 	public void lineBreak(){
 		keyboardInputField.text += "\n";
-		selectedInputField.text += "\n";
+		if (selectedInputField != null) {
+			selectedInputField.text += "\n";
+		}
 		this.caretPostionKeyboard++;
 	}
 	public void switchToField(int switchToField){
