@@ -14,14 +14,10 @@ public class KeyboardListener : MonoBehaviour{
 	public KeyboardControll controller;
 	//current selected Gameobject
 	private GameObject selected;
-	public GameObject annotationControl;
 	// Use this for initialization
 	void Start () {
 		if (keyboard == null) {
 			keyboard = GameObject.FindWithTag ("Keyboard");
-		}
-		if (annotationControl == null) {
-			annotationControl = GameObject.FindWithTag("AnnotationControl");
 		}
 	}
 	

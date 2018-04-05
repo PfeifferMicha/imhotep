@@ -12,7 +12,6 @@ public class KeyboardControll : MonoBehaviour{
 	public InputField selectedInputField;
 	//InputField, which the user see's of the keyboard
 	public InputField keyboardInputField;
-	public GameObject annotationControl;
 	//save's current caretPostion in the Keyboard-InputField
 	private int caretPostionKeyboard;
 	//public SteamVR_TrackedObject tracked;
@@ -38,17 +37,23 @@ public class KeyboardControll : MonoBehaviour{
 	//memorize normalColor of keyboardInputField for ReFocus
 	private Color normalColor;
 
+	private List<GameObject> listofGameObjectsUIToolLayer;
 
 	//Call's by activation
 	void OnEnable(){
-		this.setAnnotationControllerPosition ();
 		this.endTextSelection = keyboardInputField.text.Length;
+		//Reset's the position of already active tool, next to the keyboard
+		List<GameObject> temp = this.getListofGameObjectsUIToolLayer();
+		if (temp != null) {	
+			for (int i = 0; i < temp.Count; i++) {
+				if (temp [i].gameObject.activeSelf) {
+					setActiveToolControllerPosition (temp [i].GetComponent<Transform>());
+				}
+			}
+		}
 	}
 	// Use this for initialization
 	void Start () {
-		if (annotationControl == null) {
-			annotationControl = GameObject.FindWithTag ("AnnotationControl");
-		}
 		if (keyboard_letters == null) {
 			keyboard_letters = GameObject.FindGameObjectsWithTag ("Keyboard_letter");
 		}
@@ -57,11 +62,12 @@ public class KeyboardControll : MonoBehaviour{
 		activatedField_flag = 0;
 		buttonDeleteLastSymbolPressedDown = false;	
 		normalColor = keyboardInputField.colors.normalColor;
+		this.listofGameObjectsUIToolLayer = this.getListofGameObjectsUIToolLayer();
 	}
+
 
 	// Update is called once per frame
 	void Update () {
-		Debug.Log (keyboardInputField.caretPosition);
 		// Check if we clicked somewhere outside of the 
 		if (InputDeviceManager.instance.currentInputDevice.isLeftButtonDown ()) {	
 				// Get currently hovered game object:
@@ -212,7 +218,7 @@ public class KeyboardControll : MonoBehaviour{
 		keyboardInputField.text = oldText;
 		this.gameObject.SetActive (false);
 		keyboardInputField.DeactivateInputField ();
-		this.setAnnotationControllerPositionBack ();
+		this.setToolControllerPositionBack ();
 	}
 	//Save's everything and deactivate the keyboard
 	public void save()
@@ -223,7 +229,7 @@ public class KeyboardControll : MonoBehaviour{
 		}
 		keyboardInputField.DeactivateInputField ();
 		this.gameObject.SetActive (false);
-		this.setAnnotationControllerPositionBack ();
+		this.setToolControllerPositionBack ();
 	}
 
 	//Switches between the different Fields (for numbers/letter/special signs) of the keyboard
@@ -262,22 +268,34 @@ public class KeyboardControll : MonoBehaviour{
 	public void buttonDeleteLastSymbolPressingDown(){
 		this.buttonDeleteLastSymbolPressedDown = true;
 	}
-	//Reset's the Annotation-Position
-	private void setAnnotationControllerPosition(){
+	//Reset's an active Tool-Position
+	private void setActiveToolControllerPosition(Transform tool){
 		Rect sideScreenRect = this.gameObject.GetComponentInChildren<RectTransform> ().rect;
-		annotationControl.transform.Translate (new Vector3 ((sideScreenRect.width/1000)*2, 0));
+		tool.Translate (new Vector3 ((sideScreenRect.width/1000)*2, 0));
 	}
-	//Reset's the Annotation-Position to the original position
-	private void setAnnotationControllerPositionBack(){
+	//Reset's an active-Position to the original position
+	private void setToolControllerPositionBack(){
 		Rect sideScreenRect = this.gameObject.GetComponentInChildren<RectTransform> ().rect;
-		annotationControl.transform.Translate (new Vector3 ((-sideScreenRect.width/1000)*2, 0));
+		for (int i = 0; i < listofGameObjectsUIToolLayer.Count; i++) {
+			if (listofGameObjectsUIToolLayer [i].gameObject.activeSelf) {
+				listofGameObjectsUIToolLayer [i].GetComponent<Transform>().Translate (new Vector3 ((-sideScreenRect.width / 1000) * 2, 0));
+			}
+		}		
 	}
 
-	void OnCollisionEnter(Collision collisionInfo){
-		Debug.Log ("Collision:"+collisionInfo.collider.name);
+	//Find's all GameObjects-Children of the ToolScene,except the Keyboard
+	private List<GameObject> getListofGameObjectsUIToolLayer(){
+		GameObject temp = GameObject.Find ("ToolScene");
+		List<GameObject> goList = new List<GameObject> ();
+		foreach (Transform child in temp.transform) {
+			if (child.name != "Keyboard") {
+				goList.Add (child.gameObject);
+			}
+		}
+		GameObject annotation = GameObject.Find ("Annotation Control");
+		goList.Add (annotation);
+		return goList;
 	}
-
-
 	//================Method's for Refocus to the Keyboard-InputField after a Button is clicked=========
 	//Set the focus back to the keyboard-Inputfield
 	private void reFocusKeyboardInputfield(){
@@ -293,7 +311,6 @@ public class KeyboardControll : MonoBehaviour{
 		ColorBlock tempBlock = keyboardInputField.colors;
 		tempBlock.normalColor = keyboardInputField.colors.highlightedColor;
 		keyboardInputField.colors = tempBlock;
-		Debug.Log (keyboardInputField.colors.ToString ());
 	}
 	public void changeNormalColorBackAfterRefocus(){
 		ColorBlock tempBlock = keyboardInputField.colors;
