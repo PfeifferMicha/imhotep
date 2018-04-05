@@ -163,15 +163,31 @@ public class KeyboardControll : MonoBehaviour{
 		}
 		this.reFocusKeyboardInputfield ();
 	}
-	//Make's linebreak in the keyboard-inputfield
-	public void lineBreak(){		
-		keyboardInputField.text += System.Text.RegularExpressions.Regex.Unescape ("\n");
-		if (selectedInputField != null) {
-			selectedInputField.text += System.Text.RegularExpressions.Regex.Unescape ("\n");
+	//Make's a linebreak in the keyboard-inputfield
+	public void lineBreak(){
+		//If the caretPosition is at the end of the text, add the the linebreak	
+		if (caretPostionKeyboard == keyboardInputField.text.Length) {			
+			keyboardInputField.text += System.Text.RegularExpressions.Regex.Unescape ("\n");
+			if (selectedInputField != null) {
+				selectedInputField.text += System.Text.RegularExpressions.Regex.Unescape ("\n");
+			}
+			this.caretPostionKeyboard++;
+			this.deleteSelectedText ();	
+			this.wasTextSelected ();
+		//If the caretPosition is within the text, add the linebreak at that position and move the caretPosition to the end
+		} else {
+			string temp = keyboardInputField.text.Substring (caretPostionKeyboard);
+			keyboardInputField.text = keyboardInputField.text.Remove (caretPostionKeyboard);
+			keyboardInputField.text = keyboardInputField.text.Insert (caretPostionKeyboard, System.Text.RegularExpressions.Regex.Unescape ("\n"));
+			keyboardInputField.text = keyboardInputField.text.Insert (keyboardInputField.text.Length, temp);
+			//Update the new caretPosition
+			keyboardInputField.MoveTextEnd (false);
+			this.caretPostionKeyboard = keyboardInputField.caretPosition;
+			//update the changes to selectedInputField
+			if (selectedInputField != null) {
+				selectedInputField.text = keyboardInputField.text;
+			}
 		}
-		this.caretPostionKeyboard++;
-		this.deleteSelectedText ();	
-		this.wasTextSelected ();
 		this.reFocusKeyboardInputfield ();
 	}
 
