@@ -26,10 +26,15 @@ public class KeyboardControll : MonoBehaviour{
 	private double keyDeleteThreshold = 0.5;
 	private bool buttonDeleteLastSymbolPressedDown;
 
+	//Begin of the selected text of the Keyboard-Inputfield
+	private int beginTextSelection;
+	//End of the selected text of the Keyboard-Inputfield
+	private int endTextSelection;
 	public GameObject numbersField;
 	public GameObject specialSignsField;
 	public GameObject lettersField;
 	private GameObject[] keyboard_letters;
+
 	// Use this for initialization
 	void Start () {
 		if (annotationControl == null) {
@@ -41,16 +46,18 @@ public class KeyboardControll : MonoBehaviour{
 		caretPostionKeyboard = 0;
 		shift_flag = false;
 		activatedField_flag = 0;
-		buttonDeleteLastSymbolPressedDown = false;
+		buttonDeleteLastSymbolPressedDown = false;	
 	}
 	//Save's the current caret Position
 	public void updateCaretPosition(){
 		caretPostionKeyboard = keyboardInputField.caretPosition;
+		Debug.Log ("Caret: " + caretPostionKeyboard);
 	}
 	// Update is called once per frame
 	void Update () {
-		//Debug.Log (InputDeviceManager.instance.currentInputDevice.isLeftButtonDown ());
-			// Check if we clicked somewhere outside of the 
+		//Debug.Log ("End of Selection: "+keyboardInputField.selectionFocusPosition);
+		//Debug.Log ("Begin of Selection: "+keyboardInputField.selectionAnchorPosition);
+		// Check if we clicked somewhere outside of the 
 		if (InputDeviceManager.instance.currentInputDevice.isLeftButtonDown ()) {	
 				// Get currently hovered game object:
 				HierarchicalInputModule inputModule = EventSystem.current.currentInputModule as HierarchicalInputModule;
@@ -58,7 +65,6 @@ public class KeyboardControll : MonoBehaviour{
 				if (hover == null || LayerMask.LayerToName (hover.layer).CompareTo("UITool")!=0) {
 					this.cancel ();
 				}
-				Debug.Log (LayerMask.LayerToName (hover.layer));
 			}
 		//if the DeleteLastSysmbolbutton is pressed down, the last symbols will be continuiously deleted
 		if(InputDeviceManager.instance.currentInputDevice.isLeftButtonDown () & buttonDeleteLastSymbolPressedDown) {
@@ -74,8 +80,24 @@ public class KeyboardControll : MonoBehaviour{
 			keyDeleteTimer = 0;
 			this.buttonDeleteLastSymbolPressedDown = false;
 		}
-	}
 
+
+	}
+	//Verifies, if a text within the Keyboard-Inpufield is selected
+	public void wasTextSelected(){
+		this.beginTextSelection = Mathf.Min (keyboardInputField.selectionFocusPosition, keyboardInputField.selectionAnchorPosition);
+		this.endTextSelection = Mathf.Max (keyboardInputField.selectionFocusPosition, keyboardInputField.selectionAnchorPosition);
+	}
+	//Remove's currently the whole text, if a text is selected
+	private void deleteSelectedText(){
+		if (this.beginTextSelection-this.endTextSelection!=0 && this.endTextSelection>0) {
+			keyboardInputField.text = "";
+			if (selectedInputField != null) {
+					selectedInputField.text="";
+			}
+			this.caretPostionKeyboard = 0;
+		}
+	}
 	public void setShift_Flag(){
 		if (shift_flag) {
 			shift_flag = false;
@@ -93,7 +115,8 @@ public class KeyboardControll : MonoBehaviour{
 	}
 	//Enter's the text at the given caretPostion in the InputField of the Keyboard
 	public void enterTextEvent(string key )	{
-		
+		this.deleteSelectedText ();
+		this.wasTextSelected ();
 		keyboardInputField.text = keyboardInputField.text.Insert(caretPostionKeyboard,key);
 		if (selectedInputField != null) {
 			selectedInputField.text = selectedInputField.text.Insert (caretPostionKeyboard, key);
@@ -114,10 +137,14 @@ public class KeyboardControll : MonoBehaviour{
 	//Delete's the last Input-Symbol
 	public void  deleteLastInputSymbol()
 	{
-		if (caretPostionKeyboard>0) {			
+		Debug.Log ("Text: " + keyboardInputField.text);
+		Debug.Log ("Textlänge:" + keyboardInputField.text.Length);
+		this.deleteSelectedText ();
+		this.wasTextSelected ();
+		if (caretPostionKeyboard > 0) {			
 			string temp = keyboardInputField.text;
-			string newText = temp.Substring (0, caretPostionKeyboard-1) + temp.Substring (caretPostionKeyboard);
-			keyboardInputField.text = keyboardInputField.text.Replace (keyboardInputField.text,newText);
+			string newText = temp.Substring (0, caretPostionKeyboard - 1) + temp.Substring (caretPostionKeyboard);
+			keyboardInputField.text = keyboardInputField.text.Replace (keyboardInputField.text, newText);
 			if (selectedInputField != null) {
 				selectedInputField.text = selectedInputField.text.Replace (selectedInputField.text, newText);
 			}
@@ -164,14 +191,17 @@ public class KeyboardControll : MonoBehaviour{
 	//Call's by activation
 	void OnEnable(){
 		this.setAnnotationControllerPosition ();
+		this.endTextSelection = keyboardInputField.text.Length;
 	}
 
-	public void lineBreak(){
+	public void lineBreak(){		
 		keyboardInputField.text += "\n";
 		if (selectedInputField != null) {
 			selectedInputField.text += "\n";
 		}
 		this.caretPostionKeyboard++;
+		this.deleteSelectedText ();	
+		this.wasTextSelected ();
 	}
 	public void switchToField(int switchToField){
 		switch (activatedField_flag) {
