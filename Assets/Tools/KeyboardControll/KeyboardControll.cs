@@ -35,6 +35,9 @@ public class KeyboardControll : MonoBehaviour{
 	public GameObject lettersField;
 	private GameObject[] keyboard_letters;
 
+	//memorize normalColor of keyboardInputField for ReFocus
+	private Color normalColor;
+
 	// Use this for initialization
 	void Start () {
 		if (annotationControl == null) {
@@ -47,16 +50,14 @@ public class KeyboardControll : MonoBehaviour{
 		shift_flag = false;
 		activatedField_flag = 0;
 		buttonDeleteLastSymbolPressedDown = false;	
+		normalColor = keyboardInputField.colors.normalColor;
 	}
 	//Save's the current caret Position
 	public void updateCaretPosition(){
 		caretPostionKeyboard = keyboardInputField.caretPosition;
-		Debug.Log ("Caret: " + caretPostionKeyboard);
 	}
 	// Update is called once per frame
 	void Update () {
-		//Debug.Log ("End of Selection: "+keyboardInputField.selectionFocusPosition);
-		//Debug.Log ("Begin of Selection: "+keyboardInputField.selectionAnchorPosition);
 		// Check if we clicked somewhere outside of the 
 		if (InputDeviceManager.instance.currentInputDevice.isLeftButtonDown ()) {	
 				// Get currently hovered game object:
@@ -80,8 +81,6 @@ public class KeyboardControll : MonoBehaviour{
 			keyDeleteTimer = 0;
 			this.buttonDeleteLastSymbolPressedDown = false;
 		}
-
-
 	}
 	//Verifies, if a text within the Keyboard-Inpufield is selected
 	public void wasTextSelected(){
@@ -112,6 +111,7 @@ public class KeyboardControll : MonoBehaviour{
 				temp.text = temp.text.ToLower();
 			}
 		}
+		this.reFocusKeyboardInputfield ();
 	}
 	//Enter's the text at the given caretPostion in the InputField of the Keyboard
 	public void enterTextEvent(string key )	{
@@ -122,8 +122,36 @@ public class KeyboardControll : MonoBehaviour{
 			selectedInputField.text = selectedInputField.text.Insert (caretPostionKeyboard, key);
 		}
 		caretPostionKeyboard++;
+		this.reFocusKeyboardInputfield ();
 	}
 
+	//Set the focus back to the keyboard-Inputfield
+	private void reFocusKeyboardInputfield(){
+		EventSystem.current.SetSelectedGameObject (keyboardInputField.gameObject);
+		keyboardInputField.selectionFocusPosition = 0;
+		keyboardInputField.selectionAnchorPosition = 0;
+		beginTextSelection = 0;
+		endTextSelection = 0;
+		keyboardInputField.caretPosition = caretPostionKeyboard;
+		StartCoroutine (waitForFrame ());
+	}
+	public void changeNormalColorIntoHighlightedColorForRefocus(){
+		ColorBlock tempBlock = keyboardInputField.colors;
+		tempBlock.normalColor = keyboardInputField.colors.highlightedColor;
+		keyboardInputField.colors = tempBlock;
+		Debug.Log (keyboardInputField.colors.ToString ());
+	}
+	public void changeNormalColorBackAfterRefocus(){
+		ColorBlock tempBlock = keyboardInputField.colors;
+		tempBlock.normalColor = normalColor;
+		keyboardInputField.colors = tempBlock;
+	}
+	//used to deselect the text of keyboard-Inputfield
+	private IEnumerator waitForFrame(){
+		yield return 0;
+		keyboardInputField.MoveTextStart (false);
+		keyboardInputField.caretPosition = caretPostionKeyboard;
+	}
 
 	//Enter's a given letter
 	public void enterLetterEvent(string letter){
@@ -137,8 +165,6 @@ public class KeyboardControll : MonoBehaviour{
 	//Delete's the last Input-Symbol
 	public void  deleteLastInputSymbol()
 	{
-		Debug.Log ("Text: " + keyboardInputField.text);
-		Debug.Log ("Textlänge:" + keyboardInputField.text.Length);
 		this.deleteSelectedText ();
 		this.wasTextSelected ();
 		if (caretPostionKeyboard > 0) {			
@@ -150,6 +176,7 @@ public class KeyboardControll : MonoBehaviour{
 			}
 			caretPostionKeyboard--;
 		}
+		this.reFocusKeyboardInputfield ();
 	}
 	public void buttonDeleteLastSymbolPressingDown(){
 		this.buttonDeleteLastSymbolPressedDown = true;
@@ -162,6 +189,7 @@ public class KeyboardControll : MonoBehaviour{
 		}
 		keyboardInputField.text = "";
 		caretPostionKeyboard = 0;
+		this.reFocusKeyboardInputfield ();
 	}
 
 	//Cancel the input's, uses the Savecopy("oldText") and deactivate's the keyboard
@@ -202,6 +230,7 @@ public class KeyboardControll : MonoBehaviour{
 		this.caretPostionKeyboard++;
 		this.deleteSelectedText ();	
 		this.wasTextSelected ();
+		this.reFocusKeyboardInputfield ();
 	}
 	public void switchToField(int switchToField){
 		switch (activatedField_flag) {
@@ -217,6 +246,7 @@ public class KeyboardControll : MonoBehaviour{
 			break;
 		}
 		this.switcher (switchToField);
+		this.reFocusKeyboardInputfield ();
 	}
 	private void switcher(int switchToField){
 		switch (switchToField) {
