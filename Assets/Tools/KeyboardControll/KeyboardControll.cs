@@ -61,6 +61,7 @@ public class KeyboardControll : MonoBehaviour{
 
 	// Update is called once per frame
 	void Update () {
+		Debug.Log (keyboardInputField.caretPosition);
 		// Check if we clicked somewhere outside of the 
 		if (InputDeviceManager.instance.currentInputDevice.isLeftButtonDown ()) {	
 				// Get currently hovered game object:
@@ -164,9 +165,9 @@ public class KeyboardControll : MonoBehaviour{
 	}
 	//Make's linebreak in the keyboard-inputfield
 	public void lineBreak(){		
-		keyboardInputField.text += "\n";
+		keyboardInputField.text += System.Text.RegularExpressions.Regex.Unescape ("\n");
 		if (selectedInputField != null) {
-			selectedInputField.text += "\n";
+			selectedInputField.text += System.Text.RegularExpressions.Regex.Unescape ("\n");
 		}
 		this.caretPostionKeyboard++;
 		this.deleteSelectedText ();	
@@ -254,6 +255,10 @@ public class KeyboardControll : MonoBehaviour{
 	private void setAnnotationControllerPositionBack(){
 		Rect sideScreenRect = this.gameObject.GetComponentInChildren<RectTransform> ().rect;
 		annotationControl.transform.Translate (new Vector3 ((-sideScreenRect.width/1000)*2, 0));
+	}
+
+	void OnCollisionEnter(Collision collisionInfo){
+		Debug.Log ("Collision:"+collisionInfo.collider.name);
 	}
 
 
