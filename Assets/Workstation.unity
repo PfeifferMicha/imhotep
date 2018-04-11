@@ -996,7 +996,6 @@ GameObject:
   - component: {fileID: 26487850}
   - component: {fileID: 26487852}
   - component: {fileID: 26487853}
-  - component: {fileID: 26487851}
   m_Layer: 0
   m_Name: MainScene
   m_TagString: Untagged
@@ -1039,18 +1038,6 @@ Animation:
   m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
---- !u!114 &26487851
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 26487848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e12a05b23ae3c649b8b2273830007e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  keyboard: {fileID: 374721744}
 --- !u!95 &26487852
 Animator:
   serializedVersion: 3
@@ -13381,7 +13368,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 528188967}
-  - component: {fileID: 528188968}
   m_Layer: 5
   m_Name: UIScene
   m_TagString: Untagged
@@ -13404,18 +13390,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &528188968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 528188966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e12a05b23ae3c649b8b2273830007e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  keyboard: {fileID: 374721744}
 --- !u!1 &534350465
 GameObject:
   m_ObjectHideFlags: 0
@@ -16988,7 +16962,6 @@ GameObject:
   m_Component:
   - component: {fileID: 627425114}
   - component: {fileID: 627425115}
-  - component: {fileID: 627425116}
   m_Layer: 11
   m_Name: ToolScene
   m_TagString: Untagged
@@ -17031,18 +17004,6 @@ MonoBehaviour:
   ArrowR: {fileID: 21300000, guid: a3e7aee3a306f4546889aa41cd8b4500, type: 3}
   Cancel: {fileID: 21300000, guid: e4ea584d088314c52a09ba531de4b2b8, type: 3}
   iconColor: {r: 0.7, g: 0.85, b: 1, a: 1}
---- !u!114 &627425116
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 627425113}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e12a05b23ae3c649b8b2273830007e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  keyboard: {fileID: 374721744}
 --- !u!1 &634111105
 GameObject:
   m_ObjectHideFlags: 0
