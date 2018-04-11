@@ -90,6 +90,7 @@ public class KeyboardControl : MonoBehaviour{
 			this.keyDeleteTimer = 0;
 			this.buttonDeleteLastSymbolPressedDown = false;
 		}
+
 	}
 
 	//Helps to determ,if the button "DeleteLastSymbol" is pressed down for continously Deletion of the text
@@ -102,7 +103,7 @@ public class KeyboardControl : MonoBehaviour{
 		this.caretPostionKeyboard = this.keyboardInputField.caretPosition;
 	}
 	//Verifies, if a text within the Keyboard-Inpufield is selected
-	private void wasTextSelected(){
+	private void updateTextSelected(){
 		this.beginTextSelection = Mathf.Min (this.keyboardInputField.selectionFocusPosition, this.keyboardInputField.selectionAnchorPosition);
 		this.endTextSelection = Mathf.Max (this.keyboardInputField.selectionFocusPosition, this.keyboardInputField.selectionAnchorPosition);
 	}
@@ -150,7 +151,7 @@ public class KeyboardControl : MonoBehaviour{
 	//Enter's the text at the given caretPostion in the InputField of the Keyboard
 	public void enterTextEvent(string key )	{
 		this.deleteSelectedText ();
-		this.wasTextSelected ();
+		this.updateTextSelected ();
 		this.keyboardInputField.text = this.keyboardInputField.text.Insert(this.caretPostionKeyboard,key);
 		if (this.selectedInputField != null) {
 			this.selectedInputField.text = this.selectedInputField.text.Insert (this.caretPostionKeyboard, key);
@@ -173,7 +174,7 @@ public class KeyboardControl : MonoBehaviour{
 	public void deleteLastInputSymbol()
 	{
 		this.deleteSelectedText ();
-		this.wasTextSelected ();
+		this.updateTextSelected ();
 		if (this.caretPostionKeyboard > 0) {			
 			string temp = this.keyboardInputField.text;
 			string newText = temp.Substring (0, this.caretPostionKeyboard - 1) + temp.Substring (this.caretPostionKeyboard);
@@ -195,7 +196,7 @@ public class KeyboardControl : MonoBehaviour{
 			}
 			this.caretPostionKeyboard++;
 			this.deleteSelectedText ();	
-			this.wasTextSelected ();
+			this.updateTextSelected ();
 		//If the caretPosition is within the text, add the linebreak at that position and move the caretPosition to the end
 		} else {
 			string temp = this.keyboardInputField.text.Substring (this.caretPostionKeyboard);
