@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 //Responsible for every feature within in the keyboard
-public class KeyboardControll : MonoBehaviour{
+public class KeyboardControl : MonoBehaviour{
 	//Save's the text, before enter anything else
 	public string oldText;
 	//selected InputField, which the user clicked to activate the keyboard

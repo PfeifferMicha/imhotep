@@ -1051,7 +1051,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keyboard: {fileID: 374721744}
-  controller: {fileID: 374721747}
 --- !u!95 &26487852
 Animator:
   serializedVersion: 3
@@ -10212,7 +10211,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 374721744}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7749e19bb8b3a014aa2484e21a17fdb8, type: 3}
+  m_Script: {fileID: 11500000, guid: 14cd0c5de9832ab4685de8b387f38d6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   oldText: 
@@ -13417,7 +13416,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keyboard: {fileID: 374721744}
-  controller: {fileID: 374721747}
 --- !u!1 &534350465
 GameObject:
   m_ObjectHideFlags: 0
@@ -17045,7 +17043,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keyboard: {fileID: 374721744}
-  controller: {fileID: 374721747}
 --- !u!1 &634111105
 GameObject:
   m_ObjectHideFlags: 0
@@ -21891,7 +21888,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keyboard: {fileID: 374721744}
-  controller: {fileID: 374721747}
 --- !u!4 &795916005 stripped
 Transform:
   m_PrefabParentObject: {fileID: 400008, guid: ce964af60094a4324bf9f5758bf2520e, type: 3}

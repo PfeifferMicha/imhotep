@@ -11,7 +11,7 @@ public class KeyboardListener : MonoBehaviour{
 
 	public GameObject keyboard;
 	//Script
-	public KeyboardControll controller;
+	private KeyboardControl controller;
 	//current selected Gameobject
 	private GameObject selected;
 	// Use this for initialization
@@ -19,6 +19,7 @@ public class KeyboardListener : MonoBehaviour{
 		if (keyboard == null) {
 			keyboard = GameObject.FindWithTag ("Keyboard");
 		}
+		controller = keyboard.GetComponent<KeyboardControl> ();
 	}
 	
 	// Update is called once per frame
