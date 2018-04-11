@@ -14,30 +14,56 @@ public class KeyboardListener : MonoBehaviour{
 	private KeyboardControl controller;
 	//current selected Gameobject
 	private GameObject selected;
+
+	//Identify,if a warning is already active
+	private bool oneNotificationIsActive;
+
+
 	// Use this for initialization
 	void Start () {
-		if (keyboard == null) {
-			keyboard = GameObject.FindWithTag ("Keyboard");
+		if (this.keyboard == null) {
+			this.keyboard = GameObject.FindWithTag ("Keyboard");
 		}
-		controller = keyboard.GetComponent<KeyboardControl> ();
+		this.controller = this.keyboard.GetComponent<KeyboardControl> ();
+		this.oneNotificationIsActive = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		selected = EventSystem.current.currentSelectedGameObject;
-		if (selected != null && selected.name=="InputField" ) {
-			if (controller != null && selected.GetComponent<InputField> ().tag.CompareTo("Keyboard")!=0  ) {
-				controller.selectedInputField = selected.GetComponent<InputField> ();
+		//If the user tries to activate an other tool or if a keyboard is activate from an other Scene-Inputfield, send's a warning
+		int active = 0;
+		foreach (ToolWidget temp in ToolControl.instance.getExistingTools()) {
+			if (temp.gameObject.activeSelf) {
+				active++;
+			}
+		}
+		//Show's a warning,if an other tool not by the ToolScene already activated the keyboard
+		if (active==1 & this.controller.activatedByWhom == KeyboardControl.State_activation.activated_By_None_Tool & !oneNotificationIsActive) {
+			NotificationControl.instance.createNotification ("Please, close first the Tool,before open a new Tool", new System.TimeSpan (0, 0, 5));
+			this.oneNotificationIsActive = true;
+		}
+		this.selected = EventSystem.current.currentSelectedGameObject;
+		//Activate's the keyboard, if the current selected Gameobject is an Inputfield
+		if (this.selected != null && this.selected.name=="InputField" ) {
+			//Doesn't activat the keyboard, if the the inputfield of the keyboard is the current selected Gameobject
+			if (this.controller != null && this.selected.GetComponent<InputField> ().tag.CompareTo("Keyboard")!=0  ) {
+				this.controller.selectedInputField = this.selected.GetComponent<InputField> ();
 				//Replace's the placeholder-Text of the keyboard-InputField with the placeholdertext of the selected InputField 
-				if (controller.selectedInputField.placeholder.GetComponent<Text> () != null) {
-					controller.keyboardInputField.placeholder.
-							GetComponent<Text>().text = controller.
+				if (this.controller.selectedInputField.placeholder.GetComponent<Text> () != null) {
+					this.controller.keyboardInputField.placeholder.
+						GetComponent<Text>().text = this.controller.
 												selectedInputField.placeholder.GetComponent<Text> ().text;
 				}
-				controller.oldText = controller.selectedInputField.text;
-				controller.keyboardInputField.text = controller.selectedInputField.text;
-				controller.keyboardInputField.ActivateInputField ();
-				keyboard.SetActive (true);
+				this.controller.oldText = this.controller.selectedInputField.text;
+				this.controller.keyboardInputField.text = this.controller.selectedInputField.text;
+				this.controller.keyboardInputField.ActivateInputField ();
+				this.controller.activatedByWhom = KeyboardControl.State_activation.activated_By_None_Tool;
+				foreach (ToolWidget temp in ToolControl.instance.getExistingTools()) {
+					if (temp.gameObject.activeSelf) {
+						this.controller.activatedByWhom = KeyboardControl.State_activation.activated_By_Tool;
+					}
+				}
+				this.keyboard.SetActive (true);
 				EventSystem.current.SetSelectedGameObject (keyboard);
 				InputDeviceManager.instance.shakeLeftController( 0.5f, 0.15f );
 			}

@@ -44,6 +44,15 @@ public class KeyboardControl : MonoBehaviour{
 	//Has all existing tools except the keyboard
 	private List<ToolWidget> listofGameObjectsUIToolLayer;
 
+	//Used to identify,if an other tool not by the ToolScene activates the keyboard
+	public State_activation activatedByWhom;
+
+	public enum State_activation
+	{
+		not_activated,
+		activated_By_Tool,
+		activated_By_None_Tool
+	}
 	//Call's by activation
 	void OnEnable(){
 		this.endTextSelection = keyboardInputField.text.Length;
@@ -62,6 +71,7 @@ public class KeyboardControl : MonoBehaviour{
 		this.buttonDeleteLastSymbolPressedDown = false;	
 		this.normalColor = this.keyboardInputField.colors.normalColor;
 		this.listofGameObjectsUIToolLayer = ToolControl.instance.getExistingTools ();
+		this.activatedByWhom = State_activation.not_activated;
 	}
 
 
@@ -90,7 +100,6 @@ public class KeyboardControl : MonoBehaviour{
 			this.keyDeleteTimer = 0;
 			this.buttonDeleteLastSymbolPressedDown = false;
 		}
-
 	}
 
 	//Helps to determ,if the button "DeleteLastSymbol" is pressed down for continously Deletion of the text
@@ -238,6 +247,7 @@ public class KeyboardControl : MonoBehaviour{
 		this.gameObject.SetActive (false);
 		this.keyboardInputField.DeactivateInputField ();
 		this.setToolControllerPositionBack ();
+		this.activatedByWhom = State_activation.not_activated;
 	}
 	//Save's everything and deactivate the keyboard
 	public void save()
