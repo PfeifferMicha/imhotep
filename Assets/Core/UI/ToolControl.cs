@@ -38,6 +38,14 @@ public class ToolControl : MonoBehaviour {
 	private ToolRingEntry selectedToolEntry = null;
 
 	private List<ToolWidget> availableTools = new List<ToolWidget> ();
+	private List<ToolWidget> existingTools = null;
+
+	public List<ToolWidget> getExistingTools() {
+		List<ToolWidget> l = new List<ToolWidget> ();
+		foreach ( ToolWidget tool in existingTools )
+			l.Add( tool );
+		return l;
+	}
 
 	//! The tool which is currently automatically activated:
 	private GameObject overridingTool;
@@ -106,15 +114,23 @@ public class ToolControl : MonoBehaviour {
 	{
 		availableTools = new List<ToolWidget> ();
 
-		foreach (Transform child in transform) {
-			ToolWidget tool = child.GetComponent<ToolWidget> ();
-			if (tool != null) {
-				// Only show the tool if it's currently available:
-				if (tool.displayTime == ToolWidget.ToolDisplayTime.Always ||
-				   (tool.displayTime == ToolWidget.ToolDisplayTime.WhenPatientIsLoaded && Patient.getLoadedPatient () != null) ||
-					(tool.displayTime == ToolWidget.ToolDisplayTime.WhenNoPatientIsLoaded && Patient.getLoadedPatient () == null)) {
-					availableTools.Add (tool);
+		if( existingTools == null )
+		{
+			existingTools = new List<ToolWidget> ();
+			foreach (Transform child in transform) {
+				ToolWidget tool = child.GetComponent<ToolWidget> ();
+				if (tool != null && tool.displayTime != ToolWidget.ToolDisplayTime.Never) {
+					existingTools.Add (tool);
 				}
+			}
+		}
+
+		foreach (ToolWidget tool in existingTools) {
+			// Only show the tool if it's currently available:
+			if (tool.displayTime == ToolWidget.ToolDisplayTime.Always ||
+			     (tool.displayTime == ToolWidget.ToolDisplayTime.WhenPatientIsLoaded && Patient.getLoadedPatient () != null) ||
+			     (tool.displayTime == ToolWidget.ToolDisplayTime.WhenNoPatientIsLoaded && Patient.getLoadedPatient () == null)) {
+				availableTools.Add (tool);
 			}
 		}
 
@@ -259,8 +275,8 @@ public class ToolControl : MonoBehaviour {
 	{
 		if (toolRing == null)
 			return;
-		
-		int numTools = transform.childCount;
+
+		int numTools = availableTools.Count;
 		float angle = (360f) / (float)numTools;
 		setToolRingTargetRotation( toolRingTargetAngle + angle );
 		//toolRing.transform.localRotation *= Quaternion.AngleAxis (angle, Vector3.up);
@@ -271,8 +287,8 @@ public class ToolControl : MonoBehaviour {
 	{
 		if (toolRing == null)
 			return;
-		
-		int numTools = transform.childCount;
+
+		int numTools = availableTools.Count;
 		float angle = (360f) / (float)numTools;
 		setToolRingTargetRotation( toolRingTargetAngle - angle );
 		//toolRing.transform.localRotation *= Quaternion.AngleAxis (-angle, Vector3.up);
