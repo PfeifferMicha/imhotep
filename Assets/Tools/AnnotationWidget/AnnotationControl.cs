@@ -168,7 +168,7 @@ public class AnnotationControl : MonoBehaviour
 
 	//Called if the user pressed 'add annoation' button
 	public void AddAnnotationPressed ()
-	{
+	{	
 		if (currentActiveScreen == ActiveScreen.add) {
 			closeAnnotationScreen ();
 		} else {
@@ -187,6 +187,7 @@ public class AnnotationControl : MonoBehaviour
 	//Called if the user pressed 'show Annotation' button
 	public void ToggleAnnotationsList ()
 	{
+		updatePatientAnnotationList ();
 		if (currentActiveScreen == ActiveScreen.list) {
 			// Close AnnotationListScreen
 			ListScreen.SetActive (false);
@@ -458,6 +459,7 @@ public class AnnotationControl : MonoBehaviour
 		// Reset Screen
 		if(currentAnnotationListEntry != null) {
 			currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().setAnnotationMovementActive (false);
+			currentAnnotationListEntry.GetComponent<AnnotationListEntry> ().getAnnotation ().GetComponent<Annotation> ().saveLabelChanges ();
 		}
 		resetCurrentAnnotation ();
 		Destroy (previewAnnotation);
