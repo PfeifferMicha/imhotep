@@ -170,7 +170,7 @@ public class KeyboardControl : MonoBehaviour{
 	}
 
 	//Delete's the last Input-Symbol
-	public void  deleteLastInputSymbol()
+	public void deleteLastInputSymbol()
 	{
 		this.deleteSelectedText ();
 		this.wasTextSelected ();
@@ -307,7 +307,8 @@ public class KeyboardControl : MonoBehaviour{
 	//####################### Method's for Refocus to the Keyboard-InputField after a Button is clicked #######################
 	//Set the focus back to the keyboard-Inputfield and deselect's the text
 	private void reFocusKeyboardInputfield(){
-		this.reFoucsKeyboardInputfieldWithoutDeselectionText ();
+		EventSystem.current.SetSelectedGameObject (this.keyboardInputField.gameObject);
+		this.keyboardInputField.caretPosition = this.caretPostionKeyboard;
 		this.keyboardInputField.selectionFocusPosition = 0;
 		this.keyboardInputField.selectionAnchorPosition = 0;
 		this.beginTextSelection = 0;
@@ -316,8 +317,12 @@ public class KeyboardControl : MonoBehaviour{
 	}
 	//Set the focus back to the keyboard-Inputfield without Deselection of the text
 	private void reFoucsKeyboardInputfieldWithoutDeselectionText(){
-		EventSystem.current.SetSelectedGameObject (this.keyboardInputField.gameObject);
-		this.keyboardInputField.caretPosition = this.caretPostionKeyboard;
+		if ((this.beginTextSelection - this.endTextSelection) != 0) {
+			EventSystem.current.SetSelectedGameObject (this.keyboardInputField.gameObject);
+			this.keyboardInputField.caretPosition = this.caretPostionKeyboard;
+		} else {
+			this.reFocusKeyboardInputfield ();
+		}
 	}
 	public void changeNormalColorIntoHighlightedColorForRefocus(){
 		ColorBlock tempBlock = this.keyboardInputField.colors;
