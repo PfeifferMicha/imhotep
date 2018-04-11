@@ -51,6 +51,7 @@ public class KeyboardControll : MonoBehaviour{
 				}
 			}
 		}
+		setToBigLetters ();
 	}
 	// Use this for initialization
 	void Start () {
@@ -118,11 +119,7 @@ public class KeyboardControll : MonoBehaviour{
 	//changes letter's from big to small or small to big
 	public void setShift_Flag(){
 		if (shift_flag) {
-			shift_flag = false;
-			foreach (GameObject buttonletter in keyboard_letters) {
-				Text temp = buttonletter.GetComponent<Text> ();
-				temp.text = temp.text.ToUpper ();
-			}
+			setToBigLetters ();
 		} else {
 			shift_flag = true;
 			foreach (GameObject buttonletter in keyboard_letters) {
@@ -131,6 +128,14 @@ public class KeyboardControll : MonoBehaviour{
 			}
 		}
 		this.reFocusKeyboardInputfield ();
+	}
+	//Changes letter's to big Letter's independent of the shift_flag
+	private void setToBigLetters(){
+		shift_flag = false;
+		foreach (GameObject buttonletter in keyboard_letters) {
+			Text temp = buttonletter.GetComponent<Text> ();
+			temp.text = temp.text.ToUpper ();
+		}
 	}
 	//Enter's the text at the given caretPostion in the InputField of the Keyboard
 	public void enterTextEvent(string key )	{
