@@ -37,17 +37,17 @@ public class KeyboardControll : MonoBehaviour{
 	//memorize normalColor of keyboardInputField for ReFocus
 	private Color normalColor;
 
-	private List<GameObject> listofGameObjectsUIToolLayer;
+	private List<ToolWidget> listofGameObjectsUIToolLayer;
 
 	//Call's by activation
 	void OnEnable(){
 		this.endTextSelection = keyboardInputField.text.Length;
 		//Reset's the position of already active tool, next to the keyboard
-		List<GameObject> temp = this.getListofGameObjectsUIToolLayer();
+		List<ToolWidget> temp = ToolControl.instance.getExistingTools();
 		if (temp != null) {	
 			for (int i = 0; i < temp.Count; i++) {
 				if (temp [i].gameObject.activeSelf) {
-					setActiveToolControllerPosition (temp [i].GetComponent<Transform>());
+					setActiveToolControllerPosition (temp [i].gameObject.GetComponent<Transform>());
 				}
 			}
 		}
@@ -62,7 +62,7 @@ public class KeyboardControll : MonoBehaviour{
 		activatedField_flag = 0;
 		buttonDeleteLastSymbolPressedDown = false;	
 		normalColor = keyboardInputField.colors.normalColor;
-		this.listofGameObjectsUIToolLayer = this.getListofGameObjectsUIToolLayer();
+		this.listofGameObjectsUIToolLayer = ToolControl.instance.getExistingTools ();
 	}
 
 
@@ -278,24 +278,11 @@ public class KeyboardControll : MonoBehaviour{
 		Rect sideScreenRect = this.gameObject.GetComponentInChildren<RectTransform> ().rect;
 		for (int i = 0; i < listofGameObjectsUIToolLayer.Count; i++) {
 			if (listofGameObjectsUIToolLayer [i].gameObject.activeSelf) {
-				listofGameObjectsUIToolLayer [i].GetComponent<Transform>().Translate (new Vector3 ((-sideScreenRect.width / 1000) * 2, 0));
+				listofGameObjectsUIToolLayer [i].gameObject.GetComponent<Transform>().Translate (new Vector3 ((-sideScreenRect.width / 1000) * 2, 0));
 			}
 		}		
 	}
 
-	//Find's all GameObjects-Children of the ToolScene,except the Keyboard
-	private List<GameObject> getListofGameObjectsUIToolLayer(){
-		GameObject temp = GameObject.Find ("ToolScene");
-		List<GameObject> goList = new List<GameObject> ();
-		foreach (Transform child in temp.transform) {
-			if (child.name != "Keyboard") {
-				goList.Add (child.gameObject);
-			}
-		}
-		GameObject annotation = GameObject.Find ("Annotation Control");
-		goList.Add (annotation);
-		return goList;
-	}
 	//================Method's for Refocus to the Keyboard-InputField after a Button is clicked=========
 	//Set the focus back to the keyboard-Inputfield
 	private void reFocusKeyboardInputfield(){
