@@ -123,7 +123,7 @@ public class KeyboardControll : MonoBehaviour{
 		} else {
 			setToSmallLetters ();
 		}
-		this.reFocusKeyboardInputfield ();
+		this.reFoucsKeyboardInputfieldWithoutDeselectionText ();
 	}
 	//Changes letter's to big Letter's independent of the shift_flag
 	private void setToBigLetters(){
@@ -257,7 +257,7 @@ public class KeyboardControll : MonoBehaviour{
 			break;
 		}
 		this.switcher (switchToField);
-		this.reFocusKeyboardInputfield ();
+		this.reFoucsKeyboardInputfieldWithoutDeselectionText ();
 	}
 	private void switcher(int switchToField){
 		switch (switchToField) {
@@ -294,15 +294,19 @@ public class KeyboardControll : MonoBehaviour{
 	}
 
 	//================Method's for Refocus to the Keyboard-InputField after a Button is clicked=========
-	//Set the focus back to the keyboard-Inputfield
+	//Set the focus back to the keyboard-Inputfield and deselect's the text
 	private void reFocusKeyboardInputfield(){
-		EventSystem.current.SetSelectedGameObject (keyboardInputField.gameObject);
+		reFoucsKeyboardInputfieldWithoutDeselectionText ();
 		keyboardInputField.selectionFocusPosition = 0;
 		keyboardInputField.selectionAnchorPosition = 0;
 		beginTextSelection = 0;
 		endTextSelection = 0;
-		keyboardInputField.caretPosition = caretPostionKeyboard;
 		StartCoroutine (waitForFrame ());
+	}
+	//Set the focus back to the keyboard-Inputfield without Deselection of the text
+	private void reFoucsKeyboardInputfieldWithoutDeselectionText(){
+		EventSystem.current.SetSelectedGameObject (keyboardInputField.gameObject);
+		keyboardInputField.caretPosition = caretPostionKeyboard;
 	}
 	public void changeNormalColorIntoHighlightedColorForRefocus(){
 		ColorBlock tempBlock = keyboardInputField.colors;
