@@ -280,15 +280,13 @@ public class KeyboardControll : MonoBehaviour{
 	}
 	//Reset's an active Tool-Position
 	private void setActiveToolControllerPosition(Transform tool){
-		Rect sideScreenRect = this.gameObject.GetComponentInChildren<RectTransform> ().rect;
-		tool.Translate (new Vector3 ((sideScreenRect.width/1000)*2, 0));
+		tool.Translate(0.32f,0,0);
 	}
 	//Reset's an active-Position to the original position
 	private void setToolControllerPositionBack(){
-		Rect sideScreenRect = this.gameObject.GetComponentInChildren<RectTransform> ().rect;
 		for (int i = 0; i < listofGameObjectsUIToolLayer.Count; i++) {
 			if (listofGameObjectsUIToolLayer [i].gameObject.activeSelf) {
-				listofGameObjectsUIToolLayer [i].gameObject.GetComponent<Transform>().Translate (new Vector3 ((-sideScreenRect.width / 1000) * 2, 0));
+				listofGameObjectsUIToolLayer [i].gameObject.GetComponent<Transform>().Translate (-0.32f,0,0);
 			}
 		}		
 	}
