@@ -38,6 +38,7 @@ public class KeyboardListener : MonoBehaviour{
 				controller.keyboardInputField.ActivateInputField ();
 				keyboard.SetActive (true);
 				EventSystem.current.SetSelectedGameObject (keyboard);
+				InputDeviceManager.instance.shakeLeftController( 0.5f, 0.15f );
 			}
 		}
 	}
