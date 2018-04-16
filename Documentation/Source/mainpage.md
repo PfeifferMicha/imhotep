@@ -20,7 +20,7 @@ To compile the Framework, you need:
 
 VR Setup:
 -----------------------------------------------
-To run the project using the *Oculur Rift* or normal computer screen (for developping purposes):
+To run the project using the *Oculus Rift* or normal computer screen (for developping purposes):
 	1. Search for the "Camera" GameObject in the Hierarchy
 	2. The "Camera" has a child called "Camera(Rift)". Set it to active.
 	3. The "Camera" also has a child called "[CameraRig(Vive)]". Set it to inactive.
