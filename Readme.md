@@ -57,11 +57,10 @@ See [here](ToDo.md) to get a list of much needed features, some of which we are 
 
 Documentation:
 ---------------
-We are working on getting the documentation into a web-readable format.
 
-In the meantime, to generate the documentation, download "Doxygen". Then use the Doxyfile in the project's root directory to
-generate the documentation.
-For example, on Linux, run: 'doxygen Doxyfile'. You can then load the file Documentation/html/index.html.
+The documentation can be found [here](https://documentation.imhotep-medical.org/). This is kept up to date with the current master branch.
+
+Alternatively, generate the documentation yourself with the _doxygen_ program. There is a Doxyfile included in the root of the project.
 
 
 
