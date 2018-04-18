@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-/*
- * Listen every Frame, if the current selected Gameobject is an InputField. 
+/*!Listen every Frame, if the current selected Gameobject is an InputField. 
  * If it is an InputField, it will activate the Keyboard-Gameobject.
  */
 public class KeyboardListener : MonoBehaviour{
 
+	//Reference to the keyboard
 	public GameObject keyboard;
 	//Script
 	private KeyboardControl controller;

@@ -4,7 +4,19 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-//Responsible for every feature within in the keyboard
+/*!Manages the the following keyboardfeature's. 
+ * - Three field's: numberfield, specialletterfield and letterfield. 
+ * - Delete the whole text. 
+ * - Delete one symbol at a time. 
+ * - Delete's faster, if you hold the delete button.
+ * - Consider marked text, if you press a button and delete's the text. 
+ * - You can jump to a certain caret-position.
+ * - You can save and cancel the text.
+ * 
+ * At that moment, you can't select text.
+ * 
+ * In order to use the keyboard, also the keyboardListener is requierd.
+*/
 public class KeyboardControl : MonoBehaviour{
 	//Save's the text, before enter anything else
 	public string oldText;
@@ -237,7 +249,7 @@ public class KeyboardControl : MonoBehaviour{
 		this.reFocusKeyboardInputfield ();
 	}
 
-	//Cancel the input's, uses the Savecopy("oldText") and deactivate's the keyboard
+	//!Cancel everything and reset the text to the old value. And deactivate the keyboard and his Inputfield.
 	public void cancel()
 	{
 		this.caretPostionKeyboard = 0;
@@ -248,7 +260,7 @@ public class KeyboardControl : MonoBehaviour{
 		this.gameObject.SetActive (false);
 		this.keyboardInputField.DeactivateInputField ();
 	}
-	//Save's everything and deactivate the keyboard
+	//!Save's everything and deactivate the keyboard including his Inputfield.
 	public void save()
 	{
 		this.caretPostionKeyboard = 0;
@@ -313,11 +325,13 @@ public class KeyboardControl : MonoBehaviour{
 			this.reFocusKeyboardInputfield ();
 		}
 	}
+	//Necessary for refocusing to the Inputfield, after the user clicked a button. It change's normal color into highlighted color.
 	public void changeNormalColorIntoHighlightedColorForRefocus(){
 		ColorBlock tempBlock = this.keyboardInputField.colors;
 		tempBlock.normalColor = this.keyboardInputField.colors.highlightedColor;
 		this.keyboardInputField.colors = tempBlock;
 	}
+	//Necessary for refocusing to the Inputfield, after the user clicked a button. It change's normal color back into original color.
 	public void changeNormalColorBackAfterRefocus(){
 		ColorBlock tempBlock = this.keyboardInputField.colors;
 		tempBlock.normalColor = normalColor;
