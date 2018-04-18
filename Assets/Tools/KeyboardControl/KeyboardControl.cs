@@ -57,7 +57,7 @@ public class KeyboardControl : MonoBehaviour{
 	void OnEnable(){
 		this.endTextSelection = keyboardInputField.text.Length;
 		//Reset's the position of already active tool, next to the keyboard
-		this.setActiveToolControllerPosition();
+		//this.setActiveToolControllerPosition();
 		this.setToBigLetters ();
 
 		ToolControl.instance.overrideTool ( this.gameObject );
@@ -259,6 +259,7 @@ public class KeyboardControl : MonoBehaviour{
 		this.keyboardInputField.text = oldText;
 		this.gameObject.SetActive (false);
 		this.keyboardInputField.DeactivateInputField ();
+		//this.setToolControllerPositionBack ();
 	}
 	//!Save's everything and deactivate the keyboard including his Inputfield.
 	public void save()
@@ -269,7 +270,7 @@ public class KeyboardControl : MonoBehaviour{
 		}
 		this.keyboardInputField.DeactivateInputField ();
 		this.gameObject.SetActive (false);
-		this.setToolControllerPositionBack ();
+		//this.setToolControllerPositionBack ();
 	}
 
 	//Switches between the different Fields (for numbers/letter/special signs) of the keyboard
@@ -304,6 +305,7 @@ public class KeyboardControl : MonoBehaviour{
 		}
 		this.activatedField_flag = switchToField;
 	}
+
 
 	//####################### Method's for Refocus to the Keyboard-InputField after a Button is clicked #######################
 	//Set the focus back to the keyboard-Inputfield and deselect's the text

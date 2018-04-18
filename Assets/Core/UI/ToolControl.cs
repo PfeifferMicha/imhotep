@@ -16,6 +16,9 @@ public class ToolControl : MonoBehaviour {
 	public Sprite Cancel;
 
 	private GameObject activeTool = null;
+	public GameObject getActiveTool() {
+		return activeTool;
+	}
 
 	public static ToolControl instance { private set; get; }
 
@@ -386,7 +389,6 @@ public class ToolControl : MonoBehaviour {
 	public void chooseTool( ToolWidget tool )
 	{
 		previousTool = activeTool;
-		overridingTool = null;
 
 		closeActiveTool ();
 		toolRingCancel ();
@@ -404,28 +406,29 @@ public class ToolControl : MonoBehaviour {
 	}
 
 	/*! Forces the tool given by 'name' to be active. */
-	public void overrideTool( string name )
+	public void overrideTool( GameObject otherTool )
 	{
-		foreach (ToolWidget tool in availableTools) {
-			if (tool.name == name) {
-				if (tool.gameObject != activeTool) {
-					chooseTool (tool);
-					overridingTool = tool.gameObject;
-				}
-			}
+		if (overridingTool != null)
+			return;
+		if (activeTool) {
+			activeTool.GetComponent<ToolWidget> ().MoveToBackground ();
+		}
+		overridingTool = otherTool;
+		foreach (Canvas c in overridingTool.transform.GetComponentsInChildren<Canvas>(true)) {
+			c.sortingOrder += 2;
 		}
 	}
 
-	public void unoverrideTool( string name )
+	public void unoverrideTool()
 	{
-		if (overridingTool != null && overridingTool.name == name) {
-			overridingTool = null;
-			if (previousTool != null) {
-				chooseTool (previousTool.GetComponent<ToolWidget> ());
-				previousTool = null;
-			} else {
-				closeActiveTool ();
-			}
+		if (overridingTool == null)
+			return;
+		if (activeTool) {
+			activeTool.GetComponent<ToolWidget> ().MoveToForeground ();
 		}
+		foreach (Canvas c in overridingTool.transform.GetComponentsInChildren<Canvas>(true)) {
+			c.sortingOrder -= 2;
+		}
+		overridingTool = null;
 	}
 }

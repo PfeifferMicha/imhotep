@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
+[RequireComponent(typeof(CanvasGroup))]
 public class ToolWidget : MonoBehaviour {
 
 	public Sprite ToolIcon;
@@ -25,32 +26,30 @@ public class ToolWidget : MonoBehaviour {
 
 	public ToolDisplayTime displayTime = ToolDisplayTime.WhenPatientIsLoaded;
 
+	private bool isDisabled = false;
 
 	// Use this for initialization
 	void Start () {
 
 		// Set material for all texts:
-		Material mat = new Material(Shader.Find("Custom/TextShader"));
+		Material mat = new Material (Shader.Find ("Custom/TextShader"));
 		mat.renderQueue += 2;	// overlay!
 		Component[] texts;
-		texts = GetComponentsInChildren( typeof(Text), true );
+		texts = GetComponentsInChildren (typeof(Text), true);
 
-		if( texts != null )
-		{
+		if (texts != null) {
 			foreach (Text t in texts)
 				t.material = mat;
 		}
 
-		Material material = new Material(Shader.Find("Custom/UIObject"));
+		Material material = new Material (Shader.Find ("Custom/UIObject"));
 		material.renderQueue += 2;	// overlay!
 		Component[] images;
-		images = GetComponentsInChildren( typeof(Image), true );
+		images = GetComponentsInChildren (typeof(Image), true);
 
-		if( images != null )
-		{
-			foreach (Image i in images)
-			{
-				if( i.material.name == "Default UI Material")
+		if (images != null) {
+			foreach (Image i in images) {
+				if (i.material.name == "Default UI Material")
 					i.material = material;
 			}
 		}

@@ -160,9 +160,9 @@ public class DICOMBounds : MonoBehaviour {
 				// Display the position of the current slice:
 
 				Vector3 p1 = dicom2D.transformPixelToPatientPos (Vector2.zero);
-				Vector3 p2 = dicom2D.transformPixelToPatientPos (new Vector2 (dicom2D.origTexWidth, 0f), dicom2D.slice);
-				Vector3 p3 = dicom2D.transformPixelToPatientPos (new Vector2 (dicom2D.origTexWidth, dicom2D.origTexHeight), dicom2D.slice);
-				Vector3 p4 = dicom2D.transformPixelToPatientPos (new Vector2 (0, dicom2D.origTexHeight), dicom2D.slice);
+				Vector3 p2 = dicom2D.transformPixelToPatientPos (new Vector2 (dicom2D.origTexWidth, 0f) );
+				Vector3 p3 = dicom2D.transformPixelToPatientPos (new Vector2 (dicom2D.origTexWidth, dicom2D.origTexHeight) );
+				Vector3 p4 = dicom2D.transformPixelToPatientPos (new Vector2 (0, dicom2D.origTexHeight) );
 				RectXMin.SetPosition (0, p1);
 				RectXMin.SetPosition (1, p4);
 				RectXMax.SetPosition (0, p2);

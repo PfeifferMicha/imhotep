@@ -27,3 +27,5 @@ Thumbs.db
 *.swp
 Documentation/html
 *.fuse_
+
+screen*.png
