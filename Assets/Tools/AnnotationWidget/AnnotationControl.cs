@@ -141,6 +141,10 @@ public class AnnotationControl : MonoBehaviour
 
 	void OnDisable ()
 	{
+		foreach( GameObject g in annotationListEntryList ) {
+			g.GetComponent<AnnotationListEntry> ().getAnnotation ().GetComponent<Annotation> ().saveLabelChanges ();
+		}
+
 		// Unregister myself:
 		clearAll ();
 		Destroy (clickNotifier);
@@ -648,7 +652,7 @@ public class AnnotationControl : MonoBehaviour
 	{
 		Patient p = Patient.getLoadedPatient ();
 		if (p != null)
-			p.updateAnnotationList (annotationListEntryList);
+			p.updateAnnotationList (annotationListEntryList); 
 	}
 
 	//Called to edit Annotation

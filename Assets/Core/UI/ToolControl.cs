@@ -372,6 +372,10 @@ public class ToolControl : MonoBehaviour {
 	public void closeActiveTool()
 	{
 		if (activeTool != null) {
+			if (overridingTool != null) {
+				overridingTool.gameObject.SetActive (false);
+			}
+
 			activeTool.SetActive (false);
 			activeTool = null;
 
