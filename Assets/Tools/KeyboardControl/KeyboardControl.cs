@@ -200,9 +200,9 @@ public class KeyboardControl : MonoBehaviour{
 		if (this.caretPostionKeyboard > 0) {			
 			string temp = this.keyboardInputField.text;
 			string newText = temp.Substring (0, this.caretPostionKeyboard - 1) + temp.Substring (this.caretPostionKeyboard);
-			this.keyboardInputField.text = this.keyboardInputField.text.Replace (this.keyboardInputField.text, newText);
-			if (this.selectedInputField != null) {
-				this.selectedInputField.text = this.selectedInputField.text.Replace (this.selectedInputField.text, newText);
+			this.keyboardInputField.text = newText;
+			if (this.selectedInputField != null){
+				this.selectedInputField.text = newText;
 			}
 			this.caretPostionKeyboard--;
 		}
