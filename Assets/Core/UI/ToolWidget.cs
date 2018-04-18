@@ -83,4 +83,26 @@ public class ToolWidget : MonoBehaviour {
 	{
 		transform.SetParent (ToolControl.instance.transform, false);
 	}
+
+	public void MoveToBackground()
+	{
+		if (isDisabled)
+			return;
+		CanvasGroup canvasGroup = transform.GetComponent<CanvasGroup> ();
+		canvasGroup.alpha = 0.2f;
+		canvasGroup.interactable = false;
+		transform.Translate (0f, -0.04f, 0f);
+		isDisabled = true;
+	}
+
+	public void MoveToForeground()
+	{
+		if (!isDisabled)
+			return;
+		CanvasGroup canvasGroup = transform.GetComponent<CanvasGroup> ();
+		canvasGroup.alpha = 1f;
+		canvasGroup.interactable = true;
+		transform.Translate (0f, 0.04f, 0f);
+		isDisabled = false;
+	}
 }
