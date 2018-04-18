@@ -63,8 +63,8 @@ public class KeyboardListener : MonoBehaviour{
 						this.controller.activatedByWhom = KeyboardControl.State_activation.activated_By_Tool;
 					}
 				}
-				this.keyboard.SetActive (true);
 				EventSystem.current.SetSelectedGameObject (keyboard);
+				this.keyboard.SetActive (true);
 				InputDeviceManager.instance.shakeLeftController( 0.5f, 0.15f );
 			}
 		}

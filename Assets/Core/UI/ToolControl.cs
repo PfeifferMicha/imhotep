@@ -389,6 +389,13 @@ public class ToolControl : MonoBehaviour {
 		activeTool = tool.gameObject;
 		// Move the active tool to the tool anchor:
 		activeTool.SetActive (true);
+
+		if (overridingTool != null) {
+			activeTool.GetComponent<ToolWidget> ().MoveToBackground ();
+		} else {
+			activeTool.GetComponent<ToolWidget> ().MoveToForeground ();
+		}
+
 		InputDeviceManager.instance.shakeLeftController( 0.5f, 0.15f );
 	}
 

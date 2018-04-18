@@ -59,6 +59,13 @@ public class KeyboardControl : MonoBehaviour{
 		//Reset's the position of already active tool, next to the keyboard
 		this.setActiveToolControllerPosition();
 		this.setToBigLetters ();
+
+		ToolControl.instance.overrideTool ( this.gameObject );
+	}
+
+	void OnDisable(){
+		ToolControl.instance.unoverrideTool ();
+		this.cancel ();
 	}
 	// Use this for initialization
 	void Start () {
@@ -99,6 +106,12 @@ public class KeyboardControl : MonoBehaviour{
 			this.keyDeleteThreshold = 0.5;
 			this.keyDeleteTimer = 0;
 			this.buttonDeleteLastSymbolPressedDown = false;
+		}
+		if (selectedInputField != null) {
+			Debug.Log ("Input field:" + selectedInputField.transform.parent.gameObject.activeInHierarchy);
+			if (!selectedInputField.transform.parent.gameObject.activeInHierarchy) {
+				this.cancel ();
+			}
 		}
 	}
 
