@@ -34,6 +34,7 @@ public class ScreenshotControl : MonoBehaviour {
 	}
 	void OnEnable(){
 		this.background.SetActive (true);
+		this.countdown.SetActive (false);
 	}
 	// Update is called once per frame
 	void Update () {
