@@ -345,4 +345,10 @@ public class KeyboardControl : MonoBehaviour{
 		this.keyboardInputField.MoveTextStart (false);
 		this.keyboardInputField.caretPosition = this.caretPostionKeyboard;
 	}
+
+	//Method, for development purpose: Enables's to enter text via physical keyboard, if you are not in the virtual reality-mode
+	public void keyboardTextEvent(string key )	{
+		this.selectedInputField.text = this.keyboardInputField.text;
+	}
+
 }
