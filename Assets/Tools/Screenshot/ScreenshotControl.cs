@@ -59,9 +59,10 @@ public class ScreenshotControl : MonoBehaviour {
 	}
 
 	private IEnumerator waitForSecondsAndTakePicture(){
+		this.tookPicture = true;
 		yield return WaitForSecondsAndShowEverySecond();
 		this.takePicture ();
-		this.tookPicture = true;
+
 		if (!background.activeSelf) {
 			this.gameObject.SetActive (false);
 			this.background.SetActive (true);
