@@ -27,7 +27,11 @@ namespace BlenderMeshReader
 
         public UnityMesh(string name, ulong uniqueIdentifier)
         {
-            this.Name = name;
+			// Remove the "ME" at the beginning of the file name:
+			if (name.Substring (0, 2) == "ME") {
+				name = name.Substring (2, name.Length - 2);
+			}
+			this.Name = name;
             this.UniqueIdentifier = uniqueIdentifier;
             VertexList = new Vector3[0];
             NormalList = new Vector3[0];

@@ -179,6 +179,7 @@ public class MeshLoader : MonoBehaviour {
             containerObject.transform.localPosition = new Vector3(0, 0, 0);
 			MeshMaterialControl matControl = containerObject.AddComponent<MeshMaterialControl> ();
 			Color col = matColorForMeshName (um[0].Name);
+			Debug.Log ("Material Control: " + um [0].Name + " "  + col);
 			matControl.setColor (col);
             MeshGameObjectContainers.Add(containerObject);
 
@@ -288,7 +289,11 @@ public class MeshLoader : MonoBehaviour {
 	{
 		foreach(MeshListElement mle in meshJson.meshList)
 		{
-			if(mle.name == meshName)
+			string mleName = mle.name;
+			// Remove "ME" at start of name (for backward compatibility)
+			if( mleName.Substring(0,2) == "ME")
+				mleName = mleName.Substring (2, mleName.Length - 2);
+			if(mleName == meshName)
 			{
 				return HexToColor (mle.color);
 			}

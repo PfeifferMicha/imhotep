@@ -19,7 +19,11 @@ public class View
 			int numEntries = vj.opacityKeys.Count;
 			for( int i = 0; i < numEntries; i ++ )
 			{
-				opacities.Add( vj.opacityKeys[i], vj.opacityValues[i] );
+				string meshName = vj.opacityKeys [i];
+				// Remove a possible "ME" at the beginning of the mesh name (for backward compatibility):
+				if( meshName.Substring( 0, 2 ) == "ME" )
+					meshName = meshName.Substring (2, meshName.Length - 2);
+				opacities.Add( meshName, vj.opacityValues[i] );
 			}
 		} else {
 			throw new System.Exception("Number of opacity values incorrect. Number of opacity keys and number of opacities must match!");
