@@ -88,7 +88,7 @@ public class ModelRotator : MonoBehaviour
 						Vector3 upVector = Camera.main.transform.up;
 						Vector3 rightVector = Camera.main.transform.right;
 						transform.RotateAround (transform.position, upVector, inputH * rotationSpeedMouse);
-						//transform.RotateAround (transform.position, rightVector, -inputV * rotationSpeedMouse);
+						transform.RotateAround (transform.position, rightVector, -inputV * rotationSpeedMouse);
 					}
 
 					targetRotation = transform.localRotation;	// Make sure it doesn't auto-rotate back.
