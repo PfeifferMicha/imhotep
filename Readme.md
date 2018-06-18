@@ -39,7 +39,7 @@ Features:
 Usage:
 ---------------
 To run the project, you need a VR Headset (HTC Vive is recommended, although the framework will also work with an
-Oculus Rift), Unity3D (tested with Version 2017.1 and 2017.2) and Blender3D. Set up your VR Headset, then download this project and load it using the Unity3D editor. In the Assets Folder, load the "Workstation" scene and then run the project. To select the correct HMD (Vive or Rift), please consult the documentation (Main page, "VR Setup" section).
+Oculus Rift), Unity3D (tested with Version 2017.1 and 2017.2) and Blender3D. Set up your VR Headset, then download this project and load it using the Unity3D editor. In the Assets Folder, load the "Workstation" scene and then run the project. To select the correct HMD (Vive or Rift), please consult the documentation (documentation.imhotep-medical.org, "VR Setup" section).
 The visualization data is not included in the source code. We will upload an anonymous test patient data set soon. Until then, if you want to use the software and get an example set of
 visualization data, please [contact us](http://imhotep-medical.org/contact).
 
