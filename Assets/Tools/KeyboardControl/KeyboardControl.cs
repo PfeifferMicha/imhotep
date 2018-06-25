@@ -113,6 +113,8 @@ public class KeyboardControl : MonoBehaviour{
 				this.cancel ();
 			}
 		}
+		Text t = new Text ();
+		t.
 	}
 
 	//Helps to determ,if the button "DeleteLastSymbol" is pressed down for continously Deletion of the text
