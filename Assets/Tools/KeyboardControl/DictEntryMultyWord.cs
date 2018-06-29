@@ -51,7 +51,7 @@ public class DictEntryMultyWord : DictEntry {
 
 	public List<DictEntrySingleWord> getSortedLikelyWordsAfterRate(string prefix){
 		List<DictEntrySingleWord> temp = this.getLikelyWords (prefix);
-		temp.Sort (new DictEntryRateComparable ());
+		temp.Sort(new DictEntryRateComparable ());
 		return temp;
 	}
 

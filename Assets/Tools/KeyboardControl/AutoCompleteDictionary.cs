@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Testklasse
 public class AutoCompleteDictionary : MonoBehaviour {
 
 	DictEntry entries;

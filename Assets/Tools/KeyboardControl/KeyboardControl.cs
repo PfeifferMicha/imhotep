@@ -53,8 +53,6 @@ public class KeyboardControl : MonoBehaviour{
 	//memorize normalColor of keyboardInputField for ReFocus
 	private Color normalColor;
 
-	//Dictionary for Autocomplete
-	AutoCompleteDictionary autoDic = new AutoCompleteDictionary ();
 	//Call's by activation
 	void OnEnable(){
 		this.endTextSelection = keyboardInputField.text.Length;
@@ -177,9 +175,9 @@ public class KeyboardControl : MonoBehaviour{
 	}
 	//Enter's the text at the given caretPostion in the InputField of the Keyboard
 	public void enterTextEvent(string key )	{
-		//autoDic.print ();
 		this.deleteSelectedText ();
 		this.updateTextSelected ();
+
 		this.keyboardInputField.text = this.keyboardInputField.text.Insert(this.caretPostionKeyboard,key);
 		if (this.selectedInputField != null) {
 			this.selectedInputField.text = this.selectedInputField.text.Insert (this.caretPostionKeyboard, key);
