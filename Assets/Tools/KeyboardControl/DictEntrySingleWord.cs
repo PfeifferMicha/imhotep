@@ -5,7 +5,9 @@ using UnityEngine;
 public class DictEntrySingleWord : DictEntry {
 
 	private string word;
+	private int rate;
 	public DictEntrySingleWord(string word){
+		int rate = 0;
 		this.word = word;
 	}
 	public string getWord(){
@@ -20,8 +22,13 @@ public class DictEntrySingleWord : DictEntry {
 
 	public override List<DictEntrySingleWord> getLikelyWords( string prefix, int level = 0 )
 	{
-		if (this.word.StartsWith(prefix))
-			return getAllSubWords();
+		if (this.word.StartsWith (prefix)) {
+			//Wenn das eingegebene Wort identisch mit Dictionary-Wort, erhöhe Häufigkeit(rate) um eins
+			if (this.word.Equals (prefix)) {
+				this.rate++;
+			}
+			return getAllSubWords ();
+		}
 		return new List<DictEntrySingleWord> ();
 	}
 	public override List<DictEntrySingleWord> getAllSubWords ()

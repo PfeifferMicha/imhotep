@@ -9,6 +9,8 @@ public class AutoCompleteDictionary : MonoBehaviour {
 		entries = new DictEntryMultyWord ();
 		entries.insert ("Anna");
 		entries.insert ("Anton");
+		entries.insert ("Ananas");
+		entries.insert ("Annies");
 		entries.insert ("Zeit");
 		entries.print ();
 		string stringlist = "";
