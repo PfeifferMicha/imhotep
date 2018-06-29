@@ -53,6 +53,8 @@ public class KeyboardControl : MonoBehaviour{
 	//memorize normalColor of keyboardInputField for ReFocus
 	private Color normalColor;
 
+	//Dictionary for Autocomplete
+	AutoCompleteDictionary autoDic = new AutoCompleteDictionary ();
 	//Call's by activation
 	void OnEnable(){
 		this.endTextSelection = keyboardInputField.text.Length;
@@ -79,6 +81,7 @@ public class KeyboardControl : MonoBehaviour{
 		this.activatedField_flag = 0;
 		this.buttonDeleteLastSymbolPressedDown = false;	
 		this.normalColor = this.keyboardInputField.colors.normalColor;
+
 	}
 
 
@@ -113,8 +116,8 @@ public class KeyboardControl : MonoBehaviour{
 				this.cancel ();
 			}
 		}
-		Text t = new Text ();
-		t.
+
+
 	}
 
 	//Helps to determ,if the button "DeleteLastSymbol" is pressed down for continously Deletion of the text
@@ -174,6 +177,7 @@ public class KeyboardControl : MonoBehaviour{
 	}
 	//Enter's the text at the given caretPostion in the InputField of the Keyboard
 	public void enterTextEvent(string key )	{
+		//autoDic.print ();
 		this.deleteSelectedText ();
 		this.updateTextSelected ();
 		this.keyboardInputField.text = this.keyboardInputField.text.Insert(this.caretPostionKeyboard,key);
