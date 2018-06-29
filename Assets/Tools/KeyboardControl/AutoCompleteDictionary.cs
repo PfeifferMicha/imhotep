@@ -14,7 +14,21 @@ public class AutoCompleteDictionary : MonoBehaviour {
 		entries.insert ("Zeit");
 		entries.print ();
 		string stringlist = "";
-		foreach (DictEntrySingleWord s in entries.getAllSubWords())
+		entries.getLikelyWords ("Anna");
+		entries.getLikelyWords ("Anna");
+		entries.getLikelyWords ("Anna");
+		entries.getLikelyWords ("Anna");
+
+		entries.getLikelyWords ("Ananas");
+		entries.getLikelyWords ("Ananas");
+		entries.getLikelyWords ("Ananas");
+		entries.getLikelyWords ("Zeit");
+
+
+		foreach (DictEntrySingleWord s in ((DictEntryMultyWord)entries).getSortedLikelyWordsAfterRate(""))
+			stringlist = stringlist + s.getWord() + " ";
+		Debug.Log( "All Words: " + stringlist );
+		/*foreach (DictEntrySingleWord s in entries.getAllSubWords())
 			stringlist = stringlist + s.getWord() + " ";
 		Debug.Log( "All Words: " + stringlist );
 
@@ -49,7 +63,7 @@ public class AutoCompleteDictionary : MonoBehaviour {
 		stringlist = "";
 		foreach (DictEntrySingleWord s in entries.getLikelyWords( "Ze" ))
 			stringlist = stringlist + s.getWord() + " ";
-		Debug.Log( "Found for Ze: " + stringlist );
+		Debug.Log( "Found for Ze: " + stringlist );*/
 	}
 
 

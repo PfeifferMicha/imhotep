@@ -48,4 +48,21 @@ public class DictEntryMultyWord : DictEntry {
 		return foundWords;
 	}
 
+
+	public List<DictEntrySingleWord> getSortedLikelyWordsAfterRate(string prefix){
+		List<DictEntrySingleWord> temp = this.getLikelyWords (prefix);
+		temp.Sort (new DictEntryRateComparable ());
+		return temp;
+	}
+
+	private class DictEntryRateComparable : IComparer<DictEntrySingleWord>{
+		public int Compare(DictEntrySingleWord x, DictEntrySingleWord y){
+				int xRate = x.getRate ();
+				int yRate = y.getRate ();
+				return yRate - xRate;
+		}
+
+	}
+
+
 }

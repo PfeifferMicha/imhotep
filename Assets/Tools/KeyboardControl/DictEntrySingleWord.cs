@@ -37,4 +37,8 @@ public class DictEntrySingleWord : DictEntry {
 		result.Add (this);
 		return result;
 	}
+
+	public int getRate(){
+		return this.rate;
+	}
 }
