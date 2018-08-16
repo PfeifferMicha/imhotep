@@ -7,9 +7,10 @@ public abstract class DictEntry {
 	public abstract void print (int level = 0);
 	public abstract List<DictEntrySingleWord> getLikelyWords (string prefix, int level = 0);
 	public abstract List<DictEntrySingleWord> getAllSubWords ();
+	public abstract void insert (string word, int level = 0);
+	public abstract void insert(List<string> words, int level);
 
-
-	public void insert(string word){
+	/*public void insert(string word){
 		word = word.ToLower ();
 		char[] inputSigns = word.ToCharArray ();
 		DictEntry dicTemp = this;
@@ -52,5 +53,5 @@ public abstract class DictEntry {
 				}
 			}
 		}
-	}
+	}*/
 }

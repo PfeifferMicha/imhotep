@@ -6,9 +6,11 @@ public class DictEntrySingleWord : DictEntry {
 
 	private string word;
 	private int rate;
-	public DictEntrySingleWord(string word){
+	private DictEntryMultyWord previous;
+	public DictEntrySingleWord(string word,DictEntryMultyWord previous){
 		int rate = 0;
 		this.word = word;
+		this.previous = previous;
 	}
 	public string getWord(){
 		return this.word;
@@ -38,6 +40,24 @@ public class DictEntrySingleWord : DictEntry {
 		return result;
 	}
 
+	public override void insert(string word, int level = 0){
+		//Debug.Log ("Test");
+		if (word.CompareTo (this.word) == 0) {
+			this.rate++;
+		} else {
+			List<string> temp = new List<string> ();
+			temp.Add (word);
+			temp.Add (this.word);
+			char currentLetter = word [level-1];
+			this.previous.getEntries ().Remove (currentLetter);
+			this.previous.getEntries ().Add(currentLetter, new DictEntryMultyWord ());
+			this.previous.getEntries () [currentLetter].insert (temp, level);
+		}
+	}
+
+	public override void insert(List<string> word, int level = 0){
+		
+	}
 	public int getRate(){
 		return this.rate;
 	}

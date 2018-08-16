@@ -61,8 +61,31 @@ public class DictEntryMultyWord : DictEntry {
 				int yRate = y.getRate ();
 				return yRate - xRate;
 		}
-
 	}
 
+	public override void insert(string word, int level = 0){
+		//string[] insertWord = word.ToLower ().ToCharArray ();
+		char currentLetter = word[level];
 
+		if (entries.ContainsKey (currentLetter)) {
+			Debug.Log ("TestMW: "+ currentLetter);
+			Debug.Log ("TestMW: " + word);
+			//if (this.entries [currentLetter] is DictEntrySingleWord) {
+				
+			//	this.entries[word[level-1]].insert(			
+			//}
+			entries[currentLetter].insert (word, level + 1);
+
+		} else {
+			Debug.Log ("TestSW"+ currentLetter);
+			Debug.Log ("TestSW-Wort:" + word);
+
+			this.entries.Add (currentLetter, new DictEntrySingleWord (word,this));
+			//this.entries.Add(
+		}
+	}
+
+	public override void insert(List<string> word, int level = 0){
+		Debug.Log ("tttttt");
+	}
 }

@@ -53,6 +53,7 @@ public class KeyboardControl : MonoBehaviour{
 	//memorize normalColor of keyboardInputField for ReFocus
 	private Color normalColor;
 
+	public AutoCompleteControl autoCompleteControl;
 	//Call's by activation
 	void OnEnable(){
 		this.endTextSelection = keyboardInputField.text.Length;
@@ -85,13 +86,14 @@ public class KeyboardControl : MonoBehaviour{
 
 	// Update is called once per frame
 	void Update () {
-		// Check if we clicked somewhere outside of the 
+		
+		// Check if we clicked somewhere outside of the keyboard
 		if (InputDeviceManager.instance.currentInputDevice.isLeftButtonDown ()) {	
 				// Get currently hovered game object:
 				HierarchicalInputModule inputModule = EventSystem.current.currentInputModule as HierarchicalInputModule;
 				GameObject hover = inputModule.getPointerData ().pointerCurrentRaycast.gameObject;
 				if (hover == null || LayerMask.LayerToName (hover.layer).CompareTo("UITool")!=0) {
-					this.cancel ();
+					//this.cancel ();
 				}
 			}
 		//if the DeleteLastSysmbolbutton is pressed down, the last symbols will be continuiously deleted
@@ -271,6 +273,7 @@ public class KeyboardControl : MonoBehaviour{
 		this.caretPostionKeyboard = 0;
 		if (this.selectedInputField != null) {
 			oldText = this.selectedInputField.text;
+			if (autoCompleteControl!=null) autoCompleteControl.enteredText (oldText);
 		}
 		this.keyboardInputField.DeactivateInputField ();
 		this.gameObject.SetActive (false);

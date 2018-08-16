@@ -9,13 +9,13 @@ public class AutoCompleteDictionary : MonoBehaviour {
 	public AutoCompleteDictionary(){
 		entries = new DictEntryMultyWord ();
 		entries.insert ("Anna");
-		entries.insert ("Anton");
+		//entries.insert ("Anton");
 		entries.insert ("Ananas");
-		entries.insert ("Annies");
-		entries.insert ("Zeit");
-		entries.print ();
+		//entries.insert ("Annies");
+		//entries.insert ("Zeit");
+		//entries.print ();
 		string stringlist = "";
-		entries.getLikelyWords ("Anna");
+		/*entries.getLikelyWords ("Anna");
 		entries.getLikelyWords ("Anna");
 		entries.getLikelyWords ("Anna");
 		entries.getLikelyWords ("Anna");
@@ -23,12 +23,12 @@ public class AutoCompleteDictionary : MonoBehaviour {
 		entries.getLikelyWords ("Ananas");
 		entries.getLikelyWords ("Ananas");
 		entries.getLikelyWords ("Ananas");
-		entries.getLikelyWords ("Zeit");
+		entries.getLikelyWords ("Zeit");*/
 
 
-		foreach (DictEntrySingleWord s in ((DictEntryMultyWord)entries).getSortedLikelyWordsAfterRate(""))
-			stringlist = stringlist + s.getWord() + " ";
-		Debug.Log( "All Words: " + stringlist );
+		//foreach (DictEntrySingleWord s in ((DictEntryMultyWord)entries).getSortedLikelyWordsAfterRate(""))
+		//	stringlist = stringlist + s.getWord() + " ";
+		//Debug.Log( "All Words: " + stringlist );
 		/*foreach (DictEntrySingleWord s in entries.getAllSubWords())
 			stringlist = stringlist + s.getWord() + " ";
 		Debug.Log( "All Words: " + stringlist );
