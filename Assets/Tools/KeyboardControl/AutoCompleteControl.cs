@@ -101,8 +101,12 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 	private string[] getWordsFromInput(string text){
 		if (text != null) {			
 			string[] words = text.Split (seperator, System.StringSplitOptions.RemoveEmptyEntries);
+			for (int i = 0; i < words.Length; i++) {
+				Debug.Log ("word: " + words [i]);
+			}
 			return words;
 		}
+
 		return null;
 	}
 
