@@ -27,7 +27,7 @@ public class DictEntrySingleWord : DictEntry {
 
 	public override List<DictEntrySingleWord> getLikelyWords( string prefix, int level = 0 )
 	{
-		if (this.word.StartsWith (prefix)) {
+		if (this.word.ToLower().StartsWith (prefix.ToLower())) {
 			//Wenn das eingegebene Wort identisch mit Dictionary-Wort, erhöhe Häufigkeit(rate) um eins
 			if (this.word.Equals (prefix)) {
 				this.rate++;

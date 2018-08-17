@@ -9,6 +9,7 @@ public class TestDictionary {
 
 	public TestDictionary(){
 		//this.testMoreEntriesWithSpecialSigns ();
+		this.testTwoEntriesWithSpecialSigns();
 	}
 
 	private void testEmpty(){
@@ -67,6 +68,24 @@ public class TestDictionary {
 		mw.insert ("Zeit-Krise");
 		Debug.Log ("testMoreEntriesWithSpecialSigns");
 		mw.print ();
+		Debug.Log (".........");
+	}
+
+	private void testTwoEntriesWithSpecialSigns(){
+		DictEntryMultyWord mw = new DictEntryMultyWord ();
+		mw.insert ("Test-Dictionary");
+		List<DictEntrySingleWord> stringList = mw.getSortedLikelyWordsAfterRate ("te");
+		Debug.Log ("Search with prefix: 'te'");
+		foreach (DictEntrySingleWord entry in stringList) {
+			Debug.Log (entry.getWord());
+		}
+		Debug.Log ("testTwoEntriesWithSpecialSigns");
+		mw.print ();
+		Debug.Log ("Insert Second word:   ");
+		mw.insert ("TestDictionary");
+		mw.print ();
+
+
 		Debug.Log (".........");
 	}
 }
