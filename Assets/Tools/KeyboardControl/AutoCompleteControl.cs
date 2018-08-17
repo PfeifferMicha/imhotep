@@ -13,6 +13,7 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 	public Text suggestionTop;
 	public Text suggestionMiddle;
 	public Text suggestionBottom;
+
 	//Dictionary for Autocomplete
 	DictEntryMultyWord autoCompleteDic = new DictEntryMultyWord ();
 	// Use this for initialization
