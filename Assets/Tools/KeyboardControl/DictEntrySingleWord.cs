@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+ * Represents a single word with a rate. The rate will be increased if the user entered the word again.
+ */
 public class DictEntrySingleWord : DictEntry {
 
 	private string word;
@@ -15,6 +17,7 @@ public class DictEntrySingleWord : DictEntry {
 	public string getWord(){
 		return this.word;
 	}
+
 
 	public override void print (int level = 0)
 	{

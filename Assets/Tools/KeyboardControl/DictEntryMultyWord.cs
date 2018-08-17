@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+ * Has a private Dictionary with char as key and DictEntry as value.
+ */
 public class DictEntryMultyWord : DictEntry {
 
 
@@ -12,6 +14,7 @@ public class DictEntryMultyWord : DictEntry {
 	public Dictionary<char,DictEntry> getEntries(){
 		return this.entries;
 	}
+
 
 	public override void print (int level = 0)
 	{
@@ -48,13 +51,14 @@ public class DictEntryMultyWord : DictEntry {
 		return foundWords;
 	}
 
-
+	//get all likely words sorted by the rate.
 	public List<DictEntrySingleWord> getSortedLikelyWordsAfterRate(string prefix){
 		List<DictEntrySingleWord> temp = this.getLikelyWords (prefix);
 		temp.Sort(new DictEntryRateComparable ());
 		return temp;
 	}
 
+	//Compare's the rate between two word's
 	private class DictEntryRateComparable : IComparer<DictEntrySingleWord>{
 		public int Compare(DictEntrySingleWord x, DictEntrySingleWord y){
 				int xRate = x.getRate ();
@@ -79,6 +83,10 @@ public class DictEntryMultyWord : DictEntry {
 		}
 	}
 
+	/*
+	 * This method is used, if a new word is inserted and found a single word, e.g. first insert: "Anna", secondly insert: "Annies"
+	 * The internal has to change from one DictEntrySingleWord to One MultyLineWord and two SingleLineWords
+	 */ 
 	public override void insert(string newWord,string oldWord, int level){
 		/* Example: 
 		 * Inserted first: "anna" -> MultylineWord with entry a => anna
