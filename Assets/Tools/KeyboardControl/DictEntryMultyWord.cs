@@ -64,28 +64,57 @@ public class DictEntryMultyWord : DictEntry {
 	}
 
 	public override void insert(string word, int level = 0){
-		//string[] insertWord = word.ToLower ().ToCharArray ();
-		char currentLetter = word[level];
-
-		if (entries.ContainsKey (currentLetter)) {
-			Debug.Log ("TestMW: "+ currentLetter);
-			Debug.Log ("TestMW: " + word);
-			//if (this.entries [currentLetter] is DictEntrySingleWord) {
-				
-			//	this.entries[word[level-1]].insert(			
-			//}
-			entries[currentLetter].insert (word, level + 1);
-
-		} else {
-			Debug.Log ("TestSW"+ currentLetter);
-			Debug.Log ("TestSW-Wort:" + word);
-
-			this.entries.Add (currentLetter, new DictEntrySingleWord (word,this));
-			//this.entries.Add(
+		//Debug.Log ("Test" + level);
+		if (word.Length > 0) {
+			char currentLetter = char.ToLower(word[level]);
+			if (this.entries.ContainsKey (currentLetter)) {
+				//Debug.Log ("TestMW: "+ currentLetter +" level: "+level);
+				//Debug.Log ("TestMW: " + word);
+				this.entries[currentLetter].insert (word, level + 1);
+			} else {
+				//Debug.Log ("TestSW"+ currentLetter +" level: "+level);
+				//Debug.Log ("TestSW-Wort:" + word);
+				this.entries.Add (currentLetter, new DictEntrySingleWord (word,this));
+			}
 		}
 	}
 
-	public override void insert(List<string> word, int level = 0){
-		Debug.Log ("tttttt");
+	public override void insert(string newWord,string oldWord, int level){
+		/* Example: 
+		 * Inserted first: "anna" -> MultylineWord with entry a => anna
+		 * Inserted secondly: "annanas" -> found entry anna, deleted it, insert new MultylineWord-Entries until both words are equal + one,
+		 * then insert for both a SingeLineWord-entry
+		 */
+		//Debug.Log ("Level: " + level);
+		//Debug.Log ("Length oldWord:" + oldWord.Length);
+		//Debug.Log ("Length newWOrld:" + newWord.Length);
+
+		if (level < newWord.Length & level < oldWord.Length) {
+			//Debug.Log ("InsertChange: " + "NewWorld - " + newWord + "=>" + newWord [level] + "........." + "OldWorld - " + oldWord + "=>" + oldWord [level]);
+			if (char.ToLower(newWord [level]).CompareTo (char.ToLower(oldWord [level])) == 0) {
+				char currentLetter = char.ToLower(oldWord [level]);
+				this.entries.Add (currentLetter, new DictEntryMultyWord ());
+				this.entries [currentLetter].insert (newWord, oldWord, level + 1);
+			} else {
+				this.entries.Add (char.ToLower(oldWord [level]), new DictEntrySingleWord (oldWord, this));
+					this.entries.Add (char.ToLower(newWord [level]), new DictEntrySingleWord (newWord, this));
+			}
+		}else if (level >= oldWord.Length) {
+			this.entries.Add (char.ToLower(oldWord [level-1]), new DictEntrySingleWord (oldWord, this));
+			//Debug.Log ("Test1");
+			if (level < newWord.Length) {
+				//Debug.Log ("Test2");
+				this.entries.Add (char.ToLower(newWord [level]), new DictEntrySingleWord (newWord, this));
+			}
+		}else if (level >= newWord.Length) {
+			//Debug.Log ("Test3");
+			this.entries.Add (char.ToLower(newWord [level-1]), new DictEntrySingleWord (newWord, this));
+			if (level < oldWord.Length) {
+				//Debug.Log ("Test4");
+				this.entries.Add (char.ToLower(oldWord [level]), new DictEntrySingleWord (oldWord, this));
+			}
+		}
+
+
 	}
 }

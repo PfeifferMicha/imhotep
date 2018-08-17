@@ -44,20 +44,18 @@ public class DictEntrySingleWord : DictEntry {
 		//Debug.Log ("Test");
 		if (word.CompareTo (this.word) == 0) {
 			this.rate++;
+			//Debug.Log ("Rate: "+rate +" of "+word);
 		} else {
-			List<string> temp = new List<string> ();
-			temp.Add (word);
-			temp.Add (this.word);
-			char currentLetter = word [level-1];
+			char currentLetter = char.ToLower(word [level-1]);
+			//Debug.Log ("CurrentLetter-SingleWord: " + currentLetter);
 			this.previous.getEntries ().Remove (currentLetter);
 			this.previous.getEntries ().Add(currentLetter, new DictEntryMultyWord ());
-			this.previous.getEntries () [currentLetter].insert (temp, level);
+			this.previous.getEntries () [currentLetter].insert (word,this.word, level);
 		}
 	}
 
-	public override void insert(List<string> word, int level = 0){
-		
-	}
+	public override void insert(string newWord,string oldWord, int level){}
+
 	public int getRate(){
 		return this.rate;
 	}

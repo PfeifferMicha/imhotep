@@ -29,7 +29,6 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 		*/
 		string[] words = this.getWordsFromInput (this.input.text);
 		if (words!=null & words.Length>0) tempLikelyWords = autoCompleteDic.getLikelyWords (words [words.Length - 1]);
-		int count = 0;
 		string[] suggest = new string[3];
 		DictEntrySingleWord[] suggestArray =  tempLikelyWords.ToArray ();
 		for (int i = 0; i < Mathf.Min(3,suggestArray.Length); i++) {
@@ -49,7 +48,6 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 				autoCompleteDic.insert (words [i]);
 			}		
 		}
-		AutoCompleteDictionary dic = new AutoCompleteDictionary ();
 		/*List<DictEntrySingleWord> stringlist = autoCompleteDic.getSortedLikelyWordsAfterRate("");
 		foreach (DictEntrySingleWord s in stringlist)
 			Debug.Log( "Words: " + s.getWord() );

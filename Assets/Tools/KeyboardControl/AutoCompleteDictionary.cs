@@ -9,11 +9,12 @@ public class AutoCompleteDictionary : MonoBehaviour {
 	public AutoCompleteDictionary(){
 		entries = new DictEntryMultyWord ();
 		entries.insert ("Anna");
-		//entries.insert ("Anton");
-		entries.insert ("Ananas");
-		//entries.insert ("Annies");
-		//entries.insert ("Zeit");
-		//entries.print ();
+		entries.insert ("Annanas");
+		entries.insert ("Annak");
+		entries.insert ("Anies");
+		entries.insert ("Anke");
+		entries.insert ("Zeit");
+		entries.print ();
 		string stringlist = "";
 		/*entries.getLikelyWords ("Anna");
 		entries.getLikelyWords ("Anna");
