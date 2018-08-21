@@ -114,6 +114,7 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 			//Debug.Log("LastIndexOF:"+lastIndex);
 			this.keyboardControl.deleteText (lastIndex);
 			this.keyboardControl.enterTextEvent (suggestionText);
+			InputDeviceManager.instance.shakeLeftController( 0.5f, 0.15f );
 		}
 	}
 	//Extract all words from a given text
