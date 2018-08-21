@@ -176,10 +176,10 @@ public class KeyboardControl : MonoBehaviour{
 		}
 	}
 	//Enter's the text at the given caretPostion in the InputField of the Keyboard
-	public void enterTextEvent(string key )	{
+	public void enterTextSingleSignEvent(string key )	{
 		this.deleteSelectedText ();
 		this.updateTextSelected ();
-
+		Debug.Log ("text:" + this.keyboardInputField.text + " length: " + this.keyboardInputField.text.Length);
 		this.keyboardInputField.text = this.keyboardInputField.text.Insert(this.caretPostionKeyboard,key);
 		if (this.selectedInputField != null) {
 			this.selectedInputField.text = this.selectedInputField.text.Insert (this.caretPostionKeyboard, key);
@@ -187,17 +187,26 @@ public class KeyboardControl : MonoBehaviour{
 		this.caretPostionKeyboard++;
 		this.reFocusKeyboardInputfield ();
 	}
-
+	//Enter more than just one Symbol at a time
+	public void enterTextEvent(string text){
+		this.enterTextSingleSignEvent (text);
+		this.caretPostionKeyboard += text.Length-1;
+	}
 	//Enter's a given letter
 	public void enterLetterEvent(string letter){
 		if (this.shift_flag) {
-			this.enterTextEvent (letter.ToLower ());
+			this.enterTextSingleSignEvent (letter.ToLower ());
 		} else {
-			this.enterTextEvent (letter);
+			this.enterTextSingleSignEvent (letter);
 			this.setToSmallLetters ();
 		}
 	}
-
+	public void deleteText(int startIndex){
+		//Debug.Log ("startindex:" + startIndex);
+		this.keyboardInputField.text = this.keyboardInputField.text.Remove (startIndex);
+		this.caretPostionKeyboard = startIndex;
+		this.reFocusKeyboardInputfield ();
+	}
 	//Delete's the last Input-Symbol
 	public void deleteLastInputSymbol()
 	{

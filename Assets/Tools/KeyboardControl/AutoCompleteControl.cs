@@ -17,7 +17,7 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 	private string[] seperator = {" ",",",".","!","?",";"};
 	//Inputfield of the keyboard
 	public InputField input;
-
+	public KeyboardControl keyboardControl;
 	//Contains the possible suggestions
 	public Text suggestionTop;
 	public Text suggestionMiddle;
@@ -60,7 +60,7 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 				autoCompleteDic.insert (words [i]);
 			}		
 		}
-		TestDictionary t = new TestDictionary ();
+		//TestDictionary t = new TestDictionary ();
 		/*List<DictEntrySingleWord> stringlist = autoCompleteDic.getSortedLikelyWordsAfterRate("");
 		foreach (DictEntrySingleWord s in stringlist)
 			Debug.Log( "Words: " + s.getWord() );
@@ -73,32 +73,16 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 		if (selected != null) {
 			//selected suggested-word
 			string suggestionText = selected.GetComponentInChildren<Text> ().text;
-			int maxlength = suggestionText.Length;
-			//whole length of Inputfield - text
-			int maxLengthInput = input.text.Length;
-			//Idea: go to the end of the text minus the length of the suggested-word
-			int startIndex = (maxLengthInput - maxlength) > 0 ? (maxLengthInput - maxlength) : 0; 
-			string textToSearch =  this.input.text.Substring (startIndex).ToLower();
-			bool foundPartOfSuggestionText = false;
-			int length = maxlength;
-			/*Motivation: Have to findout how many letters of the suggested-word are already entered 
-			* in order to insert the suggested-word at the right position in the inputfield text
-			* Approach: Compare the end of the text with parts of the suggested-word; start with the whole word, reduce it every iteration
-			*/
-			while (!foundPartOfSuggestionText & length>=0){
-				string tempCompare = suggestionText.Substring (0,length).ToLower();
-				int index = textToSearch.IndexOf (tempCompare);
-				if (index != -1 & maxLengthInput>(maxLengthInput - maxlength + index)) {
-					foundPartOfSuggestionText = true;
-					this.input.text = this.input.text.Remove (startIndex + index);
-					this.input.text += suggestionText;
-				} else {
-					length--;
-				}
+			int lastIndex = 0;
+			for (int i = 0; i < seperator.Length; i++) {
+				lastIndex = Mathf.Max(lastIndex,input.text.LastIndexOf(seperator[i]));
 			}
+			if (lastIndex > 0)
+				lastIndex++;
+			//Debug.Log("LastIndexOF:"+lastIndex);
+			this.keyboardControl.deleteText (lastIndex);
+			this.keyboardControl.enterTextEvent (suggestionText);
 		}
-		//Set the Focus back to the keyboard-Inputfield
-		this.reFocusKeyboardInputfield ();
 	}
 	//Extract all words from a given text
 	private string[] getWordsFromInput(string text){
@@ -111,16 +95,5 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 		}
 
 		return null;
-	}
-
-	//Set the focus back to the keyboard-Inputfield and deselect's the text
-	private void reFocusKeyboardInputfield(){
-		EventSystem.current.SetSelectedGameObject (this.input.gameObject);
-		StartCoroutine (this.waitForFrame ());
-	}
-	//used to deselect the text of keyboard-Inputfield
-	private IEnumerator waitForFrame(){		
-		yield return 0;
-		this.input.MoveTextEnd (true);
 	}
 }
