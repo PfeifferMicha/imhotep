@@ -38,17 +38,34 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 		foreach (DictEntrySingleWord s in stringlist)
 			Debug.Log( "Words: " + s.getWord() );
 		*/
-		string[] words = this.getWordsFromInput (this.input.text);
-		if (words!=null & words.Length>0) tempLikelyWords = autoCompleteDic.getSortedLikelyWordsAfterRate (words [words.Length - 1]);
-		string[] suggest = new string[3];
-		DictEntrySingleWord[] suggestArray =  tempLikelyWords.ToArray ();
-		for (int i = 0; i < Mathf.Min(3,suggestArray.Length); i++) {
-			suggest [i] = suggestArray [i].getWord(); 
+		int lastSymbolIndex = this.input.text.Length;
+		//Debug.Log ("lastSymbolIndex:" + lastSymbolIndex);
+		//Debug.Log("lastSysmbol: "+this.input.text.Substring(lastSymbolIndex-1));
+		bool isLastSymbolSeperator = false;
+		for (int i = 0; i < this.seperator.Length; i++) {
+			//Debug.Log (this.input.text.Substring(lastSymbolIndex-1).CompareTo(this.seperator[i])==0);
+			if (this.input.text.Substring(lastSymbolIndex-1).CompareTo(this.seperator[i])==0) {
+				isLastSymbolSeperator = true;
+				break;
+			}
 		}
-
-		suggestionTop.text = suggest [0];
-		suggestionMiddle.text = suggest [1];
-		suggestionBottom.text = suggest [2];
+		if (!isLastSymbolSeperator) {			
+			string[] words = this.getWordsFromInput (this.input.text);
+			if (words != null & words.Length > 0)
+				tempLikelyWords = autoCompleteDic.getSortedLikelyWordsAfterRate (words [words.Length - 1]);
+			string[] suggest = new string[3];
+			DictEntrySingleWord[] suggestArray = tempLikelyWords.ToArray ();
+			for (int i = 0; i < Mathf.Min (3, suggestArray.Length); i++) {
+				suggest [i] = suggestArray [i].getWord (); 
+			}
+			suggestionTop.text = suggest [0];
+			suggestionMiddle.text = suggest [1];
+			suggestionBottom.text = suggest [2];
+		} else {
+			suggestionTop.text = "";
+			suggestionMiddle.text = "";
+			suggestionBottom.text = "";
+		}
 
 	}
 
