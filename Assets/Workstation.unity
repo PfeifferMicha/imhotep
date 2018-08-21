@@ -3460,7 +3460,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 189987505}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.5, y: 0, z: 0}
+  m_LocalPosition: {x: -16, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 706008835}
@@ -10900,7 +10900,7 @@ GameObject:
   - component: {fileID: 706008837}
   - component: {fileID: 706008838}
   - component: {fileID: 706008836}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: SuggestionMiddle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13466,6 +13466,7 @@ GameObject:
   - component: {fileID: 873163228}
   - component: {fileID: 873163227}
   - component: {fileID: 873163226}
+  - component: {fileID: 873163229}
   m_Layer: 11
   m_Name: ButtonTop
   m_TagString: Untagged
@@ -13480,7 +13481,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 873163224}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.5, y: 27.5, z: 0}
+  m_LocalPosition: {x: -16, y: 33, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1816592438}
@@ -13577,6 +13578,25 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 873163224}
+--- !u!114 &873163229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 873163224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1679637790, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &877051864
 GameObject:
   m_ObjectHideFlags: 0
@@ -15006,7 +15026,7 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 942343324}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.5, y: -27.5, z: 0}
+  m_LocalPosition: {x: -16, y: -27, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1590741129}
@@ -20765,6 +20785,7 @@ GameObject:
   - component: {fileID: 1431950222}
   - component: {fileID: 1431950221}
   - component: {fileID: 1431950227}
+  - component: {fileID: 1431950228}
   m_Layer: 11
   m_Name: BackgroundAutoCompleteSuggestion
   m_TagString: Untagged
@@ -20792,7 +20813,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0.34, y: 0}
-  m_SizeDelta: {x: 210, y: 90}
+  m_SizeDelta: {x: 210, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1431950221
 MonoBehaviour:
@@ -20911,6 +20932,28 @@ MonoBehaviour:
   suggestionTop: {fileID: 1816592441}
   suggestionMiddle: {fileID: 706008838}
   suggestionBottom: {fileID: 1590741126}
+--- !u!114 &1431950228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1431950219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1297475563, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 9
+    m_Right: 0
+    m_Top: 2
+    m_Bottom: 2
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
 --- !u!1 &1432065370
 GameObject:
   m_ObjectHideFlags: 0
@@ -23585,7 +23628,7 @@ GameObject:
   - component: {fileID: 1590741128}
   - component: {fileID: 1590741126}
   - component: {fileID: 1590741127}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: SuggestionBottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26252,7 +26295,7 @@ GameObject:
   - component: {fileID: 1816592440}
   - component: {fileID: 1816592441}
   - component: {fileID: 1816592439}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: SuggestionTop
   m_TagString: Untagged
   m_Icon: {fileID: 0}

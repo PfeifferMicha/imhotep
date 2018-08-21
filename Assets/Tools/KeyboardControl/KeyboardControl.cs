@@ -93,7 +93,7 @@ public class KeyboardControl : MonoBehaviour{
 				HierarchicalInputModule inputModule = EventSystem.current.currentInputModule as HierarchicalInputModule;
 				GameObject hover = inputModule.getPointerData ().pointerCurrentRaycast.gameObject;
 				if (hover == null || LayerMask.LayerToName (hover.layer).CompareTo("UITool")!=0) {
-					//this.cancel ();
+					this.cancel ();
 				}
 			}
 		//if the DeleteLastSysmbolbutton is pressed down, the last symbols will be continuiously deleted

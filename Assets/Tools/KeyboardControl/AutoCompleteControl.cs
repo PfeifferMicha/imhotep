@@ -39,15 +39,17 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 			Debug.Log( "Words: " + s.getWord() );
 		*/
 		string[] words = this.getWordsFromInput (this.input.text);
-		if (words!=null & words.Length>0) tempLikelyWords = autoCompleteDic.getLikelyWords (words [words.Length - 1]);
+		if (words!=null & words.Length>0) tempLikelyWords = autoCompleteDic.getSortedLikelyWordsAfterRate (words [words.Length - 1]);
 		string[] suggest = new string[3];
 		DictEntrySingleWord[] suggestArray =  tempLikelyWords.ToArray ();
 		for (int i = 0; i < Mathf.Min(3,suggestArray.Length); i++) {
 			suggest [i] = suggestArray [i].getWord(); 
 		}
+
 		suggestionTop.text = suggest [0];
 		suggestionMiddle.text = suggest [1];
 		suggestionBottom.text = suggest [2];
+
 	}
 
 	//Interface method, called by the keyboard
