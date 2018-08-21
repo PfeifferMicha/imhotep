@@ -44,7 +44,7 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 		bool isLastSymbolSeperator = false;
 		for (int i = 0; i < this.seperator.Length; i++) {
 			//Debug.Log (this.input.text.Substring(lastSymbolIndex-1).CompareTo(this.seperator[i])==0);
-			if (this.input.text.Substring(lastSymbolIndex-1).CompareTo(this.seperator[i])==0) {
+			if (lastSymbolIndex>0 & this.input.text.Substring(lastSymbolIndex-1).CompareTo(this.seperator[i])==0) {
 				isLastSymbolSeperator = true;
 				break;
 			}
@@ -59,8 +59,23 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 				suggest [i] = suggestArray [i].getWord (); 
 			}
 			suggestionTop.text = suggest [0];
+			if (suggestionTop.text.Length == 0) {
+				suggestionTop.gameObject.SetActive (false);
+			} else {
+				suggestionTop.gameObject.SetActive (true);
+			}
 			suggestionMiddle.text = suggest [1];
+			if (suggestionMiddle.text.Length == 0) {
+				suggestionMiddle.gameObject.SetActive (false);
+			}else {
+				suggestionMiddle.gameObject.SetActive (true);
+			}
 			suggestionBottom.text = suggest [2];
+			if (suggestionBottom.text.Length == 0) {
+				suggestionBottom.gameObject.SetActive (false);
+			}else {
+				suggestionBottom.gameObject.SetActive (true);
+			}
 		} else {
 			suggestionTop.text = "";
 			suggestionMiddle.text = "";

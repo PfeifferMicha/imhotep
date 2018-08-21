@@ -182,7 +182,7 @@ public class KeyboardControl : MonoBehaviour{
 		Debug.Log ("text:" + this.keyboardInputField.text + " length: " + this.keyboardInputField.text.Length);
 		this.keyboardInputField.text = this.keyboardInputField.text.Insert(this.caretPostionKeyboard,key);
 		if (this.selectedInputField != null) {
-			this.selectedInputField.text = this.selectedInputField.text.Insert (this.caretPostionKeyboard, key);
+			this.selectedInputField.text = this.keyboardInputField.text;
 		}
 		this.caretPostionKeyboard++;
 		this.reFocusKeyboardInputfield ();
@@ -204,6 +204,9 @@ public class KeyboardControl : MonoBehaviour{
 	public void deleteText(int startIndex){
 		//Debug.Log ("startindex:" + startIndex);
 		this.keyboardInputField.text = this.keyboardInputField.text.Remove (startIndex);
+		if (this.selectedInputField != null) {
+			this.selectedInputField.text = this.keyboardInputField.text;
+		}
 		this.caretPostionKeyboard = startIndex;
 		this.reFocusKeyboardInputfield ();
 	}
