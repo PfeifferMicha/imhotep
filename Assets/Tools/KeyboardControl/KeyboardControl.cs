@@ -60,9 +60,8 @@ public class KeyboardControl : MonoBehaviour{
 		//Reset's the position of already active tool, next to the keyboard
 		//this.setActiveToolControllerPosition();
 		this.setToBigLetters ();
-
 		ToolControl.instance.overrideTool ( this.gameObject );
-
+		this.autoCompleteControl.gameObject.SetActive (false);
 		InputDeviceManager.instance.shakeLeftController( 0.5f, 0.15f );
 	}
 
@@ -179,12 +178,13 @@ public class KeyboardControl : MonoBehaviour{
 	public void enterTextSingleSignEvent(string key )	{
 		this.deleteSelectedText ();
 		this.updateTextSelected ();
-		Debug.Log ("text:" + this.keyboardInputField.text + " length: " + this.keyboardInputField.text.Length);
+		//Debug.Log ("text:" + this.keyboardInputField.text + " length: " + this.keyboardInputField.text.Length);
 		this.keyboardInputField.text = this.keyboardInputField.text.Insert(this.caretPostionKeyboard,key);
 		if (this.selectedInputField != null) {
 			this.selectedInputField.text = this.keyboardInputField.text;
 		}
 		this.caretPostionKeyboard++;
+		this.autoCompleteControl.suggestWords ();
 		this.reFocusKeyboardInputfield ();
 	}
 	//Enter more than just one Symbol at a time
@@ -201,6 +201,7 @@ public class KeyboardControl : MonoBehaviour{
 			this.setToSmallLetters ();
 		}
 	}
+
 	public void deleteText(int startIndex){
 		//Debug.Log ("startindex:" + startIndex);
 		this.keyboardInputField.text = this.keyboardInputField.text.Remove (startIndex);
@@ -224,6 +225,7 @@ public class KeyboardControl : MonoBehaviour{
 			}
 			this.caretPostionKeyboard--;
 		}
+		this.autoCompleteControl.suggestWords ();
 		this.reFocusKeyboardInputfield ();
 	}
 	//Make's a linebreak in the keyboard-inputfield
@@ -263,6 +265,7 @@ public class KeyboardControl : MonoBehaviour{
 			this.selectedInputField.text = "";
 		}
 		this.keyboardInputField.text = "";
+		this.autoCompleteControl.suggestWords ();
 		this.caretPostionKeyboard = 0;
 		this.reFocusKeyboardInputfield ();
 	}
@@ -368,6 +371,7 @@ public class KeyboardControl : MonoBehaviour{
 	//Method, for development purpose: Enables's to enter text via physical keyboard, if you are not in the virtual reality-mode
 	public void keyboardTextEvent(string key )	{
 		this.selectedInputField.text = this.keyboardInputField.text;
+		this.autoCompleteControl.suggestWords ();
 	}
 
 }

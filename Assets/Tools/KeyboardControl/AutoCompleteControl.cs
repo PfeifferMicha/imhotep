@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
  * It's uses an Interface (IEnteredText) to get the saved text by the user in order to insert new words.
  * The Keyboard is the Caller.
  */
-public class AutoCompleteControl : MonoBehaviour, IEnteredText{
+public class AutoCompleteControl : MonoBehaviour{
 	//When insert a new word?
 	/* Wort: Ende/Anfangsmarker: "Leerzeichen"; ","; "."; "!"; "?"; ";" 
 	 * 
@@ -26,13 +26,14 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 	//Dictionary for Autocomplete
 	DictEntryMultyWord autoCompleteDic = new DictEntryMultyWord ();
 	// Use this for initialization 
-	void Start () {
-		
-	}
+	void Start () {}
 	
 	// Update is called once per frame
+	void Update () {}
+
+
 	//Searching the text for words in order to find likely matches
-	void Update () {
+	public void suggestWords(){
 		List<DictEntrySingleWord> tempLikelyWords = new List<DictEntrySingleWord>();
 		/*<DictEntrySingleWord> stringlist = autoCompleteDic.getSortedLikelyWordsAfterRate("");
 		foreach (DictEntrySingleWord s in stringlist)
@@ -44,47 +45,44 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 		bool isLastSymbolSeperator = false;
 		for (int i = 0; i < this.seperator.Length; i++) {
 			//Debug.Log (this.input.text.Substring(lastSymbolIndex-1).CompareTo(this.seperator[i])==0);
-			if (lastSymbolIndex>0 & this.input.text.Substring(lastSymbolIndex-1).CompareTo(this.seperator[i])==0) {
+			if (lastSymbolIndex>0 && this.input.text.Substring(lastSymbolIndex-1).CompareTo(this.seperator[i])==0) {
 				isLastSymbolSeperator = true;
 				break;
 			}
 		}
+		//show only word suggestions if the last symbol/symbols is not a seperator
 		if (!isLastSymbolSeperator) {			
 			string[] words = this.getWordsFromInput (this.input.text);
 			if (words != null & words.Length > 0)
 				tempLikelyWords = autoCompleteDic.getSortedLikelyWordsAfterRate (words [words.Length - 1]);
-			string[] suggest = new string[3];
 			DictEntrySingleWord[] suggestArray = tempLikelyWords.ToArray ();
-			for (int i = 0; i < Mathf.Min (3, suggestArray.Length); i++) {
-				suggest [i] = suggestArray [i].getWord (); 
-			}
-			suggestionTop.text = suggest [0];
-			if (suggestionTop.text.Length == 0) {
-				suggestionTop.gameObject.SetActive (false);
+			/*
+			 * show only button's with word-suggestions; if it has not a word-suggestion deatcivate it
+			 */
+			Button[] suggestionButtons = this.GetComponentsInChildren<Button> (true);
+			if (suggestArray.Length > 0) {				
+				for (int i = 0; i < suggestionButtons.Length; i++) {
+					//Debug.Log ("length:" + (i) + ":" + suggestArray.Length + " ");
+					if (i < suggestArray.Length && suggestArray [i] != null) {
+						suggestionButtons [i].GetComponentInChildren<Text> ().text = suggestArray [i].getWord ();
+						suggestionButtons [i].gameObject.SetActive (true);
+					} else {
+						suggestionButtons [i].gameObject.SetActive (false);
+					}
+				}
+				this.gameObject.SetActive (true);
 			} else {
-				suggestionTop.gameObject.SetActive (true);
-			}
-			suggestionMiddle.text = suggest [1];
-			if (suggestionMiddle.text.Length == 0) {
-				suggestionMiddle.gameObject.SetActive (false);
-			}else {
-				suggestionMiddle.gameObject.SetActive (true);
-			}
-			suggestionBottom.text = suggest [2];
-			if (suggestionBottom.text.Length == 0) {
-				suggestionBottom.gameObject.SetActive (false);
-			}else {
-				suggestionBottom.gameObject.SetActive (true);
+				this.gameObject.SetActive (false);
 			}
 		} else {
+			//Debug.Log ("name:" + this.gameObject.name);
 			suggestionTop.text = "";
 			suggestionMiddle.text = "";
 			suggestionBottom.text = "";
+			this.gameObject.SetActive (false);
 		}
-
 	}
-
-	//Interface method, called by the keyboard
+	//called by the keyboard to add eventually new words to the dictionary
 	public void enteredText(string text){
 		string[] words = this.getWordsFromInput (text);
 		if (words != null) {
@@ -126,7 +124,6 @@ public class AutoCompleteControl : MonoBehaviour, IEnteredText{
 			//}
 			return words;
 		}
-
 		return null;
 	}
 }
