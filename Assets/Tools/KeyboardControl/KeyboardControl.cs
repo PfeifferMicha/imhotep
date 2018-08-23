@@ -79,7 +79,7 @@ public class KeyboardControl : MonoBehaviour{
 		this.activatedField_flag = 0;
 		this.buttonDeleteLastSymbolPressedDown = false;	
 		this.normalColor = this.keyboardInputField.colors.normalColor;
-
+		this.autoCompleteControl.loadFile ();
 	}
 
 

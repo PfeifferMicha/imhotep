@@ -9,8 +9,9 @@ public class DictEntrySingleWord : DictEntry {
 	private string word;
 	private int rate;
 	private DictEntryMultyWord previous;
-	public DictEntrySingleWord(string word,DictEntryMultyWord previous){
-		int rate = 0;
+
+	public DictEntrySingleWord(string word,int rate,DictEntryMultyWord previous){
+		this.rate = rate;
 		this.word = word;
 		this.previous = previous;
 	}
@@ -43,21 +44,24 @@ public class DictEntrySingleWord : DictEntry {
 		return result;
 	}
 
-	public override void insert(string word, int level = 0){
+	public override DictEntrySingleWord insert(string word,int newRate = 0, int level = 0){
 		//Debug.Log ("Test");
 		if (word.CompareTo (this.word) == 0) {
 			this.rate++;
+			return this;
 			//Debug.Log ("Rate: "+rate +" of "+word);
 		} else {
 			char currentLetter = char.ToLower(word [level-1]);
 			//Debug.Log ("CurrentLetter-SingleWord: " + currentLetter);
 			this.previous.getEntries ().Remove (currentLetter);
 			this.previous.getEntries ().Add(currentLetter, new DictEntryMultyWord ());
-			this.previous.getEntries () [currentLetter].insert (word,this.word, level);
+			return this.previous.getEntries () [currentLetter].insert (word,newRate,this.word,this.rate,level);
 		}
 	}
 
-	public override void insert(string newWord,string oldWord, int level){}
+	public override DictEntrySingleWord insert(string newWord,int newRate,string oldWord,int oldRate, int level){
+		return null;
+	}
 
 	public int getRate(){
 		return this.rate;

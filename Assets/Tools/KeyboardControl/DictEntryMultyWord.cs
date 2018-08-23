@@ -67,27 +67,29 @@ public class DictEntryMultyWord : DictEntry {
 		}
 	}
 
-	public override void insert(string word, int level = 0){
+	public override DictEntrySingleWord insert(string word,int rate = 0,int level = 0){
 		//Debug.Log ("Test" + level);
 		if (word.Length > 0) {
 			char currentLetter = char.ToLower(word[level]);
 			if (this.entries.ContainsKey (currentLetter)) {
 				//Debug.Log ("TestMW: "+ currentLetter +" level: "+level);
 				//Debug.Log ("TestMW: " + word);
-				this.entries[currentLetter].insert (word, level + 1);
+				return this.entries[currentLetter].insert (word,rate, level + 1);
 			} else {
 				//Debug.Log ("TestSW"+ currentLetter +" level: "+level);
 				//Debug.Log ("TestSW-Wort:" + word);
-				this.entries.Add (currentLetter, new DictEntrySingleWord (word,this));
+				DictEntrySingleWord single = new DictEntrySingleWord (word,rate,this);
+				this.entries.Add (currentLetter,single );
+				return single;
 			}
 		}
+		return null;
 	}
-
 	/*
 	 * This method is used, if a new word is inserted and found a single word, e.g. first insert: "Anna", secondly insert: "Annies"
 	 * The internal has to change from one DictEntrySingleWord to One MultyLineWord and two SingleLineWords
 	 */ 
-	public override void insert(string newWord,string oldWord, int level){
+	public override DictEntrySingleWord insert(string newWord,int newRate,string oldWord,int oldRate, int level){
 		/* Example: 
 		 * Inserted first: "anna" -> MultylineWord with entry a => anna
 		 * Inserted secondly: "annanas" -> found entry anna, deleted it, insert new MultylineWord-Entries until both words are equal + one,
@@ -102,27 +104,32 @@ public class DictEntryMultyWord : DictEntry {
 			if (char.ToLower(newWord [level]).CompareTo (char.ToLower(oldWord [level])) == 0) {
 				char currentLetter = char.ToLower(oldWord [level]);
 				this.entries.Add (currentLetter, new DictEntryMultyWord ());
-				this.entries [currentLetter].insert (newWord, oldWord, level + 1);
+				return this.entries [currentLetter].insert (newWord,newRate, oldWord,oldRate, level + 1);
 			} else {
-				this.entries.Add (char.ToLower(oldWord [level]), new DictEntrySingleWord (oldWord, this));
-					this.entries.Add (char.ToLower(newWord [level]), new DictEntrySingleWord (newWord, this));
+				this.entries.Add (char.ToLower(oldWord [level]), new DictEntrySingleWord (oldWord,oldRate, this));
+				DictEntrySingleWord newSingleEntry = new DictEntrySingleWord (newWord, newRate, this);
+				this.entries.Add (char.ToLower(newWord [level]), newSingleEntry);
+				return newSingleEntry;
 			}
 		}else if (level >= oldWord.Length) {
-			this.entries.Add (char.ToLower(oldWord [level-1]), new DictEntrySingleWord (oldWord, this));
+			this.entries.Add (char.ToLower(oldWord [level-1]), new DictEntrySingleWord (oldWord,oldRate, this));
 			//Debug.Log ("Test1");
 			if (level < newWord.Length) {
 				//Debug.Log ("Test2");
-				this.entries.Add (char.ToLower(newWord [level]), new DictEntrySingleWord (newWord, this));
+				DictEntrySingleWord newSingleEntry = new DictEntrySingleWord (newWord, newRate, this);
+				this.entries.Add (char.ToLower(newWord [level]),newSingleEntry);
+				return newSingleEntry;
 			}
 		}else if (level >= newWord.Length) {
 			//Debug.Log ("Test3");
-			this.entries.Add (char.ToLower(newWord [level-1]), new DictEntrySingleWord (newWord, this));
 			if (level < oldWord.Length) {
 				//Debug.Log ("Test4");
-				this.entries.Add (char.ToLower(oldWord [level]), new DictEntrySingleWord (oldWord, this));
+				this.entries.Add (char.ToLower(oldWord [level]), new DictEntrySingleWord (oldWord,oldRate, this));
 			}
+			DictEntrySingleWord newSingleEntry = new DictEntrySingleWord (newWord, newRate, this);
+			this.entries.Add (char.ToLower(newWord [level-1]), newSingleEntry);
+			return newSingleEntry;
 		}
-
-
+		return null;
 	}
 }

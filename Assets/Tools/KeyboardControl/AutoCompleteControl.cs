@@ -25,9 +25,18 @@ public class AutoCompleteControl : MonoBehaviour{
 
 	//Dictionary for Autocomplete
 	DictEntryMultyWord autoCompleteDic = new DictEntryMultyWord ();
+
+	private DictEntrySingleWord[] suggestArray;
 	// Use this for initialization 
-	void Start () {}
-	
+	void Start () {
+
+	}
+
+	public void loadFile(){
+		//Load AutoCompleteSuggestion-Dictionary
+		this.autoCompleteDic = FileHandlerDictEntry.read();
+		//this.autoCompleteDic.print ();
+	}
 	// Update is called once per frame
 	void Update () {}
 
@@ -55,16 +64,16 @@ public class AutoCompleteControl : MonoBehaviour{
 			string[] words = this.getWordsFromInput (this.input.text);
 			if (words != null & words.Length > 0)
 				tempLikelyWords = autoCompleteDic.getSortedLikelyWordsAfterRate (words [words.Length - 1]);
-			DictEntrySingleWord[] suggestArray = tempLikelyWords.ToArray ();
+			this.suggestArray = tempLikelyWords.ToArray ();
 			/*
 			 * show only button's with word-suggestions; if it has not a word-suggestion deatcivate it
 			 */
 			Button[] suggestionButtons = this.GetComponentsInChildren<Button> (true);
-			if (suggestArray.Length > 0) {				
+			if (this.suggestArray.Length > 0) {				
 				for (int i = 0; i < suggestionButtons.Length; i++) {
 					//Debug.Log ("length:" + (i) + ":" + suggestArray.Length + " ");
-					if (i < suggestArray.Length && suggestArray [i] != null) {
-						suggestionButtons [i].GetComponentInChildren<Text> ().text = suggestArray [i].getWord ();
+					if (i < this.suggestArray.Length && this.suggestArray [i] != null) {
+						suggestionButtons [i].GetComponentInChildren<Text> ().text = this.suggestArray [i].getWord ();
 						suggestionButtons [i].gameObject.SetActive (true);
 						this.adaptTextToButtonSize (suggestionButtons [i]);
 					} else {
@@ -90,18 +99,20 @@ public class AutoCompleteControl : MonoBehaviour{
 		float widthText = Mathf.Abs(textButton.preferredWidth);
 		int startIndexOfWordFromLeft = textButton.text.Length-1;
 		//Debug.Log ("text:" + textButton.text);
-		Debug.Log ("widthButton: " + widthButton);
-		Debug.Log ("widthText: " + widthText);
+		//Debug.Log ("widthButton: " + widthButton);
+		//Debug.Log ("widthText: " + widthText);
 		string tempText = textButton.text;
-		do {
-			textButton.text = tempText;
-			//Debug.Log("widthTextOriginal:"+textButton.preferredWidth);
-			textButton.text = "..." + textButton.text.Substring (startIndexOfWordFromLeft);
-			//Debug.Log ("text:" + textButton.text);
-			startIndexOfWordFromLeft--;
-			widthText = Mathf.Abs (textButton.preferredWidth);
-			//Debug.Log ("widthText: " + widthText);
-		} while (widthText <= (widthButton-20) & startIndexOfWordFromLeft > 0);
+		if (widthText > widthButton) {			
+			do {
+				textButton.text = tempText;
+				//Debug.Log("widthTextOriginal:"+textButton.preferredWidth);
+				textButton.text = "..." + textButton.text.Substring (startIndexOfWordFromLeft);
+				//Debug.Log ("text:" + textButton.text);
+				startIndexOfWordFromLeft--;
+				widthText = Mathf.Abs (textButton.preferredWidth);
+				//Debug.Log ("widthText: " + widthText);
+			} while (widthText <= (widthButton - 20) & startIndexOfWordFromLeft > 0);
+		}
 	}
 
 	//called by the keyboard to add eventually new words to the dictionary
@@ -109,7 +120,8 @@ public class AutoCompleteControl : MonoBehaviour{
 		string[] words = this.getWordsFromInput (text);
 		if (words != null) {
 			for (int i = 0; i < words.Length; i++) {
-				autoCompleteDic.insert (words [i]);
+				DictEntrySingleWord entry = autoCompleteDic.insert (words [i]);
+				if (entry!=null) FileHandlerDictEntry.write (entry);
 			}		
 		}
 		//TestDictionary t = new TestDictionary ();
