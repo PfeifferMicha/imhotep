@@ -66,6 +66,7 @@ public class AutoCompleteControl : MonoBehaviour{
 					if (i < suggestArray.Length && suggestArray [i] != null) {
 						suggestionButtons [i].GetComponentInChildren<Text> ().text = suggestArray [i].getWord ();
 						suggestionButtons [i].gameObject.SetActive (true);
+						this.adaptTextToButtonSize (suggestionButtons [i]);
 					} else {
 						suggestionButtons [i].gameObject.SetActive (false);
 					}
@@ -82,6 +83,27 @@ public class AutoCompleteControl : MonoBehaviour{
 			this.gameObject.SetActive (false);
 		}
 	}
+	//show's not the whole word, if it's too big for the button
+	private void adaptTextToButtonSize(Button button){
+		float widthButton = Mathf.Abs(button.GetComponent<RectTransform> ().rect.width);
+		Text textButton = button.GetComponentInChildren<Text> ();
+		float widthText = Mathf.Abs(textButton.preferredWidth);
+		int startIndexOfWordFromLeft = textButton.text.Length-1;
+		//Debug.Log ("text:" + textButton.text);
+		Debug.Log ("widthButton: " + widthButton);
+		Debug.Log ("widthText: " + widthText);
+		string tempText = textButton.text;
+		do {
+			textButton.text = tempText;
+			//Debug.Log("widthTextOriginal:"+textButton.preferredWidth);
+			textButton.text = "..." + textButton.text.Substring (startIndexOfWordFromLeft);
+			//Debug.Log ("text:" + textButton.text);
+			startIndexOfWordFromLeft--;
+			widthText = Mathf.Abs (textButton.preferredWidth);
+			//Debug.Log ("widthText: " + widthText);
+		} while (widthText <= (widthButton-20) & startIndexOfWordFromLeft > 0);
+	}
+
 	//called by the keyboard to add eventually new words to the dictionary
 	public void enteredText(string text){
 		string[] words = this.getWordsFromInput (text);
