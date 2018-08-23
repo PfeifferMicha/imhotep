@@ -93,24 +93,32 @@ public class DictEntryMultyWord : DictEntry {
 		/* Example: 
 		 * Inserted first: "anna" -> MultylineWord with entry a => anna
 		 * Inserted secondly: "annanas" -> found entry anna, deleted it, insert new MultylineWord-Entries until both words are equal + one,
-		 * then insert for both a SingeLineWord-entry
+		 * then insert for both a SingleLineWord-entry
+		 * at the end return the new SinglelineWord-Entry
 		 */
 		//Debug.Log ("Level: " + level);
 		//Debug.Log ("Length oldWord:" + oldWord.Length);
 		//Debug.Log ("Length newWOrld:" + newWord.Length);
 
+
 		if (level < newWord.Length & level < oldWord.Length) {
 			//Debug.Log ("InsertChange: " + "NewWorld - " + newWord + "=>" + newWord [level] + "........." + "OldWorld - " + oldWord + "=>" + oldWord [level]);
+			//If both current letters (newWord and oldWord) are equal, add a new DictEntryMultiWord
 			if (char.ToLower(newWord [level]).CompareTo (char.ToLower(oldWord [level])) == 0) {
 				char currentLetter = char.ToLower(oldWord [level]);
 				this.entries.Add (currentLetter, new DictEntryMultyWord ());
 				return this.entries [currentLetter].insert (newWord,newRate, oldWord,oldRate, level + 1);
 			} else {
+				//if both current letters are not equal add for each a new DictEntrySingleWord and return the new one
 				this.entries.Add (char.ToLower(oldWord [level]), new DictEntrySingleWord (oldWord,oldRate, this));
 				DictEntrySingleWord newSingleEntry = new DictEntrySingleWord (newWord, newRate, this);
 				this.entries.Add (char.ToLower(newWord [level]), newSingleEntry);
 				return newSingleEntry;
 			}
+		/*If the new word is bigger than the old world, 
+		 * add DictEntrySingleWord for the oldWord one level back
+		 * and add a new DictEntrySingleWord for the new Word at the same level
+		 */
 		}else if (level >= oldWord.Length) {
 			this.entries.Add (char.ToLower(oldWord [level-1]), new DictEntrySingleWord (oldWord,oldRate, this));
 			//Debug.Log ("Test1");
@@ -121,6 +129,10 @@ public class DictEntryMultyWord : DictEntry {
 				return newSingleEntry;
 			}
 		}else if (level >= newWord.Length) {
+		/*If the old word is bigger than the new world, 
+		 * add DictEntrySingleWord for the new Word one level back
+		 * and add a new DictEntrySingleWord for the old Word at the same level
+		 */
 			//Debug.Log ("Test3");
 			if (level < oldWord.Length) {
 				//Debug.Log ("Test4");

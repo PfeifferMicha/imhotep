@@ -36,12 +36,16 @@ public class FileHandlerDictEntry : MonoBehaviour {
 	}
 	public static DictEntryMultyWord read(){
 		DictEntryMultyWord entry = new DictEntryMultyWord ();
-		StreamReader reader = new StreamReader (path);
-		while (!reader.EndOfStream) {
-			string[] line = reader.ReadLine ().Split(',');
-			entry.insert (line [0], int.Parse(line [1]));
+		try{
+			StreamReader reader = new StreamReader (path);
+			while (!reader.EndOfStream) {
+				string[] line = reader.ReadLine ().Split(',');
+				entry.insert (line [0], int.Parse(line [1]));
+			}
+			reader.Close ();
+			return entry;
+		}catch (FileNotFoundException e){
+			return null;
 		}
-		reader.Close ();
-		return entry;
 	}
 }

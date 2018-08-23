@@ -5,14 +5,10 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 /*
  * Responsible for inserting new Words in the Dictionary, but also for applying autocomplete-Suggestion selected by the user.
- * It's uses an Interface (IEnteredText) to get the saved text by the user in order to insert new words.
- * The Keyboard is the Caller.
+ * The Keyboard is the Caller and usese the method's to load the data,insert a new word
  */
 public class AutoCompleteControl : MonoBehaviour{
 	//When insert a new word?
-	/* Wort: Ende/Anfangsmarker: "Leerzeichen"; ","; "."; "!"; "?"; ";" 
-	 * 
-	 */
 	//Seperation signs for marking words
 	private string[] seperator = {" ",",",".","!","?",";"};
 	//Inputfield of the keyboard
@@ -28,18 +24,60 @@ public class AutoCompleteControl : MonoBehaviour{
 
 	private DictEntrySingleWord[] suggestArray;
 	// Use this for initialization 
-	void Start () {
-
-	}
-
-	public void loadFile(){
-		//Load AutoCompleteSuggestion-Dictionary
-		this.autoCompleteDic = FileHandlerDictEntry.read();
-		//this.autoCompleteDic.print ();
-	}
+	void Start () {}
 	// Update is called once per frame
 	void Update () {}
 
+	//Applie's the suggestion-word in the inputfield of the keyboard, selected by the user
+	public void applySuggestion(){
+		GameObject selected = EventSystem.current.currentSelectedGameObject;
+		if (selected != null) {
+			//selected suggested-word
+			string suggestionText = selected.GetComponentInChildren<Text> ().text;
+			int lastIndex = 0;
+			for (int i = 0; i < seperator.Length; i++) {
+				lastIndex = Mathf.Max(lastIndex,input.text.LastIndexOf(seperator[i]));
+			}
+			if (lastIndex > 0)
+				lastIndex++;
+			//Debug.Log("LastIndexOF:"+lastIndex);
+			this.keyboardControl.deleteText (lastIndex);
+			this.keyboardControl.enterTextEvent (suggestionText);
+			InputDeviceManager.instance.shakeLeftController( 0.5f, 0.15f );
+		}
+	}
+
+
+	//############################### method's, which the keyboard is using ##############################
+
+	//load the data from the txt-file
+	public void loadFile(){
+		//Load AutoCompleteSuggestion-Dictionary
+		this.autoCompleteDic = FileHandlerDictEntry.read();
+		if (this.autoCompleteDic == null) {
+			this.autoCompleteDic = new DictEntryMultyWord ();
+		}
+		//this.autoCompleteDic.print ();
+	}
+
+
+	//called by the keyboard to add eventually new words to the dictionary
+	public void enteredText(string text){
+		string[] words = this.getWordsFromInput (text);
+		if (words != null) {
+			for (int i = 0; i < words.Length; i++) {
+				DictEntrySingleWord entry = autoCompleteDic.insert (words [i]);
+				if (entry != null) {
+					FileHandlerDictEntry.write (entry);
+				}
+			}		
+		}
+		//TestDictionary t = new TestDictionary ();
+		/*List<DictEntrySingleWord> stringlist = autoCompleteDic.getSortedLikelyWordsAfterRate("");
+		foreach (DictEntrySingleWord s in stringlist)
+			Debug.Log( "Words: " + s.getWord() );
+		*/
+	}
 
 	//Searching the text for words in order to find likely matches
 	public void suggestWords(){
@@ -92,6 +130,11 @@ public class AutoCompleteControl : MonoBehaviour{
 			this.gameObject.SetActive (false);
 		}
 	}
+
+
+	//############################# private method's ###################################
+
+
 	//show's not the whole word, if it's too big for the button
 	private void adaptTextToButtonSize(Button button){
 		float widthButton = Mathf.Abs(button.GetComponent<RectTransform> ().rect.width);
@@ -115,40 +158,7 @@ public class AutoCompleteControl : MonoBehaviour{
 		}
 	}
 
-	//called by the keyboard to add eventually new words to the dictionary
-	public void enteredText(string text){
-		string[] words = this.getWordsFromInput (text);
-		if (words != null) {
-			for (int i = 0; i < words.Length; i++) {
-				DictEntrySingleWord entry = autoCompleteDic.insert (words [i]);
-				if (entry!=null) FileHandlerDictEntry.write (entry);
-			}		
-		}
-		//TestDictionary t = new TestDictionary ();
-		/*List<DictEntrySingleWord> stringlist = autoCompleteDic.getSortedLikelyWordsAfterRate("");
-		foreach (DictEntrySingleWord s in stringlist)
-			Debug.Log( "Words: " + s.getWord() );
-		*/
-	}
 
-	//Applie's the suggestion-word in the inputfield of the keyboard, selected by the user
-	public void applySuggestion(){
-		GameObject selected = EventSystem.current.currentSelectedGameObject;
-		if (selected != null) {
-			//selected suggested-word
-			string suggestionText = selected.GetComponentInChildren<Text> ().text;
-			int lastIndex = 0;
-			for (int i = 0; i < seperator.Length; i++) {
-				lastIndex = Mathf.Max(lastIndex,input.text.LastIndexOf(seperator[i]));
-			}
-			if (lastIndex > 0)
-				lastIndex++;
-			//Debug.Log("LastIndexOF:"+lastIndex);
-			this.keyboardControl.deleteText (lastIndex);
-			this.keyboardControl.enterTextEvent (suggestionText);
-			InputDeviceManager.instance.shakeLeftController( 0.5f, 0.15f );
-		}
-	}
 	//Extract all words from a given text
 	private string[] getWordsFromInput(string text){
 		if (text != null) {			

@@ -15,7 +15,7 @@ public abstract class DictEntry {
 	public abstract List<DictEntrySingleWord> getAllSubWords ();
 	//insert's a new word
 	public abstract DictEntrySingleWord insert (string word,int rate = 0, int level = 0);
-	//Never use this method to insert a word, use only: "insert(string word,int level = 0)
+	//Never use this method to insert a word, use only: "insert(string word,int rate = 0,int level = 0)
 	public abstract DictEntrySingleWord insert(string newWord,int newRate,string oldWord,int oldRate, int level);
 
 }
