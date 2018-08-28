@@ -4,14 +4,18 @@ using UnityEngine;
 using System.IO;
 public class FileHandlerDictEntry : MonoBehaviour {
 
-	private static string path = "Assets/Tools/KeyboardControl/databaseDicEntries.txt";
+	private static string path = "../tco-ImhotepData/Keyboard/databaseDicEntries.txt";
 	// Use this for initialization
-	void Start () {
+	void Start () {}
 
+	private static void createPathIfNotExists(){
+		if (!Directory.Exists ("../tco-ImhotepData/Keyboard")) {
+			Directory.CreateDirectory ("../tco-ImhotepData/Keyboard");
+		}
 	}
-
 	//Write's a complete new File
 	public static void  write(DictEntry dicEntry){
+		createPathIfNotExists ();
 		StreamWriter writer = new StreamWriter(path,false);
 		if (dicEntry is DictEntrySingleWord) {
 			DictEntrySingleWord entry = ((DictEntrySingleWord)dicEntry);
@@ -27,6 +31,7 @@ public class FileHandlerDictEntry : MonoBehaviour {
 	}
 	//Add's a new Entry add the end of the file
 	public static void  write(DictEntrySingleWord dicEntry){
+		createPathIfNotExists ();
 		StreamWriter writer = new StreamWriter(path,true);
 		if (dicEntry is DictEntrySingleWord) {
 			DictEntrySingleWord entry = ((DictEntrySingleWord)dicEntry);
@@ -35,6 +40,7 @@ public class FileHandlerDictEntry : MonoBehaviour {
 		writer.Close ();
 	}
 	public static DictEntryMultyWord read(){
+		createPathIfNotExists ();
 		DictEntryMultyWord entry = new DictEntryMultyWord ();
 		try{
 			StreamReader reader = new StreamReader (path);

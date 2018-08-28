@@ -27,7 +27,13 @@ public class AutoCompleteControl : MonoBehaviour{
 	void Start () {}
 	// Update is called once per frame
 	void Update () {}
-
+	void LateUpdate()
+	{
+		//Hast to update the BoxCollider, cause Canvas (Amount of Word-suggestions) could have changed
+		if (this.gameObject.activeSelf) {
+			this.GetComponent<CreateBoxColliderForCanvas> ().UpdateBoxCollider ();
+		}
+	}
 	//Applie's the suggestion-word in the inputfield of the keyboard, selected by the user
 	public void applySuggestion(){
 		GameObject selected = EventSystem.current.currentSelectedGameObject;
