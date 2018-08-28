@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 public class ScreenshotControl : MonoBehaviour {
 	//Show's the timer value, which you set
 	public Text showtimerValue;
@@ -18,6 +19,7 @@ public class ScreenshotControl : MonoBehaviour {
 	//Gameobject for Showing the Countdown
 	public GameObject countdown;
 
+	private string path = "../tco-ImhotepData/ScreenshotImages";
 	// Use this for initialization
 	void Start () {
 		timerSlider.onValueChanged.AddListener(delegate {ValueChangeCheck(); });
@@ -45,6 +47,11 @@ public class ScreenshotControl : MonoBehaviour {
 	{
 		showtimerValue.text = timerSlider.value.ToString();
 	}
+	private void createPathIfNotExists(){
+		if (!Directory.Exists (this.path)) {
+			Directory.CreateDirectory (this.path);
+		}
+	}
 
 	private void takePicture()
 	{
@@ -53,7 +60,8 @@ public class ScreenshotControl : MonoBehaviour {
 		screenshotImage = new Texture2D(Camera.main.targetTexture.width, Camera.main.targetTexture.height);
 		screenshotImage.ReadPixels(new Rect(0, 0, Camera.main.targetTexture.width, Camera.main.targetTexture.height), 0, 0);
 		screenshotImage.Apply();*/
-		ScreenCapture.CaptureScreenshot ("Assets/Tools/Screenshot/ScreenshotImages/screenshot"+imageCounter+".png");
+		this.createPathIfNotExists ();
+		ScreenCapture.CaptureScreenshot (path+"/"+imageCounter+".png");
 		imageCounter++;
 		InputDeviceManager.instance.shakeLeftController( 0.5f, 0.15f );
 	}
