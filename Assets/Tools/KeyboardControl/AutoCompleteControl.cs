@@ -21,17 +21,16 @@ public class AutoCompleteControl : MonoBehaviour{
 
 	//Dictionary for Autocomplete
 	DictEntryMultyWord autoCompleteDic = new DictEntryMultyWord ();
-
+	private bool ColliderRequieresUpdate = false;
 	private DictEntrySingleWord[] suggestArray;
 	// Use this for initialization 
 	void Start () {}
 	// Update is called once per frame
-	void Update () {}
-	void LateUpdate()
-	{
+	void Update () {
 		//Hast to update the BoxCollider, cause Canvas (Amount of Word-suggestions) could have changed
-		if (this.gameObject.activeSelf) {
+		if (this.ColliderRequieresUpdate) {
 			this.GetComponent<CreateBoxColliderForCanvas> ().UpdateBoxCollider ();
+			ColliderRequieresUpdate = false;
 		}
 	}
 	//Applie's the suggestion-word in the inputfield of the keyboard, selected by the user
@@ -125,6 +124,7 @@ public class AutoCompleteControl : MonoBehaviour{
 					}
 				}
 				this.gameObject.SetActive (true);
+				this.ColliderRequieresUpdate = true;
 			} else {
 				this.gameObject.SetActive (false);
 			}

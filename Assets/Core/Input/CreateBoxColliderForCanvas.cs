@@ -20,7 +20,7 @@ public class CreateBoxColliderForCanvas : MonoBehaviour {
 
 	public void UpdateBoxCollider() {
 		RectTransform rt = this.GetComponent<RectTransform>();
-		//Debug.Log ("Component: " + this.name);
+		Debug.Log ("Component: " + rt.rect.width + " " +rt.rect.height);
 		//try{
 			BoxCollider bc = this.GetComponent<BoxCollider> ();
 			Vector2 pivotCenter = new Vector2 (0.5f, 0.5f);
