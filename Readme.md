@@ -4,7 +4,7 @@ IMHOTEP
 [IMHOTEP (Immersive Medical Hands-On Operation Teaching and Planning System)](http://imhotep-medical.org) is a
 Virtual-Reality framework used for visualizing medical data for surgeons.
 It is compatible with the [Oculus Rift](https://www.oculus.com) and the [HTC Vive](https://www.vive.com).
-The software is being developed by the Translational Surgical Oncology at the [National Center for Tumor Diseases, Dresden](https://www.nct-dresden.de/en/research/professorships/translational-surgical-oncology.html) in association with the [Heidelberg University Hospital](https://www.heidelberg-university-hospital.com) and the [University Hospital Dresden (UKD)](https://www.uniklinikum-dresden.de/de/das-klinikum/kliniken-polikliniken-institute/vtg/patienten-und-zuweiser/international-patients/english)
+The software is being developed by the Translational Surgical Oncology Division at the [National Center for Tumor Diseases, Dresden](https://www.nct-dresden.de/en/research/professorships/translational-surgical-oncology.html) in association with the [Heidelberg University Hospital](https://www.heidelberg-university-hospital.com) and the [University Hospital Dresden (UKD)](https://www.uniklinikum-dresden.de/de/das-klinikum/kliniken-polikliniken-institute/vtg/patienten-und-zuweiser/international-patients/english)
 Using the VR technology, it can be used to visualize 3D organs and structures, 2D medical images and information.
 The framework can be applied in the areas of visualization, simulation, planning of surgeries and teaching.
 Currently, its main goal is to be used in pre-operative planning (using patient-specific 3D data).
