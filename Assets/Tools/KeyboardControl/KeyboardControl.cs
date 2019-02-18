@@ -53,15 +53,15 @@ public class KeyboardControl : MonoBehaviour{
 	//memorize normalColor of keyboardInputField for ReFocus
 	private Color normalColor;
 
+	public AutoCompleteControl autoCompleteControl;
 	//Call's by activation
 	void OnEnable(){
 		this.endTextSelection = keyboardInputField.text.Length;
 		//Reset's the position of already active tool, next to the keyboard
 		//this.setActiveToolControllerPosition();
 		this.setToBigLetters ();
-
 		ToolControl.instance.overrideTool ( this.gameObject );
-
+		this.autoCompleteControl.gameObject.SetActive (false);
 		InputDeviceManager.instance.shakeLeftController( 0.5f, 0.15f );
 	}
 
@@ -79,12 +79,14 @@ public class KeyboardControl : MonoBehaviour{
 		this.activatedField_flag = 0;
 		this.buttonDeleteLastSymbolPressedDown = false;	
 		this.normalColor = this.keyboardInputField.colors.normalColor;
+		this.autoCompleteControl.loadFile ();
 	}
 
 
 	// Update is called once per frame
 	void Update () {
-		// Check if we clicked somewhere outside of the 
+		
+		// Check if we clicked somewhere outside of the keyboard
 		if (InputDeviceManager.instance.currentInputDevice.isLeftButtonDown ()) {	
 				// Get currently hovered game object:
 				HierarchicalInputModule inputModule = EventSystem.current.currentInputModule as HierarchicalInputModule;
@@ -113,6 +115,8 @@ public class KeyboardControl : MonoBehaviour{
 				this.cancel ();
 			}
 		}
+
+
 	}
 
 	//Helps to determ,if the button "DeleteLastSymbol" is pressed down for continously Deletion of the text
@@ -171,27 +175,42 @@ public class KeyboardControl : MonoBehaviour{
 		}
 	}
 	//Enter's the text at the given caretPostion in the InputField of the Keyboard
-	public void enterTextEvent(string key )	{
+	public void enterTextSingleSignEvent(string key )	{
 		this.deleteSelectedText ();
 		this.updateTextSelected ();
+		//Debug.Log ("text:" + this.keyboardInputField.text + " length: " + this.keyboardInputField.text.Length);
 		this.keyboardInputField.text = this.keyboardInputField.text.Insert(this.caretPostionKeyboard,key);
 		if (this.selectedInputField != null) {
-			this.selectedInputField.text = this.selectedInputField.text.Insert (this.caretPostionKeyboard, key);
+			this.selectedInputField.text = this.keyboardInputField.text;
 		}
 		this.caretPostionKeyboard++;
+		this.autoCompleteControl.suggestWords ();
 		this.reFocusKeyboardInputfield ();
 	}
-
+	//Enter more than just one Symbol at a time
+	public void enterTextEvent(string text){
+		this.enterTextSingleSignEvent (text);
+		this.caretPostionKeyboard += text.Length-1;
+	}
 	//Enter's a given letter
 	public void enterLetterEvent(string letter){
 		if (this.shift_flag) {
-			this.enterTextEvent (letter.ToLower ());
+			this.enterTextSingleSignEvent (letter.ToLower ());
 		} else {
-			this.enterTextEvent (letter);
+			this.enterTextSingleSignEvent (letter);
 			this.setToSmallLetters ();
 		}
 	}
 
+	public void deleteText(int startIndex){
+		//Debug.Log ("startindex:" + startIndex);
+		this.keyboardInputField.text = this.keyboardInputField.text.Remove (startIndex);
+		if (this.selectedInputField != null) {
+			this.selectedInputField.text = this.keyboardInputField.text;
+		}
+		this.caretPostionKeyboard = startIndex;
+		this.reFocusKeyboardInputfield ();
+	}
 	//Delete's the last Input-Symbol
 	public void deleteLastInputSymbol()
 	{
@@ -206,6 +225,7 @@ public class KeyboardControl : MonoBehaviour{
 			}
 			this.caretPostionKeyboard--;
 		}
+		this.autoCompleteControl.suggestWords ();
 		this.reFocusKeyboardInputfield ();
 	}
 	//Make's a linebreak in the keyboard-inputfield
@@ -245,6 +265,7 @@ public class KeyboardControl : MonoBehaviour{
 			this.selectedInputField.text = "";
 		}
 		this.keyboardInputField.text = "";
+		this.autoCompleteControl.suggestWords ();
 		this.caretPostionKeyboard = 0;
 		this.reFocusKeyboardInputfield ();
 	}
@@ -267,6 +288,7 @@ public class KeyboardControl : MonoBehaviour{
 		this.caretPostionKeyboard = 0;
 		if (this.selectedInputField != null) {
 			oldText = this.selectedInputField.text;
+			if (autoCompleteControl!=null) autoCompleteControl.enteredText (oldText);
 		}
 		this.keyboardInputField.DeactivateInputField ();
 		this.gameObject.SetActive (false);
@@ -345,4 +367,11 @@ public class KeyboardControl : MonoBehaviour{
 		this.keyboardInputField.MoveTextStart (false);
 		this.keyboardInputField.caretPosition = this.caretPostionKeyboard;
 	}
+
+	//Method, for development purpose: Enables's to enter text via physical keyboard, if you are not in the virtual reality-mode
+	public void keyboardTextEvent(string key )	{
+		this.selectedInputField.text = this.keyboardInputField.text;
+		this.autoCompleteControl.suggestWords ();
+	}
+
 }
