@@ -4,8 +4,7 @@ IMHOTEP
 [IMHOTEP (Immersive Medical Hands-On Operation Teaching and Planning System)](http://imhotep-medical.org) is a
 Virtual-Reality framework used for visualizing medical data for surgeons.
 It is compatible with the [Oculus Rift](https://www.oculus.com) and the [HTC Vive](https://www.vive.com).
-The software is being developed by the [Institute for Anthropomatics and Robotics](http://his.anthropomatik.kit.edu/english/index.php)
-at the KIT, Karlsruhe, in association with the [Heidelberg University Hospital](https://www.heidelberg-university-hospital.com).
+The software is being developed by the Translational Surgical Oncology Division at the [National Center for Tumor Diseases (NCT)](https://www.nct-dresden.de/en/research/professorships/translational-surgical-oncology.html) in Dresden in association with the [Heidelberg University Hospital](https://www.heidelberg-university-hospital.com) and the [University Hospital Dresden (UKD)](https://www.uniklinikum-dresden.de/de/das-klinikum/kliniken-polikliniken-institute/vtg/patienten-und-zuweiser/international-patients/english).
 Using the VR technology, it can be used to visualize 3D organs and structures, 2D medical images and information.
 The framework can be applied in the areas of visualization, simulation, planning of surgeries and teaching.
 Currently, its main goal is to be used in pre-operative planning (using patient-specific 3D data).
@@ -40,8 +39,7 @@ Usage:
 ---------------
 To run the project, you need a VR Headset (HTC Vive is recommended, although the framework will also work with an
 Oculus Rift), Unity3D (tested with Version 2017.1 and 2017.2) and Blender3D. Set up your VR Headset, then download this project and load it using the Unity3D editor. In the Assets Folder, load the "Workstation" scene and then run the project. To select the correct HMD (Vive or Rift), please consult the documentation (documentation.imhotep-medical.org, "VR Setup" section).
-The visualization data is not included in the source code. We will upload an anonymous test patient data set soon. Until then, if you want to use the software and get an example set of
-visualization data, please [contact us](http://imhotep-medical.org/contact).
+You can find a sample patient data set in the download section of [our website](http://imhotep-medical.org/).
 
 Contribution:
 ---------------
