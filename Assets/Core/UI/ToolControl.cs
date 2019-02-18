@@ -190,6 +190,7 @@ public class ToolControl : MonoBehaviour {
 					SpriteRenderer sr = go.AddComponent<SpriteRenderer> ();
 					sr.sprite = tool.ToolIcon;
 					sr.sortingLayerID = SortingLayer.NameToID ("Sprites");
+					sr.material.renderQueue = 3001;
 
 					ToolRingEntry entry = go.AddComponent<ToolRingEntry> ();
 					entry.Tool = tool;
@@ -208,6 +209,7 @@ public class ToolControl : MonoBehaviour {
 			ActiveToolName.fontSize = 40;
 			ActiveToolName.alignment = TextAlignment.Center;
 			ActiveToolName.anchor = TextAnchor.MiddleCenter;
+			text.GetComponent<MeshRenderer> ().material.renderQueue = 3001;
 
 			Renderer r = text.GetComponent<Renderer> ();
 			r.sortingLayerID = SortingLayer.NameToID ("Sprites");
