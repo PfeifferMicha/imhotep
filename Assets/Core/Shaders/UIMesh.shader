@@ -9,7 +9,7 @@ Shader "Custom/UIMesh"
 	SubShader
 	{
 		Blend SrcAlpha OneMinusSrcAlpha
-		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+		Tags {"Queue"="Geometry+10" "IgnoreProjector"="True" "RenderType"="Transparent"}
 		ZWrite OFF
 		LOD 100
 
