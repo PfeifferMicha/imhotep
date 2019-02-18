@@ -106,7 +106,7 @@ public class DICOMLoader : MonoBehaviour {
 			Debug.Log( str );
 
 		} catch( System.Exception err ) {
-			Debug.LogError( err.Message );
+			Debug.LogError( "Error while trying to parse DICOM directory: " + err.Message );
 		}
 	}
 
